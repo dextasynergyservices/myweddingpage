@@ -35,7 +35,6 @@ An AI-powered platform for creating beautiful, personalized wedding pages for co
 /utils - Helpers and validations
 /public - Static assets
 
-
 ---
 
 ## ⚡️ Tech Stack
@@ -55,33 +54,57 @@ An AI-powered platform for creating beautiful, personalized wedding pages for co
 ## 🚀 Getting Started Locally
 
 ### 1️⃣ Clone the repo
+
 ```bash
 git clone https://github.com/dextasynergyservices/myweddingpage.git
 cd myweddingpage
 ```
+
 ### Install Dependencies
+
 ```bash
 pnpm install
 ```
 
 ### Setup Environment variables
+
 ```bash
 cp .env.example .env
 ```
+
 - Change credentials
 
 ### Prisma Setup
+
 ```bash
 npx prisma generate
 npx prisma migrate dev --name init
+npx prisma db seed
 ```
 
 ### Run Locally
+
 ```bash
 pnpm dev
 ```
 
+## 🗄️ Database Setup & Prisma ORM
+
+This project uses **PostgreSQL** hosted on [Neon](https://neon.tech) and managed with **Prisma ORM**. Below are instructions for setting up, seeding, and verifying your database.
+
+---
+
+### 🔧 Requirements
+
+- [Neon Account](https://neon.tech)
+- `.env` file configured with your Neon PostgreSQL connection string:
+
+```env
+DATABASE_URL=postgresql://<user>:<password>@<your-project>.neon.tech/<db-name>?sslmode=require
+```
+
 ### Useful Commands
+
 ```bash
 pnpm lint         # Lint code
 pnpm format       # Prettier formatting
