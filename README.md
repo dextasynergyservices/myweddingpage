@@ -106,7 +106,7 @@ DATABASE_URL=postgresql://<user>:<password>@<your-project>.neon.tech/<db-name>?s
 ### Useful Commands
 
 ```bash
-pnpm lint         # Lint code
+pnpm lint         # Lint code CHECKING
 pnpm format       # Prettier formatting
 pnpm typecheck    # TypeScript checks
 pnpm build        # Build production
