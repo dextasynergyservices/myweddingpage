@@ -1,5 +1,5 @@
 import ComingSoon from "@/components/ComingSoon";
 
-export default function Contact() {
+export default async function Contact() {
   return <ComingSoon title="Contact Page" />;
 }

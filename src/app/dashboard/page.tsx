@@ -1,5 +1,5 @@
 import ComingSoon from "@/components/ComingSoon";
 
-export default function DashboardHome() {
+export default async function DashboardHome() {
   return <ComingSoon title="User Dashboard" />;
 }

@@ -1,5 +1,5 @@
 import ComingSoon from "@/components/ComingSoon";
 
-export default function About() {
+export default async function About() {
   return <ComingSoon title="About Page" />;
 }
