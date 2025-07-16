@@ -4,9 +4,9 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Seeding database..."); // Remove all console.log during production
+  console.log("🌱 Seeding database...");
 
-  // Seed Plans
+  // ✅ Seed Plans
   await prisma.plan.createMany({
     data: [
       {
@@ -46,7 +46,7 @@ async function main() {
   });
   console.log("✅ Plans seeded.");
 
-  // Seed Templates (optional starter data)
+  // ✅ Seed Templates
   await prisma.template.createMany({
     data: [
       {
@@ -64,9 +64,11 @@ async function main() {
     ],
     skipDuplicates: true,
   });
+  console.log("✅ Templates seeded.");
 
-  // Admin User
+  // ✅ Admin User
   const hashedPassword = await bcrypt.hash("AdminPassword123!", 10);
+
   await prisma.user.upsert({
     where: { email: "admin@myweddingpage.online" },
     update: {},
@@ -78,14 +80,47 @@ async function main() {
       status: "ACTIVE",
     },
   });
-  console.log("✅ Templates seeded.");
+  console.log("✅ Admin User seeded.");
+
+  // ✅ Fetch IDs to use in weddingPage creation
+  const adminUser = await prisma.user.findUnique({
+    where: { email: "admin@myweddingpage.online" },
+  });
+
+  const template = await prisma.template.findUnique({
+    where: { name: "Classic Elegance" }, // You must have made this name @unique in schema
+  });
+
+  if (!adminUser || !template) {
+    throw new Error(
+      "❌ Could not find required User or Template for WeddingPage seed."
+    );
+  }
+
+  // ✅ Seed WeddingPage
+  await prisma.weddingPage.upsert({
+    where: {
+      slug: "john-and-jane",
+    },
+    update: {},
+    create: {
+      slug: "john-and-jane",
+      title: "John & Jane's Wedding",
+      is_live: true,
+      created_by_admin: true,
+      userId: adminUser.id,
+      templateId: template.id,
+    },
+  });
+
+  console.log("✅ WeddingPage seeded.");
 
   console.log("🌱 Seeding complete.");
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error("❌ Seeding error:", e);
     process.exit(1);
   })
   .finally(async () => {

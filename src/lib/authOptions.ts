@@ -5,7 +5,6 @@ import prisma from "@/lib/prisma";
 import { JWT } from "next-auth/jwt";
 import { User } from "next-auth";
 
-
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [

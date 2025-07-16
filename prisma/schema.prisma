@@ -102,7 +102,7 @@ model Payment {
 
 model Template {
   id            String   @id @default(uuid())
-  name          String
+  name          String   @unique
   description   String
   thumbnail_url String
   layout_data   Json
