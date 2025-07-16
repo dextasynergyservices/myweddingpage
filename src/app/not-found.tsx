@@ -5,7 +5,7 @@ export default function NotFound() {
     <main className="flex flex-col items-center justify-center min-h-screen text-center p-6 bg-black">
       <h1 className="text-5xl font-bold mb-4">404</h1>
       <p className="text-xl mb-6">
-        Oops! The page you're looking for doesn't exist.
+        Sorry, the page you&apos;re looking for doesn&apos;t exist.
       </p>
       <Link
         href="/"
