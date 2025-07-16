@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { slug: string } }
-) {
+export async function GET(req: NextRequest) {
   try {
-    const { slug } = params;
+    // Extract slug from the pathname
+    const slug = req.nextUrl.pathname.split("/").pop();
+
+    if (!slug) {
+      return NextResponse.json({ error: "Missing slug" }, { status: 400 });
+    }
 
     const page = await prisma.weddingPage.findUnique({
       where: { slug },
