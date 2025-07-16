@@ -1,7 +1,7 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { JWT } from "next-auth/jwt";
-import { Session } from "next-auth";
+// import { JWT } from "next-auth/jwt";
+// import { Session } from "next-auth";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -14,18 +14,17 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: any }) {
-      // User just signed in via Google
+    async jwt({ token, user }) {
       if (user) {
-        token.id = user.id ?? user.sub ?? "";
+        token.id = user.id ?? "";
         token.email = user.email ?? "";
         token.name = user.name ?? "";
-        token.role = "USER"; // default role unless you load from DB
+        token.role = "USER";
       }
       return token;
     },
 
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
