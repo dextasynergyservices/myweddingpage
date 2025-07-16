@@ -49,18 +49,24 @@ enum ReminderType {
 
 model User {
   id                String        @id @default(uuid())
-  name              String
-  email             String        @unique
-  password          String
+  name              String?
+  email             String?        @unique
+  emailVerified     DateTime?
+  image             String?
+
+  password          String?
   role              UserRole      @default(USER)
   planId            String?
   plan              Plan?         @relation(fields: [planId], references: [id])
   subscription_start DateTime?
-  subscription_end  DateTime?
+  subscription_end   DateTime?
   status            SubscriptionStatus @default(INACTIVE)
   whatsapp           String?
   verification_code  String?
   created_at        DateTime      @default(now())
+
+  accounts           Account[]
+  sessions           Session[]
 
   weddingPages      WeddingPage[]
   payments          Payment[]
@@ -153,3 +159,32 @@ model EmailReminder {
 
   user        User          @relation(fields: [userId], references: [id])
 }
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id])
+}
+
