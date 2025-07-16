@@ -3,11 +3,11 @@ import Image from "next/image";
 import prisma from "@/lib/prisma";
 import { WeddingPageData } from "@/types/types";
 
-type Props = {
+type WeddingPageProps = {
   params: { slug: string };
 };
 
-export default async function WeddingPage({ params }: Props) {
+export default async function WeddingPage({ params }: WeddingPageProps) {
   const page = await prisma.weddingPage.findUnique({
     where: { slug: params.slug },
     include: {
