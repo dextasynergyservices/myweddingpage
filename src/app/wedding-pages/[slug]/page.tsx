@@ -1,6 +1,5 @@
 import ComingSoon from "@/components/ComingSoon";
-import { PageParams } from "@/types/page";
 
-export default async function WeddingPage({ params }: PageParams<"slug">) {
+export default function WeddingPage({ params }: { params: { slug: string } }) {
   return <ComingSoon title={`Wedding Page: ${params.slug}`} />;
 }
