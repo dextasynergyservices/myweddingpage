@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 export async function GET() {
   const user = await getAuthUser();
   const comments = await prisma.comment.findMany({
-    where: { weddingPage: { user_id: user.id } },
+    where: { weddingPage: { userId: user.id } },
   });
   return NextResponse.json({ comments });
 }

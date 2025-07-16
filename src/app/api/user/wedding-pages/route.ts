@@ -2,21 +2,49 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-export async function GET() {
+export async function POST(req: NextRequest) {
   const user = await getAuthUser();
-  const page = await prisma.weddingPage.findFirst({
-    where: { user_id: user.id },
-    include: { media: true, comments: true },
+  const { type, cloudinary_url, weddingPageId } = await req.json();
+
+  // Ownership check
+  const weddingPage = await prisma.weddingPage.findUnique({
+    where: { id: weddingPageId },
   });
-  return NextResponse.json({ page });
+
+  if (!weddingPage || weddingPage.userId !== user.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
+  const media = await prisma.mediaUpload.create({
+    data: {
+      type,
+      cloudinary_url,
+      weddingPageId,
+    },
+  });
+
+  return NextResponse.json({ media });
 }
 
-export async function PUT(req: NextRequest) {
+export async function DELETE(req: NextRequest) {
   const user = await getAuthUser();
-  const data = await req.json();
-  const updated = await prisma.weddingPage.updateMany({
-    where: { user_id: user.id },
-    data,
+  const { id } = await req.json();
+
+  // Find media and verify ownership
+  const media = await prisma.mediaUpload.findUnique({
+    where: { id },
+    include: {
+      weddingPage: true,
+    },
   });
-  return NextResponse.json({ updated });
+
+  if (!media || media.weddingPage.userId !== user.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
+  await prisma.mediaUpload.delete({
+    where: { id },
+  });
+
+  return NextResponse.json({ success: true });
 }

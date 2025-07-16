@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     where: { id: wedding_page_id },
   });
 
-  if (!weddingPage || weddingPage.user_id !== user.id) {
+  if (!weddingPage || weddingPage.userId !== user.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     data: {
       type,
       cloudinary_url,
-      wedding_page_id,
+      weddingPageId: wedding_page_id,
     },
   });
 
@@ -38,7 +38,7 @@ export async function DELETE(req: NextRequest) {
     },
   });
 
-  if (!media || media.weddingPage.user_id !== user.id) {
+  if (!media || media.weddingPage.userId !== user.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
