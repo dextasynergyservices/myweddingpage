@@ -5,15 +5,46 @@ import prisma from "@/lib/prisma";
 export async function POST(req: NextRequest) {
   const user = await getAuthUser();
   const { type, cloudinary_url, wedding_page_id } = await req.json();
-  const media = await prisma.mediaUpload.create({
-    data: { type, cloudinary_url, wedding_page_id },
+
+  // Ownership check
+  const weddingPage = await prisma.weddingPage.findUnique({
+    where: { id: wedding_page_id },
   });
+
+  if (!weddingPage || weddingPage.user_id !== user.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
+  const media = await prisma.mediaUpload.create({
+    data: {
+      type,
+      cloudinary_url,
+      wedding_page_id,
+    },
+  });
+
   return NextResponse.json({ media });
 }
 
 export async function DELETE(req: NextRequest) {
   const user = await getAuthUser();
   const { id } = await req.json();
-  await prisma.mediaUpload.delete({ where: { id } });
+
+  // Find media and verify ownership
+  const media = await prisma.mediaUpload.findUnique({
+    where: { id },
+    include: {
+      weddingPage: true,
+    },
+  });
+
+  if (!media || media.weddingPage.user_id !== user.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
+
+  await prisma.mediaUpload.delete({
+    where: { id },
+  });
+
   return NextResponse.json({ success: true });
 }

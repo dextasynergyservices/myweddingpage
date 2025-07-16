@@ -6,7 +6,13 @@ export async function getAuthUser() {
   if (!session || !session.user) {
     throw new Error("Not authenticated");
   }
-  return session.user;
+  const { id, email, name, role } = session.user as {
+    id: string;
+    email: string;
+    name: string;
+    role: string;
+  };
+  return { id, email, name, role };
 }
 
 export async function requireAdmin() {

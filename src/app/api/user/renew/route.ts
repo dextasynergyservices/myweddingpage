@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthUser } from "@/lib/auth";
-import prisma from "@/lib/prisma";
+// import { getAuthUser } from "@/lib/auth";
+// import prisma from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   // Placeholder

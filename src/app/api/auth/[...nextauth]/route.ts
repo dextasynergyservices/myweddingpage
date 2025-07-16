@@ -1,7 +1,9 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import { JWT } from "next-auth/jwt";
+import { Session } from "next-auth";
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -9,18 +11,28 @@ export const authOptions = {
     }),
   ],
   session: {
-    strategy: "jwt" as const
+    strategy: "jwt",
   },
   callbacks: {
-    async session({ session, token }: any) {
-      session.user.id = token.sub;
-      return session;
-    },
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }: { token: JWT; user?: any }) {
+      // User just signed in via Google
       if (user) {
-        token.id = user.id;
+        token.id = user.id ?? user.sub ?? "";
+        token.email = user.email ?? "";
+        token.name = user.name ?? "";
+        token.role = "USER"; // default role unless you load from DB
       }
       return token;
+    },
+
+    async session({ session, token }: { session: Session; token: JWT }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.role = token.role as string;
+      }
+      return session;
     },
   },
 };

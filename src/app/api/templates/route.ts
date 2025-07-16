@@ -7,7 +7,7 @@ export async function GET() {
     await getAuthUser(); // Must be logged in
     const templates = await prisma.template.findMany();
     return NextResponse.json({ templates });
-  } catch (err) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  } catch (_err) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 }
