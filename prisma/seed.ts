@@ -1,4 +1,5 @@
 import { PrismaClient } from "@/generated/prisma";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -62,6 +63,20 @@ async function main() {
       },
     ],
     skipDuplicates: true,
+  });
+
+  // Admin User
+  const hashedPassword = await bcrypt.hash("AdminPassword123!", 10);
+  await prisma.user.upsert({
+    where: { email: "admin@myweddingpage.online" },
+    update: {},
+    create: {
+      name: "Admin User",
+      email: "admin@myweddingpage.online",
+      password: hashedPassword,
+      role: "ADMIN",
+      status: "ACTIVE",
+    },
   });
   console.log("✅ Templates seeded.");
 

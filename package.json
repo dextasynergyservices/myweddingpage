@@ -19,8 +19,11 @@
   "dependencies": {
     "@prisma/client": "^6.11.1",
     "@sendgrid/mail": "^8.1.5",
+    "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
+    "jsonwebtoken": "^9.0.2",
     "next": "15.3.5",
+    "next-auth": "^4.24.11",
     "next-cloudinary": "^6.16.0",
     "openai": "^5.9.0",
     "paystack-api": "^2.0.6",
@@ -33,6 +36,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
