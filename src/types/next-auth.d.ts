@@ -20,3 +20,7 @@ declare module "next-auth" {
     role?: string;
   }
 }
+
+export type PageParams<T extends string> = {
+  params: Record<T, string>;
+};
