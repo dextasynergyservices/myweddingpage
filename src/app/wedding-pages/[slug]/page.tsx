@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import prisma from "@/lib/prisma";
 import { WeddingPageData } from "@/types/types";
+import { JSX } from "react";
 
 type Props = {
   params: {
@@ -9,9 +10,13 @@ type Props = {
   };
 };
 
-export default async function WeddingPage({ params }: Props) {
+export default async function WeddingPage({
+  params,
+}: Props): Promise<JSX.Element> {
+  const slug = params.slug;
+
   const page = await prisma.weddingPage.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: {
       template: true,
       mediaUploads: true,
