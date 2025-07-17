@@ -3,11 +3,13 @@ import Image from "next/image";
 import prisma from "@/lib/prisma";
 import { WeddingPageData } from "@/types/types";
 
-export default async function WeddingPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+type Props = {
+  params: {
+    slug: string;
+  };
+};
+
+export default async function WeddingPage({ params }: Props) {
   const page = await prisma.weddingPage.findUnique({
     where: { slug: params.slug },
     include: {
@@ -36,7 +38,7 @@ export default async function WeddingPage({
       )}
 
       <section className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-        {typedPage.mediaUploads && typedPage.mediaUploads.length > 0 ? (
+        {typedPage.mediaUploads?.length > 0 ? (
           typedPage.mediaUploads.map((media) => (
             <div key={media.id} className="relative w-full h-48">
               <Image
