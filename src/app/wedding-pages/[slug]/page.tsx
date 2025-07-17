@@ -7,6 +7,10 @@ type WeddingPageProps = {
   params: { slug: string };
 };
 
+export async function generateStaticParams() {
+  return [];
+}
+
 export default async function WeddingPage({ params }: WeddingPageProps) {
   const page = await prisma.weddingPage.findUnique({
     where: { slug: params.slug },
