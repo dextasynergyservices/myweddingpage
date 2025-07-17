@@ -4,6 +4,9 @@ import prisma from "@/lib/prisma";
 import { WeddingPageData } from "@/types/types";
 import { JSX } from "react";
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 type PageProps = {
   params: {
     slug: string;

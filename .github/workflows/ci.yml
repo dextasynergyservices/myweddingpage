@@ -28,6 +28,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
       - name: Run linter
         run: pnpm lint
 
@@ -51,6 +59,14 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
       - name: Type checking
         run: pnpm typecheck
@@ -76,6 +92,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
       - name: Cleanup previous builds
         run: rm -rf .next
 
@@ -88,5 +112,8 @@ jobs:
       - name: Generate Prisma Client
         run: pnpm prisma generate
 
+      - name: Type checking
+        run: pnpm typecheck
+
       - name: Build
-        run: pnpm build
+        run: NODE_ENV=production pnpm build
