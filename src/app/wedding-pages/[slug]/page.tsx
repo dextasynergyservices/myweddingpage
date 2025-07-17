@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { WeddingPageData } from "@/types/types";
 import { JSX } from "react";
 
-type Props = {
+type PageProps = {
   params: {
     slug: string;
   };
@@ -12,7 +12,7 @@ type Props = {
 
 export default async function WeddingPage({
   params,
-}: Props): Promise<JSX.Element> {
+}: PageProps): Promise<JSX.Element> {
   const slug = params.slug;
 
   const page = await prisma.weddingPage.findUnique({
