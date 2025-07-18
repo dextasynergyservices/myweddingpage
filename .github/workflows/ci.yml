@@ -58,6 +58,9 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Run Lint
         run: pnpm lint
 
@@ -79,6 +82,9 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
+      - name: Install dependencies
+        run: pnpm install
+
       - name: Type checking
         run: pnpm typecheck
 
@@ -99,6 +105,9 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Cleanup previous builds
         run: rm -rf .next
