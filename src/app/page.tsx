@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Image from "next/image";
 
 export default function Home() {
@@ -100,4 +101,10 @@ export default function Home() {
       </footer>
     </div>
   );
+=======
+import ComingSoon from "@/components/ComingSoon";
+
+export default function Home() {
+  return <ComingSoon title="Home (Landing Page)" />;
+>>>>>>> develop
 }
