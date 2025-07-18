@@ -58,7 +58,7 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
-      - name: Run linter
+      - name: Run Lint
         run: pnpm lint
 
   typecheck:
