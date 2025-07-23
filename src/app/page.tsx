@@ -1,5 +1,17 @@
-import ComingSoon from "@/components/ComingSoon";
+import HomeHero from "@/components/HomeHero";
+import HomeFeatures from "@/components/HomeFeature";
+import HomePackages from "@/components/HomePackages";
+import HomeFindWedding from "@/components/HomeFindWedding";
+import HomeTestimonials from "@/components/HomeTestimonials";
 
 export default function Home() {
-  return <ComingSoon title="Home (Landing Page)" />;
+  return (
+    <>
+      <HomeHero />
+      <HomeFeatures />
+      <HomePackages />
+      <HomeFindWedding />
+      <HomeTestimonials />
+    </>
+  );
 }

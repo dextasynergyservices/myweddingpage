@@ -13,7 +13,5 @@ export async function sendVerificationEmail(email: string, code: string) {
 
 // For WhatsApp/SMS, use Twilio or other provider
 export async function sendWhatsAppCode(whatsapp: string, code: string) {
-  console.log(
-    `Pretend we're sending WhatsApp to ${whatsapp} with code ${code}`
-  );
+  console.log(`Pretend we're sending WhatsApp to ${whatsapp} with code ${code}`);
 }
