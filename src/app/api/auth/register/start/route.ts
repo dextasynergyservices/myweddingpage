@@ -7,10 +7,7 @@ export async function POST(req: NextRequest) {
   const { name, email, password, confirmPassword, whatsapp } = await req.json();
 
   if (password !== confirmPassword) {
-    return NextResponse.json(
-      { error: "Passwords do not match" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Passwords do not match" }, { status: 400 });
   }
 
   const existing = await prisma.user.findFirst({

@@ -92,9 +92,7 @@ async function main() {
   });
 
   if (!adminUser || !template) {
-    throw new Error(
-      "❌ Could not find required User or Template for WeddingPage seed."
-    );
+    throw new Error("❌ Could not find required User or Template for WeddingPage seed.");
   }
 
   // ✅ Seed WeddingPage

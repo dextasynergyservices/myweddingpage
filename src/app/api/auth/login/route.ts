@@ -15,18 +15,12 @@ export async function POST(req: NextRequest) {
   });
 
   if (!user || user.status !== "ACTIVE") {
-    return NextResponse.json(
-      { error: "User not active or does not exist" },
-      { status: 401 }
-    );
-    }
-    
-    if (!user?.password) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
-    }
+    return NextResponse.json({ error: "User not active or does not exist" }, { status: 401 });
+  }
+
+  if (!user?.password) {
+    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+  }
 
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
