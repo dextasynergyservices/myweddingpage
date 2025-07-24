@@ -43,9 +43,11 @@ const Footer = () => {
   return (
     <>
       {/* Footer */}
-      <footer className={`py-20 relative overflow-hidden ${
-        isDarkMode ? 'bg-slate-900 text-white' : 'bg-slate-900 text-white'
-      }`}>
+      <footer
+        className={`py-20 relative overflow-hidden ${
+          isDarkMode ? "bg-slate-900 text-white" : "bg-slate-900 text-white"
+        }`}
+      >
         <ParallaxBackground speed={0.05}>
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 rounded-full blur-3xl"></div>
         </ParallaxBackground>

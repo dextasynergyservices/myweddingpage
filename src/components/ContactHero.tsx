@@ -33,7 +33,7 @@ const ContactHero = () => {
           isDarkMode ? "text-slate-400" : "text-slate-600"
         }`}
       >
-        We're here to help make your wedding dreams come true. Reach out to us anytime.
+        We&apos;re here to help make your wedding dreams come true. Reach out to us anytime.
       </p>
     </AnimatedSection>
   );

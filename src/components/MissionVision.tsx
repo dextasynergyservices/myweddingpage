@@ -29,8 +29,8 @@ const MissionVision = () => {
             }`}
           >
             To empower couples with the tools and platform they need to create, share, and celebrate
-            their perfect wedding day. We're committed to making wedding planning stress-free and
-            joyful, allowing couples to focus on what matters most - their love story.
+            their perfect wedding day. We&apos;re committed to making wedding planning stress-free
+            and joyful, allowing couples to focus on what matters most - their love story.
           </p>
         </div>
       </AnimatedSection>
@@ -54,9 +54,9 @@ const MissionVision = () => {
               isDarkMode ? "text-slate-300" : "text-slate-700"
             }`}
           >
-            To become the world's most trusted wedding platform, where every couple can create their
-            dream wedding experience. We envision a future where technology seamlessly enhances the
-            most important moments in people's lives.
+            To become the world&apos;s most trusted wedding platform, where every couple can create
+            their dream wedding experience. We envision a future where technology seamlessly
+            enhances the most important moments in people&apos;s lives.
           </p>
         </div>
       </AnimatedSection>
