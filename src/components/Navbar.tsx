@@ -110,7 +110,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Toggle */}
-          <div className="md:hidden relative left-18">
+          <div className="md:hidden relative left-4">
             <ThemeToggle />
           </div>
           <motion.button
