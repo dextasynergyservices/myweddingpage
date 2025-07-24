@@ -5,20 +5,34 @@ import { Camera, Gift, MessageCircle, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import AnimatedSection from "./AnimatedSection";
 import ParallaxBackground from "./ParallaxBackground";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const HomeFeatures = () => {
+  const { isDarkMode } = useTheme();
+
   return (
-    <section id="features" className="py-24 bg-white relative overflow-hidden">
+    <section
+      id="features"
+      className={`py-24 relative overflow-hidden ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+    >
       <ParallaxBackground speed={0.1}>
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-100/30 to-purple-100/30 rounded-full blur-3xl"></div>
       </ParallaxBackground>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <AnimatedSection className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-light text-slate-900 mb-6 tracking-tight">
+          <h2
+            className={`text-4xl md:text-5xl font-light text-slate-900 mb-6 tracking-tight ${
+              isDarkMode ? "text-white" : "text-slate-900"
+            }`}
+          >
             Everything You Need
           </h2>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto font-light">
+          <p
+            className={`text-xl max-w-2xl mx-auto font-light ${
+              isDarkMode ? "text-slate-300" : "text-slate-600"
+            }`}
+          >
             Powerful tools designed for modern couples who want elegance and simplicity.
           </p>
         </AnimatedSection>
@@ -53,10 +67,20 @@ const HomeFeatures = () => {
           ].map((feature, index) => (
             <AnimatedSection key={index} animation="fadeUp" delay={index * 0.2} className="group">
               <motion.div
-                className="relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100 hover:border-slate-200 overflow-hidden"
+                className={`relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border overflow-hidden ${
+                  isDarkMode
+                    ? "bg-slate-700 border-slate-600 hover:border-slate-500"
+                    : "bg-white border-slate-100 hover:border-slate-200"
+                }`}
                 whileHover={{ y: -10 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div
+                  className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+                    isDarkMode
+                      ? "bg-gradient-to-br from-slate-600/50 to-slate-700"
+                      : "bg-gradient-to-br from-slate-50/50 to-white"
+                  }`}
+                ></div>
 
                 <div className="relative z-10">
                   <motion.div
@@ -65,8 +89,20 @@ const HomeFeatures = () => {
                   >
                     <feature.icon className="h-8 w-8 text-white" />
                   </motion.div>
-                  <h3 className="text-xl font-semibold text-slate-900 mb-3">{feature.title}</h3>
-                  <p className="text-slate-600 leading-relaxed font-light">{feature.description}</p>
+                  <h3
+                    className={`text-xl font-semibold mb-3 ${
+                      isDarkMode ? "text-white" : "text-slate-900"
+                    }`}
+                  >
+                    {feature.title}
+                  </h3>
+                  <p
+                    className={`leading-relaxed font-light ${
+                      isDarkMode ? "text-slate-300" : "text-slate-600"
+                    }`}
+                  >
+                    {feature.description}
+                  </p>
                 </div>
               </motion.div>
             </AnimatedSection>

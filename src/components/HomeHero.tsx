@@ -5,13 +5,22 @@ import { motion } from "framer-motion";
 import { Heart, ArrowRight } from "lucide-react";
 import ParallaxBackground from "./ParallaxBackground";
 import FloatingHeart from "./FloatingHeart";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
+  const { isDarkMode } = useTheme();
+
   return (
     <>
       {/* Hero Section */}
       <section id="home" className="relative min-h-screen overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/5 via-indigo-900/5 to-purple-900/5"></div>
+        <div
+          className={`absolute inset-0 ${
+            isDarkMode
+              ? "bg-gradient-to-br from-indigo-900/20 via-purple-900/20 to-pink-900/20"
+              : "bg-gradient-to-br from-slate-900/5 via-indigo-900/5 to-purple-900/5"
+          }`}
+        ></div>
 
         {/* Animated Background Elements */}
         <ParallaxBackground speed={0.2}>
@@ -81,7 +90,9 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
             </motion.div>
 
             <motion.h1
-              className="text-4xl md:text-5xl font-light text-slate-900 mb-6 leading-tight tracking-tight"
+              className={`text-4xl md:text-5xl font-light mb-6 leading-tight tracking-tight ${
+                isDarkMode ? "text-white" : "text-slate-900"
+              }`}
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.5 }}
@@ -98,7 +109,9 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
             </motion.h1>
 
             <motion.p
-              className="text-small text-slate-600 mb-12 max-w-2xl mx-auto leading-relaxed font-light"
+              className={`text-small mb-12 max-w-3xl mx-auto leading-relaxed font-light ${
+                isDarkMode ? "text-slate-300" : "text-slate-600"
+              }`}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1.2 }}
@@ -130,7 +143,11 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
                 <motion.button
                   type="button"
                   onClick={onStartDemo}
-                  className="w-50 sm:w-auto border-2 border-slate-300 text-slate-700 px-4 py-2 rounded-2xl font-small text-small hover:bg-slate-50 hover:border-slate-400 transition-all duration-300 flex items-center justify-center gap-2 m-auto"
+                  className={`w-50 sm:w-auto border-2 border-slate-300 text-slate-700 px-4 py-2 rounded-2xl font-small text-small hover:bg-slate-50 hover:border-slate-400 transition-all duration-300 flex items-center justify-center gap-2 m-auto ${
+                    isDarkMode
+                      ? "border-slate-600 text-white hover:bg-slate-800 hover:border-slate-500"
+                      : "border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400"
+                  }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
