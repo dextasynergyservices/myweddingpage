@@ -7,6 +7,7 @@ import { Star, Heart, Check } from "lucide-react";
 import ParallaxBackground from "./ParallaxBackground";
 import AnimatedSection from "./AnimatedSection";
 import PackageModal from "./PackageModal";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type Package = {
   name: string;
@@ -53,6 +54,7 @@ const packages: Package[] = [
 ];
 
 const HomePackages = () => {
+  const { isDarkMode } = useTheme();
   const router = useRouter();
 
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
@@ -61,7 +63,11 @@ const HomePackages = () => {
     <>
       <section
         id="packages"
-        className="py-24 bg-gradient-to-br from-slate-50 to-white relative overflow-hidden"
+        className={`py-24 relative overflow-hidden ${
+          isDarkMode
+            ? "bg-gradient-to-br from-slate-900 to-slate-800"
+            : "bg-gradient-to-br from-slate-50 to-white"
+        }`}
       >
         <ParallaxBackground speed={0.15}>
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-100/30 to-pink-100/30 rounded-full blur-3xl"></div>
@@ -69,10 +75,18 @@ const HomePackages = () => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <AnimatedSection className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-light text-slate-900 mb-6 tracking-tight">
+            <h2
+              className={`text-4xl md:text-5xl font-light mb-6 tracking-tight {
+              isDarkMode ? 'text-white' : 'text-slate-900'
+            }`}
+            >
               Choose Your Package
             </h2>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto font-light">
+            <p
+              className={`text-xl max-w-2xl mx-auto font-light ${
+                isDarkMode ? "text-slate-300" : "text-slate-600"
+              }`}
+            >
               Flexible pricing designed to grow with your needs, from intimate ceremonies to grand
               celebrations.
             </p>
@@ -101,10 +115,18 @@ const HomePackages = () => {
                 )}
 
                 <motion.div
-                  className={`relative bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-slate-100 overflow-hidden ${pkg.popular ? "ring-2 ring-indigo-500/20 scale-105" : ""}`}
+                  className={`relative rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-slate-100 overflow-hidden ${
+                    isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+                  } ${pkg.popular ? "ring-2 ring-indigo-500/20 scale-105" : ""}`}
                   whileHover={{ y: -5, scale: pkg.popular ? 1.08 : 1.03 }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-slate-50/30 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div
+                    className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+                      isDarkMode
+                        ? "bg-gradient-to-br from-slate-700/30 to-slate-800"
+                        : "bg-gradient-to-br from-slate-50/30 to-white"
+                    }`}
+                  ></div>
 
                   <div className="relative z-10">
                     <div className="text-center mb-8">
@@ -114,16 +136,28 @@ const HomePackages = () => {
                       >
                         <Heart className="h-8 w-8 text-white" fill="currentColor" />
                       </motion.div>
-                      <h3 className="text-2xl font-semibold text-slate-900 mb-2">{pkg.name}</h3>
+                      <h3
+                        className={`text-2xl font-semibold mb-2 ${
+                          isDarkMode ? "text-white" : "text-slate-900"
+                        }`}
+                      >
+                        {pkg.name}
+                      </h3>
                       <motion.div
-                        className="text-5xl font-light text-slate-900 mb-2"
+                        className={`text-5xl font-light mb-2 ${
+                          isDarkMode ? "text-white" : "text-slate-900"
+                        }`}
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.5 + index * 0.2, type: "spring" }}
                       >
                         {pkg.price}
                       </motion.div>
-                      <div className="text-slate-600 font-light">{pkg.duration} access</div>
+                      <div
+                        className={`font-light ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
+                        {pkg.duration} access
+                      </div>
                     </div>
 
                     <ul className="space-y-4 mb-8">
@@ -138,22 +172,30 @@ const HomePackages = () => {
                           <div className="flex-shrink-0 w-4 h-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mt-0.5">
                             <Check className="w-3 h-3 text-white stroke-2" />
                           </div>
-                          <span className="text-slate-700 font-light">{feature}</span>
+                          <span
+                            className={`font-light ${
+                              isDarkMode ? "text-slate-300" : "text-slate-700"
+                            }`}
+                          >
+                            {feature}
+                          </span>
                         </motion.li>
                       ))}
                     </ul>
 
                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                      <button
+                      <motion.button
                         onClick={() => setSelectedPackage(pkg)}
                         className={`block text-center w-40 m-auto py-4 px-6 rounded-2xl font-medium transition-all cursor-pointer duration-300 ${
                           pkg.popular
                             ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:scale-105"
-                            : "border-2 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+                            : isDarkMode
+                              ? "border-2 border-slate-600 text-slate-300 hover:border-slate-500 hover:bg-slate-700"
+                              : "border-2 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                         }`}
                       >
                         Get Started
-                      </button>
+                      </motion.button>
                     </motion.div>
                   </div>
                 </motion.div>

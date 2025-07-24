@@ -7,6 +7,7 @@ import ParallaxBackground from "./ParallaxBackground";
 import AnimatedSection from "./AnimatedSection";
 import FloatingHeart from "./FloatingHeart";
 import Link from "next/link";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const listItemVariant = {
   hidden: { opacity: 0, x: -20 },
@@ -28,6 +29,7 @@ const footerLinkVariant = {
 };
 
 const Footer = () => {
+  const { isDarkMode } = useTheme();
   const listRef = useRef(null);
   const isInView = useInView(listRef, { once: true, margin: "-100px" });
   const controls = useAnimation();
@@ -41,7 +43,9 @@ const Footer = () => {
   return (
     <>
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-20 relative overflow-hidden">
+      <footer className={`py-20 relative overflow-hidden ${
+        isDarkMode ? 'bg-slate-900 text-white' : 'bg-slate-900 text-white'
+      }`}>
         <ParallaxBackground speed={0.05}>
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 rounded-full blur-3xl"></div>
         </ParallaxBackground>

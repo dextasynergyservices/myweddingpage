@@ -1,5 +1,12 @@
-import ComingSoon from "@/components/ComingSoon";
+import AboutPage from "@/components/AboutPage";
+import AuthGate from "@/components/AuthGate";
 
 export default function About() {
-  return <ComingSoon title="About Page" />;
+  return (
+    <>
+      <AuthGate>
+        <AboutPage />
+      </AuthGate>
+    </>
+  );
 }

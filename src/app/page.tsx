@@ -3,15 +3,18 @@ import HomeFeatures from "@/components/HomeFeature";
 import HomePackages from "@/components/HomePackages";
 import HomeFindWedding from "@/components/HomeFindWedding";
 import HomeTestimonials from "@/components/HomeTestimonials";
+import AuthGate from "@/components/AuthGate";
 
 export default function Home() {
   return (
     <>
-      <HomeHero />
-      <HomeFeatures />
-      <HomePackages />
-      <HomeFindWedding />
-      <HomeTestimonials />
+      <AuthGate>
+        <HomeHero />
+        <HomeFeatures />
+        <HomePackages />
+        <HomeFindWedding />
+        <HomeTestimonials />
+      </AuthGate>
     </>
   );
 }

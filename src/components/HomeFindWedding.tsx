@@ -5,12 +5,19 @@ import { motion } from "framer-motion";
 import { Sparkles, Heart } from "lucide-react";
 import ParallaxBackground from "./ParallaxBackground";
 import AnimatedSection from "./AnimatedSection";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const HomeFindWedding = () => {
+  const { isDarkMode } = useTheme();
+
   return (
     <section
       id="search"
-      className="py-24 bg-gradient-to-br from-indigo-50 to-purple-50 relative overflow-hidden"
+      className={`py-24 relative overflow-hidden ${
+        isDarkMode
+          ? "bg-gradient-to-br from-indigo-900/20 to-purple-900/20"
+          : "bg-gradient-to-br from-indigo-50 to-purple-50"
+      }`}
     >
       <ParallaxBackground speed={0.2}>
         <div className="absolute top-1/2 right-0 w-64 h-64 bg-gradient-to-br from-indigo-200/40 to-purple-200/40 rounded-full blur-2xl"></div>
@@ -29,11 +36,19 @@ const HomeFindWedding = () => {
             </div>
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl font-light text-slate-900 mb-6 tracking-tight">
+          <h2
+            className={`text-4xl md:text-5xl font-light mb-6 tracking-tight ${
+              isDarkMode ? "text-white" : "text-slate-900"
+            }`}
+          >
             Find a Wedding
           </h2>
 
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto font-light mb-8">
+          <p
+            className={`text-xl max-w-2xl mx-auto font-light mb-8 ${
+              isDarkMode ? "text-slate-300" : "text-slate-600"
+            }`}
+          >
             Search for wedding celebrations and share in the joy of couples around the world.
           </p>
 
@@ -43,7 +58,7 @@ const HomeFindWedding = () => {
             className="mx-auto w-fit"
           >
             <Link
-              href="/search"
+              href="/wedding-pages"
               className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-2xl font-medium text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
             >
               <Heart className="h-5 w-5" />

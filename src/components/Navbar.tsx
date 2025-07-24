@@ -6,6 +6,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Heart, Menu, X } from "lucide-react";
 import CTAButton from "./CTAButton";
+import { useTheme } from "@/contexts/ThemeContext";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -16,6 +18,8 @@ const navItems = [
 ];
 
 const Navbar = () => {
+  const { isDarkMode } = useTheme();
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -39,7 +43,9 @@ const Navbar = () => {
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/90 backdrop-blur-lg shadow-lg border-b border-slate-200/50"
+          ? isDarkMode
+            ? "bg-slate-900/95 backdrop-blur-md border-b border-slate-700/50"
+            : "bg-white/95 backdrop-blur-md border-b border-slate-200/50 shadow-lg"
           : "bg-transparent"
       }`}
     >
@@ -58,8 +64,8 @@ const Navbar = () => {
                   <Heart className="h-5 w-5 text-white" fill="currentColor" />
                 </div>
                 <span
-                  className={`text-xl font-light cursor-pointer ${
-                    isScrolled ? "text-slate-900" : "text-white"
+                  className={`text-xl font-light ${
+                    isDarkMode ? "text-white" : isScrolled ? "text-slate-900" : "text-white"
                   }`}
                 >
                   WeddingPlatform
@@ -75,9 +81,11 @@ const Navbar = () => {
                 <motion.button
                   onClick={handleNavClick}
                   className={`font-medium transition-colors duration-300 relative cursor-pointer ${
-                    isScrolled
-                      ? "text-slate-700 hover:text-indigo-600"
-                      : "text-black hover:text-indigo-600"
+                    isDarkMode
+                      ? "text-slate-300 hover:text-indigo-400"
+                      : isScrolled
+                        ? "text-slate-700 hover:text-indigo-600"
+                        : "text-slate-900 hover:text-indigo-600"
                   } ${pathname === item.href ? "text-indigo-600 font-bold" : ""}`}
                   whileHover={{ y: -2 }}
                   initial={{ opacity: 0, y: -20 }}
@@ -98,10 +106,13 @@ const Navbar = () => {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <CTAButton />
+            <CTAButton isScrolled={isScrolled} />
           </div>
 
           {/* Mobile Toggle */}
+          <div className="md:hidden relative left-18">
+            <ThemeToggle />
+          </div>
           <motion.button
             className="md:hidden p-2 cursor-pointer"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -116,7 +127,11 @@ const Navbar = () => {
             ) : (
               <Menu
                 className={`h-6 w-6 cursor-pointer ${
-                  isScrolled ? "text-slate-900" : "text-slate-900"
+                  isDarkMode
+                    ? "text-slate-300 hover:bg-slate-800"
+                    : isScrolled
+                      ? "text-slate-700 hover:bg-slate-100"
+                      : "text-white hover:bg-white/10"
                 }`}
               />
             )}
@@ -147,7 +162,7 @@ const Navbar = () => {
                 </button>
               </Link>
             ))}
-            <CTAButton />
+            <CTAButton isScrolled={isScrolled} isMobile setIsMobileMenuOpen={setIsMobileMenuOpen} />
           </div>
         </motion.div>
       </div>
