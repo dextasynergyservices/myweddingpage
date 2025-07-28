@@ -1,23 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Heart, Calendar, MapPin, ArrowLeft } from "lucide-react";
-import { useTheme } from "../contexts/ThemeContext";
+// import { useState } from "react";
+import { Heart, Calendar, MapPin } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface WeddingPageProps {
   isDemoMode?: boolean;
 }
 
 export default function WeddingPageHero({ isDemoMode = false }: WeddingPageProps) {
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [newMessage, setNewMessage] = useState("");
-  const [guestName, setGuestName] = useState("");
-  const params = useParams();
-  const router = useRouter();
+  // const [selectedCategory, setSelectedCategory] = useState("all");
+  // const [newMessage, setNewMessage] = useState("");
+  // const [guestName, setGuestName] = useState("");
+  // const router = useRouter();
   const { isDarkMode } = useTheme();
 
-  const coupleId = typeof params?.coupleId === "string" ? params.coupleId : null;
+  // const coupleId = typeof params?.coupleId === "string" ? params.coupleId : null;
 
   return (
     <main
@@ -42,18 +40,6 @@ export default function WeddingPageHero({ isDemoMode = false }: WeddingPageProps
 
         {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          {/* <button
-            onClick={() => router.back()}
-            className="absolute top-8 left-8 flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-300 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white/20"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </button> */}
-
-          {/* <div className="absolute top-8 right-8">
-            <ThemeToggle />
-          </div> */}
-
           <div className="text-center pt-12">
             <div className="flex justify-center mb-8">
               <div className="relative p-6 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20">

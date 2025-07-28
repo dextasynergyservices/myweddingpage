@@ -1,6 +1,7 @@
 "use client";
 
-import { useTheme } from "../contexts/ThemeContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import Image from "next/image";
 
 export default function WeddingPageOurStory() {
   const { isDarkMode } = useTheme();
@@ -38,15 +39,17 @@ export default function WeddingPageOurStory() {
             }`}
           >
             Through adventures around the world, quiet Sunday mornings, and everything in between,
-            we've built a love that's strong, genuine, and full of joy. Today, we're excited to
-            start this new chapter as husband and wife.
+            we&lsquo;ve built a love that&apos;s strong, genuine, and full of joy. Today,
+            we&lsquo;re excited to start this new chapter as husband and wife.
           </p>
         </div>
         <div className="flex justify-center">
           <div className="relative">
-            <img
+            <Image
               src="https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=600"
               alt="Emily and David"
+              width={600}
+              height={400}
               className="rounded-3xl shadow-2xl max-w-full h-auto"
             />
             <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full opacity-20 blur-xl"></div>

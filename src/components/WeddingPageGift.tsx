@@ -1,7 +1,7 @@
 "use client";
 
-import { useTheme } from "../contexts/ThemeContext";
-import { Heart, Calendar, MapPin, ArrowLeft } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
+import Image from "next/image";
 
 export default function WeddingPageGift() {
   const { isDarkMode } = useTheme();
@@ -60,8 +60,8 @@ export default function WeddingPageGift() {
             isDarkMode ? "text-slate-400" : "text-slate-600"
           }`}
         >
-          Your presence is the only present we need, but if you'd like to give a gift, here are some
-          ideas.
+          Your presence is the only present we need, but if you&#39;d like to give a gift, here are
+          some ideas.
         </p>
       </div>
 
@@ -75,9 +75,11 @@ export default function WeddingPageGift() {
                   : "bg-slate-50 border-slate-100 hover:border-slate-200"
               }`}
             >
-              <img
+              <Image
                 src={gift.image}
                 alt={gift.item}
+                width={600}
+                height={400}
                 className="w-full h-48 object-cover rounded-2xl mb-6"
               />
               <h3
