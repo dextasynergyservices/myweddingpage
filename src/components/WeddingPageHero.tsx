@@ -1,37 +1,37 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { Heart, Calendar, MapPin, ArrowLeft } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Heart, Calendar, MapPin, ArrowLeft } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface WeddingPageProps {
   isDemoMode?: boolean;
 }
 
 export default function WeddingPageHero({ isDemoMode = false }: WeddingPageProps) {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [newMessage, setNewMessage] = useState('');
-  const [guestName, setGuestName] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [newMessage, setNewMessage] = useState("");
+  const [guestName, setGuestName] = useState("");
   const params = useParams();
   const router = useRouter();
   const { isDarkMode } = useTheme();
 
-  const coupleId = typeof params?.coupleId === 'string' ? params.coupleId : null;
+  const coupleId = typeof params?.coupleId === "string" ? params.coupleId : null;
 
   return (
     <main
       className={`max-h-screen transition-colors duration-300 ${
         isDarkMode
-          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900'
-          : 'bg-gradient-to-br from-slate-50 via-white to-slate-100'
+          ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
+          : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
       }`}
     >
       <section
         className={`relative text-white overflow-hidden ${
           isDarkMode
-            ? 'bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900'
-            : 'bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900'
+            ? "bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900"
+            : "bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900"
         }`}
       >
         {/* Overlays and visual effects */}
