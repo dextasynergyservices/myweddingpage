@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Dashboard from "@/components/testdashboard";
 import AuthGate from "@/components/AuthGate";

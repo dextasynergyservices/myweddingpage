@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Users,
   CheckCircle,
@@ -10,82 +10,82 @@ import {
   Trash2,
   Search,
   UserPlus,
-} from 'lucide-react';
-import { useTheme } from '@/contexts/ThemeContext';
+} from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface Guest {
   id: string;
   name: string;
   email: string;
   phone?: string;
-  rsvpStatus: 'pending' | 'attending' | 'declined';
+  rsvpStatus: "pending" | "attending" | "declined";
   mealPreference?: string;
   tableAssignment?: number;
   plusOne?: boolean;
   dietaryRestrictions?: string;
-  invitedBy: 'bride' | 'groom' | 'both';
-  category: 'family' | 'friends' | 'colleagues' | 'other';
+  invitedBy: "bride" | "groom" | "both";
+  category: "family" | "friends" | "colleagues" | "other";
 }
 
 const GuestManagement = () => {
   const { isDarkMode } = useTheme();
 
-  const [guests, setGuests] = useState<Guest[]>([
+  const [guests] = useState<Guest[]>([
     {
-      id: '1',
-      name: 'Sarah Johnson',
-      email: 'sarah@example.com',
-      phone: '+1-555-0123',
-      rsvpStatus: 'attending',
-      mealPreference: 'vegetarian',
+      id: "1",
+      name: "Sarah Johnson",
+      email: "sarah@example.com",
+      phone: "+1-555-0123",
+      rsvpStatus: "attending",
+      mealPreference: "vegetarian",
       tableAssignment: 1,
       plusOne: true,
-      invitedBy: 'bride',
-      category: 'family',
+      invitedBy: "bride",
+      category: "family",
     },
     {
-      id: '2',
-      name: 'Michael Brown',
-      email: 'michael@example.com',
-      rsvpStatus: 'pending',
+      id: "2",
+      name: "Michael Brown",
+      email: "michael@example.com",
+      rsvpStatus: "pending",
       plusOne: false,
-      invitedBy: 'groom',
-      category: 'friends',
+      invitedBy: "groom",
+      category: "friends",
     },
   ]);
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [showAddGuest, setShowAddGuest] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [, setShowAddGuest] = useState(false);
 
   const filteredGuests = guests.filter((guest) => {
     const matchesSearch =
       guest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       guest.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || guest.rsvpStatus === statusFilter;
+    const matchesStatus = statusFilter === "all" || guest.rsvpStatus === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'attending':
-        return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400';
-      case 'declined':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
-      case 'pending':
-        return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400';
+      case "attending":
+        return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400";
+      case "declined":
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      case "pending":
+        return "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400";
       default:
-        return 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400';
+        return "bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'attending':
+      case "attending":
         return <CheckCircle className="h-4 w-4" />;
-      case 'declined':
+      case "declined":
         return <XCircle className="h-4 w-4" />;
-      case 'pending':
+      case "pending":
       default:
         return <Clock className="h-4 w-4" />;
     }
@@ -96,10 +96,12 @@ const GuestManagement = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className={`text-3xl font-light mb-2 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+          <h1
+            className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+          >
             Guest Management
           </h1>
-          <p className={`${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+          <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
             Manage your wedding guest list, RSVPs, and seating arrangements
           </p>
         </div>
@@ -115,10 +117,30 @@ const GuestManagement = () => {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
-          { title: 'Total Invited', value: guests.length, icon: Users, color: 'from-blue-500 to-indigo-600' },
-          { title: 'Attending', value: guests.filter((g) => g.rsvpStatus === 'attending').length, icon: CheckCircle, color: 'from-emerald-500 to-teal-600' },
-          { title: 'Pending', value: guests.filter((g) => g.rsvpStatus === 'pending').length, icon: Clock, color: 'from-amber-500 to-orange-600' },
-          { title: 'Declined', value: guests.filter((g) => g.rsvpStatus === 'declined').length, icon: XCircle, color: 'from-red-500 to-pink-600' },
+          {
+            title: "Total Invited",
+            value: guests.length,
+            icon: Users,
+            color: "from-blue-500 to-indigo-600",
+          },
+          {
+            title: "Attending",
+            value: guests.filter((g) => g.rsvpStatus === "attending").length,
+            icon: CheckCircle,
+            color: "from-emerald-500 to-teal-600",
+          },
+          {
+            title: "Pending",
+            value: guests.filter((g) => g.rsvpStatus === "pending").length,
+            icon: Clock,
+            color: "from-amber-500 to-orange-600",
+          },
+          {
+            title: "Declined",
+            value: guests.filter((g) => g.rsvpStatus === "declined").length,
+            icon: XCircle,
+            color: "from-red-500 to-pink-600",
+          },
         ].map((stat, index) => (
           <motion.div
             key={stat.title}
@@ -126,15 +148,19 @@ const GuestManagement = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             className={`rounded-3xl p-6 shadow-lg border ${
-              isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'
+              isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
             }`}
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-sm font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                <p
+                  className={`text-sm font-medium ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
+                >
                   {stat.title}
                 </p>
-                <p className={`text-3xl font-light mt-1 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                <p
+                  className={`text-3xl font-light mt-1 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                >
                   {stat.value}
                 </p>
               </div>
@@ -147,10 +173,14 @@ const GuestManagement = () => {
       </div>
 
       {/* Filter */}
-      <div className={`rounded-3xl p-6 shadow-lg border ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'}`}>
+      <div
+        className={`rounded-3xl p-6 shadow-lg border ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}
+      >
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="flex-1 relative">
-            <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`} />
+            <Search
+              className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
+            />
             <input
               type="text"
               placeholder="Search guests..."
@@ -158,8 +188,8 @@ const GuestManagement = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full pl-12 pr-4 py-3 rounded-2xl border transition-colors ${
                 isDarkMode
-                  ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500'
-                  : 'bg-white border-slate-300 text-slate-900 placeholder-slate-500 focus:border-indigo-500'
+                  ? "bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500"
+                  : "bg-white border-slate-300 text-slate-900 placeholder-slate-500 focus:border-indigo-500"
               } focus:outline-none focus:ring-2 focus:ring-indigo-500/20`}
             />
           </div>
@@ -168,7 +198,9 @@ const GuestManagement = () => {
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className={`px-4 py-3 rounded-2xl border transition-colors ${
-              isDarkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-slate-300 text-slate-900'
+              isDarkMode
+                ? "bg-slate-700 border-slate-600 text-white"
+                : "bg-white border-slate-300 text-slate-900"
             } focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500`}
           >
             <option value="all">All Status</option>
@@ -180,16 +212,18 @@ const GuestManagement = () => {
       </div>
 
       {/* Guest Table */}
-      <div className={`rounded-3xl shadow-lg border overflow-hidden ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-100'}`}>
+      <div
+        className={`rounded-3xl shadow-lg border overflow-hidden ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}
+      >
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className={isDarkMode ? 'bg-slate-700' : 'bg-slate-50'}>
+            <thead className={isDarkMode ? "bg-slate-700" : "bg-slate-50"}>
               <tr>
-                {['Guest', 'RSVP Status', 'Table', 'Meal', 'Actions'].map((title) => (
+                {["Guest", "RSVP Status", "Table", "Meal", "Actions"].map((title) => (
                   <th
                     key={title}
-                    className={`px-6 py-4 text-${title === 'Actions' ? 'right' : 'left'} text-sm font-medium ${
-                      isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                    className={`px-6 py-4 text-${title === "Actions" ? "right" : "left"} text-sm font-medium ${
+                      isDarkMode ? "text-slate-300" : "text-slate-700"
                     }`}
                   >
                     {title}
@@ -206,37 +240,47 @@ const GuestManagement = () => {
                   className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
                 >
                   <td className="px-6 py-4">
-                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>{guest.name}</p>
-                    <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>{guest.email}</p>
+                    <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                      {guest.name}
+                    </p>
+                    <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      {guest.email}
+                    </p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(guest.rsvpStatus)}`}>
+                    <span
+                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(guest.rsvpStatus)}`}
+                    >
                       {getStatusIcon(guest.rsvpStatus)}
                       {guest.rsvpStatus.charAt(0).toUpperCase() + guest.rsvpStatus.slice(1)}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm">
-                    <span className={isDarkMode ? 'text-slate-300' : 'text-slate-700'}>
-                      {guest.tableAssignment ? `Table ${guest.tableAssignment}` : 'Not assigned'}
+                    <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
+                      {guest.tableAssignment ? `Table ${guest.tableAssignment}` : "Not assigned"}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm">
-                    <span className={isDarkMode ? 'text-slate-300' : 'text-slate-700'}>
-                      {guest.mealPreference || 'Not selected'}
+                    <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
+                      {guest.mealPreference || "Not selected"}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         className={`p-2 rounded-lg transition-colors ${
-                          isDarkMode ? 'text-slate-400 hover:bg-slate-700 hover:text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                          isDarkMode
+                            ? "text-slate-400 hover:bg-slate-700 hover:text-white"
+                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                         }`}
                       >
                         <Edit className="h-4 w-4" />
                       </button>
                       <button
                         className={`p-2 rounded-lg transition-colors ${
-                          isDarkMode ? 'text-slate-400 hover:bg-slate-700 hover:text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                          isDarkMode
+                            ? "text-slate-400 hover:bg-slate-700 hover:text-white"
+                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                         }`}
                       >
                         <Mail className="h-4 w-4" />

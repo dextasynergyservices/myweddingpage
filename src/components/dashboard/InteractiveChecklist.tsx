@@ -5,15 +5,10 @@ import { motion } from "framer-motion";
 import {
   CheckSquare,
   Square,
-  Plus,
   Calendar,
   User,
-  Clock,
   AlertTriangle,
   CheckCircle,
-  Filter,
-  Search,
-  Target,
   Users,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -37,10 +32,10 @@ interface Category {
   id: string;
   name: string;
   color: string;
-  icon: any;
+  icon: React.ElementType;
 }
 
-const InteractiveChecklist: React.FC = () => {
+const InteractiveChecklist = () => {
   const { isDarkMode } = useTheme();
 
   const [tasks, setTasks] = useState<ChecklistItem[]>([
@@ -108,7 +103,12 @@ const InteractiveChecklist: React.FC = () => {
   const categories: Category[] = [
     { id: "venue", name: "Venue", color: "from-purple-500 to-indigo-600", icon: Calendar },
     { id: "vendors", name: "Vendors", color: "from-blue-500 to-cyan-600", icon: Users },
-    { id: "invitations", name: "Invitations", color: "from-emerald-500 to-teal-600", icon: CheckSquare },
+    {
+      id: "invitations",
+      name: "Invitations",
+      color: "from-emerald-500 to-teal-600",
+      icon: CheckSquare,
+    },
     { id: "attire", name: "Attire", color: "from-pink-500 to-rose-600", icon: User },
     { id: "catering", name: "Catering", color: "from-amber-500 to-orange-600", icon: Calendar },
     { id: "flowers", name: "Flowers", color: "from-green-500 to-emerald-600", icon: Calendar },
@@ -166,7 +166,7 @@ const InteractiveChecklist: React.FC = () => {
   const completedTasks = tasks.filter((t) => t.completed).length;
   const overdueTasks = tasks.filter((t) => isOverdue(t.dueDate, t.completed)).length;
   const totalTasks = tasks.length;
-  const completionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+  // const completionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
     <AnimatedSection className="space-y-12">
@@ -204,7 +204,9 @@ const InteractiveChecklist: React.FC = () => {
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm text-muted-foreground">{stat.title}</p>
-                <p className={`text-3xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                <p
+                  className={`text-3xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                >
                   {stat.value}
                 </p>
               </div>
@@ -284,7 +286,9 @@ const InteractiveChecklist: React.FC = () => {
                   {task.completed ? <CheckSquare /> : <Square />}
                 </button>
                 <div>
-                  <h3 className={`text-lg font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                  <h3
+                    className={`text-lg font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                  >
                     {task.title}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-2">{task.description}</p>
@@ -300,6 +304,11 @@ const InteractiveChecklist: React.FC = () => {
                     <span className="text-muted-foreground">Est: {task.estimatedTime}h</span>
                   </div>
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <category.icon className="w-4 h-4" />
+                <span>{category.name}</span>
               </div>
             </motion.div>
           );

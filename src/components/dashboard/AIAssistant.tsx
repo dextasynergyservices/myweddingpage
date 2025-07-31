@@ -27,21 +27,23 @@ interface AIAssistantProps {
   onClose: () => void;
 }
 
-const AIAssistant = () => {
+const AIAssistant = ({ onClose }: AIAssistantProps) => {
   const { isDarkMode } = useTheme();
-  const [messages, setMessages] = useState<Message[]>([{
-    id: "1",
-    type: "assistant",
-    content:
-      "Hi! I'm your AI wedding assistant. I can help with planning, budgeting, vendor recommendations, and more!",
-    timestamp: new Date(),
-    suggestions: [
-      "Help me plan my timeline",
-      "Suggest budget allocation",
-      "Find vendors in my area",
-      "Photo organization tips",
-    ],
-  }]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "1",
+      type: "assistant",
+      content:
+        "Hi! I'm your AI wedding assistant. I can help with planning, budgeting, vendor recommendations, and more!",
+      timestamp: new Date(),
+      suggestions: [
+        "Help me plan my timeline",
+        "Suggest budget allocation",
+        "Find vendors in my area",
+        "Photo organization tips",
+      ],
+    },
+  ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -118,7 +120,7 @@ const AIAssistant = () => {
             </div>
           </div>
           <button
-           
+            onClick={onClose}
             className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700"
           >
             <X className="h-4 w-4" />
@@ -154,7 +156,9 @@ const AIAssistant = () => {
                     <div className="p-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg">
                       <Bot className="h-3 w-3 text-white" />
                     </div>
-                    <span className="text-xs font-medium text-slate-600 dark:text-slate-400">AI Assistant</span>
+                    <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                      AI Assistant
+                    </span>
                   </div>
                 )}
                 <div
@@ -162,8 +166,8 @@ const AIAssistant = () => {
                     msg.type === "user"
                       ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
                       : isDarkMode
-                      ? "bg-slate-700 text-slate-100"
-                      : "bg-slate-100 text-slate-900"
+                        ? "bg-slate-700 text-slate-100"
+                        : "bg-slate-100 text-slate-900"
                   }`}
                 >
                   {msg.content}
@@ -181,7 +185,9 @@ const AIAssistant = () => {
                     ))}
                   </div>
                 )}
-                <div className={`text-xs mt-2 ${msg.type === "user" ? "text-right" : "text-left"} text-slate-400 dark:text-slate-500`}>
+                <div
+                  className={`text-xs mt-2 ${msg.type === "user" ? "text-right" : "text-left"} text-slate-400 dark:text-slate-500`}
+                >
                   {msg.timestamp.toLocaleTimeString()}
                 </div>
               </div>
@@ -189,7 +195,11 @@ const AIAssistant = () => {
           ))}
         </AnimatePresence>
         {isTyping && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-2"
+          >
             <Bot className="h-4 w-4 text-slate-400" />
             <span className="text-sm text-slate-400">AI Assistant is typing...</span>
           </motion.div>
@@ -216,7 +226,9 @@ const AIAssistant = () => {
         </div>
         <div className="mt-2 flex items-center gap-2 text-xs">
           <Sparkles className="h-3 w-3 text-emerald-600" />
-          <span className="text-slate-600 dark:text-slate-400">Powered by AI • Always learning</span>
+          <span className="text-slate-600 dark:text-slate-400">
+            Powered by AI • Always learning
+          </span>
         </div>
       </div>
     </div>

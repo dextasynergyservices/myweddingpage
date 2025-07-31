@@ -1,170 +1,154 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
 import {
   BookOpen,
-  Image,
   MessageSquare,
   Download,
+  Image as ImageIcon,
   Share2,
   Edit,
   Plus,
   Layout,
-  Type,
-  Palette,
   Sparkles,
   Eye,
-  Save,
   Printer,
   FileText,
   Heart,
   Trash2,
-  Camera,
-  Users,
-  Calendar
-} from 'lucide-react';
-import { useTheme } from '../../contexts/ThemeContext';
+} from "lucide-react";
+import { useTheme } from "../../contexts/ThemeContext";
+
+interface PageContent {
+  title?: string;
+  subtitle?: string;
+  date?: string;
+  coverImage?: string;
+  photos?: string[];
+  caption?: string;
+  messages?: Array<{
+    author: string;
+    message: string;
+  }>;
+  events?: Array<{
+    time: string;
+    event: string;
+  }>;
+  text?: string;
+  image?: string;
+}
 
 interface MemoryPage {
   id: string;
-  type: 'cover' | 'photos' | 'messages' | 'timeline' | 'custom';
+  type: "cover" | "photos" | "messages" | "timeline" | "custom";
   title: string;
-  content: any;
+  content: PageContent;
   layout: string;
 }
 
-interface Template {
-  id: string;
-  name: string;
-  preview: string;
-  pages: number;
-  style: string;
-}
+// interface Template {
+//   id: string;
+//   name: string;
+//   preview: string;
+//   pages: number;
+//   style: string;
+// }
 
 const MemoryBookGenerator = () => {
   const { isDarkMode } = useTheme();
   const [currentBook, setCurrentBook] = useState<MemoryPage[]>([
     {
-      id: '1',
-      type: 'cover',
-      title: 'Cover Page',
+      id: "1",
+      type: "cover",
+      title: "Cover Page",
       content: {
-        title: 'Our Wedding Day',
-        subtitle: 'Emily & David',
-        date: 'June 15, 2024',
-        coverImage: 'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=600'
+        title: "Our Wedding Day",
+        subtitle: "Emily & David",
+        date: "June 15, 2024",
+        coverImage:
+          "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=600",
       },
-      layout: 'classic'
+      layout: "classic",
     },
     {
-      id: '2',
-      type: 'photos',
-      title: 'Ceremony Photos',
+      id: "2",
+      type: "photos",
+      title: "Ceremony Photos",
       content: {
         photos: [
-          'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=300',
-          'https://images.pexels.com/photos/1024866/pexels-photo-1024866.jpeg?auto=compress&cs=tinysrgb&w=300',
-          'https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=300',
-          'https://images.pexels.com/photos/1444531/pexels-photo-1444531.jpeg?auto=compress&cs=tinysrgb&w=300'
+          "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=300",
+          "https://images.pexels.com/photos/1024866/pexels-photo-1024866.jpeg?auto=compress&cs=tinysrgb&w=300",
+          "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=300",
+          "https://images.pexels.com/photos/1444531/pexels-photo-1444531.jpeg?auto=compress&cs=tinysrgb&w=300",
         ],
-        caption: 'The moment we said "I do"'
+        caption: 'The moment we said "I do"',
       },
-      layout: 'grid'
+      layout: "grid",
     },
     {
-      id: '3',
-      type: 'messages',
-      title: 'Guest Messages',
+      id: "3",
+      type: "messages",
+      title: "Guest Messages",
       content: {
         messages: [
-          { author: 'Sarah Johnson', message: 'Congratulations! Your wedding was absolutely beautiful.' },
-          { author: 'Michael Brown', message: 'Wishing you both a lifetime of happiness and love.' },
-          { author: 'Lisa Davis', message: 'Such a wonderful celebration! Love you both!' }
-        ]
+          {
+            author: "Sarah Johnson",
+            message: "Congratulations! Your wedding was absolutely beautiful.",
+          },
+          {
+            author: "Michael Brown",
+            message: "Wishing you both a lifetime of happiness and love.",
+          },
+          { author: "Lisa Davis", message: "Such a wonderful celebration! Love you both!" },
+        ],
       },
-      layout: 'elegant'
-    }
+      layout: "elegant",
+    },
   ]);
 
   const [selectedPage, setSelectedPage] = useState<MemoryPage | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [showTemplates, setShowTemplates] = useState(false);
-
-  const templates: Template[] = [
-    {
-      id: '1',
-      name: 'Classic Elegance',
-      preview: 'https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=300',
-      pages: 24,
-      style: 'classic'
-    },
-    {
-      id: '2',
-      name: 'Modern Romance',
-      preview: 'https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=300',
-      pages: 32,
-      style: 'modern'
-    },
-    {
-      id: '3',
-      name: 'Rustic Charm',
-      preview: 'https://images.pexels.com/photos/1024866/pexels-photo-1024866.jpeg?auto=compress&cs=tinysrgb&w=300',
-      pages: 28,
-      style: 'rustic'
-    }
-  ];
 
   const generateMemoryBook = async () => {
     setIsGenerating(true);
-    // Simulate AI generation
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    // Add AI-generated pages
     const aiPages: MemoryPage[] = [
       {
-        id: '4',
-        type: 'timeline',
-        title: 'Wedding Timeline',
+        id: "4",
+        type: "timeline",
+        title: "Wedding Timeline",
         content: {
           events: [
-            { time: '3:00 PM', event: 'Ceremony Begins' },
-            { time: '4:30 PM', event: 'Cocktail Hour' },
-            { time: '6:00 PM', event: 'Reception Dinner' },
-            { time: '9:00 PM', event: 'First Dance' }
-          ]
+            { time: "3:00 PM", event: "Ceremony Begins" },
+            { time: "4:30 PM", event: "Cocktail Hour" },
+            { time: "6:00 PM", event: "Reception Dinner" },
+            { time: "9:00 PM", event: "First Dance" },
+          ],
         },
-        layout: 'timeline'
+        layout: "timeline",
       },
       {
-        id: '5',
-        type: 'custom',
-        title: 'Thank You',
+        id: "5",
+        type: "custom",
+        title: "Thank You",
         content: {
-          text: 'Thank you to everyone who made our special day unforgettable.',
-          image: 'https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=600'
+          text: "Thank you to everyone who made our special day unforgettable.",
+          image:
+            "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=600",
         },
-        layout: 'centered'
-      }
+        layout: "centered",
+      },
     ];
 
-    setCurrentBook(prev => [...prev, ...aiPages]);
+    setCurrentBook((prev) => [...prev, ...aiPages]);
     setIsGenerating(false);
   };
 
-  const addNewPage = (type: string) => {
-    const newPage: MemoryPage = {
-      id: Date.now().toString(),
-      type: type as any,
-      title: `New ${type} Page`,
-      content: {},
-      layout: 'default'
-    };
-    setCurrentBook(prev => [...prev, newPage]);
-  };
-
   const deletePage = (id: string) => {
-    setCurrentBook(prev => prev.filter(page => page.id !== id));
+    setCurrentBook((prev) => prev.filter((page) => page.id !== id));
     if (selectedPage?.id === id) {
       setSelectedPage(null);
     }
@@ -172,7 +156,7 @@ const MemoryBookGenerator = () => {
 
   const renderPagePreview = (page: MemoryPage) => {
     switch (page.type) {
-      case 'cover':
+      case "cover":
         return (
           <div className="aspect-[3/4] bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-6 text-white flex flex-col justify-center items-center text-center">
             <h1 className="text-2xl font-bold mb-2">{page.content.title}</h1>
@@ -180,37 +164,48 @@ const MemoryBookGenerator = () => {
             <p className="text-sm opacity-90">{page.content.date}</p>
           </div>
         );
-      case 'photos':
+      case "photos":
         return (
           <div className="aspect-[3/4] bg-white dark:bg-slate-700 rounded-2xl p-4">
-            <h3 className={`text-lg font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+            <h3
+              className={`text-lg font-semibold mb-4 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+            >
               {page.title}
             </h3>
             <div className="grid grid-cols-2 gap-2">
-              {page.content.photos?.slice(0, 4).map((photo: string, i: number) => (
-                <img
+              {page.content.photos?.slice(0, 4).map((photo, i) => (
+                <Image
                   key={i}
                   src={photo}
                   alt={`Photo ${i + 1}`}
                   className="w-full h-16 object-cover rounded-lg"
+                  width={100}
+                  height={100}
                 />
               ))}
             </div>
           </div>
         );
-      case 'messages':
+      case "messages":
         return (
           <div className="aspect-[3/4] bg-white dark:bg-slate-700 rounded-2xl p-4">
-            <h3 className={`text-lg font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+            <h3
+              className={`text-lg font-semibold mb-4 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+            >
               {page.title}
             </h3>
             <div className="space-y-3">
-              {page.content.messages?.slice(0, 2).map((msg: any, i: number) => (
-                <div key={i} className={`p-3 rounded-lg ${isDarkMode ? 'bg-slate-600' : 'bg-slate-100'}`}>
-                  <p className={`text-xs ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                    "{msg.message.substring(0, 50)}..."
+              {page.content.messages?.slice(0, 2).map((msg, i) => (
+                <div
+                  key={i}
+                  className={`p-3 rounded-lg ${isDarkMode ? "bg-slate-600" : "bg-slate-100"}`}
+                >
+                  <p className={`text-xs ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+                    &quot;{msg.message.substring(0, 50)}...&quot;
                   </p>
-                  <p className={`text-xs mt-1 font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                  <p
+                    className={`text-xs mt-1 font-medium ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                  >
                     - {msg.author}
                   </p>
                 </div>
@@ -222,8 +217,10 @@ const MemoryBookGenerator = () => {
         return (
           <div className="aspect-[3/4] bg-slate-100 dark:bg-slate-700 rounded-2xl p-4 flex items-center justify-center">
             <div className="text-center">
-              <FileText className={`h-8 w-8 mx-auto mb-2 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`} />
-              <p className={`text-sm ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+              <FileText
+                className={`h-8 w-8 mx-auto mb-2 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
+              />
+              <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                 {page.title}
               </p>
             </div>
@@ -237,20 +234,18 @@ const MemoryBookGenerator = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className={`text-3xl font-light mb-2 ${
-            isDarkMode ? 'text-white' : 'text-slate-900'
-          }`}>
+          <h1
+            className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+          >
             Memory Book Generator
           </h1>
-          <p className={`${
-            isDarkMode ? 'text-slate-400' : 'text-slate-600'
-          }`}>
+          <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
             Create a beautiful memory book of your wedding day
           </p>
         </div>
         <div className="flex gap-3">
           <button
-            onClick={() => setShowTemplates(true)}
+            onClick={() => {}}
             className="flex items-center gap-2 px-6 py-3 bg-slate-600 text-white rounded-2xl hover:bg-slate-700 transition-all duration-300"
           >
             <Layout className="h-5 w-5" />
@@ -279,10 +274,25 @@ const MemoryBookGenerator = () => {
       {/* Book Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
-          { title: 'Total Pages', value: currentBook.length, icon: BookOpen, color: 'from-blue-500 to-indigo-600' },
-          { title: 'Photos', value: currentBook.filter(p => p.type === 'photos').length, icon: Image, color: 'from-purple-500 to-pink-600' },
-          { title: 'Messages', value: currentBook.filter(p => p.type === 'messages').length, icon: MessageSquare, color: 'from-emerald-500 to-teal-600' },
-          { title: 'Completion', value: '75%', icon: Heart, color: 'from-amber-500 to-orange-600' }
+          {
+            title: "Total Pages",
+            value: currentBook.length,
+            icon: BookOpen,
+            color: "from-blue-500 to-indigo-600",
+          },
+          {
+            title: "Photos",
+            value: currentBook.filter((p) => p.type === "photos").length,
+            icon: ImageIcon,
+            color: "from-purple-500 to-pink-600",
+          },
+          {
+            title: "Messages",
+            value: currentBook.filter((p) => p.type === "messages").length,
+            icon: MessageSquare,
+            color: "from-emerald-500 to-teal-600",
+          },
+          { title: "Completion", value: "75%", icon: Heart, color: "from-amber-500 to-orange-600" },
         ].map((stat, index) => (
           <motion.div
             key={stat.title}
@@ -290,21 +300,23 @@ const MemoryBookGenerator = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             className={`rounded-3xl p-6 shadow-lg border ${
-              isDarkMode
-                ? 'bg-slate-800 border-slate-700'
-                : 'bg-white border-slate-100'
+              isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
             }`}
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-sm font-medium ${
-                  isDarkMode ? 'text-slate-400' : 'text-slate-500'
-                }`}>
+                <p
+                  className={`text-sm font-medium ${
+                    isDarkMode ? "text-slate-400" : "text-slate-500"
+                  }`}
+                >
                   {stat.title}
                 </p>
-                <p className={`text-3xl font-light mt-1 ${
-                  isDarkMode ? 'text-white' : 'text-slate-900'
-                }`}>
+                <p
+                  className={`text-3xl font-light mt-1 ${
+                    isDarkMode ? "text-white" : "text-slate-900"
+                  }`}
+                >
                   {stat.value}
                 </p>
               </div>
@@ -319,15 +331,13 @@ const MemoryBookGenerator = () => {
       {/* Page Builder */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Page List */}
-        <div className={`lg:col-span-1 rounded-3xl p-6 shadow-lg border h-fit ${
-          isDarkMode
-            ? 'bg-slate-800 border-slate-700'
-            : 'bg-white border-slate-100'
-        }`}>
+        <div
+          className={`lg:col-span-1 rounded-3xl p-6 shadow-lg border h-fit ${
+            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+          }`}
+        >
           <div className="flex items-center justify-between mb-6">
-            <h2 className={`text-xl font-semibold ${
-              isDarkMode ? 'text-white' : 'text-slate-900'
-            }`}>
+            <h2 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Pages
             </h2>
             <div className="relative">
@@ -347,27 +357,29 @@ const MemoryBookGenerator = () => {
                 onClick={() => setSelectedPage(page)}
                 className={`p-3 rounded-2xl cursor-pointer transition-all duration-300 ${
                   selectedPage?.id === page.id
-                    ? 'bg-indigo-100 dark:bg-indigo-900/30 border-2 border-indigo-500'
+                    ? "bg-indigo-100 dark:bg-indigo-900/30 border-2 border-indigo-500"
                     : isDarkMode
-                    ? 'bg-slate-700 hover:bg-slate-600 border-2 border-transparent'
-                    : 'bg-slate-50 hover:bg-slate-100 border-2 border-transparent'
+                      ? "bg-slate-700 hover:bg-slate-600 border-2 border-transparent"
+                      : "bg-slate-50 hover:bg-slate-100 border-2 border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-10 rounded border-2 flex items-center justify-center text-xs font-medium ${
-                    isDarkMode ? 'border-slate-600 bg-slate-600' : 'border-slate-300 bg-white'
-                  }`}>
+                  <div
+                    className={`w-8 h-10 rounded border-2 flex items-center justify-center text-xs font-medium ${
+                      isDarkMode ? "border-slate-600 bg-slate-600" : "border-slate-300 bg-white"
+                    }`}
+                  >
                     {index + 1}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className={`font-medium truncate ${
-                      isDarkMode ? 'text-white' : 'text-slate-900'
-                    }`}>
+                    <p
+                      className={`font-medium truncate ${
+                        isDarkMode ? "text-white" : "text-slate-900"
+                      }`}
+                    >
                       {page.title}
                     </p>
-                    <p className={`text-xs ${
-                      isDarkMode ? 'text-slate-400' : 'text-slate-600'
-                    }`}>
+                    <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                       {page.type}
                     </p>
                   </div>
@@ -378,30 +390,32 @@ const MemoryBookGenerator = () => {
         </div>
 
         {/* Page Preview */}
-        <div className={`lg:col-span-2 rounded-3xl p-8 shadow-lg border ${
-          isDarkMode
-            ? 'bg-slate-800 border-slate-700'
-            : 'bg-white border-slate-100'
-        }`}>
+        <div
+          className={`lg:col-span-2 rounded-3xl p-8 shadow-lg border ${
+            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+          }`}
+        >
           <div className="flex items-center justify-between mb-6">
-            <h2 className={`text-xl font-semibold ${
-              isDarkMode ? 'text-white' : 'text-slate-900'
-            }`}>
+            <h2 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Page Preview
             </h2>
             <div className="flex gap-2">
-              <button className={`p-2 rounded-lg transition-colors ${
-                isDarkMode
-                  ? 'text-slate-400 hover:bg-slate-700 hover:text-white'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-              }`}>
+              <button
+                className={`p-2 rounded-lg transition-colors ${
+                  isDarkMode
+                    ? "text-slate-400 hover:bg-slate-700 hover:text-white"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                }`}
+              >
                 <Edit className="h-4 w-4" />
               </button>
-              <button className={`p-2 rounded-lg transition-colors ${
-                isDarkMode
-                  ? 'text-slate-400 hover:bg-slate-700 hover:text-white'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-              }`}>
+              <button
+                className={`p-2 rounded-lg transition-colors ${
+                  isDarkMode
+                    ? "text-slate-400 hover:bg-slate-700 hover:text-white"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                }`}
+              >
                 <Eye className="h-4 w-4" />
               </button>
             </div>
@@ -409,18 +423,16 @@ const MemoryBookGenerator = () => {
 
           <div className="flex justify-center">
             {selectedPage ? (
-              <div className="w-full max-w-md">
-                {renderPagePreview(selectedPage)}
-              </div>
+              <div className="w-full max-w-md">{renderPagePreview(selectedPage)}</div>
             ) : (
               <div className="w-full max-w-md aspect-[3/4] border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl flex items-center justify-center">
                 <div className="text-center">
-                  <BookOpen className={`h-16 w-16 mx-auto mb-4 ${
-                    isDarkMode ? 'text-slate-600' : 'text-slate-400'
-                  }`} />
-                  <p className={`${
-                    isDarkMode ? 'text-slate-400' : 'text-slate-600'
-                  }`}>
+                  <BookOpen
+                    className={`h-16 w-16 mx-auto mb-4 ${
+                      isDarkMode ? "text-slate-600" : "text-slate-400"
+                    }`}
+                  />
+                  <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                     Select a page to preview
                   </p>
                 </div>
@@ -430,23 +442,25 @@ const MemoryBookGenerator = () => {
         </div>
 
         {/* Page Settings */}
-        <div className={`lg:col-span-1 rounded-3xl p-6 shadow-lg border h-fit ${
-          isDarkMode
-            ? 'bg-slate-800 border-slate-700'
-            : 'bg-white border-slate-100'
-        }`}>
-          <h2 className={`text-xl font-semibold mb-6 ${
-            isDarkMode ? 'text-white' : 'text-slate-900'
-          }`}>
+        <div
+          className={`lg:col-span-1 rounded-3xl p-6 shadow-lg border h-fit ${
+            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+          }`}
+        >
+          <h2
+            className={`text-xl font-semibold mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+          >
             Page Settings
           </h2>
 
           {selectedPage ? (
             <div className="space-y-6">
               <div>
-                <label className={`block text-sm font-medium mb-2 ${
-                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
-                }`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${
+                    isDarkMode ? "text-slate-300" : "text-slate-700"
+                  }`}
+                >
                   Page Title
                 </label>
                 <input
@@ -454,24 +468,26 @@ const MemoryBookGenerator = () => {
                   value={selectedPage.title}
                   className={`w-full px-3 py-2 rounded-xl border transition-colors ${
                     isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white'
-                      : 'bg-white border-slate-300 text-slate-900'
+                      ? "bg-slate-700 border-slate-600 text-white"
+                      : "bg-white border-slate-300 text-slate-900"
                   } focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500`}
                 />
               </div>
 
               <div>
-                <label className={`block text-sm font-medium mb-2 ${
-                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
-                }`}>
+                <label
+                  className={`block text-sm font-medium mb-2 ${
+                    isDarkMode ? "text-slate-300" : "text-slate-700"
+                  }`}
+                >
                   Layout Style
                 </label>
                 <select
                   value={selectedPage.layout}
                   className={`w-full px-3 py-2 rounded-xl border transition-colors ${
                     isDarkMode
-                      ? 'bg-slate-700 border-slate-600 text-white'
-                      : 'bg-white border-slate-300 text-slate-900'
+                      ? "bg-slate-700 border-slate-600 text-white"
+                      : "bg-white border-slate-300 text-slate-900"
                   } focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500`}
                 >
                   <option value="classic">Classic</option>
@@ -493,12 +509,12 @@ const MemoryBookGenerator = () => {
             </div>
           ) : (
             <div className="text-center py-8">
-              <BookOpen className={`h-12 w-12 mx-auto mb-4 ${
-                isDarkMode ? 'text-slate-600' : 'text-slate-400'
-              }`} />
-              <p className={`${
-                isDarkMode ? 'text-slate-400' : 'text-slate-600'
-              }`}>
+              <BookOpen
+                className={`h-12 w-12 mx-auto mb-4 ${
+                  isDarkMode ? "text-slate-600" : "text-slate-400"
+                }`}
+              />
+              <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                 Select a page to edit settings
               </p>
             </div>
@@ -507,14 +523,14 @@ const MemoryBookGenerator = () => {
       </div>
 
       {/* Export Options */}
-      <div className={`rounded-3xl p-6 shadow-lg border ${
-        isDarkMode
-          ? 'bg-slate-800 border-slate-700'
-          : 'bg-white border-slate-100'
-      }`}>
-        <h2 className={`text-xl font-semibold mb-6 ${
-          isDarkMode ? 'text-white' : 'text-slate-900'
-        }`}>
+      <div
+        className={`rounded-3xl p-6 shadow-lg border ${
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+        }`}
+      >
+        <h2
+          className={`text-xl font-semibold mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+        >
           Export & Share
         </h2>
 
