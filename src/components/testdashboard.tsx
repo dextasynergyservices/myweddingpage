@@ -168,30 +168,30 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
       // case "builder":
       //   return <WeddingPageBuilder />;
       // In your renderContent function where you return <WeddingPageBuilder />
-case "builder":
-  return (
-    <div className="relative">
-      <div className="hidden lg:block">
-        <WeddingPageBuilder />
-      </div>
-      <div className="lg:hidden p-8 text-center">
-        <div className="p-6 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-slate-800 dark:to-slate-700 rounded-3xl">
-          <Layout className="h-12 w-12 mx-auto mb-4 text-indigo-600 dark:text-indigo-400" />
-          <h2 className="text-xl font-bold mb-2 dark:text-white">Page Builder</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            The wedding page builder is optimized for desktop use. Please access this feature from a
-            larger screen for the best experience.
-          </p>
-          <button
-            onClick={() => setActiveTab("overview")}
-            className="px-6 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors"
-          >
-            Back to Dashboard
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+      case "builder":
+        return (
+          <div className="relative">
+            <div className="hidden lg:block">
+              <WeddingPageBuilder />
+            </div>
+            <div className="lg:hidden p-8 text-center">
+              <div className="p-6 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-slate-800 dark:to-slate-700 rounded-3xl">
+                <Layout className="h-12 w-12 mx-auto mb-4 text-indigo-600 dark:text-indigo-400" />
+                <h2 className="text-xl font-bold mb-2 dark:text-white">Page Builder</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  The wedding page builder is optimized for desktop use. Please access this feature
+                  from a larger screen for the best experience.
+                </p>
+                <button
+                  onClick={() => setActiveTab("overview")}
+                  className="px-6 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors"
+                >
+                  Back to Dashboard
+                </button>
+              </div>
+            </div>
+          </div>
+        );
       case "photos":
         return <AIPhotoCuration />;
       case "guests":
@@ -234,7 +234,9 @@ case "builder":
             >
               Welcome back, {user?.name}
             </h1>
-            <p className={`text-base md:text-lg ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>
+            <p
+              className={`text-base md:text-lg ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}
+            >
               Your wedding planning dashboard is ready to help make your day perfect.
             </p>
           </div>
@@ -278,7 +280,9 @@ case "builder":
                   {stat.change} this month
                 </p>
               </div>
-              <div className={`p-2 md:p-3 bg-gradient-to-r ${stat.color} rounded-xl md:rounded-2xl`}>
+              <div
+                className={`p-2 md:p-3 bg-gradient-to-r ${stat.color} rounded-xl md:rounded-2xl`}
+              >
                 <stat.icon className="h-5 md:h-6 w-5 md:w-6 text-white" />
               </div>
             </div>
@@ -292,7 +296,9 @@ case "builder":
           isDarkMode ? "border-slate-700" : "border-slate-100"
         }`}
       >
-        <h2 className={`text-xl md:text-2xl font-light mb-4 md:mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+        <h2
+          className={`text-xl md:text-2xl font-light mb-4 md:mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+        >
           Quick Actions
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
@@ -324,7 +330,9 @@ case "builder":
         }`}
       >
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-          <h2 className={`text-xl md:text-2xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+          <h2
+            className={`text-xl md:text-2xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}
+          >
             My Wedding Pages
           </h2>
           <button
@@ -429,7 +437,9 @@ case "builder":
 
                 {/* Progress Indicators */}
                 <div className="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
-                  <div className={`p-3 md:p-4 rounded-lg md:rounded-xl ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
+                  <div
+                    className={`p-3 md:p-4 rounded-lg md:rounded-xl ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+                  >
                     <div className="flex items-center justify-between mb-1 md:mb-2">
                       <span
                         className={`text-xs md:text-sm font-medium ${
@@ -458,7 +468,9 @@ case "builder":
                     </div>
                   </div>
 
-                  <div className={`p-3 md:p-4 rounded-lg md:rounded-xl ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
+                  <div
+                    className={`p-3 md:p-4 rounded-lg md:rounded-xl ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+                  >
                     <div className="flex items-center justify-between mb-1 md:mb-2">
                       <span
                         className={`text-xs md:text-sm font-medium ${
@@ -487,7 +499,9 @@ case "builder":
                     </div>
                   </div>
 
-                  <div className={`p-3 md:p-4 rounded-lg md:rounded-xl ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
+                  <div
+                    className={`p-3 md:p-4 rounded-lg md:rounded-xl ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+                  >
                     <div className="flex items-center justify-between mb-1 md:mb-2">
                       <span
                         className={`text-xs md:text-sm font-medium ${
@@ -526,7 +540,9 @@ case "builder":
                 isDarkMode ? "bg-slate-700" : "bg-slate-100"
               }`}
             >
-              <Heart className={`h-6 md:h-8 w-6 md:w-8 ${isDarkMode ? "text-slate-400" : "text-slate-400"}`} />
+              <Heart
+                className={`h-6 md:h-8 w-6 md:w-8 ${isDarkMode ? "text-slate-400" : "text-slate-400"}`}
+              />
             </div>
             <h3
               className={`text-lg md:text-xl font-semibold mb-1 md:mb-2 ${
@@ -535,7 +551,9 @@ case "builder":
             >
               No wedding pages yet
             </h3>
-            <p className={`font-light mb-4 md:mb-6 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+            <p
+              className={`font-light mb-4 md:mb-6 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+            >
               Create your first wedding page to get started.
             </p>
             <button

@@ -238,130 +238,132 @@ const TimelinePlanner = () => {
         </div>
       </div>
 
-     {/* Timeline */}
-<div
-  className={`rounded-xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border ${
-    isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
-  }`}
->
-  <div className="space-y-4 sm:space-y-6">
-    {sortedEvents.map((event, index) => {
-      const CategoryIcon = getCategoryIcon(event.category);
+      {/* Timeline */}
+      <div
+        className={`rounded-xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border ${
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+        }`}
+      >
+        <div className="space-y-4 sm:space-y-6">
+          {sortedEvents.map((event, index) => {
+            const CategoryIcon = getCategoryIcon(event.category);
 
-      return (
-        <motion.div
-          key={event.id}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: index * 0.1 }}
-          className={`relative flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl border transition-all duration-300 ${
-            event.completed
-              ? isDarkMode
-                ? "bg-slate-700/50 border-slate-600"
-                : "bg-slate-50 border-slate-200"
-              : isDarkMode
-                ? "bg-slate-700 border-slate-600 hover:border-slate-500"
-                : "bg-white border-slate-200 hover:border-slate-300"
-          }`}
-        >
-          {/* Time */}
-          <div className="flex sm:flex-col items-center sm:items-start gap-3 sm:gap-0 flex-shrink-0">
-            <div
-              className={`text-xl sm:text-2xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}
-            >
-              {event.time}
-            </div>
-            <div className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-              {event.duration}min
-            </div>
-          </div>
-
-          {/* Event Details */}
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3">
-              <div className="flex items-start gap-3">
-                <div
-                  className={`p-2 bg-gradient-to-r ${getCategoryColor(event.category)} rounded-lg sm:rounded-xl`}
-                >
-                  <CategoryIcon className="h-4 sm:h-5 w-4 sm:w-5 text-white" />
-                </div>
-                <div>
-                  <h3
-                    className={`text-base sm:text-lg font-semibold ${event.completed ? "line-through opacity-60" : ""} ${
-                      isDarkMode ? "text-white" : "text-slate-900"
-                    }`}
+            return (
+              <motion.div
+                key={event.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`relative flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl border transition-all duration-300 ${
+                  event.completed
+                    ? isDarkMode
+                      ? "bg-slate-700/50 border-slate-600"
+                      : "bg-slate-50 border-slate-200"
+                    : isDarkMode
+                      ? "bg-slate-700 border-slate-600 hover:border-slate-500"
+                      : "bg-white border-slate-200 hover:border-slate-300"
+                }`}
+              >
+                {/* Time */}
+                <div className="flex sm:flex-col items-center sm:items-start gap-3 sm:gap-0 flex-shrink-0">
+                  <div
+                    className={`text-xl sm:text-2xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}
                   >
-                    {event.title}
-                  </h3>
-                  {event.description && (
-                    <p
-                      className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"} mt-1`}
-                    >
-                      {event.description}
-                    </p>
+                    {event.time}
+                  </div>
+                  <div
+                    className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                  >
+                    {event.duration}min
+                  </div>
+                </div>
+
+                {/* Event Details */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3">
+                    <div className="flex items-start gap-3">
+                      <div
+                        className={`p-2 bg-gradient-to-r ${getCategoryColor(event.category)} rounded-lg sm:rounded-xl`}
+                      >
+                        <CategoryIcon className="h-4 sm:h-5 w-4 sm:w-5 text-white" />
+                      </div>
+                      <div>
+                        <h3
+                          className={`text-base sm:text-lg font-semibold ${event.completed ? "line-through opacity-60" : ""} ${
+                            isDarkMode ? "text-white" : "text-slate-900"
+                          }`}
+                        >
+                          {event.title}
+                        </h3>
+                        {event.description && (
+                          <p
+                            className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"} mt-1`}
+                          >
+                            {event.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-end sm:justify-start gap-1 sm:gap-2">
+                      <button
+                        onClick={() => toggleEventCompletion(event.id)}
+                        className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
+                          event.completed
+                            ? "bg-emerald-600 text-white"
+                            : isDarkMode
+                              ? "text-slate-400 hover:bg-slate-600 hover:text-white"
+                              : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        }`}
+                      >
+                        <CheckCircle className="h-4 w-4" />
+                      </button>
+                      <button
+                        className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
+                          isDarkMode
+                            ? "text-slate-400 hover:bg-slate-600 hover:text-white"
+                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        }`}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button className="p-1 sm:p-2 rounded-md sm:rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Event Meta */}
+                  {(event.location || event.vendor) && (
+                    <div className="flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm">
+                      {event.location && (
+                        <div
+                          className={`flex items-center gap-1 sm:gap-2 ${
+                            isDarkMode ? "text-slate-400" : "text-slate-600"
+                          }`}
+                        >
+                          <MapPin className="h-3 sm:h-4 w-3 sm:w-4 flex-shrink-0" />
+                          <span className="truncate">{event.location}</span>
+                        </div>
+                      )}
+                      {event.vendor && (
+                        <div
+                          className={`flex items-center gap-1 sm:gap-2 ${
+                            isDarkMode ? "text-slate-400" : "text-slate-600"
+                          }`}
+                        >
+                          <Users className="h-3 sm:h-4 w-3 sm:w-4 flex-shrink-0" />
+                          <span className="truncate">{event.vendor}</span>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
-              </div>
-
-              <div className="flex items-center justify-end sm:justify-start gap-1 sm:gap-2">
-                <button
-                  onClick={() => toggleEventCompletion(event.id)}
-                  className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
-                    event.completed
-                      ? "bg-emerald-600 text-white"
-                      : isDarkMode
-                        ? "text-slate-400 hover:bg-slate-600 hover:text-white"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                  }`}
-                >
-                  <CheckCircle className="h-4 w-4" />
-                </button>
-                <button
-                  className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
-                    isDarkMode
-                      ? "text-slate-400 hover:bg-slate-600 hover:text-white"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                  }`}
-                >
-                  <Edit className="h-4 w-4" />
-                </button>
-                <button className="p-1 sm:p-2 rounded-md sm:rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Event Meta */}
-            {(event.location || event.vendor) && (
-              <div className="flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm">
-                {event.location && (
-                  <div
-                    className={`flex items-center gap-1 sm:gap-2 ${
-                      isDarkMode ? "text-slate-400" : "text-slate-600"
-                    }`}
-                  >
-                    <MapPin className="h-3 sm:h-4 w-3 sm:w-4 flex-shrink-0" />
-                    <span className="truncate">{event.location}</span>
-                  </div>
-                )}
-                {event.vendor && (
-                  <div
-                    className={`flex items-center gap-1 sm:gap-2 ${
-                      isDarkMode ? "text-slate-400" : "text-slate-600"
-                    }`}
-                  >
-                    <Users className="h-3 sm:h-4 w-3 sm:w-4 flex-shrink-0" />
-                    <span className="truncate">{event.vendor}</span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </motion.div>
-      );
-    })}
-  </div>
-</div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Progress Summary */}
       <div

@@ -320,148 +320,158 @@ const BudgetTracker = () => {
       </div>
 
       {/* Responsive Expenses Table */}
-<div className={`rounded-3xl shadow-lg border overflow-hidden ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}>
-  {/* Table Header */}
-  <div className="p-4 sm:p-6 border-b border-slate-200 dark:border-slate-700">
-    <h2 className={`text-lg sm:text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-      Recent Expenses
-    </h2>
-  </div>
-
-  {/* Desktop Expenses Table */}
-  <div className="hidden sm:block overflow-x-auto">
-    <table className="w-full">
-      <thead className={isDarkMode ? "bg-slate-700" : "bg-slate-50"}>
-        <tr>
-          {["Vendor", "Category", "Amount", "Status", "Actions"].map((label) => (
-            <th
-              key={label}
-              className={`px-4 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium ${
-                isDarkMode ? "text-slate-300" : "text-slate-700"
-              } ${label === "Actions" ? "text-right" : ""}`}
-            >
-              {label}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-        {expenses.map((expense) => (
-          <motion.tr
-            key={expense.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
-          >
-            <td className="px-4 sm:px-6 py-3 sm:py-4">
-              <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-                {expense.vendor}
-              </p>
-              <p className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-                {expense.description}
-              </p>
-            </td>
-            <td className="px-4 sm:px-6 py-3 sm:py-4">
-              <span className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
-                {expense.category}
-              </span>
-            </td>
-            <td className="px-4 sm:px-6 py-3 sm:py-4">
-              <span
-                className={`text-base sm:text-lg font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
-              >
-                ${expense.amount.toLocaleString()}
-              </span>
-            </td>
-            <td className="px-4 sm:px-6 py-3 sm:py-4">
-              <span
-                className={`inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(expense.status)}`}
-              >
-                {expense.status.charAt(0).toUpperCase() + expense.status.slice(1)}
-              </span>
-            </td>
-            <td className="px-4 sm:px-6 py-3 sm:py-4 text-right">
-              <div className="flex items-center justify-end gap-1 sm:gap-2">
-                <button
-                  className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
-                    isDarkMode
-                      ? "text-slate-400 hover:bg-slate-700 hover:text-white"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                  }`}
-                >
-                  <Edit className="h-4 w-4" />
-                </button>
-                <button className="p-1 sm:p-2 rounded-md sm:rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            </td>
-          </motion.tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-
-  {/* Mobile Expenses Table */}
-  <div className="sm:hidden">
-    {expenses.map((expense) => (
-      <motion.div
-        key={expense.id}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className={`p-4 border-b ${isDarkMode ? "border-slate-700 hover:bg-slate-700/50" : "border-slate-200 hover:bg-slate-50"} transition-colors`}
+      <div
+        className={`rounded-3xl shadow-lg border overflow-hidden ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}
       >
-        <div className="flex justify-between items-start gap-3">
-          <div className="flex-1">
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-                {expense.vendor}
-              </p>
-              <span
-                className={`text-base font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
-              >
-                ${expense.amount.toLocaleString()}
-              </span>
-            </div>
-
-            {expense.description && (
-              <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-2`}>
-                {expense.description}
-              </p>
-            )}
-
-            <div className="flex flex-wrap items-center gap-3">
-              <span
-                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(expense.status)}`}
-              >
-                {expense.status.charAt(0).toUpperCase() + expense.status.slice(1)}
-              </span>
-
-              <span className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-                {expense.category}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-end gap-1">
-            <button
-              className={`p-1 rounded-md transition-colors ${
-                isDarkMode
-                  ? "text-slate-400 hover:bg-slate-700 hover:text-white"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-              }`}
-            >
-              <Edit className="h-4 w-4" />
-            </button>
-            <button className="p-1 rounded-md text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </div>
+        {/* Table Header */}
+        <div className="p-4 sm:p-6 border-b border-slate-200 dark:border-slate-700">
+          <h2
+            className={`text-lg sm:text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
+          >
+            Recent Expenses
+          </h2>
         </div>
-      </motion.div>
-    ))}
-  </div>
-</div>
+
+        {/* Desktop Expenses Table */}
+        <div className="hidden sm:block overflow-x-auto">
+          <table className="w-full">
+            <thead className={isDarkMode ? "bg-slate-700" : "bg-slate-50"}>
+              <tr>
+                {["Vendor", "Category", "Amount", "Status", "Actions"].map((label) => (
+                  <th
+                    key={label}
+                    className={`px-4 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium ${
+                      isDarkMode ? "text-slate-300" : "text-slate-700"
+                    } ${label === "Actions" ? "text-right" : ""}`}
+                  >
+                    {label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+              {expenses.map((expense) => (
+                <motion.tr
+                  key={expense.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                >
+                  <td className="px-4 sm:px-6 py-3 sm:py-4">
+                    <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                      {expense.vendor}
+                    </p>
+                    <p
+                      className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                    >
+                      {expense.description}
+                    </p>
+                  </td>
+                  <td className="px-4 sm:px-6 py-3 sm:py-4">
+                    <span
+                      className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}
+                    >
+                      {expense.category}
+                    </span>
+                  </td>
+                  <td className="px-4 sm:px-6 py-3 sm:py-4">
+                    <span
+                      className={`text-base sm:text-lg font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                    >
+                      ${expense.amount.toLocaleString()}
+                    </span>
+                  </td>
+                  <td className="px-4 sm:px-6 py-3 sm:py-4">
+                    <span
+                      className={`inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(expense.status)}`}
+                    >
+                      {expense.status.charAt(0).toUpperCase() + expense.status.slice(1)}
+                    </span>
+                  </td>
+                  <td className="px-4 sm:px-6 py-3 sm:py-4 text-right">
+                    <div className="flex items-center justify-end gap-1 sm:gap-2">
+                      <button
+                        className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
+                          isDarkMode
+                            ? "text-slate-400 hover:bg-slate-700 hover:text-white"
+                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        }`}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button className="p-1 sm:p-2 rounded-md sm:rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Expenses Table */}
+        <div className="sm:hidden">
+          {expenses.map((expense) => (
+            <motion.div
+              key={expense.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className={`p-4 border-b ${isDarkMode ? "border-slate-700 hover:bg-slate-700/50" : "border-slate-200 hover:bg-slate-50"} transition-colors`}
+            >
+              <div className="flex justify-between items-start gap-3">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                      {expense.vendor}
+                    </p>
+                    <span
+                      className={`text-base font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                    >
+                      ${expense.amount.toLocaleString()}
+                    </span>
+                  </div>
+
+                  {expense.description && (
+                    <p
+                      className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-2`}
+                    >
+                      {expense.description}
+                    </p>
+                  )}
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(expense.status)}`}
+                    >
+                      {expense.status.charAt(0).toUpperCase() + expense.status.slice(1)}
+                    </span>
+
+                    <span className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      {expense.category}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end gap-1">
+                  <button
+                    className={`p-1 rounded-md transition-colors ${
+                      isDarkMode
+                        ? "text-slate-400 hover:bg-slate-700 hover:text-white"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    }`}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </button>
+                  <button className="p-1 rounded-md text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

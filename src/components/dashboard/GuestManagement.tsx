@@ -93,26 +93,26 @@ const GuestManagement = () => {
 
   return (
     <div className="space-y-8">
-     {/* Responsive Header */}
-<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
-  <div>
-    <h1
-      className={`text-2xl sm:text-3xl font-light mb-1 sm:mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
-    >
-      Guest Management
-    </h1>
-    <p className={`text-sm sm:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-      Manage your wedding guest list, RSVPs, and seating arrangements
-    </p>
-  </div>
-  <button
-    onClick={() => setShowAddGuest(true)}
-    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:shadow-lg transition-all duration-300"
-  >
-    <UserPlus className="h-4 sm:h-5 w-4 sm:w-5" />
-    <span>Add Guest</span>
-  </button>
-</div>
+      {/* Responsive Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+        <div>
+          <h1
+            className={`text-2xl sm:text-3xl font-light mb-1 sm:mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+          >
+            Guest Management
+          </h1>
+          <p className={`text-sm sm:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+            Manage your wedding guest list, RSVPs, and seating arrangements
+          </p>
+        </div>
+        <button
+          onClick={() => setShowAddGuest(true)}
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:shadow-lg transition-all duration-300"
+        >
+          <UserPlus className="h-4 sm:h-5 w-4 sm:w-5" />
+          <span>Add Guest</span>
+        </button>
+      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -212,158 +212,164 @@ const GuestManagement = () => {
       </div>
 
       {/* Guest Table */}
-<div className={`rounded-3xl shadow-lg border overflow-hidden ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}>
-  {/* Desktop Table */}
-  <div className="hidden md:block overflow-x-auto">
-    <table className="w-full">
-      <thead className={isDarkMode ? "bg-slate-700" : "bg-slate-50"}>
-        <tr>
-          {["Guest", "RSVP Status", "Table", "Meal", "Actions"].map((title) => (
-            <th
-              key={title}
-              className={`px-6 py-4 text-${title === "Actions" ? "right" : "left"} text-sm font-medium ${
-                isDarkMode ? "text-slate-300" : "text-slate-700"
-              }`}
-            >
-              {title}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-        {filteredGuests.map((guest) => (
-          <motion.tr
-            key={guest.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
-          >
-            <td className="px-6 py-4">
-              <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-                {guest.name}
-              </p>
-              <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-                {guest.email}
-              </p>
-            </td>
-            <td className="px-6 py-4">
-              <span
-                className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(guest.rsvpStatus)}`}
-              >
-                {getStatusIcon(guest.rsvpStatus)}
-                {guest.rsvpStatus.charAt(0).toUpperCase() + guest.rsvpStatus.slice(1)}
-              </span>
-            </td>
-            <td className="px-6 py-4 text-sm">
-              <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
-                {guest.tableAssignment ? `Table ${guest.tableAssignment}` : "Not assigned"}
-              </span>
-            </td>
-            <td className="px-6 py-4 text-sm">
-              <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
-                {guest.mealPreference || "Not selected"}
-              </span>
-            </td>
-            <td className="px-6 py-4">
-              <div className="flex items-center justify-end gap-2">
-                <button
-                  className={`p-2 rounded-lg transition-colors ${
-                    isDarkMode
-                      ? "text-slate-400 hover:bg-slate-700 hover:text-white"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                  }`}
-                >
-                  <Edit className="h-4 w-4" />
-                </button>
-                <button
-                  className={`p-2 rounded-lg transition-colors ${
-                    isDarkMode
-                      ? "text-slate-400 hover:bg-slate-700 hover:text-white"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                  }`}
-                >
-                  <Mail className="h-4 w-4" />
-                </button>
-                <button className="p-2 rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            </td>
-          </motion.tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-
-  {/* Mobile table*/}
-  <div className="md:hidden">
-    {filteredGuests.map((guest) => (
-      <motion.div
-        key={guest.id}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className={`p-4 border-b ${isDarkMode ? "border-slate-700 hover:bg-slate-700/50" : "border-slate-200 hover:bg-slate-50"} transition-colors`}
+      <div
+        className={`rounded-3xl shadow-lg border overflow-hidden ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}
       >
-        <div className="flex justify-between items-start gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-                {guest.name}
-              </p>
-              <span
-                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(guest.rsvpStatus)}`}
-              >
-                {getStatusIcon(guest.rsvpStatus)}
-              </span>
-            </div>
-            <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-3`}>
-              {guest.email}
-            </p>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>Table</p>
-                <p className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
-                  {guest.tableAssignment || "Not assigned"}
-                </p>
-              </div>
-              <div>
-                <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>Meal</p>
-                <p className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
-                  {guest.mealPreference || "Not selected"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-end gap-2">
-            <button
-              className={`p-2 rounded-lg transition-colors ${
-                isDarkMode
-                  ? "text-slate-400 hover:bg-slate-700 hover:text-white"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-              }`}
-            >
-              <Edit className="h-4 w-4" />
-            </button>
-            <button
-              className={`p-2 rounded-lg transition-colors ${
-                isDarkMode
-                  ? "text-slate-400 hover:bg-slate-700 hover:text-white"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-              }`}
-            >
-              <Mail className="h-4 w-4" />
-            </button>
-            <button className="p-2 rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </div>
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full">
+            <thead className={isDarkMode ? "bg-slate-700" : "bg-slate-50"}>
+              <tr>
+                {["Guest", "RSVP Status", "Table", "Meal", "Actions"].map((title) => (
+                  <th
+                    key={title}
+                    className={`px-6 py-4 text-${title === "Actions" ? "right" : "left"} text-sm font-medium ${
+                      isDarkMode ? "text-slate-300" : "text-slate-700"
+                    }`}
+                  >
+                    {title}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+              {filteredGuests.map((guest) => (
+                <motion.tr
+                  key={guest.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                >
+                  <td className="px-6 py-4">
+                    <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                      {guest.name}
+                    </p>
+                    <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      {guest.email}
+                    </p>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(guest.rsvpStatus)}`}
+                    >
+                      {getStatusIcon(guest.rsvpStatus)}
+                      {guest.rsvpStatus.charAt(0).toUpperCase() + guest.rsvpStatus.slice(1)}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
+                      {guest.tableAssignment ? `Table ${guest.tableAssignment}` : "Not assigned"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
+                      {guest.mealPreference || "Not selected"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        className={`p-2 rounded-lg transition-colors ${
+                          isDarkMode
+                            ? "text-slate-400 hover:bg-slate-700 hover:text-white"
+                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        }`}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button
+                        className={`p-2 rounded-lg transition-colors ${
+                          isDarkMode
+                            ? "text-slate-400 hover:bg-slate-700 hover:text-white"
+                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                        }`}
+                      >
+                        <Mail className="h-4 w-4" />
+                      </button>
+                      <button className="p-2 rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </motion.div>
-    ))}
-  </div>
-</div>
+
+        {/* Mobile table*/}
+        <div className="md:hidden">
+          {filteredGuests.map((guest) => (
+            <motion.div
+              key={guest.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className={`p-4 border-b ${isDarkMode ? "border-slate-700 hover:bg-slate-700/50" : "border-slate-200 hover:bg-slate-50"} transition-colors`}
+            >
+              <div className="flex justify-between items-start gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                      {guest.name}
+                    </p>
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(guest.rsvpStatus)}`}
+                    >
+                      {getStatusIcon(guest.rsvpStatus)}
+                    </span>
+                  </div>
+                  <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-3`}>
+                    {guest.email}
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                        Table
+                      </p>
+                      <p className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
+                        {guest.tableAssignment || "Not assigned"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                        Meal
+                      </p>
+                      <p className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
+                        {guest.mealPreference || "Not selected"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end gap-2">
+                  <button
+                    className={`p-2 rounded-lg transition-colors ${
+                      isDarkMode
+                        ? "text-slate-400 hover:bg-slate-700 hover:text-white"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    }`}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </button>
+                  <button
+                    className={`p-2 rounded-lg transition-colors ${
+                      isDarkMode
+                        ? "text-slate-400 hover:bg-slate-700 hover:text-white"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    }`}
+                  >
+                    <Mail className="h-4 w-4" />
+                  </button>
+                  <button className="p-2 rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

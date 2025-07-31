@@ -218,65 +218,67 @@ const InteractiveChecklist = () => {
         ))}
       </div>
 
-    {/* Filters */}
-<div className="flex flex-wrap gap-4 items-center justify-between">
-  <input
-    type="text"
-    placeholder="Search tasks..."
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-    className={`flex-1 rounded-xl border px-4 py-2 text-sm bg-transparent ${
-      isDarkMode
-        ? "border-slate-600 text-white placeholder-slate-400 focus:border-slate-500"
-        : "border-slate-400 text-slate-800 placeholder-slate-500 focus:border-slate-600"
-    }`}
-  />
-  <select
-    className={`rounded-xl border px-4 py-2 text-sm bg-transparent ${
-      isDarkMode
-        ? "border-slate-600 text-white focus:border-slate-500"
-        : "border-slate-400 text-slate-800 focus:border-slate-600"
-    }`}
-    value={selectedCategory}
-    onChange={(e) => setSelectedCategory(e.target.value)}
-  >
-    <option value="all">All Categories</option>
-    {categories.map((c) => (
-      <option key={c.id} value={c.id}>
-        {c.name}
-      </option>
-    ))}
-  </select>
-  <select
-    className={`rounded-xl border px-4 py-2 text-sm bg-transparent ${
-      isDarkMode
-        ? "border-slate-600 text-white focus:border-slate-500"
-        : "border-slate-400 text-slate-800 focus:border-slate-600"
-    }`}
-    value={selectedPriority}
-    onChange={(e) => setSelectedPriority(e.target.value)}
-  >
-    <option value="all">All Priorities</option>
-    <option value="high">High</option>
-    <option value="medium">Medium</option>
-    <option value="low">Low</option>
-  </select>
-  <label className={`text-sm flex items-center gap-2 cursor-pointer ${
-    isDarkMode ? "text-slate-300" : "text-slate-700"
-  }`}>
-    <input
-      type="checkbox"
-      checked={showCompleted}
-      onChange={(e) => setShowCompleted(e.target.checked)}
-      className={`rounded ${
-        isDarkMode
-          ? "border-slate-600 bg-slate-700 text-indigo-500 focus:ring-indigo-500"
-          : "border-slate-400 bg-white text-indigo-600 focus:ring-indigo-500"
-      }`}
-    />
-    Show Completed
-  </label>
-</div>
+      {/* Filters */}
+      <div className="flex flex-wrap gap-4 items-center justify-between">
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className={`flex-1 rounded-xl border px-4 py-2 text-sm bg-transparent ${
+            isDarkMode
+              ? "border-slate-600 text-white placeholder-slate-400 focus:border-slate-500"
+              : "border-slate-400 text-slate-800 placeholder-slate-500 focus:border-slate-600"
+          }`}
+        />
+        <select
+          className={`rounded-xl border px-4 py-2 text-sm bg-transparent ${
+            isDarkMode
+              ? "border-slate-600 text-white focus:border-slate-500"
+              : "border-slate-400 text-slate-800 focus:border-slate-600"
+          }`}
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="all">All Categories</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <select
+          className={`rounded-xl border px-4 py-2 text-sm bg-transparent ${
+            isDarkMode
+              ? "border-slate-600 text-white focus:border-slate-500"
+              : "border-slate-400 text-slate-800 focus:border-slate-600"
+          }`}
+          value={selectedPriority}
+          onChange={(e) => setSelectedPriority(e.target.value)}
+        >
+          <option value="all">All Priorities</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <label
+          className={`text-sm flex items-center gap-2 cursor-pointer ${
+            isDarkMode ? "text-slate-300" : "text-slate-700"
+          }`}
+        >
+          <input
+            type="checkbox"
+            checked={showCompleted}
+            onChange={(e) => setShowCompleted(e.target.checked)}
+            className={`rounded ${
+              isDarkMode
+                ? "border-slate-600 bg-slate-700 text-indigo-500 focus:ring-indigo-500"
+                : "border-slate-400 bg-white text-indigo-600 focus:ring-indigo-500"
+            }`}
+          />
+          Show Completed
+        </label>
+      </div>
 
       {/* Task List */}
       <div className="space-y-6">
