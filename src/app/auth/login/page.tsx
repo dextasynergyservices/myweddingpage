@@ -1,5 +1,12 @@
-import ComingSoon from "@/components/ComingSoon";
+import LoginPage from "@/components/LoginPage";
+import AuthGate from "@/components/AuthGate";
 
-export default function LoginPage() {
-  return <ComingSoon title="Login" />;
+export default function Register() {
+  return (
+    <>
+      <AuthGate>
+        <LoginPage />
+      </AuthGate>
+    </>
+  );
 }
