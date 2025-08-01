@@ -131,7 +131,7 @@ const Navbar = () => {
                     ? "text-slate-300 hover:bg-slate-800"
                     : isScrolled
                       ? "text-slate-700 hover:bg-slate-100"
-                      : "text-white hover:bg-white/10"
+                      : "text-slate-900 hover:bg-white/10"
                 }`}
               />
             )}

@@ -58,19 +58,19 @@ const CTAButton = ({
             <Link href="/login">
               <button
                 onClick={() => setIsMobileMenuOpen?.(false)}
-                className={`w-full px-4 py-2 rounded-xl font-medium transition-colors duration-200 ${
+                className={`w-full px-4 py-2 rounded-xl font-medium transition-colors duration-200 cursor-pointer ${
                   isDarkMode
-                    ? "text-slate-300 hover:bg-slate-800"
+                    ? "text-slate-900 hover:bg-slate-800"
                     : "text-slate-700 hover:bg-slate-100"
                 }`}
               >
                 Login
               </button>
             </Link>
-            <Link href="/signup">
+            <Link href="/packages">
               <button
                 onClick={() => setIsMobileMenuOpen?.(false)}
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-xl font-medium"
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-xl font-medium cursor-pointer"
               >
                 Sign Up
               </button>
@@ -122,12 +122,12 @@ const CTAButton = ({
         <div className="flex items-center gap-3">
           <Link href="/login">
             <motion.button
-              className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
+              className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 cursor-pointer ${
                 isDarkMode
                   ? "text-slate-300 hover:bg-slate-800"
                   : isScrolled
                     ? "text-slate-700 hover:bg-slate-100"
-                    : "text-white/90 hover:bg-white/10"
+                    : "text-slate-900 hover:bg-white/10"
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -135,9 +135,9 @@ const CTAButton = ({
               Login
             </motion.button>
           </Link>
-          <Link href="/signup">
+          <Link href="/packages">
             <motion.button
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
