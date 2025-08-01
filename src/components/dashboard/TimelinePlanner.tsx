@@ -136,7 +136,7 @@ const TimelinePlanner = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
         <div>
           <h1
             className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
@@ -149,7 +149,7 @@ const TimelinePlanner = () => {
         </div>
         <button
           onClick={() => setShowAddEvent(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl hover:shadow-lg transition-all duration-300"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:shadow-lg transition-all duration-300"
         >
           <Plus className="h-5 w-5" />
           Add Event
@@ -240,9 +240,11 @@ const TimelinePlanner = () => {
 
       {/* Timeline */}
       <div
-        className={`rounded-3xl p-8 shadow-lg border ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}
+        className={`rounded-xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border ${
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+        }`}
       >
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {sortedEvents.map((event, index) => {
             const CategoryIcon = getCategoryIcon(event.category);
 
@@ -252,7 +254,7 @@ const TimelinePlanner = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`relative flex gap-6 p-6 rounded-2xl border transition-all duration-300 ${
+                className={`relative flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl border transition-all duration-300 ${
                   event.completed
                     ? isDarkMode
                       ? "bg-slate-700/50 border-slate-600"
@@ -263,44 +265,50 @@ const TimelinePlanner = () => {
                 }`}
               >
                 {/* Time */}
-                <div className="flex-shrink-0 text-center">
+                <div className="flex sm:flex-col items-center sm:items-start gap-3 sm:gap-0 flex-shrink-0">
                   <div
-                    className={`text-2xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                    className={`text-xl sm:text-2xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}
                   >
                     {event.time}
                   </div>
-                  <div className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                  <div
+                    className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                  >
                     {event.duration}min
                   </div>
                 </div>
 
                 {/* Event Details */}
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3">
+                    <div className="flex items-start gap-3">
                       <div
-                        className={`p-2 bg-gradient-to-r ${getCategoryColor(event.category)} rounded-xl`}
+                        className={`p-2 bg-gradient-to-r ${getCategoryColor(event.category)} rounded-lg sm:rounded-xl`}
                       >
-                        <CategoryIcon className="h-5 w-5 text-white" />
+                        <CategoryIcon className="h-4 sm:h-5 w-4 sm:w-5 text-white" />
                       </div>
                       <div>
                         <h3
-                          className={`text-lg font-semibold ${event.completed ? "line-through opacity-60" : ""} ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                          className={`text-base sm:text-lg font-semibold ${event.completed ? "line-through opacity-60" : ""} ${
+                            isDarkMode ? "text-white" : "text-slate-900"
+                          }`}
                         >
                           {event.title}
                         </h3>
-                        <p
-                          className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                        >
-                          {event.description}
-                        </p>
+                        {event.description && (
+                          <p
+                            className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"} mt-1`}
+                          >
+                            {event.description}
+                          </p>
+                        )}
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-end sm:justify-start gap-1 sm:gap-2">
                       <button
                         onClick={() => toggleEventCompletion(event.id)}
-                        className={`p-2 rounded-lg transition-colors ${
+                        className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
                           event.completed
                             ? "bg-emerald-600 text-white"
                             : isDarkMode
@@ -311,7 +319,7 @@ const TimelinePlanner = () => {
                         <CheckCircle className="h-4 w-4" />
                       </button>
                       <button
-                        className={`p-2 rounded-lg transition-colors ${
+                        className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
                           isDarkMode
                             ? "text-slate-400 hover:bg-slate-600 hover:text-white"
                             : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -319,31 +327,37 @@ const TimelinePlanner = () => {
                       >
                         <Edit className="h-4 w-4" />
                       </button>
-                      <button className="p-2 rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+                      <button className="p-1 sm:p-2 rounded-md sm:rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
 
                   {/* Event Meta */}
-                  <div className="flex flex-wrap gap-4 text-sm">
-                    {event.location && (
-                      <div
-                        className={`flex items-center gap-2 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                      >
-                        <MapPin className="h-4 w-4" />
-                        {event.location}
-                      </div>
-                    )}
-                    {event.vendor && (
-                      <div
-                        className={`flex items-center gap-2 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                      >
-                        <Users className="h-4 w-4" />
-                        {event.vendor}
-                      </div>
-                    )}
-                  </div>
+                  {(event.location || event.vendor) && (
+                    <div className="flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm">
+                      {event.location && (
+                        <div
+                          className={`flex items-center gap-1 sm:gap-2 ${
+                            isDarkMode ? "text-slate-400" : "text-slate-600"
+                          }`}
+                        >
+                          <MapPin className="h-3 sm:h-4 w-3 sm:w-4 flex-shrink-0" />
+                          <span className="truncate">{event.location}</span>
+                        </div>
+                      )}
+                      {event.vendor && (
+                        <div
+                          className={`flex items-center gap-1 sm:gap-2 ${
+                            isDarkMode ? "text-slate-400" : "text-slate-600"
+                          }`}
+                        >
+                          <Users className="h-3 sm:h-4 w-3 sm:w-4 flex-shrink-0" />
+                          <span className="truncate">{event.vendor}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             );

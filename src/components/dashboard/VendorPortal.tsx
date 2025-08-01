@@ -183,7 +183,8 @@ const VendorPortal = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
         <div>
           <h1
             className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
@@ -194,7 +195,7 @@ const VendorPortal = () => {
             Manage your wedding vendors and track contracts
           </p>
         </div>
-        <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl hover:shadow-lg transition-all duration-300">
+        <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:shadow-lg transition-all duration-300">
           <Plus className="h-5 w-5" />
           Add Vendor
         </button>
