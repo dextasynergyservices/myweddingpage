@@ -142,7 +142,6 @@ const BudgetTracker = () => {
     <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
-
         <div>
           <h1
             className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
@@ -154,7 +153,6 @@ const BudgetTracker = () => {
           </p>
         </div>
         <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:shadow-lg transition-all duration-300">
-
           <Plus className="h-5 w-5" />
           Add Expense
         </button>
@@ -330,14 +328,12 @@ const BudgetTracker = () => {
           <h2
             className={`text-lg sm:text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
           >
-
             Recent Expenses
           </h2>
         </div>
 
         {/* Desktop Expenses Table */}
         <div className="hidden sm:block overflow-x-auto">
-
           <table className="w-full">
             <thead className={isDarkMode ? "bg-slate-700" : "bg-slate-50"}>
               <tr>
@@ -345,7 +341,6 @@ const BudgetTracker = () => {
                   <th
                     key={label}
                     className={`px-4 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium ${
-
                       isDarkMode ? "text-slate-300" : "text-slate-700"
                     } ${label === "Actions" ? "text-right" : ""}`}
                   >
@@ -382,7 +377,6 @@ const BudgetTracker = () => {
                   <td className="px-4 sm:px-6 py-3 sm:py-4">
                     <span
                       className={`text-base sm:text-lg font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
-
                     >
                       ${expense.amount.toLocaleString()}
                     </span>
@@ -390,7 +384,6 @@ const BudgetTracker = () => {
                   <td className="px-4 sm:px-6 py-3 sm:py-4">
                     <span
                       className={`inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(expense.status)}`}
-
                     >
                       {expense.status.charAt(0).toUpperCase() + expense.status.slice(1)}
                     </span>
@@ -399,7 +392,6 @@ const BudgetTracker = () => {
                     <div className="flex items-center justify-end gap-1 sm:gap-2">
                       <button
                         className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
-
                           isDarkMode
                             ? "text-slate-400 hover:bg-slate-700 hover:text-white"
                             : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -408,7 +400,6 @@ const BudgetTracker = () => {
                         <Edit className="h-4 w-4" />
                       </button>
                       <button className="p-1 sm:p-2 rounded-md sm:rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
-
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -479,7 +470,6 @@ const BudgetTracker = () => {
             </motion.div>
           ))}
         </div>
-
       </div>
     </div>
   );
