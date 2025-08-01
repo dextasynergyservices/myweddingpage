@@ -76,9 +76,9 @@ const HomePackages = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <AnimatedSection className="text-center mb-20">
             <h2
-              className={`text-4xl md:text-5xl font-light mb-6 tracking-tight {
-              isDarkMode ? 'text-white' : 'text-slate-900'
-            }`}
+              className={`text-4xl md:text-5xl font-light mb-6 tracking-tight ${
+                isDarkMode ? "text-slate-300" : "text-slate-900"
+              }`}
             >
               Choose Your Package
             </h2>

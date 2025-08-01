@@ -5,8 +5,8 @@
 
   // Fix ESLint issues on save
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.fixAll.eslint": true
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
 
   // Tailwind class support

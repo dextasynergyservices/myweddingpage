@@ -1,5 +1,12 @@
-import ComingSoon from "@/components/ComingSoon";
+import HomePackages from "@/components/HomePackages";
+import AuthGate from "@/components/AuthGate";
 
 export default function Packages() {
-  return <ComingSoon title="All Packages" />;
+  return (
+    <>
+      <AuthGate>
+        <HomePackages />
+      </AuthGate>
+    </>
+  );
 }
