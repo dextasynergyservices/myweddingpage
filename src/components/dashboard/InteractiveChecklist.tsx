@@ -237,6 +237,7 @@ const InteractiveChecklist = () => {
               ? "border-slate-600 text-white focus:border-slate-500"
               : "border-slate-400 text-slate-800 focus:border-slate-600"
           }`}
+
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
@@ -253,6 +254,7 @@ const InteractiveChecklist = () => {
               ? "border-slate-600 text-white focus:border-slate-500"
               : "border-slate-400 text-slate-800 focus:border-slate-600"
           }`}
+
           value={selectedPriority}
           onChange={(e) => setSelectedPriority(e.target.value)}
         >
@@ -266,6 +268,7 @@ const InteractiveChecklist = () => {
             isDarkMode ? "text-slate-300" : "text-slate-700"
           }`}
         >
+
           <input
             type="checkbox"
             checked={showCompleted}
@@ -275,6 +278,7 @@ const InteractiveChecklist = () => {
                 ? "border-slate-600 bg-slate-700 text-indigo-500 focus:ring-indigo-500"
                 : "border-slate-400 bg-white text-indigo-600 focus:ring-indigo-500"
             }`}
+
           />
           Show Completed
         </label>

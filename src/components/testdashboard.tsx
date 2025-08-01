@@ -9,9 +9,11 @@ import {
   Calendar,
   Users,
   Camera,
+
   BarChart3,
   Eye,
   Edit,
+
   Layout,
   DollarSign,
   Video,
@@ -22,6 +24,7 @@ import {
   Bot,
   Menu,
   X,
+
 } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -38,6 +41,7 @@ import VendorPortal from "./dashboard/VendorPortal";
 import MemoryBookGenerator from "./dashboard/MemoryBookGenerator";
 import InteractiveChecklist from "./dashboard/InteractiveChecklist";
 import MobileAppExtension from "./dashboard/MobileAppExtension";
+
 
 type DashboardProps = {
   onSelectCouple: (coupleId: string) => void;
@@ -192,6 +196,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
             </div>
           </div>
         );
+
       case "photos":
         return <AIPhotoCuration />;
       case "guests":
@@ -220,6 +225,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
       {/* Welcome Section */}
       <div
         className={`rounded-3xl p-6 md:p-8 ${
+
           isDarkMode
             ? "bg-gradient-to-r from-slate-800 to-slate-700"
             : "bg-gradient-to-r from-indigo-50 to-purple-50"
@@ -242,12 +248,14 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
           </div>
           <div className="p-3 md:p-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl">
             <Heart className="h-8 md:h-12 w-8 md:w-12 text-white" fill="currentColor" />
+
           </div>
         </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+
         {stats.map((stat, index) => (
           <motion.div
             key={stat.title}
@@ -257,6 +265,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
             className={`${
               isDarkMode ? "bg-slate-800" : "bg-white"
             } rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border ${
+
               isDarkMode ? "border-slate-700" : "border-slate-100"
             }`}
           >
@@ -264,6 +273,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
               <div>
                 <p
                   className={`text-xs md:text-sm font-medium ${
+
                     isDarkMode ? "text-slate-400" : "text-slate-500"
                   }`}
                 >
@@ -271,6 +281,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                 </p>
                 <p
                   className={`text-xl md:text-3xl font-light mt-1 ${
+
                     isDarkMode ? "text-white" : "text-slate-900"
                   }`}
                 >
@@ -284,6 +295,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                 className={`p-2 md:p-3 bg-gradient-to-r ${stat.color} rounded-xl md:rounded-2xl`}
               >
                 <stat.icon className="h-5 md:h-6 w-5 md:w-6 text-white" />
+
               </div>
             </div>
           </motion.div>
@@ -302,6 +314,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
           Quick Actions
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+
           {quickActions.map((action, index) => (
             <motion.button
               key={action.title}
@@ -317,6 +330,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
               <div className="text-center">
                 <h3 className="font-semibold text-sm md:text-lg">{action.title}</h3>
                 <p className="text-white/80 text-xs md:text-sm">{action.description}</p>
+
               </div>
             </motion.button>
           ))}
@@ -333,6 +347,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
           <h2
             className={`text-xl md:text-2xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}
           >
+
             My Wedding Pages
           </h2>
           <button
@@ -341,17 +356,20 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
           >
             <Plus className="h-3 md:h-4 w-3 md:w-4" />
             <span className="text-sm md:text-base">Create New</span>
+
           </button>
         </div>
 
         {userWeddings.length > 0 ? (
           <div className="space-y-4 md:space-y-6">
+
             {userWeddings.map((wedding) => (
               <motion.div
                 key={wedding.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`p-4 md:p-6 rounded-xl md:rounded-2xl border transition-all duration-300 hover:shadow-lg ${
+
                   isDarkMode
                     ? "bg-slate-700/50 border-slate-600 hover:border-slate-500"
                     : "bg-slate-50 border-slate-200 hover:border-slate-300"
@@ -365,6 +383,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                     <div>
                       <h3
                         className={`text-lg md:text-xl font-semibold mb-1 md:mb-2 ${
+
                           isDarkMode ? "text-white" : "text-slate-900"
                         }`}
                       >
@@ -380,6 +399,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                           {wedding.date}
                         </div>
                         <span className="inline-flex px-2 md:px-3 py-0.5 md:py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+
                           {wedding.status}
                         </span>
                       </div>
@@ -393,6 +413,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                           className={`text-xl md:text-2xl font-light ${
                             isDarkMode ? "text-white" : "text-slate-900"
                           }`}
+
                         >
                           {wedding.views}
                         </p>
@@ -407,6 +428,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                           className={`text-xl md:text-2xl font-light ${
                             isDarkMode ? "text-white" : "text-slate-900"
                           }`}
+
                         >
                           {wedding.rsvpCount}/{wedding.guestCount}
                         </p>
@@ -430,6 +452,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                         className="p-2 md:p-3 bg-slate-600 text-white rounded-lg md:rounded-xl hover:bg-slate-700 transition-colors duration-200"
                       >
                         <Edit className="h-3 md:h-4 w-3 md:w-4" />
+
                       </button>
                     </div>
                   </div>
@@ -443,6 +466,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                     <div className="flex items-center justify-between mb-1 md:mb-2">
                       <span
                         className={`text-xs md:text-sm font-medium ${
+
                           isDarkMode ? "text-slate-300" : "text-slate-700"
                         }`}
                       >
@@ -452,17 +476,20 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                         className={`text-xs md:text-sm ${
                           isDarkMode ? "text-slate-400" : "text-slate-600"
                         }`}
+
                       >
                         ${wedding.spent.toLocaleString()}/${wedding.budget.toLocaleString()}
                       </span>
                     </div>
                     <div
                       className={`w-full h-1.5 md:h-2 rounded-full ${
+
                         isDarkMode ? "bg-slate-700" : "bg-slate-200"
                       }`}
                     >
                       <div
                         className="h-1.5 md:h-2 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full"
+
                         style={{ width: `${(wedding.spent / wedding.budget) * 100}%` }}
                       />
                     </div>
@@ -474,6 +501,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                     <div className="flex items-center justify-between mb-1 md:mb-2">
                       <span
                         className={`text-xs md:text-sm font-medium ${
+
                           isDarkMode ? "text-slate-300" : "text-slate-700"
                         }`}
                       >
@@ -483,17 +511,20 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                         className={`text-xs md:text-sm ${
                           isDarkMode ? "text-slate-400" : "text-slate-600"
                         }`}
+
                       >
                         {Math.round((wedding.rsvpCount / wedding.guestCount) * 100)}%
                       </span>
                     </div>
                     <div
                       className={`w-full h-1.5 md:h-2 rounded-full ${
+
                         isDarkMode ? "bg-slate-700" : "bg-slate-200"
                       }`}
                     >
                       <div
                         className="h-1.5 md:h-2 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full"
+
                         style={{ width: `${(wedding.rsvpCount / wedding.guestCount) * 100}%` }}
                       />
                     </div>
@@ -505,6 +536,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                     <div className="flex items-center justify-between mb-1 md:mb-2">
                       <span
                         className={`text-xs md:text-sm font-medium ${
+
                           isDarkMode ? "text-slate-300" : "text-slate-700"
                         }`}
                       >
@@ -514,17 +546,20 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                         className={`text-xs md:text-sm ${
                           isDarkMode ? "text-slate-400" : "text-slate-600"
                         }`}
+
                       >
                         68/95
                       </span>
                     </div>
                     <div
                       className={`w-full h-1.5 md:h-2 rounded-full ${
+
                         isDarkMode ? "bg-slate-700" : "bg-slate-200"
                       }`}
                     >
                       <div
                         className="h-1.5 md:h-2 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full"
+
                         style={{ width: `${(68 / 95) * 100}%` }}
                       />
                     </div>
@@ -546,6 +581,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
             </div>
             <h3
               className={`text-lg md:text-xl font-semibold mb-1 md:mb-2 ${
+
                 isDarkMode ? "text-white" : "text-slate-900"
               }`}
             >
@@ -554,6 +590,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
             <p
               className={`font-light mb-4 md:mb-6 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
             >
+
               Create your first wedding page to get started.
             </p>
             <button
@@ -562,6 +599,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
             >
               <Plus className="h-3 md:h-4 w-3 md:w-4" />
               <span className="text-sm md:text-base">Create Wedding Page</span>
+
             </button>
           </div>
         )}
@@ -725,6 +763,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
         {/* Sidebar Navigation - Desktop */}
         <div
           className={`hidden md:block w-72 min-h-screen border-r ${
+
             isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
           }`}
         >
@@ -830,6 +869,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
         <div className="flex-1 flex">
           <div className="flex-1 overflow-auto">
             <div className="p-4 md:p-8">
+
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
@@ -853,6 +893,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                 exit={{ width: 0, opacity: 0 }}
                 transition={{ duration: 0.3 }}
                 className={`hidden md:block border-l overflow-hidden ${
+
                   isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
                 }`}
               ></motion.div>

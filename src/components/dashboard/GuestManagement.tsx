@@ -92,7 +92,7 @@ const GuestManagement = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8">#
       {/* Responsive Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
         <div>
@@ -102,6 +102,7 @@ const GuestManagement = () => {
             Guest Management
           </h1>
           <p className={`text-sm sm:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+
             Manage your wedding guest list, RSVPs, and seating arrangements
           </p>
         </div>
@@ -111,6 +112,7 @@ const GuestManagement = () => {
         >
           <UserPlus className="h-4 sm:h-5 w-4 sm:w-5" />
           <span>Add Guest</span>
+
         </button>
       </div>
 
@@ -217,6 +219,7 @@ const GuestManagement = () => {
       >
         {/* Desktop Table */}
         <div className="hidden md:block overflow-x-auto">
+
           <table className="w-full">
             <thead className={isDarkMode ? "bg-slate-700" : "bg-slate-50"}>
               <tr>
@@ -369,6 +372,7 @@ const GuestManagement = () => {
             </motion.div>
           ))}
         </div>
+
       </div>
     </div>
   );

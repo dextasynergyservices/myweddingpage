@@ -159,6 +159,7 @@ const MobileAppExtension = () => {
     <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+
         <div>
           <h1
             className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}

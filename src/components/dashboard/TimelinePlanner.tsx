@@ -137,6 +137,7 @@ const TimelinePlanner = () => {
     <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+
         <div>
           <h1
             className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
@@ -150,6 +151,7 @@ const TimelinePlanner = () => {
         <button
           onClick={() => setShowAddEvent(true)}
           className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:shadow-lg transition-all duration-300"
+
         >
           <Plus className="h-5 w-5" />
           Add Event
@@ -245,6 +247,7 @@ const TimelinePlanner = () => {
         }`}
       >
         <div className="space-y-4 sm:space-y-6">
+
           {sortedEvents.map((event, index) => {
             const CategoryIcon = getCategoryIcon(event.category);
 
@@ -255,6 +258,7 @@ const TimelinePlanner = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className={`relative flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6 rounded-xl sm:rounded-2xl border transition-all duration-300 ${
+
                   event.completed
                     ? isDarkMode
                       ? "bg-slate-700/50 border-slate-600"
@@ -274,6 +278,7 @@ const TimelinePlanner = () => {
                   <div
                     className={`text-xs sm:text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
                   >
+
                     {event.duration}min
                   </div>
                 </div>
@@ -309,6 +314,7 @@ const TimelinePlanner = () => {
                       <button
                         onClick={() => toggleEventCompletion(event.id)}
                         className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
+
                           event.completed
                             ? "bg-emerald-600 text-white"
                             : isDarkMode
@@ -320,6 +326,7 @@ const TimelinePlanner = () => {
                       </button>
                       <button
                         className={`p-1 sm:p-2 rounded-md sm:rounded-lg transition-colors ${
+
                           isDarkMode
                             ? "text-slate-400 hover:bg-slate-600 hover:text-white"
                             : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -328,6 +335,7 @@ const TimelinePlanner = () => {
                         <Edit className="h-4 w-4" />
                       </button>
                       <button className="p-1 sm:p-2 rounded-md sm:rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
+
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -358,6 +366,7 @@ const TimelinePlanner = () => {
                       )}
                     </div>
                   )}
+
                 </div>
               </motion.div>
             );
