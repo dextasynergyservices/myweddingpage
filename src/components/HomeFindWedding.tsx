@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Sparkles, Heart, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import ParallaxBackground from "./ParallaxBackground";
 import AnimatedSection from "./AnimatedSection";
 import { useTheme } from "@/contexts/ThemeContext";
-import HomeWeddingCard from "./HomeWeddingCard"
+import HomeWeddingCard from "./HomeWeddingCard";
 
 // Mock data
 const featuredWeddings = [
@@ -15,35 +15,38 @@ const featuredWeddings = [
     title: "Sarah & Michael",
     date: "June 15, 2024",
     location: "Bali, Indonesia",
-    image: "https://images.pexels.com/photos/952437/pexels-photo-952437.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    excerpt: "A beautiful beachfront ceremony with sunset vows"
+    image:
+      "https://images.pexels.com/photos/952437/pexels-photo-952437.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    excerpt: "A beautiful beachfront ceremony with sunset vows",
   },
   {
     id: "2",
     title: "James & Emma",
     date: "August 22, 2024",
     location: "Tuscany, Italy",
-    image: "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    excerpt: "Rustic Italian vineyard wedding with local cuisine"
+    image:
+      "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    excerpt: "Rustic Italian vineyard wedding with local cuisine",
   },
   {
     id: "3",
     title: "David & Sophia",
     date: "May 5, 2024",
     location: "New York, USA",
-    image: "https://images.pexels.com/photos/1408310/pexels-photo-1408310.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    excerpt: "Modern rooftop celebration with skyline views"
+    image:
+      "https://images.pexels.com/photos/1408310/pexels-photo-1408310.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    excerpt: "Modern rooftop celebration with skyline views",
   },
   {
     id: "4",
     title: "Robert & Olivia",
     date: "September 12, 2024",
     location: "Paris, France",
-    image: "https://images.pexels.com/photos/2567376/pexels-photo-2567376.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    excerpt: "Classic Parisian wedding at a historic chateau"
-  }
+    image:
+      "https://images.pexels.com/photos/2567376/pexels-photo-2567376.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    excerpt: "Classic Parisian wedding at a historic chateau",
+  },
 ];
-
 
 const HomeFindWedding = () => {
   const { isDarkMode } = useTheme();

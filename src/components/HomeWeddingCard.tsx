@@ -31,9 +31,7 @@ const HomeWeddingCard = ({ wedding, index, isDarkMode }: WeddingCardProps) => {
       <Link
         href={`/weddingPageList/${wedding.id}`}
         className={`block h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-300 ${
-          isDarkMode
-            ? "bg-slate-800 hover:bg-slate-700"
-            : "bg-white hover:bg-slate-50"
+          isDarkMode ? "bg-slate-800 hover:bg-slate-700" : "bg-white hover:bg-slate-50"
         }`}
       >
         <div className="relative h-48 w-full">
@@ -51,31 +49,17 @@ const HomeWeddingCard = ({ wedding, index, isDarkMode }: WeddingCardProps) => {
         </div>
         <div className="p-6">
           <h3
-            className={`text-xl font-semibold mb-2 ${
-              isDarkMode ? "text-white" : "text-slate-800"
-            }`}
+            className={`text-xl font-semibold mb-2 ${isDarkMode ? "text-white" : "text-slate-800"}`}
           >
             {wedding.title}
           </h3>
-          <p
-            className={`text-sm mb-1 ${
-              isDarkMode ? "text-indigo-300" : "text-indigo-600"
-            }`}
-          >
+          <p className={`text-sm mb-1 ${isDarkMode ? "text-indigo-300" : "text-indigo-600"}`}>
             {wedding.date}
           </p>
-          <p
-            className={`text-sm mb-3 ${
-              isDarkMode ? "text-slate-400" : "text-slate-600"
-            }`}
-          >
+          <p className={`text-sm mb-3 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
             {wedding.location}
           </p>
-          <p
-            className={`text-sm ${
-              isDarkMode ? "text-slate-300" : "text-slate-500"
-            }`}
-          >
+          <p className={`text-sm ${isDarkMode ? "text-slate-300" : "text-slate-500"}`}>
             {wedding.excerpt}
           </p>
         </div>
