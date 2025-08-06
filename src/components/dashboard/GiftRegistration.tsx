@@ -447,7 +447,7 @@ const GiftRegistration = () => {
           {wellWishes.map(wish => (
             <div key={wish.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-full bg-transparent flex items-center justify-center flex-shrink-0">
                   <User size={20} />
                 </div>
                 <div className="flex-grow">
@@ -463,7 +463,7 @@ const GiftRegistration = () => {
                       <div className={`relative w-11 h-6 rounded-full peer ${
                         wish.approved
                           ? 'bg-green-500 peer-checked:bg-green-600'
-                          : 'bg-gray-200 peer-checked:bg-gray-500'
+                          : ` ${isDarkMode ? 'bg-gray-600 ' : 'bg-gray-600 peer-checked:bg-gray-200'}`
                       }`}>
                         <div className={`absolute top-0.5 left-[2px] bg-white rounded-full h-5 w-5 transition-all ${
                           wish.approved ? 'translate-x-full' : ''
@@ -789,7 +789,7 @@ const GiftRegistration = () => {
       {/* View Full Wish Modal */}
       {isViewWishOpen && currentWish && (
         <div className="fixed inset-0  z-50 flex items-center justify-center p-4">
-          <div className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-gray-700 text-white" : "bg-gray-300 text-black"}`}>
+          <div className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}>
             <button
               onClick={() => setIsViewWishOpen(false)}
               className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
@@ -797,7 +797,7 @@ const GiftRegistration = () => {
               <X size={20} />
             </button>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-transpare flex items-center justify-center">
                 <User size={20} />
               </div>
               <div>
@@ -833,7 +833,7 @@ const GiftRegistration = () => {
               </label>
               <button
                 onClick={() => setIsViewWishOpen(false)}
-                className="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-slate-700"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600"
               >
                 Close
               </button>
