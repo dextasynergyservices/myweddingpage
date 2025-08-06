@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Gift, Mail, X, User, Edit, Trash2, Heart, ChevronDown, Link, CreditCard, Banknote } from "lucide-react";
+import { Gift, Mail, X, User, Edit, Trash2, ChevronDown, Link, CreditCard } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 
 type GiftItem = {
@@ -46,7 +46,9 @@ type WellWish = {
 
 const GiftRegistration = () => {
   const { isDarkMode } = useTheme();
-  const [activeTab, setActiveTab] = useState<'registry' | 'cash' | 'received' | 'wellWishes'>('registry');
+  const [activeTab, setActiveTab] = useState<"registry" | "cash" | "received" | "wellWishes">(
+    "registry"
+  );
 
   // Sample data
   const [gifts, setGifts] = useState<GiftItem[]>([
@@ -64,7 +66,7 @@ const GiftRegistration = () => {
       name: "Blender",
       description: "High-speed professional blender",
       price: 89.99,
-      link: "https://example.com/blender"
+      link: "https://example.com/blender",
     },
   ]);
 
@@ -73,8 +75,8 @@ const GiftRegistration = () => {
       id: "1",
       bankName: "Chase Bank",
       accountNumber: "1234567890",
-      accountName: "John & Jane Doe"
-    }
+      accountName: "John & Jane Doe",
+    },
   ]);
 
   const [receivedGifts, setReceivedGifts] = useState<ReceivedGift[]>([
@@ -83,10 +85,11 @@ const GiftRegistration = () => {
       name: "John Doe",
       giftId: "1",
       amount: 120,
-      message: "Wishing you a lifetime of happiness! May this gift help you start your new life together.",
+      message:
+        "Wishing you a lifetime of happiness! May this gift help you start your new life together.",
       date: "2023-05-15",
       approved: true,
-      thanked: true
+      thanked: true,
     },
     {
       id: "2",
@@ -95,7 +98,7 @@ const GiftRegistration = () => {
       message: "For your honeymoon fund! Hope you have an amazing trip.",
       date: "2023-05-18",
       approved: true,
-      thanked: false
+      thanked: false,
     },
     {
       id: "3",
@@ -104,25 +107,27 @@ const GiftRegistration = () => {
       message: "Congratulations on your wedding!",
       date: "2023-05-20",
       approved: false,
-      thanked: false
-    }
+      thanked: false,
+    },
   ]);
 
   const [wellWishes, setWellWishes] = useState<WellWish[]>([
     {
       id: "1",
       name: "Sarah Johnson",
-      message: "Congratulations on your special day! Wishing you both a lifetime of love and happiness together. May your marriage be filled with joy, laughter, and countless beautiful memories.",
+      message:
+        "Congratulations on your special day! Wishing you both a lifetime of love and happiness together. May your marriage be filled with joy, laughter, and countless beautiful memories.",
       date: "2023-05-12",
-      approved: true
+      approved: true,
     },
     {
       id: "2",
       name: "David Wilson",
-      message: "Best wishes for your wedding and your future together! May your love continue to grow stronger with each passing year.",
+      message:
+        "Best wishes for your wedding and your future together! May your love continue to grow stronger with each passing year.",
       date: "2023-05-14",
-      approved: false
-    }
+      approved: false,
+    },
   ]);
 
   // Modal states
@@ -142,40 +147,38 @@ const GiftRegistration = () => {
   const [thankYouMessage, setThankYouMessage] = useState("");
   const [thankAllMessage, setThankAllMessage] = useState("");
   const [newGiftLink, setNewGiftLink] = useState("");
-  const [newAccount, setNewAccount] = useState<Omit<CashGift, 'id'>>({
+  const [newAccount, setNewAccount] = useState<Omit<CashGift, "id">>({
     bankName: "",
     accountNumber: "",
-    accountName: ""
+    accountName: "",
   });
 
   // Helper functions
   const toggleApproval = (id: string) => {
-    setWellWishes(wellWishes.map(wish =>
-      wish.id === id ? { ...wish, approved: !wish.approved } : wish
-    ));
+    setWellWishes(
+      wellWishes.map((wish) => (wish.id === id ? { ...wish, approved: !wish.approved } : wish))
+    );
   };
 
   const deleteGift = (id: string) => {
-    setGifts(gifts.filter(gift => gift.id !== id));
+    setGifts(gifts.filter((gift) => gift.id !== id));
   };
 
   const deleteAccount = (id: string) => {
-    setCashGifts(cashGifts.filter(account => account.id !== id));
+    setCashGifts(cashGifts.filter((account) => account.id !== id));
   };
 
   const updateGift = () => {
     if (!editGift) return;
-    setGifts(gifts.map(gift =>
-      gift.id === editGift.id ? editGift : gift
-    ));
+    setGifts(gifts.map((gift) => (gift.id === editGift.id ? editGift : gift)));
     setIsEditModalOpen(false);
   };
 
   const updateAccount = () => {
     if (!editAccount) return;
-    setCashGifts(cashGifts.map(account =>
-      account.id === editAccount.id ? editAccount : account
-    ));
+    setCashGifts(
+      cashGifts.map((account) => (account.id === editAccount.id ? editAccount : account))
+    );
     setIsCashEditModalOpen(false);
   };
 
@@ -186,7 +189,7 @@ const GiftRegistration = () => {
       name: "New Gift from Link",
       description: "Description will be fetched from the link",
       price: 0,
-      link: newGiftLink
+      link: newGiftLink,
     };
     setGifts([...gifts, newGift]);
     setIsAddGiftOpen(false);
@@ -196,35 +199,39 @@ const GiftRegistration = () => {
   const addAccountDetails = () => {
     const newAccountWithId: CashGift = {
       id: Date.now().toString(),
-      ...newAccount
+      ...newAccount,
     };
     setCashGifts([...cashGifts, newAccountWithId]);
     setIsAddAccountOpen(false);
     setNewAccount({
       bankName: "",
       accountNumber: "",
-      accountName: ""
+      accountName: "",
     });
   };
 
   // Thank individual gift giver
   const handleThankYou = (gift: ReceivedGift) => {
     setCurrentRecipient(gift.name);
-    setThankYouMessage(`Dear ${gift.name},\n\nThank you so much for your generous gift! We truly appreciate your thoughtfulness and support.`);
+    setThankYouMessage(
+      `Dear ${gift.name},\n\nThank you so much for your generous gift! We truly appreciate your thoughtfulness and support.`
+    );
     setIsThankYouOpen(true);
   };
 
   // Send thank you to individual
   const sendThankYou = () => {
-    setReceivedGifts(receivedGifts.map(gift =>
-      gift.name === currentRecipient ? { ...gift, thanked: true } : gift
-    ));
+    setReceivedGifts(
+      receivedGifts.map((gift) =>
+        gift.name === currentRecipient ? { ...gift, thanked: true } : gift
+      )
+    );
     setIsThankYouOpen(false);
   };
 
   // Send thank you to all
   const thankAllGivers = () => {
-    setReceivedGifts(receivedGifts.map(gift => ({ ...gift, thanked: true })));
+    setReceivedGifts(receivedGifts.map((gift) => ({ ...gift, thanked: true })));
     setIsThankAllOpen(false);
   };
 
@@ -246,25 +253,28 @@ const GiftRegistration = () => {
 
       {/* Tabs */}
       <div className="flex overflow-x-auto mb-4 md:mb-6 border-b no-scrollbar">
-        {(['registry', 'cash', 'received', 'wellWishes'] as const).map(tab => (
+        {(["registry", "cash", "received", "wellWishes"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-2 text-sm md:text-base md:px-4 md:py-2 font-medium whitespace-nowrap ${
-              activeTab === tab ? 'border-b-2 border-primary text-primary' : 'text-muted-foreground'
+              activeTab === tab ? "border-b-2 border-primary text-primary" : "text-muted-foreground"
             }`}
           >
-            {tab === 'registry' ? 'Gift Registry' :
-             tab === 'cash' ? 'Bank Details' :
-             tab === 'received' ? `Gifts Received (${receivedGifts.length})` :
-             `Well Wishes (${wellWishes.length})`}
+            {tab === "registry"
+              ? "Gift Registry"
+              : tab === "cash"
+                ? "Bank Details"
+                : tab === "received"
+                  ? `Gifts Received (${receivedGifts.length})`
+                  : `Well Wishes (${wellWishes.length})`}
           </button>
         ))}
       </div>
 
       {/* Action Buttons */}
       <div className="flex justify-between mb-4 md:mb-6">
-        {activeTab === 'registry' && (
+        {activeTab === "registry" && (
           <div className="flex space-x-2">
             <button
               onClick={() => setIsAddGiftOpen(true)}
@@ -280,7 +290,7 @@ const GiftRegistration = () => {
                   id: Date.now().toString(),
                   name: "",
                   description: "",
-                  price: 0
+                  price: 0,
                 });
                 setIsEditModalOpen(true);
               }}
@@ -292,7 +302,7 @@ const GiftRegistration = () => {
             </button>
           </div>
         )}
-        {activeTab === 'cash' && (
+        {activeTab === "cash" && (
           <button
             onClick={() => setIsAddAccountOpen(true)}
             className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 py-1 md:px-4 md:py-2 rounded-lg text-sm md:text-base"
@@ -301,10 +311,12 @@ const GiftRegistration = () => {
             <span>Add Account</span>
           </button>
         )}
-        {activeTab === 'received' && (
+        {activeTab === "received" && (
           <button
             onClick={() => {
-              setThankAllMessage("Dear Friends and Family,\n\nWe are so grateful for all your generous gifts and support. Thank you for helping us start our new life together!");
+              setThankAllMessage(
+                "Dear Friends and Family,\n\nWe are so grateful for all your generous gifts and support. Thank you for helping us start our new life together!"
+              );
               setIsThankAllOpen(true);
             }}
             className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 py-2 rounded-lg"
@@ -316,9 +328,9 @@ const GiftRegistration = () => {
       </div>
 
       {/* Main Content */}
-      {activeTab === 'registry' && (
+      {activeTab === "registry" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {gifts.map(gift => (
+          {gifts.map((gift) => (
             <div key={gift.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
               <div className="flex justify-between items-start">
                 <h3 className="font-medium">{gift.name}</h3>
@@ -331,15 +343,22 @@ const GiftRegistration = () => {
               <p className="text-sm text-muted-foreground mt-1">{gift.description}</p>
               <p className="font-bold mt-2">${gift.price.toFixed(2)}</p>
               {gift.link && (
-                <a href={gift.link} target="_blank" rel="noopener noreferrer" className="text-sm text-indigo-600 dark:text-indigo-400 mt-1 flex items-center gap-1">
+                <a
+                  href={gift.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-indigo-600 dark:text-indigo-400 mt-1 flex items-center gap-1"
+                >
                   <Link size={14} /> View product
                 </a>
               )}
               <div className="flex justify-end gap-2 mt-4">
-                <button onClick={() => {
-                  setEditGift(gift);
-                  setIsEditModalOpen(true);
-                }}>
+                <button
+                  onClick={() => {
+                    setEditGift(gift);
+                    setIsEditModalOpen(true);
+                  }}
+                >
                   <Edit size={16} />
                 </button>
                 <button onClick={() => deleteGift(gift.id)} className="text-red-500">
@@ -351,17 +370,22 @@ const GiftRegistration = () => {
         </div>
       )}
 
-      {activeTab === 'cash' && (
+      {activeTab === "cash" && (
         <div className="space-y-4">
-          {cashGifts.map(account => (
-            <div key={account.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+          {cashGifts.map((account) => (
+            <div
+              key={account.id}
+              className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+            >
               <div className="flex justify-between">
                 <h3 className="font-medium">{account.bankName}</h3>
                 <div className="flex gap-2">
-                  <button onClick={() => {
-                    setEditAccount(account);
-                    setIsCashEditModalOpen(true);
-                  }}>
+                  <button
+                    onClick={() => {
+                      setEditAccount(account);
+                      setIsCashEditModalOpen(true);
+                    }}
+                  >
                     <Edit size={16} />
                   </button>
                   <button onClick={() => deleteAccount(account.id)} className="text-red-500">
@@ -376,9 +400,9 @@ const GiftRegistration = () => {
         </div>
       )}
 
-      {activeTab === 'received' && (
+      {activeTab === "received" && (
         <div className="space-y-4">
-          {receivedGifts.map(gift => (
+          {receivedGifts.map((gift) => (
             <div key={gift.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
@@ -395,12 +419,14 @@ const GiftRegistration = () => {
                       }`}>
                         {gift.approved ? 'Received' : 'Pending'}
                       </span> */}
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        gift.thanked
-                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                          : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-                      }`}>
-                        {gift.thanked ? 'Thanked' : 'Not Thanked'}
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          gift.thanked
+                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                            : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                        }`}
+                      >
+                        {gift.thanked ? "Thanked" : "Not Thanked"}
                       </span>
                     </div>
                   </div>
@@ -415,9 +441,7 @@ const GiftRegistration = () => {
                       </p>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                    {gift.message}
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{gift.message}</p>
                   <div className="flex justify-between items-center mt-3">
                     <span className="text-xs text-muted-foreground">
                       {new Date(gift.date).toLocaleDateString()}
@@ -427,12 +451,12 @@ const GiftRegistration = () => {
                       disabled={gift.thanked}
                       className={`flex items-center gap-1 px-3 py-1 rounded-lg text-sm ${
                         gift.thanked
-                          ? 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
-                          : 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
+                          ? "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+                          : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
                       }`}
                     >
                       <Mail size={14} />
-                      {gift.thanked ? 'Thanked' : 'Thank'}
+                      {gift.thanked ? "Thanked" : "Thank"}
                     </button>
                   </div>
                 </div>
@@ -442,9 +466,9 @@ const GiftRegistration = () => {
         </div>
       )}
 
-      {activeTab === 'wellWishes' && (
+      {activeTab === "wellWishes" && (
         <div className="space-y-4">
-          {wellWishes.map(wish => (
+          {wellWishes.map((wish) => (
             <div key={wish.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-transparent flex items-center justify-center flex-shrink-0">
@@ -460,23 +484,25 @@ const GiftRegistration = () => {
                         onChange={() => toggleApproval(wish.id)}
                         className="sr-only peer"
                       />
-                      <div className={`relative w-11 h-6 rounded-full peer ${
-                        wish.approved
-                          ? 'bg-green-500 peer-checked:bg-green-600'
-                          : ` ${isDarkMode ? 'bg-gray-600 ' : 'bg-gray-600 peer-checked:bg-gray-200'}`
-                      }`}>
-                        <div className={`absolute top-0.5 left-[2px] bg-white rounded-full h-5 w-5 transition-all ${
-                          wish.approved ? 'translate-x-full' : ''
-                        }`}></div>
+                      <div
+                        className={`relative w-11 h-6 rounded-full peer ${
+                          wish.approved
+                            ? "bg-green-500 peer-checked:bg-green-600"
+                            : ` ${isDarkMode ? "bg-gray-600 " : "bg-gray-600 peer-checked:bg-gray-200"}`
+                        }`}
+                      >
+                        <div
+                          className={`absolute top-0.5 left-[2px] bg-white rounded-full h-5 w-5 transition-all ${
+                            wish.approved ? "translate-x-full" : ""
+                          }`}
+                        ></div>
                       </div>
                       <span className="ml-2 text-sm font-medium">
-                        {wish.approved ? 'Approved' : 'Pending'}
+                        {wish.approved ? "Approved" : "Pending"}
                       </span>
                     </label>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
-                    {wish.message}
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{wish.message}</p>
                   <div className="flex justify-between items-center mt-3">
                     <span className="text-xs text-muted-foreground">
                       {new Date(wish.date).toLocaleDateString()}
@@ -500,8 +526,13 @@ const GiftRegistration = () => {
       {/* Modals */}
       {isEditModalOpen && editGift && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
-            <button onClick={() => setIsEditModalOpen(false)} className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700">
+          <div
+            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+          >
+            <button
+              onClick={() => setIsEditModalOpen(false)}
+              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
+            >
               <X size={20} />
             </button>
             <h2 className="text-xl font-bold mb-4">{editGift.id ? "Edit Gift" : "Add New Gift"}</h2>
@@ -511,7 +542,7 @@ const GiftRegistration = () => {
                 <input
                   type="text"
                   value={editGift.name}
-                  onChange={(e) => setEditGift({...editGift, name: e.target.value})}
+                  onChange={(e) => setEditGift({ ...editGift, name: e.target.value })}
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -519,7 +550,7 @@ const GiftRegistration = () => {
                 <label className="block text-sm font-medium mb-1">Description</label>
                 <textarea
                   value={editGift.description}
-                  onChange={(e) => setEditGift({...editGift, description: e.target.value})}
+                  onChange={(e) => setEditGift({ ...editGift, description: e.target.value })}
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -528,7 +559,9 @@ const GiftRegistration = () => {
                 <input
                   type="number"
                   value={editGift.price}
-                  onChange={(e) => setEditGift({...editGift, price: parseFloat(e.target.value) || 0})}
+                  onChange={(e) =>
+                    setEditGift({ ...editGift, price: parseFloat(e.target.value) || 0 })
+                  }
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -536,8 +569,8 @@ const GiftRegistration = () => {
                 <label className="block text-sm font-medium mb-1">Link (optional)</label>
                 <input
                   type="url"
-                  value={editGift.link || ''}
-                  onChange={(e) => setEditGift({...editGift, link: e.target.value})}
+                  value={editGift.link || ""}
+                  onChange={(e) => setEditGift({ ...editGift, link: e.target.value })}
                   className="w-full p-2 rounded border"
                   placeholder="https://example.com/product"
                 />
@@ -563,8 +596,13 @@ const GiftRegistration = () => {
 
       {isCashEditModalOpen && editAccount && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
-            <button onClick={() => setIsCashEditModalOpen(false)} className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700">
+          <div
+            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+          >
+            <button
+              onClick={() => setIsCashEditModalOpen(false)}
+              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
+            >
               <X size={20} />
             </button>
             <h2 className="text-xl font-bold mb-4">Edit Account</h2>
@@ -574,7 +612,7 @@ const GiftRegistration = () => {
                 <input
                   type="text"
                   value={editAccount.bankName}
-                  onChange={(e) => setEditAccount({...editAccount, bankName: e.target.value})}
+                  onChange={(e) => setEditAccount({ ...editAccount, bankName: e.target.value })}
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -583,7 +621,7 @@ const GiftRegistration = () => {
                 <input
                   type="text"
                   value={editAccount.accountName}
-                  onChange={(e) => setEditAccount({...editAccount, accountName: e.target.value})}
+                  onChange={(e) => setEditAccount({ ...editAccount, accountName: e.target.value })}
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -592,7 +630,9 @@ const GiftRegistration = () => {
                 <input
                   type="text"
                   value={editAccount.accountNumber}
-                  onChange={(e) => setEditAccount({...editAccount, accountNumber: e.target.value})}
+                  onChange={(e) =>
+                    setEditAccount({ ...editAccount, accountNumber: e.target.value })
+                  }
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -617,8 +657,13 @@ const GiftRegistration = () => {
 
       {isAddGiftOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
-            <button onClick={() => setIsAddGiftOpen(false)} className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700">
+          <div
+            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+          >
+            <button
+              onClick={() => setIsAddGiftOpen(false)}
+              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
+            >
               <X size={20} />
             </button>
             <h2 className="text-xl font-bold mb-4">Add Gift from Link</h2>
@@ -654,8 +699,13 @@ const GiftRegistration = () => {
 
       {isAddAccountOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
-            <button onClick={() => setIsAddAccountOpen(false)} className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700">
+          <div
+            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+          >
+            <button
+              onClick={() => setIsAddAccountOpen(false)}
+              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
+            >
               <X size={20} />
             </button>
             <h2 className="text-xl font-bold mb-4">Add Bank Account</h2>
@@ -665,7 +715,7 @@ const GiftRegistration = () => {
                 <input
                   type="text"
                   value={newAccount.bankName}
-                  onChange={(e) => setNewAccount({...newAccount, bankName: e.target.value})}
+                  onChange={(e) => setNewAccount({ ...newAccount, bankName: e.target.value })}
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -674,7 +724,7 @@ const GiftRegistration = () => {
                 <input
                   type="text"
                   value={newAccount.accountName}
-                  onChange={(e) => setNewAccount({...newAccount, accountName: e.target.value})}
+                  onChange={(e) => setNewAccount({ ...newAccount, accountName: e.target.value })}
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -683,7 +733,7 @@ const GiftRegistration = () => {
                 <input
                   type="text"
                   value={newAccount.accountNumber}
-                  onChange={(e) => setNewAccount({...newAccount, accountNumber: e.target.value})}
+                  onChange={(e) => setNewAccount({ ...newAccount, accountNumber: e.target.value })}
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -709,7 +759,9 @@ const GiftRegistration = () => {
       {/* Thank You Modal (Individual) */}
       {isThankYouOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
+          <div
+            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+          >
             <button
               onClick={() => setIsThankYouOpen(false)}
               className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
@@ -749,7 +801,9 @@ const GiftRegistration = () => {
       {/* Thank All Modal */}
       {isThankAllOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}>
+          <div
+            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+          >
             <button
               onClick={() => setIsThankAllOpen(false)}
               className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
@@ -759,7 +813,9 @@ const GiftRegistration = () => {
             <h2 className="text-xl font-bold mb-4">Thank Everyone</h2>
             <div className="space-y-4">
               <div>
-                <p className="text-sm mb-2">This message will be sent to all gift givers who haven't been thanked yet.</p>
+                <p className="text-sm mb-2">
+                  This message will be sent to all gift givers who haven&#39;t been thanked yet.
+                </p>
                 <textarea
                   value={thankAllMessage}
                   onChange={(e) => setThankAllMessage(e.target.value)}
@@ -789,7 +845,9 @@ const GiftRegistration = () => {
       {/* View Full Wish Modal */}
       {isViewWishOpen && currentWish && (
         <div className="fixed inset-0  z-50 flex items-center justify-center p-4">
-          <div className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}>
+          <div
+            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"}`}
+          >
             <button
               onClick={() => setIsViewWishOpen(false)}
               className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
@@ -807,7 +865,7 @@ const GiftRegistration = () => {
                 </p>
               </div>
             </div>
-            <div className={`bg-gray rounded-lg p-4 `} >
+            <div className={`bg-gray rounded-lg p-4 `}>
               <p className="whitespace-pre-line">{currentWish.message}</p>
             </div>
             <div className="mt-4 flex justify-between items-center">
@@ -818,17 +876,21 @@ const GiftRegistration = () => {
                   onChange={() => toggleApproval(currentWish.id)}
                   className="sr-only peer"
                 />
-                <div className={`relative w-11 h-6 rounded-full peer ${
-                  currentWish.approved
-                    ? 'bg-green-500 peer-checked:bg-green-600'
-                    : 'bg-gray-200 peer-checked:bg-gray-500'
-                }`}>
-                  <div className={`absolute top-0.5 left-[2px] bg-white rounded-full h-5 w-5 transition-all ${
-                    currentWish.approved ? 'translate-x-full' : ''
-                  }`}></div>
+                <div
+                  className={`relative w-11 h-6 rounded-full peer ${
+                    currentWish.approved
+                      ? "bg-green-500 peer-checked:bg-green-600"
+                      : "bg-gray-200 peer-checked:bg-gray-500"
+                  }`}
+                >
+                  <div
+                    className={`absolute top-0.5 left-[2px] bg-white rounded-full h-5 w-5 transition-all ${
+                      currentWish.approved ? "translate-x-full" : ""
+                    }`}
+                  ></div>
                 </div>
                 <span className="ml-2 text-sm font-medium">
-                  {currentWish.approved ? 'Approved' : 'Pending'}
+                  {currentWish.approved ? "Approved" : "Pending"}
                 </span>
               </label>
               <button
@@ -844,6 +906,5 @@ const GiftRegistration = () => {
     </div>
   );
 };
-
 
 export default GiftRegistration;

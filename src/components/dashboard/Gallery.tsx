@@ -106,43 +106,40 @@ const Gallery = () => {
   return (
     <div className="space-y-8">
       <div>
-      <h1
-        className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
-        >
-        Wedding Photo Gallery
-      </h1>
-      <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-        Browse and upload your wedding photos by category.
-      </p>
+        <h1 className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+          Wedding Photo Gallery
+        </h1>
+        <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+          Browse and upload your wedding photos by category.
+        </p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2 sm:gap-4 flex-wrap">
         {categories.map((cat) => (
-            <button
+          <button
             key={cat.value}
             onClick={() => setSelectedTab(cat.value)}
             className={`px-4 py-2 rounded-full text-sm font-medium border transition-all duration-300 ease-in-out
                 ${
-                selectedTab === cat.value
+                  selectedTab === cat.value
                     ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-transparent shadow-md"
-                    : `${isDarkMode
-                        ? "text-slate-300 border-slate-600"
-                        : "text-black border-slate-300"
-                    } hover:bg-gradient-to-r hover:from-indigo-600 hover:to-purple-600 hover:text-white hover:border-transparent hover:cursor-pointer`
+                    : `${
+                        isDarkMode
+                          ? "text-slate-300 border-slate-600"
+                          : "text-black border-slate-300"
+                      } hover:bg-gradient-to-r hover:from-indigo-600 hover:to-purple-600 hover:text-white hover:border-transparent hover:cursor-pointer`
                 }`}
-            >
+          >
             {cat.label}
-            </button>
+          </button>
         ))}
       </div>
-
-
 
       {/* Upload Form */}
       <form
         onSubmit={handleUpload}
-        className= {`flex flex-col sm:flex-row gap-4 items-center rounded-2xl p-6 ${isDarkMode ? "text-white bg-slate-800 " : "bg-white text-slate-900"}`}
+        className={`flex flex-col sm:flex-row gap-4 items-center rounded-2xl p-6 ${isDarkMode ? "text-white bg-slate-800 " : "bg-white text-slate-900"}`}
       >
         <input
           type="file"
@@ -197,41 +194,40 @@ const Gallery = () => {
       </div>
 
       <AnimatePresence>
-  {modalPhoto && (
-    <motion.div
-      className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={() => setModalPhoto(null)}
-    >
-      {/* Modal */}
-      <div
-        className="relative max-w-5xl w-full max-h-[90vh] p-4 md:p-8 overflow-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="text-white text-center mt-4">{modalPhoto.category}</div>
-        <Image
-          src={modalPhoto.url}
-          alt={modalPhoto.category}
-          width={1200}
-          height={800}
-          className="w-full h-auto max-h-[80vh] object-contain rounded-lg mx-auto"
-          priority
-        />
+        {modalPhoto && (
+          <motion.div
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setModalPhoto(null)}
+          >
+            {/* Modal */}
+            <div
+              className="relative max-w-5xl w-full max-h-[90vh] p-4 md:p-8 overflow-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="text-white text-center mt-4">{modalPhoto.category}</div>
+              <Image
+                src={modalPhoto.url}
+                alt={modalPhoto.category}
+                width={1200}
+                height={800}
+                className="w-full h-auto max-h-[80vh] object-contain rounded-lg mx-auto"
+                priority
+              />
 
-        {/* Close Button */}
-        <button
-          onClick={() => setModalPhoto(null)}
-          className="absolute top-4 right-4 bg-black/70 hover:bg-black text-white p-2 rounded-full transition"
-        >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
-
+              {/* Close Button */}
+              <button
+                onClick={() => setModalPhoto(null)}
+                className="absolute top-4 right-4 bg-black/70 hover:bg-black text-white p-2 rounded-full transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

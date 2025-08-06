@@ -127,7 +127,7 @@ const InteractiveChecklist = () => {
     { id: "attire", name: "Attire", color: "from-pink-500 to-rose-600", icon: User },
     { id: "catering", name: "Catering", color: "from-amber-500 to-orange-600", icon: Calendar },
     { id: "flowers", name: "Flowers", color: "from-green-500 to-emerald-600", icon: Calendar },
-    {id: "others", name: "Others", color: "from-green-500 to-emerald-600", icon: Boxes },
+    { id: "others", name: "Others", color: "from-green-500 to-emerald-600", icon: Boxes },
   ];
 
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -182,7 +182,7 @@ const InteractiveChecklist = () => {
   const completedTasks = tasks.filter((t) => t.completed).length;
   const overdueTasks = tasks.filter((t) => isOverdue(t.dueDate, t.completed)).length;
   const totalTasks = tasks.length;
-  const completionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+  // const completionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
     <AnimatedSection className="space-y-12">
@@ -194,7 +194,7 @@ const InteractiveChecklist = () => {
             Wedding Checklist
           </h1>
           <p className={`text-sm sm:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-           Track tasks, mark progress, and keep your big day stress-free.
+            Track tasks, mark progress, and keep your big day stress-free.
           </p>
         </div>
         <div className="flex justify-end">
@@ -409,7 +409,9 @@ const InteractiveChecklist = () => {
 
               <select
                 value={newTask.priority}
-                onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as "low" | "medium" | "high" })}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, priority: e.target.value as "low" | "medium" | "high" })
+                }
                 className="rounded-md border px-3 py-2 text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white"
               >
                 <option value="high">High</option>
@@ -483,7 +485,6 @@ const InteractiveChecklist = () => {
                   });
                 }}
                 className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 cursor-pointer text-white px-4 py-2 rounded-xl text-sm transition duration-300"
-
               >
                 Assign Task
               </button>

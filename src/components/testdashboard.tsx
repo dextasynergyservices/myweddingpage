@@ -15,7 +15,6 @@ import {
   Layout,
   DollarSign,
   Video,
-  UserCheck,
   CheckSquare,
   Gift,
   Bot,
@@ -35,7 +34,7 @@ import GuestManagement from "./dashboard/GuestManagement";
 // import BudgetTracker from "./dashboard/BudgetTracker";
 import LiveStreaming from "./dashboard/LiveStreaming";
 // import VendorPortal from "./dashboard/VendorPortal";
-import GiftRegistration from "./dashboard/GiftRegistration"
+import GiftRegistration from "./dashboard/GiftRegistration";
 // import MemoryBookGenerator from "./dashboard/MemoryBookGenerator";
 import InteractiveChecklist from "./dashboard/InteractiveChecklist";
 // import MobileAppExtension from "./dashboard/MobileAppExtension";
@@ -67,7 +66,12 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
     // { id: "budget", label: "Budget", icon: DollarSign, description: "Expense tracking" },
     { id: "streaming", label: "Live Stream", icon: Video, description: "Live streaming setup" },
     // { id: "vendors", label: "Vendors", icon: UserCheck, description: "Vendor management" },
-    { id: "gift", label: "Gifts/Wishes", icon: Gift, description: "Share what you'd love to receive on your special day" },
+    {
+      id: "gift",
+      label: "Gifts/Wishes",
+      icon: Gift,
+      description: "Share what you'd love to receive on your special day",
+    },
     // { id: "memory", label: "Memory Book", icon: BookOpen, description: "Automated memory book" },
     {
       id: "checklist",
@@ -196,7 +200,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
       // case "photos":
       //   return <AIPhotoCuration />;
       case "gallery":
-      return <Gallery />;
+        return <Gallery />;
       case "guests":
         return <GuestManagement />;
       // case "timeline":
@@ -208,7 +212,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
       // case "vendors":
       //   return <VendorPortal />;
       case "gift":
-        return <GiftRegistration />
+        return <GiftRegistration />;
       // case "memory":
       //   return <MemoryBookGenerator />;
       case "checklist":
