@@ -10,9 +10,9 @@ export default function Home() {
     <>
       <AuthGate>
         <HomeHero />
+        <HomeFindWedding />
         <HomeFeatures />
         <HomePackages />
-        <HomeFindWedding />
         <HomeTestimonials />
       </AuthGate>
     </>

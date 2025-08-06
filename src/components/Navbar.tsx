@@ -12,7 +12,7 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Packages", href: "/packages" },
-  { label: "Wedding Pages", href: "/wedding-pages" },
+  { label: "Wedding Pages", href: "/WeddingPageList" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
