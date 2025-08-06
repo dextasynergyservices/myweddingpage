@@ -10,6 +10,8 @@ import {
   AlertTriangle,
   CheckCircle,
   Users,
+  Plus,
+  Boxes,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import AnimatedSection from "@/components/AnimatedSection";
@@ -26,6 +28,7 @@ interface ChecklistItem {
   completedDate?: string;
   dependencies?: string[];
   estimatedTime: number;
+  phone?: string;
 }
 
 interface Category {
@@ -100,6 +103,18 @@ const InteractiveChecklist = () => {
     },
   ]);
 
+  const [showModal, setShowModal] = useState(false);
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    category: "venue",
+    priority: "medium" as "low" | "medium" | "high",
+    dueDate: "",
+    assignedTo: "",
+    phone: "",
+    estimatedTime: 1,
+  });
+
   const categories: Category[] = [
     { id: "venue", name: "Venue", color: "from-purple-500 to-indigo-600", icon: Calendar },
     { id: "vendors", name: "Vendors", color: "from-blue-500 to-cyan-600", icon: Users },
@@ -112,6 +127,7 @@ const InteractiveChecklist = () => {
     { id: "attire", name: "Attire", color: "from-pink-500 to-rose-600", icon: User },
     { id: "catering", name: "Catering", color: "from-amber-500 to-orange-600", icon: Calendar },
     { id: "flowers", name: "Flowers", color: "from-green-500 to-emerald-600", icon: Calendar },
+    { id: "others", name: "Others", color: "from-green-500 to-emerald-600", icon: Boxes },
   ];
 
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -170,7 +186,28 @@ const InteractiveChecklist = () => {
 
   return (
     <AnimatedSection className="space-y-12">
-      {/* Stats */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+        <div>
+          <h1
+            className={`text-2xl sm:text-3xl font-light mb-1 sm:mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+          >
+            Wedding Checklist
+          </h1>
+          <p className={`text-sm sm:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+            Track tasks, mark progress, and keep your big day stress-free.
+          </p>
+        </div>
+        <div className="flex justify-end">
+          <button
+            onClick={() => setShowModal(true)}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:shadow-lg transition-all duration-300 hover:opacity-90 cursor-pointer"
+          >
+            <Plus className="h-4 sm:h-5 w-4 sm:w-5 " />
+            <span>Add Task</span>
+          </button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
           {
@@ -218,7 +255,6 @@ const InteractiveChecklist = () => {
         ))}
       </div>
 
-      {/* Filters */}
       <div className="flex flex-wrap gap-4 items-center justify-between">
         <input
           type="text"
@@ -280,7 +316,6 @@ const InteractiveChecklist = () => {
         </label>
       </div>
 
-      {/* Task List */}
       <div className="space-y-6">
         {filteredTasks.map((task) => {
           const overdue = isOverdue(task.dueDate, task.completed);
@@ -338,6 +373,125 @@ const InteractiveChecklist = () => {
           <p className="text-center text-sm text-muted-foreground">No tasks found.</p>
         )}
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className={`bg-white dark:bg-slate-800 p-6 rounded-2xl w-full max-w-md space-y-4`}>
+            <h2 className="text-lg font-semibold text-slate-800 dark:text-white">Add New Task</h2>
+
+            <input
+              type="text"
+              placeholder="Task Title"
+              value={newTask.title}
+              onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+              className="w-full rounded-md border px-3 py-2 text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+            />
+
+            <textarea
+              placeholder="Task Description"
+              value={newTask.description}
+              onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+              className="w-full h-30 resize-none rounded-md border px-3 py-2 text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <select
+                value={newTask.category}
+                onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
+                className="rounded-md border px-3 py-2 text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+              >
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={newTask.priority}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, priority: e.target.value as "low" | "medium" | "high" })
+                }
+                className="rounded-md border px-3 py-2 text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+              >
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+
+            <input
+              type="date"
+              value={newTask.dueDate}
+              onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+              className="w-full rounded-md border px-3 py-2 text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+            />
+
+            <input
+              type="text"
+              placeholder="Assigned To (Name)"
+              value={newTask.assignedTo}
+              onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })}
+              className="w-full rounded-md border px-3 py-2 text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+            />
+
+            <input
+              type="tel"
+              placeholder="Phone Number (for WhatsApp reminder)"
+              value={newTask.phone}
+              onChange={(e) => setNewTask({ ...newTask, phone: e.target.value })}
+              className="w-full rounded-md border px-3 py-2 text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+            />
+
+            {/* <input
+              type="number"
+              placeholder="Estimated Time (hrs)"
+              value={newTask.estimatedTime}
+              onChange={(e) =>
+                setNewTask({ ...newTask, estimatedTime: parseInt(e.target.value) || 1 })
+              }
+              className="w-full rounded-md border px-3 py-2 text-sm dark:bg-slate-700 dark:border-slate-600 dark:text-white"
+            /> */}
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-sm px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const id = Date.now().toString();
+                  setTasks([
+                    ...tasks,
+                    {
+                      ...newTask,
+                      id,
+                      completed: false,
+                      estimatedTime: Number(newTask.estimatedTime),
+                    },
+                  ]);
+                  setShowModal(false);
+                  setNewTask({
+                    title: "",
+                    description: "",
+                    category: "venue",
+                    priority: "medium",
+                    dueDate: "",
+                    assignedTo: "",
+                    phone: "",
+                    estimatedTime: 1,
+                  });
+                }}
+                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 cursor-pointer text-white px-4 py-2 rounded-xl text-sm transition duration-300"
+              >
+                Assign Task
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AnimatedSection>
   );
 };
