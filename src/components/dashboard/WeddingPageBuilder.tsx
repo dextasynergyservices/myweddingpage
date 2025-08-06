@@ -510,7 +510,7 @@ const WeddingPageBuilder = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setPreviewMode("desktop")}
-                    className={`p-2 rounded-lg transition-colors ${
+                    className={`p-2 rounded-lg transition-colors hover:cursor-pointer ${
                       previewMode === "desktop"
                         ? "bg-indigo-600 text-white"
                         : isDarkMode
@@ -522,7 +522,7 @@ const WeddingPageBuilder = () => {
                   </button>
                   <button
                     onClick={() => setPreviewMode("tablet")}
-                    className={`p-2 rounded-lg transition-colors ${
+                    className={`p-2 rounded-lg transition-colors hover:cursor-pointer ${
                       previewMode === "tablet"
                         ? "bg-indigo-600 text-white"
                         : isDarkMode
@@ -534,7 +534,7 @@ const WeddingPageBuilder = () => {
                   </button>
                   <button
                     onClick={() => setPreviewMode("mobile")}
-                    className={`p-2 rounded-lg transition-colors ${
+                    className={`p-2 rounded-lg transition-colors hover:cursor-pointer ${
                       previewMode === "mobile"
                         ? "bg-indigo-600 text-white"
                         : isDarkMode
@@ -550,7 +550,7 @@ const WeddingPageBuilder = () => {
               <div className="flex items-center gap-3">
                 <button
                   onClick={saveAsTemplate}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors hover:cursor-pointer ${
                     isDarkMode
                       ? "text-slate-400 hover:text-white hover:bg-slate-700"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
@@ -559,11 +559,11 @@ const WeddingPageBuilder = () => {
                   <Download className="h-4 w-4" />
                   Save Template
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors">
+                <button className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:cursor-pointer text-white rounded-xl hover:bg-emerald-700 transition-colors">
                   <Eye className="h-4 w-4" />
                   Preview
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors">
+                <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:cursor-pointer text-white rounded-xl hover:bg-indigo-700 transition-colors">
                   <Save className="h-4 w-4" />
                   Save Page
                 </button>
