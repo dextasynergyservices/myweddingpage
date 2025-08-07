@@ -7,8 +7,8 @@ export async function hashPassword(password: string) {
   return bcrypt.hash(password, salt);
 }
 
-export async function verifyPassword(password: string, hashed: string) {
-  return bcrypt.compare(password, hashed);
+export async function verifyPassword(password: string, hashedPassword: string) {
+  return bcrypt.compare(password, hashedPassword);
 }
 
 // Get the authenticated user

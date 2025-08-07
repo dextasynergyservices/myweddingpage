@@ -5,17 +5,20 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 import { Toaster } from "react-hot-toast";
 import { ReactNode } from "react";
+import { SessionProvider } from "next-auth/react";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <ThemeWrapper>
-          {children}
-          <Toaster position="top-right" />
-        </ThemeWrapper>
-      </ThemeProvider>
-    </AuthProvider>
+    <SessionProvider>
+      <AuthProvider>
+        <ThemeProvider>
+          <ThemeWrapper>
+            {children}
+            <Toaster position="top-right" />
+          </ThemeWrapper>
+        </ThemeProvider>
+      </AuthProvider>
+    </SessionProvider>
   );
 }
 
