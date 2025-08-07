@@ -332,6 +332,8 @@ const RegisterForm = () => {
               <Image
                 src={URL.createObjectURL(formData.image)}
                 alt="Preview"
+                width={80}
+                height={80}
                 className="w-20 h-20 object-cover rounded-full border"
               />
             </div>
