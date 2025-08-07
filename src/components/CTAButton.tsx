@@ -8,6 +8,9 @@ import ThemeToggle from "./ui/ThemeToggle";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
 
+// ✅ Added for next-auth session and logout
+import { useSession, signOut } from "next-auth/react";
+
 const CTAButton = ({
   isScrolled,
   isMobile = false,
@@ -18,7 +21,19 @@ const CTAButton = ({
   setIsMobileMenuOpen?: (open: boolean) => void;
 }) => {
   const { isDarkMode } = useTheme();
-  const { user, logout } = useAuth();
+  const { user: legacyUser, logout: legacyLogout } = useAuth();
+
+  const { data: session } = useSession();
+  const user = session?.user || legacyUser;
+
+  const handleLogout = () => {
+    if (session) {
+      signOut();
+    } else {
+      legacyLogout();
+    }
+    setIsMobileMenuOpen?.(false);
+  };
 
   if (isMobile) {
     return (
@@ -35,14 +50,11 @@ const CTAButton = ({
                 }`}
               >
                 <User className="h-4 w-4" />
-                {user.name}
+                {user.name || "Dashboard"}
               </button>
             </Link>
             <button
-              onClick={() => {
-                logout();
-                setIsMobileMenuOpen?.(false);
-              }}
+              onClick={handleLogout} // Unified logout
               className={`w-full flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-colors duration-200 ${
                 isDarkMode
                   ? "text-slate-400 hover:bg-slate-800 hover:text-slate-300"
@@ -94,23 +106,23 @@ const CTAButton = ({
                   ? "text-slate-300 hover:bg-slate-800"
                   : isScrolled
                     ? "text-slate-700 hover:bg-slate-100"
-                    : "text-white/90 hover:bg-white/10"
+                    : "text-slate-900 hover:bg-white/10"
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <User className="h-4 w-4" />
-              {user.name}
+              {user.name || "Dashboard"}
             </motion.button>
           </Link>
           <motion.button
-            onClick={logout}
+            onClick={handleLogout} // ✅ Unified logout
             className={`p-2 rounded-xl transition-all duration-200 ${
               isDarkMode
                 ? "text-slate-400 hover:text-slate-300 hover:bg-slate-800"
                 : isScrolled
                   ? "text-slate-600 hover:text-slate-700 hover:bg-slate-100"
-                  : "text-white/70 hover:text-white hover:bg-white/10"
+                  : "text-slate-900 hover:text-white hover:bg-white/10"
             }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

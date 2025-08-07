@@ -79,6 +79,7 @@ model User {
   payments          Payment[]
   emailReminders    EmailReminder[]
   subscriptions      Subscription[]  @relation("UserSubscriptions")
+  passwordResetTokens PasswordResetToken[]
 }
 
 model Plan {
@@ -216,4 +217,14 @@ model Subscription {
 
   @@index([userId])
 }
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  expires   DateTime
+  createdAt DateTime @default(now())
+}
+
 
