@@ -20,8 +20,13 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         email,
         amount: koboAmount,
-        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment/verify/?planId=${planId}&whatsapp=${whatsapp}&email=${email}`,
+        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment/verify?${new URLSearchParams({
+          planId: String(planId),
+          whatsapp: String(whatsapp),
+          email: String(email),
+        }).toString()}`,
         metadata: {
+          // Still include as backup
           whatsapp,
           planId,
         },
