@@ -2,10 +2,51 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Sparkles, Heart } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import ParallaxBackground from "./ParallaxBackground";
 import AnimatedSection from "./AnimatedSection";
 import { useTheme } from "@/contexts/ThemeContext";
+import HomeWeddingCard from "./HomeWeddingCard";
+
+// Mock data
+const featuredWeddings = [
+  {
+    id: "1",
+    title: "Sarah & Michael",
+    date: "June 15, 2024",
+    location: "Bali, Indonesia",
+    image:
+      "https://images.pexels.com/photos/952437/pexels-photo-952437.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    excerpt: "A beautiful beachfront ceremony with sunset vows",
+  },
+  {
+    id: "2",
+    title: "James & Emma",
+    date: "August 22, 2024",
+    location: "Tuscany, Italy",
+    image:
+      "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    excerpt: "Rustic Italian vineyard wedding with local cuisine",
+  },
+  {
+    id: "3",
+    title: "David & Sophia",
+    date: "May 5, 2024",
+    location: "New York, USA",
+    image:
+      "https://images.pexels.com/photos/1408310/pexels-photo-1408310.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    excerpt: "Modern rooftop celebration with skyline views",
+  },
+  {
+    id: "4",
+    title: "Robert & Olivia",
+    date: "September 12, 2024",
+    location: "Paris, France",
+    image:
+      "https://images.pexels.com/photos/2567376/pexels-photo-2567376.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+    excerpt: "Classic Parisian wedding at a historic chateau",
+  },
+];
 
 const HomeFindWedding = () => {
   const { isDarkMode } = useTheme();
@@ -51,21 +92,39 @@ const HomeFindWedding = () => {
           >
             Search for wedding celebrations and share in the joy of couples around the world.
           </p>
-
-          <motion.div
-            whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(99, 102, 241, 0.3)" }}
-            whileTap={{ scale: 0.95 }}
-            className="mx-auto w-fit"
-          >
-            <Link
-              href="/wedding-pages"
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-2xl font-medium text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <Heart className="h-5 w-5" />
-              Browse Weddings
-            </Link>
-          </motion.div>
         </AnimatedSection>
+
+        {/* Featured weddings grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          {featuredWeddings.map((wedding, index) => (
+            <HomeWeddingCard
+              key={wedding.id}
+              wedding={wedding}
+              index={index}
+              isDarkMode={isDarkMode}
+            />
+          ))}
+        </div>
+
+        {/* View more button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="text-center"
+        >
+          <Link
+            href="/wedding-pages"
+            className={`inline-flex items-center px-4 py-3 rounded-2xl font-medium text-small transition-all duration-300 ${
+              isDarkMode
+                ? "text-indigo-300 hover:text-indigo-100 bg-indigo-900/50 hover:bg-indigo-900/70"
+                : "text-indigo-600 hover:text-indigo-800 bg-indigo-100 hover:bg-indigo-200"
+            }`}
+          >
+            View All Weddings
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Link>
+        </motion.div>
       </div>
     </section>
   );
