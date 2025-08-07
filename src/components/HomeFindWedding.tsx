@@ -114,7 +114,7 @@ const HomeFindWedding = () => {
           className="text-center"
         >
           <Link
-            href="/WeddingPageList"
+            href="/wedding-pages"
             className={`inline-flex items-center px-4 py-3 rounded-2xl font-medium text-small transition-all duration-300 ${
               isDarkMode
                 ? "text-indigo-300 hover:text-indigo-100 bg-indigo-900/50 hover:bg-indigo-900/70"

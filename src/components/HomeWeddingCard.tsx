@@ -29,7 +29,7 @@ const HomeWeddingCard = ({ wedding, index, isDarkMode }: WeddingCardProps) => {
       className="h-full"
     >
       <Link
-        href={`/weddingPageList/${wedding.id}`}
+        href={`/wedding-pages/${wedding.id}`}
         className={`block h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-300 ${
           isDarkMode ? "bg-slate-800 hover:bg-slate-700" : "bg-white hover:bg-slate-50"
         }`}
