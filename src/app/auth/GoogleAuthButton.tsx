@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
@@ -10,7 +10,7 @@ import { signIn } from "next-auth/react";
 const GoogleAuthButton = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { isDarkMode } = useTheme();
-  const router = useRouter();
+  // const router = useRouter();
 
   const handleGoogleAuth = async () => {
     setIsLoading(true);

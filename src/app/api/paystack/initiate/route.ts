@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       authorization_url: data.data.authorization_url,
       reference: data.data.reference,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Unexpected error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }

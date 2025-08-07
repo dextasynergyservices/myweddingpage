@@ -1,9 +1,6 @@
 import twilio from "twilio";
 
-const client = twilio(
-  process.env.TWILIO_SID!,
-  process.env.TWILIO_AUTH_TOKEN!
-);
+const client = twilio(process.env.TWILIO_SID!, process.env.TWILIO_AUTH_TOKEN!);
 
 type WhatsAppVerificationOptions = {
   phoneNumber: string;
@@ -35,8 +32,14 @@ If you didn’t request this, please ignore.`;
     });
 
     return { success: true, sid: res.sid };
-  } catch (error: any) {
-    console.error("Twilio WhatsApp Error:", error.message);
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Twilio WhatsApp Error:", error.message);
+      return { success: false, error: error.message };
+    }
+
+    // fallback for non-Error objects
+    console.error("Twilio WhatsApp Error:", error);
+    return { success: false, error: "An unknown error occurred." };
   }
 }

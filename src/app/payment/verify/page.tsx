@@ -34,6 +34,7 @@ export default function VerifyPaymentPage() {
         toast.success("Subscription verified! Redirecting...");
         router.push(`/auth/register?email=${encodeURIComponent(email || "")}`);
       } catch (err) {
+        console.error("Failed to redirect:", err);
         toast.error("An error occurred during verification");
       }
     };

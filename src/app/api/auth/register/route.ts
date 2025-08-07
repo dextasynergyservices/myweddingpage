@@ -99,7 +99,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       message: "User created. Verification sent via email and WhatsApp.",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Registration error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }

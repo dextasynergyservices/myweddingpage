@@ -57,19 +57,14 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
 
-    async signIn({
-      user: _user,
-      account: _account,
-      profile: _profile,
-      email: _email,
-      credentials: _credentials,
-    }) {
+    async signIn() {
       try {
         // If the jwt callback threw an error, signIn callback will catch it
         return true; // Allow sign in
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Return error message so NextAuth appends it to the URL
-        return `/auth/login?error=${encodeURIComponent(error.message)}`;
+        const errorMessage = error instanceof Error ? error.message : "Authentication failed";
+        return `/auth/login?error=${encodeURIComponent(errorMessage)}`;
       }
     },
   },

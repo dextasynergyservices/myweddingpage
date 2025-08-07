@@ -15,6 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "sonner";
 import { enGB } from "date-fns/locale";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -328,7 +329,7 @@ const RegisterForm = () => {
           />
           {formData.image && (
             <div className="mt-2">
-              <img
+              <Image
                 src={URL.createObjectURL(formData.image)}
                 alt="Preview"
                 className="w-20 h-20 object-cover rounded-full border"
