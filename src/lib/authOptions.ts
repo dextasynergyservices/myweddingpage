@@ -18,6 +18,28 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: User }) {
       if (user) {
+        // 🔹 Check if user already exists
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+        });
+
+        if (existingUser) {
+          // 🔸 Get all providers linked to this user
+          const accounts = await prisma.account.findMany({
+            where: { userId: existingUser.id },
+          });
+
+          const providersUsed = accounts.map((a) => a.provider);
+
+          // 🔹 Block login if trying with Google but email linked to other providers
+          if (providersUsed.length > 0 && !providersUsed.includes("google")) {
+            throw new Error(
+              `Email is already registered with a different provider: ${providersUsed.join(", ")}`
+            );
+          }
+        }
+
+        // ✅ Add user details to token
         token.id = user.id;
         token.email = user.email ?? "";
         token.name = user.name ?? "";
@@ -34,5 +56,26 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
+
+    async signIn({
+      user: _user,
+      account: _account,
+      profile: _profile,
+      email: _email,
+      credentials: _credentials,
+    }) {
+      try {
+        // If the jwt callback threw an error, signIn callback will catch it
+        return true; // Allow sign in
+      } catch (error: any) {
+        // Return error message so NextAuth appends it to the URL
+        return `/auth/login?error=${encodeURIComponent(error.message)}`;
+      }
+    },
+  },
+  // Optionally add a pages config to show error on your custom login page
+  pages: {
+    signIn: "/auth/login", // your custom login page route
+    error: "/auth/login", // error page route, usually same as signIn
   },
 };

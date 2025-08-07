@@ -3,30 +3,28 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext"; // Adjust if path differs
 import { useTheme } from "@/contexts/ThemeContext";
 import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 
-const GoogleAuthButton: React.FC = () => {
+const GoogleAuthButton = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { loginWithGoogle } = useAuth();
   const { isDarkMode } = useTheme();
   const router = useRouter();
 
   const handleGoogleAuth = async () => {
     setIsLoading(true);
     try {
-      const userData = await loginWithGoogle();
+      const res = await signIn("google", {
+        callbackUrl: "/dashboard",
+        redirect: true,
+      });
 
-      // Success feedback
-      toast.success("Signed in with Google!");
-
-      // Redirect based on role
-      if (userData?.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/dashboard");
+      if (!res?.ok) {
+        throw new Error("Google sign-in failed");
       }
+
+      toast.success("Signed in with Google!");
     } catch (error) {
       console.error("Google auth failed:", error);
       toast.error("Google authentication failed. Please try again.");

@@ -21,8 +21,11 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
+    "@next-auth/prisma-adapter": "^1.0.7",
+    "@paystack/paystack-sdk": "^1.0.1",
     "@prisma/client": "^6.12.0",
     "@sendgrid/mail": "^8.1.5",
+    "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
@@ -30,11 +33,14 @@
     "framer-motion": "^12.23.6",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.525.0",
+    "nanoid": "^5.1.5",
     "next": "15.3.5",
     "next-auth": "^4.24.11",
     "next-cloudinary": "^6.16.0",
+    "nodemailer": "^7.0.5",
     "openai": "^5.9.0",
     "paystack-api": "^2.0.6",
+    "paystack-sdk": "^2.5.26",
     "pg": "^8.16.3",
     "react": "^19.0.0",
     "react-datepicker": "^8.4.0",
@@ -47,13 +53,15 @@
     "sonner": "^2.0.6",
     "stripe": "^18.3.0",
     "tailwind-merge": "^3.3.1",
-    "tailwind-variants": "^2.1.0"
+    "tailwind-variants": "^2.1.0",
+    "twilio": "^5.8.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-datepicker": "^7.0.0",
     "@types/react-dom": "^19",
@@ -67,6 +75,7 @@
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@paystack/paystack-sdk": "^1.2.0"
   }
 }

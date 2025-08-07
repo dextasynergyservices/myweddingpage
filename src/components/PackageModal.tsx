@@ -41,7 +41,7 @@ const PackageModal = ({ isOpen, onClose, children }: ModalProps) => {
           }}
         >
           <motion.div
-            className="relative bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl max-w-2xl w-full p-10"
+            className="relative bg-white backdrop-blur-xl rounded-3xl shadow-2xl max-w-2xl w-full p-10"
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
