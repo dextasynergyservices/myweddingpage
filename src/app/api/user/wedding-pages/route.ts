@@ -1,50 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
-import prisma from "@/lib/prisma";
 
-export async function POST(req: NextRequest) {
+export async function GET() {
+  // 1. Auth check
   const user = await getAuthUser();
-  const { type, cloudinary_url, weddingPageId } = await req.json();
+  if (!user) return new Response("Unauthorized", { status: 401 });
 
-  // Ownership check
-  const weddingPage = await prisma.weddingPage.findUnique({
-    where: { id: weddingPageId },
-  });
-
-  if (!weddingPage || weddingPage.userId !== user.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-  }
-
-  const media = await prisma.mediaUpload.create({
-    data: {
-      type,
-      cloudinary_url,
-      weddingPageId,
-    },
-  });
-
-  return NextResponse.json({ media });
-}
-
-export async function DELETE(req: NextRequest) {
-  const user = await getAuthUser();
-  const { id } = await req.json();
-
-  // Find media and verify ownership
-  const media = await prisma.mediaUpload.findUnique({
-    where: { id },
-    include: {
-      weddingPage: true,
-    },
-  });
-
-  if (!media || media.weddingPage.userId !== user.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-  }
-
-  await prisma.mediaUpload.delete({
-    where: { id },
-  });
-
-  return NextResponse.json({ success: true });
+  // 2. Now TypeScript knows `user` exists
+  // Your route logic here...
 }
