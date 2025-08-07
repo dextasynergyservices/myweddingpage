@@ -27,6 +27,20 @@ interface Guest {
   category: "family" | "friends" | "colleagues" | "other";
 }
 
+// interface FormData {
+//   name: string;
+//   contactMethod: "email" | "phone";
+//   email: string;
+//   phone: string;
+//   tableAssignment?: number;
+//   invitationCard?: File | null;
+//   rsvpStatus: "pending" | "attending" | "declined";
+//   mealPreference?: string;
+//   invitedBy: "bride" | "groom" | "both";
+//   category: "family" | "friends" | "colleagues" | "other";
+//   plusOne?: boolean;
+// }
+
 const GuestManagement = () => {
   const { isDarkMode } = useTheme();
 
@@ -56,7 +70,8 @@ const GuestManagement = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [, setShowAddGuest] = useState(false);
+  // const [, setShowAddGuest] = useState(false);
+  const [showAddGuest, setShowAddGuest] = useState(false);
 
   const filteredGuests = guests.filter((guest) => {
     const matchesSearch =
@@ -106,12 +121,137 @@ const GuestManagement = () => {
         </div>
         <button
           onClick={() => setShowAddGuest(true)}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:shadow-lg transition-all duration-300"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 cursor-pointer text-white rounded-xl sm:rounded-2xl hover:shadow-lg transition-all duration-300"
         >
           <UserPlus className="h-4 sm:h-5 w-4 sm:w-5" />
           <span>Add Guest</span>
         </button>
       </div>
+
+      {showAddGuest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className={`w-full max-w-xl p-6 rounded-3xl shadow-lg ${
+              isDarkMode ? "bg-slate-800 text-white" : "bg-white text-slate-900"
+            }`}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Add New Guest</h2>
+              <button onClick={() => setShowAddGuest(false)}>
+                <XCircle className="h-6 w-6" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                // handleSubmit logic here
+              }}
+              className="space-y-4"
+            >
+              {/* Contact Method */}
+              {/* <div>
+            <label className="block text-sm mb-1">Contact Method</label>
+            <select
+              required
+              name="contactMethod"
+              className="w-full border rounded-xl px-4 py-2 bg-transparent text-white border-slate-600 appearance-none"
+            >
+              <option className="bg-slate-800 text-white" value="email">Email</option>
+              <option className="bg-slate-800 text-white" value="phone">WhatsApp</option>
+            </select>
+          </div> */}
+
+              {/* Name */}
+              <div>
+                <label className="block text-sm mb-1">Name</label>
+                <input
+                  required
+                  type="text"
+                  name="name"
+                  className="w-full border rounded-xl px-4 py-2 bg-transparent"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm mb-1">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  className="w-full border rounded-xl px-4 py-2 bg-transparent"
+                />
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label className="block text-sm mb-1">Phone (WhatsApp)</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  className="w-full border rounded-xl px-4 py-2 bg-transparent"
+                />
+              </div>
+
+              {/* Table */}
+              <div>
+                <label className="block text-sm mb-1">Table Assignment</label>
+                <input
+                  type="number"
+                  name="tableAssignment"
+                  className="w-full border rounded-xl px-4 py-2 bg-transparent"
+                />
+              </div>
+
+              {/* Invitation Card */}
+              <div>
+                <label className="block text-sm mb-1 ">Invitation Card</label>
+                <input
+                  type="file"
+                  name="invitationCard"
+                  accept="image/*,.pdf"
+                  className="px-4 py-2 border rounded-xl text-white transition-all duration-300 hover:bg-gradient-to-r hover:from-indigo-600 hover:to-purple-600"
+                />
+              </div>
+
+              {/* RSVP Status */}
+              {/* <div>
+            <label className="block text-sm mb-1">RSVP Status</label>
+            <select
+              required
+              name="rsvpStatus"
+              className="w-full border rounded-xl px-4 py-2 bg-transparent"
+            >
+              <option value="pending">Pending</option>
+              <option value="attending">Attending</option>
+              <option value="declined">Declined</option>
+            </select>
+          </div> */}
+
+              {/* Buttons */}
+              <div className="flex justify-end gap-2 pt-4">
+                {/* <button
+              type="button"
+              onClick={() => setShowAddGuest(false)}
+              className="px-4 py-2 rounded-xl bg-gray-300 text-black dark:bg-slate-600 dark:text-white"
+            >
+              Cancel
+            </button> */}
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600
+              text-white"
+                >
+                  Invite
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

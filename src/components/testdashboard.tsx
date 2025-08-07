@@ -15,10 +15,8 @@ import {
   Layout,
   DollarSign,
   Video,
-  UserCheck,
-  BookOpen,
   CheckSquare,
-  Smartphone,
+  Gift,
   Bot,
   Menu,
   X,
@@ -29,15 +27,17 @@ import ThemeToggle from "./ui/ThemeToggle";
 
 // Import feature components
 import WeddingPageBuilder from "./dashboard/WeddingPageBuilder";
-import AIPhotoCuration from "./dashboard/AIPhotoCuration";
+// import AIPhotoCuration from "./dashboard/AIPhotoCuration";
+import Gallery from "@/components/dashboard/Gallery";
 import GuestManagement from "./dashboard/GuestManagement";
-import TimelinePlanner from "./dashboard/TimelinePlanner";
-import BudgetTracker from "./dashboard/BudgetTracker";
+// import TimelinePlanner from "./dashboard/TimelinePlanner";
+// import BudgetTracker from "./dashboard/BudgetTracker";
 import LiveStreaming from "./dashboard/LiveStreaming";
-import VendorPortal from "./dashboard/VendorPortal";
-import MemoryBookGenerator from "./dashboard/MemoryBookGenerator";
+// import VendorPortal from "./dashboard/VendorPortal";
+import GiftRegistration from "./dashboard/GiftRegistration";
+// import MemoryBookGenerator from "./dashboard/MemoryBookGenerator";
 import InteractiveChecklist from "./dashboard/InteractiveChecklist";
-import MobileAppExtension from "./dashboard/MobileAppExtension";
+// import MobileAppExtension from "./dashboard/MobileAppExtension";
 
 type DashboardProps = {
   onSelectCouple: (coupleId: string) => void;
@@ -59,20 +59,27 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
       icon: Layout,
       description: "Drag & drop wedding page builder",
     },
-    { id: "photos", label: "AI Photos", icon: Camera, description: "AI-powered photo curation" },
+    // { id: "photos", label: "AI Photos", icon: Camera, description: "AI-powered photo curation" },
+    { id: "gallery", label: "Gallery", icon: Camera, description: "Photos" },
     { id: "guests", label: "Guests", icon: Users, description: "Guest management & seating" },
-    { id: "timeline", label: "Timeline", icon: Calendar, description: "Wedding day planner" },
-    { id: "budget", label: "Budget", icon: DollarSign, description: "Expense tracking" },
+    // { id: "timeline", label: "Timeline", icon: Calendar, description: "Wedding day planner" },
+    // { id: "budget", label: "Budget", icon: DollarSign, description: "Expense tracking" },
     { id: "streaming", label: "Live Stream", icon: Video, description: "Live streaming setup" },
-    { id: "vendors", label: "Vendors", icon: UserCheck, description: "Vendor management" },
-    { id: "memory", label: "Memory Book", icon: BookOpen, description: "Automated memory book" },
+    // { id: "vendors", label: "Vendors", icon: UserCheck, description: "Vendor management" },
+    {
+      id: "gift",
+      label: "Gifts/Wishes",
+      icon: Gift,
+      description: "Share what you'd love to receive on your special day",
+    },
+    // { id: "memory", label: "Memory Book", icon: BookOpen, description: "Automated memory book" },
     {
       id: "checklist",
       label: "Checklist",
       icon: CheckSquare,
       description: "Interactive planning checklist",
     },
-    { id: "mobile", label: "Mobile", icon: Smartphone, description: "Mobile app management" },
+    // { id: "mobile", label: "Mobile", icon: Smartphone, description: "Mobile app management" },
   ];
 
   const userWeddings = [
@@ -165,9 +172,6 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
 
   const renderContent = () => {
     switch (activeTab) {
-      // case "builder":
-      //   return <WeddingPageBuilder />;
-      // In your renderContent function where you return <WeddingPageBuilder />
       case "builder":
         return (
           <div className="relative">
@@ -193,24 +197,28 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
           </div>
         );
 
-      case "photos":
-        return <AIPhotoCuration />;
+      // case "photos":
+      //   return <AIPhotoCuration />;
+      case "gallery":
+        return <Gallery />;
       case "guests":
         return <GuestManagement />;
-      case "timeline":
-        return <TimelinePlanner />;
-      case "budget":
-        return <BudgetTracker />;
+      // case "timeline":
+      //   return <TimelinePlanner />;
+      // case "budget":
+      //   return <BudgetTracker />;
       case "streaming":
         return <LiveStreaming />;
-      case "vendors":
-        return <VendorPortal />;
-      case "memory":
-        return <MemoryBookGenerator />;
+      // case "vendors":
+      //   return <VendorPortal />;
+      case "gift":
+        return <GiftRegistration />;
+      // case "memory":
+      //   return <MemoryBookGenerator />;
       case "checklist":
         return <InteractiveChecklist />;
-      case "mobile":
-        return <MobileAppExtension />;
+      // case "mobile":
+      //   return <MobileAppExtension />;
       default:
         return renderOverview();
     }
