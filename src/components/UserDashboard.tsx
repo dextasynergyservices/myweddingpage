@@ -24,6 +24,7 @@ import {
 import { useTheme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
 import ThemeToggle from "./ui/ThemeToggle";
+import LogoutButton from "@/components/LogoutButton";
 
 // Import feature components
 import WeddingPageBuilder from "./dashboard/WeddingPageBuilder";
@@ -648,18 +649,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                 </div>
               </div>
 
-              <div className="p-4">
-                <button
-                  onClick={logout}
-                  className={`w-full px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
-                    isDarkMode
-                      ? "bg-slate-700 text-white hover:bg-slate-600"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  }`}
-                >
-                  Logout
-                </button>
-              </div>
+              <LogoutButton />
 
               <nav className="p-4 space-y-2 overflow-y-auto h-[calc(100vh-180px)]">
                 {navigationItems.map((item) => (
