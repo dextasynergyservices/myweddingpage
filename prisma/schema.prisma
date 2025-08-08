@@ -14,7 +14,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> e60bc20df8a2f63d285a4cf48cf916146f7a5e9d
 
 enum UserRole {
   USER
@@ -230,4 +233,7 @@ model PasswordResetToken {
 }
 
 
+<<<<<<< HEAD
 >>>>>>> develop
+=======
+>>>>>>> e60bc20df8a2f63d285a4cf48cf916146f7a5e9d
