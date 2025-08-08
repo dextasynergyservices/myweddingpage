@@ -7,8 +7,6 @@ import { LogOut, User } from "lucide-react";
 import ThemeToggle from "./ui/ThemeToggle";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
-
-// ✅ Added for next-auth session and logout
 import { useSession, signOut } from "next-auth/react";
 
 const CTAButton = ({
