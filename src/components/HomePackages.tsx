@@ -50,6 +50,12 @@ const HomePackages = () => {
   // const [exchangeRates, setExchangeRates] = useState({ USD: 0, GBP: 0 });
   // const [selectedCurrency, setSelectedCurrency] = useState("NGN");
 
+  const formatNaira = (value: string | number) => {
+    const numericValue = Number(value);
+    if (Number.isNaN(numericValue)) return String(value);
+    return new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(numericValue);
+  };
+
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -174,7 +180,7 @@ const HomePackages = () => {
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.5 + index * 0.2, type: "spring" }}
                       >
-                        ₦{plan.price}
+                        ₦{formatNaira(plan.price)}
                       </motion.div>
                       <div
                         className={`font-light ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
@@ -292,7 +298,7 @@ const HomePackages = () => {
                       email,
                       whatsapp,
                       planId: selectedPackage.id,
-                      amount: selectedPackage.price,
+                      amount: Number(selectedPackage.price),
                     }),
                   });
 
