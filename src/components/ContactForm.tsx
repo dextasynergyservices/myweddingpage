@@ -5,17 +5,19 @@ import { motion } from "framer-motion";
 import { Send } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import AnimatedSection from "@/components/AnimatedSection";
+import toast from "react-hot-toast";
 
 const ContactForm = () => {
   const { isDarkMode } = useTheme();
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // ✅ All hooks declared BEFORE any conditional logic
   const [hasMounted, setHasMounted] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
+    website: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -23,9 +25,8 @@ const ContactForm = () => {
     setHasMounted(true);
   }, []);
 
-  // ✅ Safer fallback for hydration, without violating hook rules
   if (!hasMounted) {
-    return <div className="min-h-[300px]" />; // optional: keeps layout stable
+    return <div className="min-h-[300px]" />;
   }
 
   const handleInputChange = (
@@ -38,13 +39,31 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrors({}); // Clear old errors
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    alert("Thank you for your message! We'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
-    setIsSubmitting(false);
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("✅ Message sent successfully!");
+        setFormData({ name: "", email: "", subject: "", message: "", website: "" });
+      } else if (data.errors) {
+        setErrors(data.errors);
+      } else {
+        toast.error(data.error || "❌ Failed to send message");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("⚠️ Something went wrong");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -83,6 +102,7 @@ const ContactForm = () => {
                 } focus:ring-2 focus:ring-indigo-500/20 focus:outline-none`}
                 placeholder="Enter your name"
               />
+              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
             </div>
             <div>
               <label
@@ -105,6 +125,7 @@ const ContactForm = () => {
                 } focus:ring-2 focus:ring-indigo-500/20 focus:outline-none`}
                 placeholder="Enter your email"
               />
+              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
           </div>
 
@@ -116,7 +137,7 @@ const ContactForm = () => {
             >
               Subject
             </label>
-            <select
+            <input
               name="subject"
               value={formData.subject}
               onChange={handleInputChange}
@@ -126,14 +147,8 @@ const ContactForm = () => {
                   ? "bg-slate-700/50 border-slate-600 text-white focus:border-indigo-500 focus:bg-slate-700"
                   : "bg-white/50 border-slate-300 text-slate-900 focus:border-indigo-500 focus:bg-white"
               } focus:ring-2 focus:ring-indigo-500/20 focus:outline-none`}
-            >
-              <option value="">Select a subject</option>
-              <option value="general">General Inquiry</option>
-              <option value="support">Technical Support</option>
-              <option value="billing">Billing Question</option>
-              <option value="feature">Feature Request</option>
-              <option value="partnership">Partnership</option>
-            </select>
+            ></input>
+            {errors.subject && <p className="text-red-500 text-sm mt-1">{errors.subject}</p>}
           </div>
 
           <div>
@@ -157,6 +172,23 @@ const ContactForm = () => {
               } focus:ring-2 focus:ring-indigo-500/20 focus:outline-none`}
               placeholder="Tell us how we can help you..."
             />
+            {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
+          </div>
+
+          <div>
+            {/* Honeypot Field */}
+            <div className="hidden">
+              <label htmlFor="website">Website</label>
+              <input
+                type="text"
+                name="website"
+                id="website"
+                value={(formData as any).website || ""}
+                onChange={handleInputChange}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
           </div>
 
           <motion.button

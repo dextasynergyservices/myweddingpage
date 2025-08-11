@@ -227,4 +227,13 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 }
 
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+}
+
 
