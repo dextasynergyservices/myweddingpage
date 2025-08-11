@@ -7,12 +7,20 @@ import { useTheme } from "@/contexts/ThemeContext";
 import AnimatedSection from "@/components/AnimatedSection";
 import toast from "react-hot-toast";
 
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  website: string;
+}
+
 const ContactForm = () => {
   const { isDarkMode } = useTheme();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [hasMounted, setHasMounted] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     subject: "",
@@ -183,7 +191,7 @@ const ContactForm = () => {
                 type="text"
                 name="website"
                 id="website"
-                value={(formData as any).website || ""}
+                value={formData.website}
                 onChange={handleInputChange}
                 tabIndex={-1}
                 autoComplete="off"

@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Bot detected" }, { status: 400 });
     }
 
-    let errors: Record<string, string> = {};
+    const errors: Record<string, string> = {};
 
     if (!name?.trim()) errors.name = "Name is required";
     if (!email?.trim()) {
