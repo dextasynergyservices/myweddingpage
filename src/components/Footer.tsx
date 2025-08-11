@@ -73,7 +73,7 @@ const Footer = () => {
             <AnimatedSection animation="fadeUp" delay={0.2}>
               <h3 className="text-lg font-medium mb-6">Platform</h3>
               <ul ref={listRef} className="space-y-3 text-slate-400 font-light">
-                {["Features", "Pricing", "Templates", "Integrations"].map((item, i) => (
+                {["Wedding Pages", "Packages", "Login"].map((item, i) => (
                   <motion.li
                     key={item}
                     className="hover:text-white transition-colors duration-300 cursor-pointer"
@@ -92,7 +92,7 @@ const Footer = () => {
             <AnimatedSection animation="fadeUp" delay={0.4}>
               <h3 className="text-lg font-medium mb-6">Support</h3>
               <ul className="space-y-3 text-slate-400 font-light">
-                {["Help Center", "Contact", "Community", "Status"].map((item, i) => (
+                {["How To", "Contact"].map((item, i) => (
                   <motion.li
                     key={item}
                     className="hover:text-white transition-colors duration-300 cursor-pointer"
@@ -110,7 +110,7 @@ const Footer = () => {
           </div>
 
           <AnimatedSection animation="fadeUp" delay={0.6}>
-            <div className="border-t border-slate-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <div className="border-t border-slate-800 mt-16 pt-8 flex flex-col justify-between items-center">
               <p className="text-slate-400 font-light">
                 &copy; {new Date().getFullYear()} Myweddingpage. All rights reserved.
               </p>

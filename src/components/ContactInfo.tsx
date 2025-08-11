@@ -2,9 +2,11 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Heart, Clock } from "lucide-react";
+import { Mail, Phone, MapPin, Heart, Clock, MessageCircle } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import AnimatedSection from "@/components/AnimatedSection";
+import Link from "next/link";
+import ViewFaqButton from "@/components/ViewFaqButton";
 
 const ContactInfo = () => {
   const { isDarkMode } = useTheme();
@@ -42,7 +44,7 @@ const ContactInfo = () => {
                   href="mailto:hello@weddingplatform.com"
                   className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors duration-200"
                 >
-                  hello@weddingplatform.com
+                  info@myweddingpage.online
                 </a>
               </div>
             </div>
@@ -58,7 +60,7 @@ const ContactInfo = () => {
             } p-8`}
           >
             <div className="flex items-center gap-6">
-              <div className="p-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl">
+              <div className="p-4 bg-gradient-to-r from-red-500 to-red-600 rounded-2xl">
                 <Phone className="h-8 w-8 text-white" />
               </div>
               <div>
@@ -70,14 +72,45 @@ const ContactInfo = () => {
                   Call Us
                 </h3>
                 <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-2`}>
-                  Mon-Fri from 8am to 5pm
+                  Mon-Fri from 10am to 6pm (WAT)
                 </p>
                 <a
-                  href="tel:+1-555-123-4567"
+                  href="tel:+2348103208297"
                   className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors duration-200"
                 >
-                  +1 (555) 123-4567
+                  +234 810 320 8297
                 </a>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* WhatsApp Card */}
+          <motion.div
+            whileHover={{ scale: 1.02, y: -5 }}
+            className={`${
+              isDarkMode ? "bg-slate-800/80" : "bg-white/80"
+            } backdrop-blur-xl rounded-3xl shadow-xl border ${
+              isDarkMode ? "border-slate-700/50" : "border-white/20"
+            } p-8`}
+          >
+            <div className="flex items-center gap-6">
+              <div className="p-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl">
+                <MessageCircle className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h3
+                  className={`text-xl font-semibold mb-2 ${
+                    isDarkMode ? "text-white" : "text-slate-900"
+                  }`}
+                >
+                  WhatsApp
+                </h3>
+                <Link
+                  href="https://wa.me/2348103208297"
+                  className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors duration-200"
+                >
+                  +234 810 320 8297
+                </Link>
               </div>
             </div>
           </motion.div>
@@ -101,15 +134,15 @@ const ContactInfo = () => {
                     isDarkMode ? "text-white" : "text-slate-900"
                   }`}
                 >
-                  Visit Us
+                  Office Address
                 </h3>
-                <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-2`}>
+                {/* <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-2`}>
                   Come say hello at our office
-                </p>
+                </p> */}
                 <p className={`${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
-                  123 Wedding Street
+                  147 NTA Road, Mgbuoba
                   <br />
-                  San Francisco, CA 94102
+                  Port Harcourt, Rivers State, Nigeria.
                 </p>
               </div>
             </div>
@@ -132,8 +165,8 @@ const ContactInfo = () => {
           </div>
           <div className="space-y-3">
             {[
-              { day: "Monday - Friday", hours: "8:00 AM - 6:00 PM" },
-              { day: "Saturday", hours: "9:00 AM - 4:00 PM" },
+              { day: "Monday - Friday", hours: "10:00 AM - 6:00 PM (WAT)" },
+              { day: "Saturday", hours: "Closed" },
               { day: "Sunday", hours: "Closed" },
             ].map((schedule, index) => (
               <div key={index} className="flex justify-between items-center">
@@ -168,9 +201,7 @@ const ContactInfo = () => {
           <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-4`}>
             Check out our frequently asked questions for instant help.
           </p>
-          <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-2xl font-medium hover:shadow-lg transition-all duration-300">
-            View FAQ
-          </button>
+          <ViewFaqButton />
         </motion.div>
       </div>
     </AnimatedSection>
