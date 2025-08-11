@@ -10,6 +10,7 @@ import PackageModal from "./PackageModal";
 import { useTheme } from "@/contexts/ThemeContext";
 import Label from "@/components/ui/Label";
 import Input from "@/components/ui/Input";
+import TermsAndConditions from "@/components/TermsAndConditions";
 
 type Plan = {
   id: string;
@@ -47,6 +48,8 @@ const HomePackages = () => {
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [loadingPayment, setLoadingPayment] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   // const [exchangeRates, setExchangeRates] = useState({ USD: 0, GBP: 0 });
   // const [selectedCurrency, setSelectedCurrency] = useState("NGN");
 
@@ -239,51 +242,92 @@ const HomePackages = () => {
             <h3 className="text-2xl font-semibold text-slate-800 mb-2">
               {selectedPackage.name} Package
             </h3>
-            <p className="text-slate-600 mb-4">{selectedPackage.duration_days} access</p>
-            <ul className="list-disc list-inside text-slate-700 mb-6 space-y-2">
-              {selectedPackage.features?.map((feature: string, idx: number) => (
-                <li key={idx}>{feature}</li>
-              ))}
-            </ul>
 
-            {/* FORM FIELDS */}
-            <div className="mb-6 space-y-4">
-              <div>
-                <Label htmlFor="email" className="text-slate-900">
-                  Email Address
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="placeholder:text-md bg-white"
-                  placeholder="Enter your email"
-                  required
-                />
+            {/* Scrollable content wrapper */}
+            <div className="max-h-[70vh] overflow-y-auto pr-4 mb-6">
+              <p className="text-slate-600 mb-4">{selectedPackage.duration_days} access</p>
+              <ul className="list-disc list-inside text-slate-700 mb-6 space-y-2">
+                {selectedPackage.features?.map((feature: string, idx: number) => (
+                  <li key={idx}>{feature}</li>
+                ))}
+              </ul>
+
+              {/* FORM FIELDS */}
+              <div className="mb-6 space-y-4">
+                <div>
+                  <Label htmlFor="email" className="text-slate-900">
+                    Email Address
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="placeholder:text-md bg-white"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="whatsapp" className="text-slate-900">
+                    WhatsApp Number
+                  </Label>
+                  <Input
+                    id="whatsapp"
+                    type="tel"
+                    value={whatsapp}
+                    onChange={(e) => setWhatsapp(e.target.value)}
+                    className="placeholder:text-md bg-white"
+                    placeholder="WhatsApp number with country code e.g +234"
+                    required
+                  />
+                </div>
               </div>
 
-              <div>
-                <Label htmlFor="whatsapp" className="text-slate-900">
-                  WhatsApp Number
-                </Label>
-                <Input
-                  id="whatsapp"
-                  type="tel"
-                  value={whatsapp}
-                  onChange={(e) => setWhatsapp(e.target.value)}
-                  className="placeholder:text-md bg-white"
-                  placeholder="WhatsApp number with country code e.g +234"
-                  required
-                />
+              {/* TERMS & CONDITIONS TOGGLE */}
+              <div className="mb-4">
+                <button
+                  type="button"
+                  onClick={() => setShowTerms((prev) => !prev)}
+                  className="text-indigo-600 font-medium hover:underline focus:outline-none"
+                >
+                  {showTerms ? "Hide Terms and Conditions ▲" : "Show Terms and Conditions ▼"}
+                </button>
+
+                <div
+                  className={`overflow-hidden transition-[max-height] duration-500 ease-in-out mt-2 ${
+                    showTerms ? "max-h-[500px]" : "max-h-0"
+                  }`}
+                >
+                  <div className="p-4 bg-white text-black rounded border border-slate-200 overflow-y-auto max-h-[500px]">
+                    <TermsAndConditions />
+                  </div>
+                </div>
               </div>
+
+              {/* AGREE CHECKBOX */}
+              <label className="inline-flex items-center space-x-2 mb-6 text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                  className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                />
+                <span>I agree to the Terms and Conditions</span>
+              </label>
             </div>
 
+            {/* PAY BUTTON */}
             <button
-              disabled={loadingPayment || !email || !whatsapp}
+              disabled={loadingPayment || !email || !whatsapp || !agreeTerms}
               onClick={async () => {
                 if (!email || !whatsapp) {
                   alert("Please fill in both Email and WhatsApp number.");
+                  return;
+                }
+                if (!agreeTerms) {
+                  alert("You must agree to the Terms and Conditions.");
                   return;
                 }
 
@@ -318,8 +362,8 @@ const HomePackages = () => {
                 }
               }}
               className={`w-full py-3 px-4 rounded-xl text-center font-medium transition cursor-pointer ${
-                loadingPayment
-                  ? "bg-indigo-400 text-white cursor-wait"
+                loadingPayment || !email || !whatsapp || !agreeTerms
+                  ? "bg-indigo-400 text-white cursor-not-allowed"
                   : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:bg-indigo-700"
               }`}
             >
