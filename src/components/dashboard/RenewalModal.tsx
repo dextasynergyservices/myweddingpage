@@ -16,7 +16,6 @@ interface RenewalModalProps {
   groomName?: string;
   brideName?: string;
   email?: string;
-  onRenewSuccess?: () => void;
 }
 
 export default function RenewalModal({
@@ -27,7 +26,6 @@ export default function RenewalModal({
   groomName,
   brideName,
   email,
-  onRenewSuccess,
 }: RenewalModalProps) {
   const [options, setOptions] = useState<RenewalOption[]>([]);
   const [loading, setLoading] = useState(false);

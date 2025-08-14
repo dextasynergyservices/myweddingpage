@@ -6,7 +6,6 @@ import NoWeddings from "@/components/dashboard/NoWeddings";
 import Button from "@/components/ui/Button";
 import { useEffect, useState, useCallback } from "react";
 import RenewalModal from "@/components/dashboard/RenewalModal";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 interface UserData {
@@ -42,7 +41,6 @@ const OverviewContent = ({
 }: OverviewContentProps) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isRenewalOpen, setRenewalOpen] = useState(false);
-  const router = useRouter();
 
   // ✅ Make fetchUserData reusable
   const fetchUserData = useCallback(async () => {
@@ -161,11 +159,6 @@ const OverviewContent = ({
               groomName={displayUser?.groomName}
               brideName={displayUser?.brideName}
               email={displayUser?.email}
-              onRenewSuccess={() => {
-                toast.success("Subscription plan renewed successfully ✅");
-                setRenewalOpen(false);
-                fetchUserData(); // ✅ Update immediately after modal renewal too
-              }}
             />
           </div>
           <div className="p-3 md:p-4">
