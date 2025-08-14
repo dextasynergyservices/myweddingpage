@@ -13,7 +13,7 @@ export async function sendWhatsAppVerification({
   code,
   token,
 }: WhatsAppVerificationOptions) {
-  const from = process.env.TWILIO_WHATSAPP_NUMBER!;
+  const from = `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`;
   const to = `whatsapp:${phoneNumber}`;
   const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify/${token}`;
 

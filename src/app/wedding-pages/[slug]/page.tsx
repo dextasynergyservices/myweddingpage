@@ -62,8 +62,8 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
         <ul className="space-y-4">
           {typedPage.comments.map((comment) => (
             <li key={comment.id} className="bg-gray-100 p-4 rounded">
-              <p className="font-semibold">{comment.author_name}</p>
-              <p>{comment.text}</p>
+              <p className="font-semibold">{comment.name}</p>
+              <p>{comment.message}</p>
             </li>
           ))}
         </ul>
