@@ -81,6 +81,10 @@ model User {
   subscriptions      Subscription[]  @relation("UserSubscriptions")
   passwordResetTokens PasswordResetToken[]
   expirationLogs  ExpirationLog[]
+  gifts         Gift[]
+  bankDetails   BankDetail[]
+  receivedGifts ReceivedGift[]
+  comments      Comment[]
 }
 
 model Plan {
@@ -159,10 +163,12 @@ model MediaUpload {
 model Comment {
   id              String     @id @default(uuid())
   weddingPageId   String
-  author_name     String
-  text            String
+  name            String
+  message         String
   approved        Boolean    @default(false)
   created_at      DateTime   @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 
   weddingPage     WeddingPage @relation(fields: [weddingPageId], references: [id])
 }
@@ -261,4 +267,46 @@ model PlanRenewalOption {
   createdAt DateTime @default(now())
 
   @@unique([planId, duration])
+}
+
+model Gift {
+  id          String     @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  image       String?
+  link        String?
+  purchasedBy String?
+  purchased   Boolean   @default(false)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model BankDetail {
+  id            String   @id @default(cuid())
+  bankName      String
+  accountNumber String
+  accountName   String
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ReceivedGift {
+  id          String   @id @default(cuid())
+  name        String
+  giftId      String?
+  amount      Float?
+  message     String?
+  date        DateTime @default(now())
+  image       String?
+  thanked     Boolean  @default(false)
+  thankedAt   DateTime?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  contactEmail String?
+  contactPhone String?
 }

@@ -6,8 +6,9 @@ export type MediaUpload = {
 
 export type Comment = {
   id: string;
-  author_name: string;
-  text: string;
+  name: string;
+  message: string;
+  userId: string;
 };
 
 export type Template = {
