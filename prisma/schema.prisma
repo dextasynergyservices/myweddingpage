@@ -80,12 +80,14 @@ model User {
   emailReminders    EmailReminder[]
   subscriptions      Subscription[]  @relation("UserSubscriptions")
   passwordResetTokens PasswordResetToken[]
+  expirationLogs  ExpirationLog[]
 }
 
 model Plan {
   id          String   @id @default(uuid())
   name        String
   price       Decimal
+  renewalOptions    PlanRenewalOption[]
   duration_days Int
   max_photos  Int
   max_videos  Int
@@ -107,6 +109,8 @@ model Payment {
   payment_provider PaymentProvider
   status          PaymentStatus
   paid_at         DateTime
+  reference       String? @unique
+  trxref           String?
 
   user            User   @relation(fields: [userId], references: [id])
   plan            Plan   @relation(fields: [planId], references: [id])
@@ -216,6 +220,7 @@ model Subscription {
   updatedAt   DateTime @updatedAt
 
   @@index([userId])
+  expirationLogs  ExpirationLog[]
 }
 
 model PasswordResetToken {
@@ -236,4 +241,24 @@ model ContactMessage {
   createdAt DateTime @default(now())
 }
 
+model ExpirationLog {
+  id              String   @id @default(cuid())
+  subscriptionId  String?
+  userId          String?
+  expiredAt       DateTime @default(now())
+  subscriptionEnd DateTime
 
+  user            User?         @relation(fields: [userId], references: [id])
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
+}
+
+model PlanRenewalOption {
+  id        String   @id @default(cuid())
+  planId    String
+  duration  Int
+  price     Decimal
+  plan      Plan     @relation(fields: [planId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([planId, duration])
+}
