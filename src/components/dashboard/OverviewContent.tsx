@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import WeddingCard from "@/components/dashboard/WeddingCard";
 import NoWeddings from "@/components/dashboard/NoWeddings";
 import Button from "@/components/ui/Button";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import RenewalModal from "@/components/dashboard/RenewalModal";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -44,19 +44,64 @@ const OverviewContent = ({
   const [isRenewalOpen, setRenewalOpen] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("/api/user/profile");
-        const data = await response.json();
-        setUserData(data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
+  // ✅ Make fetchUserData reusable
+  const fetchUserData = useCallback(async () => {
+    try {
+      const response = await fetch("/api/user/profile");
+      const data = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  // 🔹 Paystack verification effect (updated to handle early undefined user)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const reference = params.get("reference");
+    const trxref = params.get("trxref");
+    const planIdParam = params.get("planId");
+    const optionIdParam = params.get("optionId");
+
+    const currentUserId = userData?.id || user?.id;
+
+    if (reference && planIdParam && optionIdParam && currentUserId) {
+      fetch("/api/paystack/verify-renewal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reference,
+          trxref,
+          planId: planIdParam,
+          optionId: optionIdParam,
+          userId: currentUserId,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            toast.success("Subscription renewed successfully ✅");
+            fetchUserData(); // ✅ Update immediately
+          } else {
+            toast.error(data.error || "Payment verification failed.");
+          }
+        })
+        .catch(() => {
+          toast.error("Something went wrong while verifying payment.");
+        })
+        .finally(() => {
+          const url = new URL(window.location.href);
+          ["reference", "trxref", "planId", "optionId", "renewal"].forEach((key) =>
+            url.searchParams.delete(key)
+          );
+          window.history.replaceState({}, "", url.toString());
+        });
+    }
+  }, [user?.id, userData?.id, fetchUserData]);
 
   const displayUser = userData || user;
 
@@ -119,7 +164,7 @@ const OverviewContent = ({
               onRenewSuccess={() => {
                 toast.success("Subscription plan renewed successfully ✅");
                 setRenewalOpen(false);
-                router.refresh();
+                fetchUserData(); // ✅ Update immediately after modal renewal too
               }}
             />
           </div>
