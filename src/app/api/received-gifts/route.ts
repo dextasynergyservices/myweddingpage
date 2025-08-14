@@ -159,33 +159,51 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Gift not found" }, { status: 404 });
     }
 
-    if (!gift.contactEmail) {
-      return NextResponse.json({ error: "No contact Email available" }, { status: 400 });
+    interface NotificationResult {
+      sent: boolean;
+      error: string | null;
     }
 
-    if (!gift.contactPhone) {
-      return NextResponse.json({ error: "No WhatsApp phone number available" }, { status: 400 });
+    const notificationResults = {
+      email: { sent: false, error: null } as NotificationResult,
+      whatsapp: { sent: false, error: null } as NotificationResult,
+    };
+
+    // Send email if contact email exists
+    if (gift.contactEmail && gift.contactEmail.includes("@")) {
+      try {
+        await resend.emails.send({
+          from: "noreply@myweddingpage.online",
+          to: gift.contactEmail,
+          subject: "Thank you for your gift!",
+          text: message,
+        });
+        notificationResults.email.sent = true;
+      } catch (emailError) {
+        console.error("Email sending failed:", emailError);
+        notificationResults.email.error =
+          emailError instanceof Error ? emailError.message : "Failed to send email";
+      }
     }
 
-    // Send thank you email
-    if (gift.contactEmail.includes("@")) {
-      await resend.emails.send({
-        from: "noreply@myweddingpage.online",
-        to: gift.contactEmail,
-        subject: "Thank you for your gift!",
-        text: message,
-      });
+    // Send WhatsApp message if contact phone exists
+    if (gift.contactPhone) {
+      try {
+        await WhatsAppService.sendMessage({
+          to: gift.contactPhone,
+          message: message,
+        });
+        notificationResults.whatsapp.sent = true;
+      } catch (whatsappError) {
+        console.error("WhatsApp sending failed:", whatsappError);
+        notificationResults.whatsapp.error =
+          whatsappError instanceof Error
+            ? whatsappError.message
+            : "Failed to send WhatsApp message";
+      }
     }
 
-    // Send WhatsApp message if phone number is detected
-    if (/^\+?[\d\s-]+$/.test(gift.contactPhone)) {
-      await WhatsAppService.sendMessage({
-        to: gift.contactPhone,
-        message: message,
-      });
-    }
-
-    // Update thanked status
+    // Update thanked status regardless of notification success
     const updatedGift = await prisma.receivedGift.update({
       where: { id, userId: user.id },
       data: {
@@ -194,7 +212,10 @@ export async function PATCH(request: Request) {
       },
     });
 
-    return NextResponse.json(updatedGift);
+    return NextResponse.json({
+      ...updatedGift,
+      notifications: notificationResults,
+    });
   } catch (error) {
     console.error("Failed to send thank you:", error);
     return NextResponse.json(

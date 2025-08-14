@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Gift, Mail, X, User, Edit, Trash2, ChevronDown, Link, CreditCard } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { toast } from "react-hot-toast";
+import Image from "next/image";
 
 type GiftItem = {
   id: string;
@@ -67,6 +68,12 @@ const GiftRegistration = () => {
   const [isViewWishOpen, setIsViewWishOpen] = useState(false);
   const [isAddGiftOpen, setIsAddGiftOpen] = useState(false);
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{
+    type: "gift" | "account";
+    id: string;
+    name?: string;
+  } | null>(null);
 
   // Form states
   const [editGift, setEditGift] = useState<GiftItem | null>(null);
@@ -143,6 +150,26 @@ const GiftRegistration = () => {
     } catch (error) {
       console.error("Failed to toggle approval:", error);
       toast.error("Failed to update approval status");
+    }
+  };
+
+  const confirmDelete = (type: "gift" | "account", id: string, name?: string) => {
+    setItemToDelete({ type, id, name });
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    if (!itemToDelete) return;
+
+    try {
+      if (itemToDelete.type === "gift") {
+        await deleteGift(itemToDelete.id);
+      } else {
+        await deleteAccount(itemToDelete.id);
+      }
+    } finally {
+      setIsDeleteConfirmOpen(false);
+      setItemToDelete(null);
     }
   };
 
@@ -454,9 +481,6 @@ const GiftRegistration = () => {
     setIsViewWishOpen(true);
   };
 
-  // Rest of the component remains exactly the same...
-  // [Previous JSX code remains unchanged]
-
   return (
     <div className={`max-w-6xl mx-auto p-4 md:p-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
       {/* Header */}
@@ -495,7 +519,7 @@ const GiftRegistration = () => {
             <button
               onClick={() => {
                 setEditGift({
-                  id: "", // Don't set a temporary ID
+                  id: "",
                   name: "",
                   description: "",
                   price: 0,
@@ -556,14 +580,16 @@ const GiftRegistration = () => {
                 )}
               </div>
               {gift.image && (
-                <img
+                <Image
                   src={gift.image}
                   alt={gift.name}
                   className="w-full h-40 object-cover rounded-md mt-2"
+                  width={100}
+                  height={100}
                 />
               )}
               <p className="text-sm text-muted-foreground mt-1">{gift.description}</p>
-              <p className="font-bold mt-2">${gift.price.toFixed(2)}</p>
+              <p className="font-bold mt-2">₦{gift.price.toFixed(2)}</p>
               {gift.link && (
                 <a
                   href={gift.link}
@@ -583,7 +609,10 @@ const GiftRegistration = () => {
                 >
                   <Edit size={16} />
                 </button>
-                <button onClick={() => deleteGift(gift.id)} className="text-red-500">
+                <button
+                  onClick={() => confirmDelete("gift", gift.id, gift.name)}
+                  className="text-red-500"
+                >
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -610,7 +639,10 @@ const GiftRegistration = () => {
                   >
                     <Edit size={16} />
                   </button>
-                  <button onClick={() => deleteAccount(account.id)} className="text-red-500">
+                  <button
+                    onClick={() => confirmDelete("account", account.id, account.bankName)}
+                    className="text-red-500"
+                  >
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -797,10 +829,12 @@ const GiftRegistration = () => {
                 <label className="block text-sm font-medium mb-1">Image (optional)</label>
                 {editGift.image && (
                   <div className="mb-2">
-                    <img
+                    <Image
                       src={editGift.image}
                       alt="Current gift"
                       className="h-20 w-20 object-cover rounded"
+                      width={100}
+                      height={100}
                     />
                     <button
                       onClick={() => setEditGift({ ...editGift, image: undefined })}
@@ -1110,6 +1144,42 @@ const GiftRegistration = () => {
                   Send to All
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteConfirmOpen && itemToDelete && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div
+            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+          >
+            <button
+              onClick={() => setIsDeleteConfirmOpen(false)}
+              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
+            >
+              <X size={20} />
+            </button>
+            <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+            <p className="mb-6">
+              Are you sure you want to delete{" "}
+              {itemToDelete.name ? `"${itemToDelete.name}"` : "this item"}? This action cannot be
+              undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setIsDeleteConfirmOpen(false)}
+                className="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-slate-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteConfirmed}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
