@@ -65,18 +65,9 @@ export default function RenewalModal({
     const reference = params.get("reference");
     const trxref = params.get("trxref");
 
-    // Attempt to retrieve userId from multiple sources
     const planIdParam = params.get("planId") || sessionStorage.getItem("renewalPlanId") || planId;
     const optionIdParam = params.get("optionId") || sessionStorage.getItem("renewalOptionId");
-    const userIdParam =
-      userId && userId !== ""
-        ? userId
-        : params.get("userId") ||
-          sessionStorage.getItem("renewalUserId") ||
-          (() => {
-            toast.error("User not found. Please login and try again.");
-            return null;
-          })();
+    const userIdParam = userId && userId !== "" ? userId : sessionStorage.getItem("renewalUserId");
 
     if (reference && planIdParam && optionIdParam && userIdParam) {
       fetch("/api/paystack/verify-renewal", {
@@ -97,7 +88,7 @@ export default function RenewalModal({
         .then((data) => {
           if (data.success) {
             toast.success("Payment successful! Subscription renewed.");
-            if (onRenewSuccess) onRenewSuccess();
+            onRenewSuccess?.();
           } else {
             toast.error(data.error || "Payment verification failed.");
           }
@@ -108,11 +99,9 @@ export default function RenewalModal({
         })
         .finally(() => {
           const url = new URL(window.location.href);
-          url.searchParams.delete("reference");
-          url.searchParams.delete("trxref");
-          url.searchParams.delete("planId");
-          url.searchParams.delete("optionId");
-          url.searchParams.delete("userId");
+          ["reference", "trxref", "planId", "optionId", "userId"].forEach((key) =>
+            url.searchParams.delete(key)
+          );
           window.history.replaceState({}, "", url.toString());
           setInitializing(null);
           sessionStorage.removeItem("renewalOptionId");

@@ -18,9 +18,6 @@ export async function processRenewal({
   optionId,
   reference,
   trxref,
-  groomName,
-  brideName,
-  email,
 }: ProcessRenewalParams) {
   try {
     console.log("[processRenewal] Starting process for:", {

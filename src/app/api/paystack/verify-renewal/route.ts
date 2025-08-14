@@ -2,17 +2,36 @@ import { NextResponse } from "next/server";
 import { processRenewal } from "@/lib/renewal";
 import { prisma } from "@/lib/prisma";
 
+interface PaystackVerifyResponse {
+  status: boolean;
+  message: string;
+  data?: {
+    status: string;
+    reference: string;
+    amount: number;
+    gateway_response: string;
+    paid_at: string;
+    created_at: string;
+    channel: string;
+    currency: string;
+    metadata?: Record<string, unknown>;
+    customer?: {
+      id: number;
+      first_name: string | null;
+      last_name: string | null;
+      email: string;
+    };
+    [key: string]: unknown;
+  };
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    let { reference, trxref, userId, planId, optionId, groomName, brideName, email } = body;
+
+    const { reference, trxref, userId, planId, optionId, groomName, brideName, email } = body;
 
     console.log("[verify-renewal] body:", body);
-
-    // ✅ Fallback: get userId from sessionStorage if missing (for frontend redirect cases)
-    if (!userId && typeof window !== "undefined") {
-      userId = window.sessionStorage.getItem("renewalUserId") || "";
-    }
 
     if (!reference || !userId || !planId || !optionId) {
       return NextResponse.json(
@@ -34,7 +53,7 @@ export async function POST(req: Request) {
     }
 
     // 1️⃣ Verify payment with Paystack
-    let verifyData: any;
+    let verifyData: PaystackVerifyResponse;
     try {
       const verifyRes = await fetch(`https://api.paystack.co/transaction/verify/${reference}`, {
         headers: {
@@ -58,7 +77,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2️⃣ Process renewal (no further Paystack calls inside processRenewal)
+    // 2️⃣ Process renewal
     const result = await processRenewal({
       userId,
       planId,
