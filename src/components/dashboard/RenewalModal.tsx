@@ -16,7 +16,6 @@ interface RenewalModalProps {
   groomName?: string;
   brideName?: string;
   email?: string;
-  onRenewSuccess?: () => void;
 }
 
 export default function RenewalModal({
@@ -27,7 +26,6 @@ export default function RenewalModal({
   groomName,
   brideName,
   email,
-  onRenewSuccess,
 }: RenewalModalProps) {
   const [options, setOptions] = useState<RenewalOption[]>([]);
   const [loading, setLoading] = useState(false);
@@ -56,60 +54,6 @@ export default function RenewalModal({
       window.history.replaceState({}, "", url.toString());
     }
   }, [isOpen]);
-
-  // Handle successful Paystack redirect and verify payment
-  useEffect(() => {
-    if (!isOpen) return;
-    const params = new URLSearchParams(window.location.search);
-
-    const reference = params.get("reference");
-    const trxref = params.get("trxref");
-
-    const planIdParam = params.get("planId") || sessionStorage.getItem("renewalPlanId") || planId;
-    const optionIdParam = params.get("optionId") || sessionStorage.getItem("renewalOptionId");
-    const userIdParam = userId && userId !== "" ? userId : sessionStorage.getItem("renewalUserId");
-
-    if (reference && planIdParam && optionIdParam && userIdParam) {
-      fetch("/api/paystack/verify-renewal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          reference,
-          trxref,
-          userId: userIdParam,
-          planId: planIdParam,
-          optionId: optionIdParam,
-          groomName,
-          brideName,
-          email,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            toast.success("Payment successful! Subscription renewed.");
-            onRenewSuccess?.();
-          } else {
-            toast.error(data.error || "Payment verification failed.");
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          toast.error("Payment verification failed.");
-        })
-        .finally(() => {
-          const url = new URL(window.location.href);
-          ["reference", "trxref", "planId", "optionId", "userId"].forEach((key) =>
-            url.searchParams.delete(key)
-          );
-          window.history.replaceState({}, "", url.toString());
-          setInitializing(null);
-          sessionStorage.removeItem("renewalOptionId");
-          sessionStorage.removeItem("renewalUserId");
-          sessionStorage.removeItem("renewalPlanId");
-        });
-    }
-  }, [isOpen, userId, planId, groomName, brideName, email, onRenewSuccess]);
 
   if (!isOpen) return null;
 
