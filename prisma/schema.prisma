@@ -86,6 +86,7 @@ model User {
   receivedGifts ReceivedGift[]
   comments      Comment[]
   guests        Guest[]
+  tasks         Task[]
 }
 
 model Plan {
@@ -332,4 +333,42 @@ model Guest {
   updatedAt           DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
+}
+
+model Task {
+  id            String     @id @default(cuid())
+  title         String
+  description   String
+  TaskCategoryId    String
+  TaskCategory      TaskCategory   @relation(fields: [TaskCategoryId], references: [id])
+  TaskPriorityId    String
+  TaskPriority      TaskPriority   @relation(fields: [TaskPriorityId], references: [id])
+  dueDate       DateTime
+  assignedTo    String?
+  completed     Boolean    @default(false)
+  completedAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  userId        String
+  user          User       @relation(fields: [userId], references: [id])
+  phone         String?
+  email         String?
+  estimatedTime Int?
+  token         String     @unique @default(cuid())
+}
+
+model TaskCategory {
+  id    String @id @default(cuid())
+  name  String
+  color String
+  icon  String
+  tasks Task[]
+}
+
+model TaskPriority {
+  id    String @id @default(cuid())
+  name  String   // e.g., Low, Medium, High
+  level Int      // e.g., 1 = Low, 2 = Medium, 3 = High
+  color String?  // Optional for UI styling
+  tasks Task[]
 }
