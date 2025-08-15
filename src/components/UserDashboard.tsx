@@ -58,6 +58,12 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
       icon: Layout,
       description: "Drag & drop wedding page builder",
     },
+    {
+      id: "page-builder",
+      label: "Page Builder",
+      icon: Layout,
+      description: "Drag & drop wedding page builder",
+    },
     { id: "gallery", label: "Gallery", icon: Camera, description: "Photos" },
     {
       id: "gift",

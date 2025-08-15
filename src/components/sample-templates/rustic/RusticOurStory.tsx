@@ -3,30 +3,46 @@
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-interface WeddingPageOurStoryProps {
-  content?: string;
-  imageUrl?: string;
-  styles?: {
-    backgroundColor?: string;
-    textColor?: string;
-  };
+interface OurStoryData {
+  content: string;
+  imageUrl: string;
 }
 
-export default function WeddingPageOurStory({
-  content,
-  imageUrl,
-  styles
-}: WeddingPageOurStoryProps) {
+export default function RuticOurStory() {
   const { isDarkMode } = useTheme();
+  const [ourStory, setOurStory] = useState<OurStoryData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const defaultContent = `Our journey began five years ago when we met at a coffee shop...`;
-  const defaultImage = "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg";
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/api/wedding-data");
+        const data = await response.json();
+        setOurStory(data.ourStory);
+      } catch (error) {
+        console.error("Error fetching our story:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-  // Ensure we handle multiple paragraphs
-  const paragraphs = (content || defaultContent)
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    );
+  }
+
+  if (!ourStory) return <div>Error loading our story</div>;
+
+  const paragraphs = ourStory.content
     .split("\n")
-    .filter((p) => p.trim() !== "");
+    .filter((p: string) => p.trim() !== "");
 
   return (
     <motion.div
@@ -35,10 +51,6 @@ export default function WeddingPageOurStory({
       className={`rounded-3xl p-8 md:p-12 shadow-lg border mb-16 ${
         isDarkMode ? "border-slate-700" : "border-slate-100"
       }`}
-      style={{
-        backgroundColor: styles?.backgroundColor || (isDarkMode ? "#1e293b" : "#ffffff"),
-        color: styles?.textColor || (isDarkMode ? "#e2e8f0" : "#1e293b")
-      }}
     >
       <div className="text-center mb-8 md:mb-12">
         <motion.h2
@@ -65,7 +77,7 @@ export default function WeddingPageOurStory({
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
         >
-          {paragraphs.map((para, idx) => (
+          {paragraphs.map((para: string, idx: number) => (
             <p
               key={idx}
               className={`leading-relaxed text-base md:text-lg font-light mb-4 md:mb-6 ${
@@ -85,7 +97,7 @@ export default function WeddingPageOurStory({
         >
           <div className="relative">
             <Image
-              src={imageUrl || defaultImage}
+              src={ourStory.imageUrl}
               alt="Our love story"
               width={600}
               height={400}
