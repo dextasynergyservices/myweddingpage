@@ -4,17 +4,20 @@ import { Plus } from "lucide-react";
 import WeddingCard from "@/components/dashboard/WeddingCard";
 import NoWeddings from "@/components/dashboard/NoWeddings";
 import Button from "@/components/ui/Button";
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect, useState, useCallback } from "react";
+import RenewalModal from "@/components/dashboard/RenewalModal";
+import toast from "react-hot-toast";
 
 interface UserData {
+  id?: string;
+  planId?: string;
   groomName?: string;
   brideName?: string;
   plan?: {
     name?: string;
   };
   subscription_end?: string;
-  // Add other user properties as needed
+  email?: string;
 }
 
 interface OverviewContentProps {
@@ -37,25 +40,69 @@ const OverviewContent = ({
   handleViewWedding,
 }: OverviewContentProps) => {
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [isRenewalOpen, setRenewalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("/api/user/profile");
-        const data = await response.json();
-        setUserData(data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
+  // ✅ Make fetchUserData reusable
+  const fetchUserData = useCallback(async () => {
+    try {
+      const response = await fetch("/api/user/profile");
+      const data = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
   }, []);
 
-  // Use the fetched userData if available, otherwise fall back to the user prop
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  // 🔹 Paystack verification effect (updated to handle early undefined user)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const reference = params.get("reference");
+    const trxref = params.get("trxref");
+    const planIdParam = params.get("planId");
+    const optionIdParam = params.get("optionId");
+
+    const currentUserId = userData?.id || user?.id;
+
+    if (reference && planIdParam && optionIdParam && currentUserId) {
+      fetch("/api/paystack/verify-renewal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reference,
+          trxref,
+          planId: planIdParam,
+          optionId: optionIdParam,
+          userId: currentUserId,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            toast.success("Subscription renewed successfully ✅");
+            fetchUserData(); // ✅ Update immediately
+          } else {
+            toast.error(data.error || "Payment verification failed.");
+          }
+        })
+        .catch(() => {
+          toast.error("Something went wrong while verifying payment.");
+        })
+        .finally(() => {
+          const url = new URL(window.location.href);
+          ["reference", "trxref", "planId", "optionId", "renewal"].forEach((key) =>
+            url.searchParams.delete(key)
+          );
+          window.history.replaceState({}, "", url.toString());
+        });
+    }
+  }, [user?.id, userData?.id, fetchUserData]);
+
   const displayUser = userData || user;
 
-  // Calculate remaining days
   const remainingDays = displayUser?.subscription_end
     ? Math.max(
         0,
@@ -68,7 +115,7 @@ const OverviewContent = ({
 
   return (
     <div className="space-y-8">
-      {/* Welcome Section - Now using the fetched userData */}
+      {/* Welcome Section */}
       <div
         className={`rounded-3xl p-6 md:p-8 ${
           isDarkMode
@@ -95,12 +142,24 @@ const OverviewContent = ({
               <span className={`font-bold text-lg ${remainingDays <= 7 ? "text-red-500" : ""}`}>
                 {remainingDays} days
               </span>
-              {remainingDays <= 7 && (
-                <Link href="/pricing" className="ml-2 text-red-500 underline text-sm font-medium">
-                  Renew Plan
-                </Link>
-              )}
             </p>
+            {remainingDays <= 7 && (
+              <button
+                onClick={() => setRenewalOpen(true)}
+                className="ml-2 text-red-500 underline text-sm font-medium cursor-pointer"
+              >
+                Renew Plan
+              </button>
+            )}
+            <RenewalModal
+              isOpen={isRenewalOpen}
+              onClose={() => setRenewalOpen(false)}
+              planId={displayUser?.planId ?? ""}
+              userId={displayUser?.id ?? ""}
+              groomName={displayUser?.groomName}
+              brideName={displayUser?.brideName}
+              email={displayUser?.email}
+            />
           </div>
           <div className="p-3 md:p-4">
             <Button type="submit">Update Plan</Button>
@@ -108,7 +167,6 @@ const OverviewContent = ({
         </div>
       </div>
 
-      {/* Rest of your existing code remains exactly the same */}
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {stats.map((stat, index) => (

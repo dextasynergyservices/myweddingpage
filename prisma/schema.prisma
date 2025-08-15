@@ -80,14 +80,13 @@ model User {
   emailReminders    EmailReminder[]
   subscriptions      Subscription[]  @relation("UserSubscriptions")
   passwordResetTokens PasswordResetToken[]
-  selectedTemplateId String?
-  selectedTemplate   Template? @relation(fields: [selectedTemplateId], references: [id])
 }
 
 model Plan {
   id          String   @id @default(uuid())
   name        String
   price       Decimal
+  renewalOptions    PlanRenewalOption[]
   duration_days Int
   max_photos  Int
   max_videos  Int
@@ -110,6 +109,8 @@ model Payment {
   payment_provider PaymentProvider
   status          PaymentStatus
   paid_at         DateTime
+  reference       String? @unique
+  trxref           String?
 
   user            User   @relation(fields: [userId], references: [id])
   plan            Plan   @relation(fields: [planId], references: [id])
@@ -158,6 +159,27 @@ model WeddingPage {
   template          Template  @relation(fields: [templateId], references: [id])
   mediaUploads      MediaUpload[]
   comments          Comment[]
+}
+
+model MediaUpload {
+  id              String     @id @default(uuid())
+  weddingPageId   String
+  type            MediaType
+  cloudinary_url  String
+  uploaded_at     DateTime   @default(now())
+
+  weddingPage     WeddingPage @relation(fields: [weddingPageId], references: [id])
+}
+
+model Comment {
+  id              String     @id @default(uuid())
+  weddingPageId   String
+  author_name     String
+  text            String
+  approved        Boolean    @default(false)
+  created_at      DateTime   @default(now())
+
+  weddingPage     WeddingPage @relation(fields: [weddingPageId], references: [id])
 }
 
 model EmailReminder {
@@ -213,6 +235,7 @@ model Subscription {
   updatedAt   DateTime @updatedAt
 
   @@index([userId])
+  expirationLogs  ExpirationLog[]
 }
 
 model PasswordResetToken {
@@ -233,4 +256,88 @@ model ContactMessage {
   createdAt DateTime @default(now())
 }
 
+model ExpirationLog {
+  id              String   @id @default(cuid())
+  subscriptionId  String?
+  userId          String?
+  expiredAt       DateTime @default(now())
+  subscriptionEnd DateTime
 
+  user            User?         @relation(fields: [userId], references: [id])
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
+}
+
+model PlanRenewalOption {
+  id        String   @id @default(cuid())
+  planId    String
+  duration  Int
+  price     Decimal
+  plan      Plan     @relation(fields: [planId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([planId, duration])
+}
+
+model Gift {
+  id          String     @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  image       String?
+  link        String?
+  purchasedBy String?
+  purchased   Boolean   @default(false)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model BankDetail {
+  id            String   @id @default(cuid())
+  bankName      String
+  accountNumber String
+  accountName   String
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ReceivedGift {
+  id          String   @id @default(cuid())
+  name        String
+  giftId      String?
+  amount      Float?
+  message     String?
+  date        DateTime @default(now())
+  image       String?
+  thanked     Boolean  @default(false)
+  thankedAt   DateTime?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  contactEmail String?
+  contactPhone String?
+}
+
+model Guest {
+  id                  String   @id @default(cuid())
+  name                String
+  email               String?
+  phone               String?
+  customMessage       String?
+  invitationCard      String?
+  rsvpStatus          String   @default("PENDING") // PENDING, ATTENDING, DECLINED
+  mealPreference      String?
+  tableAssignment     Int?
+  plusOne             Boolean  @default(false)
+  dietaryRestrictions String?
+  invitedBy           String   // BRIDE, GROOM, BOTH
+  category            String   // FAMILY, FRIENDS, COLLEAGUES, OTHER
+  invitationToken     String   @unique
+  userId              String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}

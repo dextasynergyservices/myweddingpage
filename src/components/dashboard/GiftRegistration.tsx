@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Gift, Mail, X, User, Edit, Trash2, ChevronDown, Link, CreditCard } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { toast } from "react-hot-toast";
+import Image from "next/image";
 
 type GiftItem = {
   id: string;
@@ -33,6 +35,7 @@ type ReceivedGift = {
   image?: string;
   approved?: boolean;
   thanked?: boolean;
+  contactInfo?: string;
 };
 
 type WellWish = {
@@ -46,89 +49,16 @@ type WellWish = {
 
 const GiftRegistration = () => {
   const { isDarkMode } = useTheme();
-  const [activeTab, setActiveTab] = useState<"registry" | "cash" | "received" | "wellWishes">(
+  const [activeTab, setActiveTab] = useState<"registry" | "cash" | "received" | "comments">(
     "registry"
   );
 
-  // Sample data
-  const [gifts, setGifts] = useState<GiftItem[]>([
-    {
-      id: "1",
-      name: "Dinner Set",
-      description: "6-piece ceramic dinner set",
-      price: 120,
-      purchasedBy: "John Doe",
-      purchased: true,
-      message: "Thank you for your generosity!",
-    },
-    {
-      id: "2",
-      name: "Blender",
-      description: "High-speed professional blender",
-      price: 89.99,
-      link: "https://example.com/blender",
-    },
-  ]);
-
-  const [cashGifts, setCashGifts] = useState<CashGift[]>([
-    {
-      id: "1",
-      bankName: "Chase Bank",
-      accountNumber: "1234567890",
-      accountName: "John & Jane Doe",
-    },
-  ]);
-
-  const [receivedGifts, setReceivedGifts] = useState<ReceivedGift[]>([
-    {
-      id: "1",
-      name: "John Doe",
-      giftId: "1",
-      amount: 120,
-      message:
-        "Wishing you a lifetime of happiness! May this gift help you start your new life together.",
-      date: "2023-05-15",
-      approved: true,
-      thanked: true,
-    },
-    {
-      id: "2",
-      name: "Jane Smith",
-      amount: 200,
-      message: "For your honeymoon fund! Hope you have an amazing trip.",
-      date: "2023-05-18",
-      approved: true,
-      thanked: false,
-    },
-    {
-      id: "3",
-      name: "Michael Brown",
-      giftId: "2",
-      message: "Congratulations on your wedding!",
-      date: "2023-05-20",
-      approved: false,
-      thanked: false,
-    },
-  ]);
-
-  const [wellWishes, setWellWishes] = useState<WellWish[]>([
-    {
-      id: "1",
-      name: "Sarah Johnson",
-      message:
-        "Congratulations on your special day! Wishing you both a lifetime of love and happiness together. May your marriage be filled with joy, laughter, and countless beautiful memories.",
-      date: "2023-05-12",
-      approved: true,
-    },
-    {
-      id: "2",
-      name: "David Wilson",
-      message:
-        "Best wishes for your wedding and your future together! May your love continue to grow stronger with each passing year.",
-      date: "2023-05-14",
-      approved: false,
-    },
-  ]);
+  // State for data from database
+  const [gifts, setGifts] = useState<GiftItem[]>([]);
+  const [cashGifts, setCashGifts] = useState<CashGift[]>([]);
+  const [receivedGifts, setReceivedGifts] = useState<ReceivedGift[]>([]);
+  const [comments, setComments] = useState<WellWish[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -138,6 +68,12 @@ const GiftRegistration = () => {
   const [isViewWishOpen, setIsViewWishOpen] = useState(false);
   const [isAddGiftOpen, setIsAddGiftOpen] = useState(false);
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{
+    type: "gift" | "account";
+    id: string;
+    name?: string;
+  } | null>(null);
 
   // Form states
   const [editGift, setEditGift] = useState<GiftItem | null>(null);
@@ -153,61 +89,332 @@ const GiftRegistration = () => {
     accountName: "",
   });
 
-  // Helper functions
-  const toggleApproval = (id: string) => {
-    setWellWishes(
-      wellWishes.map((wish) => (wish.id === id ? { ...wish, approved: !wish.approved } : wish))
-    );
+  // New state for image upload
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const [giftsRes, cashRes, receivedRes, comments] = await Promise.all([
+          fetch("/api/gifts"),
+          fetch("/api/bank-details"),
+          fetch("/api/received-gifts"),
+          fetch("/api/comments"),
+        ]);
+
+        if (!giftsRes.ok || !cashRes.ok || !receivedRes.ok || !comments.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const [giftsData, cashData, receivedData, commentsData] = await Promise.all([
+          giftsRes.json(),
+          cashRes.json(),
+          receivedRes.json(),
+          comments.json(),
+        ]);
+
+        setGifts(giftsData);
+        setCashGifts(cashData);
+        setReceivedGifts(receivedData);
+        setComments(commentsData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Failed to load data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Helper functions with database integration
+  const toggleApproval = async (id: string) => {
+    try {
+      const response = await fetch("/api/comments", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id, approved: !comments.find((w) => w.id === id)?.approved }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update approval status");
+
+      const updatedComment = await response.json();
+      setComments(comments.map((comment) => (comment.id === id ? updatedComment : comment)));
+      toast.success("Comment approval status updated");
+    } catch (error) {
+      console.error("Failed to toggle approval:", error);
+      toast.error("Failed to update approval status");
+    }
   };
 
-  const deleteGift = (id: string) => {
-    setGifts(gifts.filter((gift) => gift.id !== id));
+  const confirmDelete = (type: "gift" | "account", id: string, name?: string) => {
+    setItemToDelete({ type, id, name });
+    setIsDeleteConfirmOpen(true);
   };
 
-  const deleteAccount = (id: string) => {
-    setCashGifts(cashGifts.filter((account) => account.id !== id));
+  const handleDeleteConfirmed = async () => {
+    if (!itemToDelete) return;
+
+    try {
+      if (itemToDelete.type === "gift") {
+        await deleteGift(itemToDelete.id);
+      } else {
+        await deleteAccount(itemToDelete.id);
+      }
+    } finally {
+      setIsDeleteConfirmOpen(false);
+      setItemToDelete(null);
+    }
   };
 
-  const updateGift = () => {
+  const deleteGift = async (id: string) => {
+    try {
+      const response = await fetch("/api/gifts", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!response.ok) throw new Error("Failed to delete gift");
+
+      setGifts(gifts.filter((gift) => gift.id !== id));
+      toast.success("Gift deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete gift:", error);
+      toast.error("Failed to delete gift");
+    }
+  };
+
+  const deleteAccount = async (id: string) => {
+    try {
+      const response = await fetch("/api/bank-details", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!response.ok) throw new Error("Failed to delete account");
+
+      setCashGifts(cashGifts.filter((account) => account.id !== id));
+      toast.success("Account deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete account:", error);
+      toast.error("Failed to delete account");
+    }
+  };
+
+  // Updated updateGift function with image upload
+  const updateGift = async () => {
     if (!editGift) return;
-    setGifts(gifts.map((gift) => (gift.id === editGift.id ? editGift : gift)));
-    setIsEditModalOpen(false);
+    try {
+      setIsUploading(true);
+      let imageUrl = editGift.image || null;
+
+      // Upload new image if selected
+      if (imageFile) {
+        const toastId = toast.loading("Uploading image...");
+
+        try {
+          const formData = new FormData();
+          formData.append("file", imageFile);
+
+          const uploadResponse = await fetch("/api/upload-image", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!uploadResponse.ok) {
+            const errorData = await uploadResponse.json();
+            throw new Error(errorData.error || "Image upload failed");
+          }
+
+          const data = await uploadResponse.json();
+          imageUrl = data.url;
+          toast.success("Image uploaded successfully", { id: toastId });
+        } catch (uploadError) {
+          console.error("Image upload error:", uploadError);
+          toast.error(
+            uploadError instanceof Error ? uploadError.message : "Failed to upload image",
+            { id: toastId }
+          );
+          return; // Exit the function if image upload fails
+        }
+      }
+
+      // Rest of your update logic...
+      const payload = {
+        ...editGift,
+        price: Number(editGift.price),
+        image: imageUrl,
+      };
+
+      const isUpdate = !!editGift.id && gifts.some((g) => g.id === editGift.id);
+      const method = isUpdate ? "PUT" : "POST";
+      const endpoint = "/api/gifts";
+
+      const response = await fetch(endpoint, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+          isUpdate
+            ? payload
+            : {
+                name: payload.name,
+                description: payload.description,
+                price: payload.price,
+                link: payload.link,
+                image: payload.image,
+              }
+        ),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to ${isUpdate ? "update" : "add"} gift`);
+      }
+
+      const resultGift = await response.json();
+
+      if (isUpdate) {
+        setGifts(gifts.map((gift) => (gift.id === resultGift.id ? resultGift : gift)));
+        toast.success("Gift updated successfully");
+      } else {
+        setGifts([...gifts, resultGift]);
+        toast.success("Gift added successfully");
+      }
+
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error("Failed to update gift:", error);
+      toast.error(
+        `Failed to ${editGift?.id ? "update" : "add"} gift: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
+    } finally {
+      setIsUploading(false);
+      setImageFile(null);
+    }
   };
 
-  const updateAccount = () => {
+  const updateAccount = async () => {
     if (!editAccount) return;
-    setCashGifts(
-      cashGifts.map((account) => (account.id === editAccount.id ? editAccount : account))
-    );
-    setIsCashEditModalOpen(false);
+    try {
+      const response = await fetch("/api/bank-details", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editAccount),
+      });
+
+      if (!response.ok) throw new Error("Failed to update account");
+
+      const updatedAccount = await response.json();
+      setCashGifts(
+        cashGifts.map((account) => (account.id === updatedAccount.id ? updatedAccount : account))
+      );
+      setIsCashEditModalOpen(false);
+      toast.success("Account updated successfully");
+    } catch (error) {
+      console.error("Failed to update account:", error);
+      toast.error("Failed to update account");
+    }
   };
 
-  const addGiftFromLink = () => {
+  // Updated addGiftFromLink with image upload
+  const addGiftFromLink = async () => {
     if (!newGiftLink) return;
-    const newGift: GiftItem = {
-      id: Date.now().toString(),
-      name: "New Gift from Link",
-      description: "Description will be fetched from the link",
-      price: 0,
-      link: newGiftLink,
-    };
-    setGifts([...gifts, newGift]);
-    setIsAddGiftOpen(false);
-    setNewGiftLink("");
+    try {
+      setIsUploading(true);
+      let imageUrl = null;
+
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+        formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET!);
+
+        const uploadResponse = await fetch(
+          `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        if (uploadResponse.ok) {
+          const data = await uploadResponse.json();
+          imageUrl = data.secure_url;
+        }
+      }
+
+      const newGift: Omit<GiftItem, "id"> = {
+        name: "New Gift from Link",
+        description: "Description will be fetched from the link",
+        price: 0,
+        link: newGiftLink,
+        image: imageUrl,
+      };
+
+      const response = await fetch("/api/gifts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newGift),
+      });
+
+      if (!response.ok) throw new Error("Failed to add gift");
+
+      const createdGift = await response.json();
+      setGifts([...gifts, createdGift]);
+      setIsAddGiftOpen(false);
+      setNewGiftLink("");
+      toast.success("Gift added successfully");
+    } catch (error) {
+      console.error("Failed to add gift:", error);
+      toast.error("Failed to add gift");
+    } finally {
+      setIsUploading(false);
+      setImageFile(null);
+    }
   };
 
-  const addAccountDetails = () => {
-    const newAccountWithId: CashGift = {
-      id: Date.now().toString(),
-      ...newAccount,
-    };
-    setCashGifts([...cashGifts, newAccountWithId]);
-    setIsAddAccountOpen(false);
-    setNewAccount({
-      bankName: "",
-      accountNumber: "",
-      accountName: "",
-    });
+  const addAccountDetails = async () => {
+    try {
+      const response = await fetch("/api/bank-details", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newAccount),
+      });
+
+      if (!response.ok) throw new Error("Failed to add account");
+
+      const createdAccount = await response.json();
+      setCashGifts([...cashGifts, createdAccount]);
+      setIsAddAccountOpen(false);
+      setNewAccount({
+        bankName: "",
+        accountNumber: "",
+        accountName: "",
+      });
+      toast.success("Account added successfully");
+    } catch (error) {
+      console.error("Failed to add account:", error);
+      toast.error("Failed to add account");
+    }
   };
 
   // Thank individual gift giver
@@ -220,19 +427,52 @@ const GiftRegistration = () => {
   };
 
   // Send thank you to individual
-  const sendThankYou = () => {
-    setReceivedGifts(
-      receivedGifts.map((gift) =>
-        gift.name === currentRecipient ? { ...gift, thanked: true } : gift
-      )
-    );
-    setIsThankYouOpen(false);
+  const sendThankYou = async () => {
+    try {
+      const gift = receivedGifts.find((g) => g.name === currentRecipient);
+      if (!gift) return;
+
+      const response = await fetch("/api/received-gifts", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: gift.id, message: thankYouMessage }),
+      });
+
+      if (!response.ok) throw new Error("Failed to send thank you");
+
+      const updatedGift = await response.json();
+      setReceivedGifts(receivedGifts.map((g) => (g.id === updatedGift.id ? updatedGift : g)));
+      setIsThankYouOpen(false);
+      toast.success("Thank you message sent");
+    } catch (error) {
+      console.error("Failed to send thank you:", error);
+      toast.error("Failed to send thank you");
+    }
   };
 
   // Send thank you to all
-  const thankAllGivers = () => {
-    setReceivedGifts(receivedGifts.map((gift) => ({ ...gift, thanked: true })));
-    setIsThankAllOpen(false);
+  const thankAllGivers = async () => {
+    try {
+      const response = await fetch("/api/received-gifts/thank-all", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: thankAllMessage }),
+      });
+
+      if (!response.ok) throw new Error("Failed to thank all givers");
+
+      const updatedGifts = await response.json();
+      setReceivedGifts(updatedGifts);
+      setIsThankAllOpen(false);
+      toast.success("Thank you messages sent to all");
+    } catch (error) {
+      console.error("Failed to thank all givers:", error);
+      toast.error("Failed to thank all givers");
+    }
   };
 
   // View full wish
@@ -253,7 +493,7 @@ const GiftRegistration = () => {
 
       {/* Tabs */}
       <div className="flex overflow-x-auto mb-4 md:mb-6 border-b no-scrollbar">
-        {(["registry", "cash", "received", "wellWishes"] as const).map((tab) => (
+        {(["registry", "cash", "received", "comments"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -267,7 +507,7 @@ const GiftRegistration = () => {
                 ? "Bank Details"
                 : tab === "received"
                   ? `Gifts Received (${receivedGifts.length})`
-                  : `Well Wishes (${wellWishes.length})`}
+                  : `Well Wishes (${comments.length})`}
           </button>
         ))}
       </div>
@@ -277,17 +517,9 @@ const GiftRegistration = () => {
         {activeTab === "registry" && (
           <div className="flex space-x-2">
             <button
-              onClick={() => setIsAddGiftOpen(true)}
-              className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 py-1 md:px-4 md:py-2 rounded-lg text-sm md:text-base"
-            >
-              <Link size={16} />
-              <span className="hidden sm:inline">Add Gift from Link</span>
-              <span className="sm:hidden">Add Gift</span>
-            </button>
-            <button
               onClick={() => {
                 setEditGift({
-                  id: Date.now().toString(),
+                  id: "",
                   name: "",
                   description: "",
                   price: 0,
@@ -327,8 +559,15 @@ const GiftRegistration = () => {
         )}
       </div>
 
+      {/* Loading state */}
+      {isLoading && (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      )}
+
       {/* Main Content */}
-      {activeTab === "registry" && (
+      {!isLoading && activeTab === "registry" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {gifts.map((gift) => (
             <div key={gift.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -340,8 +579,17 @@ const GiftRegistration = () => {
                   </span>
                 )}
               </div>
+              {gift.image && (
+                <Image
+                  src={gift.image}
+                  alt={gift.name}
+                  className="w-full h-40 object-cover rounded-md mt-2"
+                  width={100}
+                  height={100}
+                />
+              )}
               <p className="text-sm text-muted-foreground mt-1">{gift.description}</p>
-              <p className="font-bold mt-2">${gift.price.toFixed(2)}</p>
+              <p className="font-bold mt-2">₦{gift.price.toFixed(2)}</p>
               {gift.link && (
                 <a
                   href={gift.link}
@@ -361,7 +609,10 @@ const GiftRegistration = () => {
                 >
                   <Edit size={16} />
                 </button>
-                <button onClick={() => deleteGift(gift.id)} className="text-red-500">
+                <button
+                  onClick={() => confirmDelete("gift", gift.id, gift.name)}
+                  className="text-red-500"
+                >
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -370,7 +621,7 @@ const GiftRegistration = () => {
         </div>
       )}
 
-      {activeTab === "cash" && (
+      {!isLoading && activeTab === "cash" && (
         <div className="space-y-4">
           {cashGifts.map((account) => (
             <div
@@ -388,7 +639,10 @@ const GiftRegistration = () => {
                   >
                     <Edit size={16} />
                   </button>
-                  <button onClick={() => deleteAccount(account.id)} className="text-red-500">
+                  <button
+                    onClick={() => confirmDelete("account", account.id, account.bankName)}
+                    className="text-red-500"
+                  >
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -400,7 +654,7 @@ const GiftRegistration = () => {
         </div>
       )}
 
-      {activeTab === "received" && (
+      {!isLoading && activeTab === "received" && (
         <div className="space-y-4">
           {receivedGifts.map((gift) => (
             <div key={gift.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -412,13 +666,6 @@ const GiftRegistration = () => {
                   <div className="flex justify-between items-start">
                     <h3 className="font-medium">{gift.name}</h3>
                     <div className="flex items-center gap-2">
-                      {/* <span className={`text-xs px-2 py-1 rounded-full ${
-                        gift.approved
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                      }`}>
-                        {gift.approved ? 'Received' : 'Pending'}
-                      </span> */}
                       <span
                         className={`text-xs px-2 py-1 rounded-full ${
                           gift.thanked
@@ -466,9 +713,9 @@ const GiftRegistration = () => {
         </div>
       )}
 
-      {activeTab === "wellWishes" && (
+      {!isLoading && activeTab === "comments" && (
         <div className="space-y-4">
-          {wellWishes.map((wish) => (
+          {comments.map((wish) => (
             <div key={wish.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-transparent flex items-center justify-center flex-shrink-0">
@@ -523,14 +770,17 @@ const GiftRegistration = () => {
         </div>
       )}
 
-      {/* Modals */}
+      {/* Edit/Add Gift Modal */}
       {isEditModalOpen && editGift && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div
             className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
           >
             <button
-              onClick={() => setIsEditModalOpen(false)}
+              onClick={() => {
+                setIsEditModalOpen(false);
+                setImageFile(null);
+              }}
               className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
             >
               <X size={20} />
@@ -575,18 +825,52 @@ const GiftRegistration = () => {
                   placeholder="https://example.com/product"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Image (optional)</label>
+                {editGift.image && (
+                  <div className="mb-2">
+                    <Image
+                      src={editGift.image}
+                      alt="Current gift"
+                      className="h-20 w-20 object-cover rounded"
+                      width={100}
+                      height={100}
+                    />
+                    <button
+                      onClick={() => setEditGift({ ...editGift, image: undefined })}
+                      className="text-red-500 text-xs mt-1"
+                    >
+                      Remove image
+                    </button>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => e.target.files?.[0] && setImageFile(e.target.files[0])}
+                  className="w-full p-2 rounded border"
+                />
+                {imageFile && (
+                  <p className="text-sm text-gray-500 mt-1">Selected: {imageFile.name}</p>
+                )}
+              </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button
-                  onClick={() => setIsEditModalOpen(false)}
+                  onClick={() => {
+                    setIsEditModalOpen(false);
+                    setImageFile(null);
+                  }}
                   className="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-slate-700"
+                  disabled={isUploading}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={updateGift}
-                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:opacity-90"
+                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:opacity-90 disabled:opacity-50"
+                  disabled={isUploading}
                 >
-                  Save
+                  {isUploading ? "Saving..." : "Save"}
                 </button>
               </div>
             </div>
@@ -594,6 +878,70 @@ const GiftRegistration = () => {
         </div>
       )}
 
+      {/* Add Gift from Link Modal */}
+      {isAddGiftOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div
+            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+          >
+            <button
+              onClick={() => {
+                setIsAddGiftOpen(false);
+                setImageFile(null);
+              }}
+              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
+            >
+              <X size={20} />
+            </button>
+            <h2 className="text-xl font-bold mb-4">Add Gift from Link</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Product URL</label>
+                <input
+                  type="url"
+                  value={newGiftLink}
+                  onChange={(e) => setNewGiftLink(e.target.value)}
+                  className="w-full p-2 rounded border"
+                  placeholder="https://example.com/product"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Image (optional)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => e.target.files?.[0] && setImageFile(e.target.files[0])}
+                  className="w-full p-2 rounded border"
+                />
+                {imageFile && (
+                  <p className="text-sm text-gray-500 mt-1">Selected: {imageFile.name}</p>
+                )}
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button
+                  onClick={() => {
+                    setIsAddGiftOpen(false);
+                    setImageFile(null);
+                  }}
+                  className="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-slate-700"
+                  disabled={isUploading}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={addGiftFromLink}
+                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:opacity-90 disabled:opacity-50"
+                  disabled={isUploading || !newGiftLink}
+                >
+                  {isUploading ? "Adding..." : "Add"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cash Edit Modal */}
       {isCashEditModalOpen && editAccount && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div
@@ -655,48 +1003,7 @@ const GiftRegistration = () => {
         </div>
       )}
 
-      {isAddGiftOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div
-            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
-          >
-            <button
-              onClick={() => setIsAddGiftOpen(false)}
-              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
-            >
-              <X size={20} />
-            </button>
-            <h2 className="text-xl font-bold mb-4">Add Gift from Link</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Product URL</label>
-                <input
-                  type="url"
-                  value={newGiftLink}
-                  onChange={(e) => setNewGiftLink(e.target.value)}
-                  className="w-full p-2 rounded border"
-                  placeholder="https://example.com/product"
-                />
-              </div>
-              <div className="flex justify-end gap-3 pt-4">
-                <button
-                  onClick={() => setIsAddGiftOpen(false)}
-                  className="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-slate-700"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={addGiftFromLink}
-                  className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:opacity-90"
-                >
-                  Add
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
+      {/* Add Account Modal */}
       {isAddAccountOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div
@@ -837,6 +1144,42 @@ const GiftRegistration = () => {
                   Send to All
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteConfirmOpen && itemToDelete && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div
+            className={`relative rounded-xl shadow-lg max-w-md w-full p-6 ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+          >
+            <button
+              onClick={() => setIsDeleteConfirmOpen(false)}
+              className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700"
+            >
+              <X size={20} />
+            </button>
+            <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+            <p className="mb-6">
+              Are you sure you want to delete{" "}
+              {itemToDelete.name ? `"${itemToDelete.name}"` : "this item"}? This action cannot be
+              undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setIsDeleteConfirmOpen(false)}
+                className="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-slate-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteConfirmed}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
