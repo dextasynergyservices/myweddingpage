@@ -80,6 +80,8 @@ model User {
   emailReminders    EmailReminder[]
   subscriptions      Subscription[]  @relation("UserSubscriptions")
   passwordResetTokens PasswordResetToken[]
+  selectedTemplateId String?
+  selectedTemplate   Template? @relation(fields: [selectedTemplateId], references: [id])
 }
 
 model Plan {
@@ -159,27 +161,6 @@ model WeddingPage {
   template          Template  @relation(fields: [templateId], references: [id])
   mediaUploads      MediaUpload[]
   comments          Comment[]
-}
-
-model MediaUpload {
-  id              String     @id @default(uuid())
-  weddingPageId   String
-  type            MediaType
-  cloudinary_url  String
-  uploaded_at     DateTime   @default(now())
-
-  weddingPage     WeddingPage @relation(fields: [weddingPageId], references: [id])
-}
-
-model Comment {
-  id              String     @id @default(uuid())
-  weddingPageId   String
-  author_name     String
-  text            String
-  approved        Boolean    @default(false)
-  created_at      DateTime   @default(now())
-
-  weddingPage     WeddingPage @relation(fields: [weddingPageId], references: [id])
 }
 
 model EmailReminder {

@@ -1,11 +1,5 @@
 import { PrismaClient } from "@/generated/prisma";
-<<<<<<< HEAD
 import bcrypt from "bcryptjs";
-import { templateRegistry, PLANS } from "@/lib/template-registry";
-=======
-// import { PrismaClient } from "@prisma/client";
-// import bcrypt from "bcryptjs";
->>>>>>> develop
 
 const prisma = new PrismaClient();
 
@@ -92,16 +86,9 @@ async function main() {
   // const adminUser = await prisma.user.findUnique({
   //   where: { email: "admin@myweddingpage.online" },
   // });
-
-<<<<<<< HEAD
-  const template = await prisma.template.findUnique({
-    where: { name: "Classic Elegance" },
-  });
-=======
   // const template = await prisma.template.findUnique({
   //   where: { name: "Classic Elegance" }, // You must have made this name @unique in schema
   // });
->>>>>>> develop
 
   // if (!adminUser || !template) {
   //   throw new Error("❌ Could not find required User or Template for WeddingPage seed.");
@@ -156,33 +143,6 @@ async function main() {
 
   console.log("Plan renewal options seeded ✅");
 
-// Add this type definition near your imports
-type RegistryTemplate = {
-  name: string;
-  category: string;
-  thumbnail: string;
-  components: Record<string, any>;
-  requiredPlan: keyof typeof PLANS;
-};
-
-// Then modify your template registry seeding:
-await Promise.all(
-  Object.entries(templateRegistry).map(async ([id, template]) => {
-    const typedTemplate = template as RegistryTemplate;
-    await prisma.template.upsert({
-      where: { id },
-      update: {},
-      create: {
-        id,
-        name: typedTemplate.name,
-        description: `${typedTemplate.name} wedding template`,
-        category: typedTemplate.category,
-        thumbnail_url: typedTemplate.thumbnail,
-        components: typedTemplate.components
-      }
-    });
-  })
-);
   console.log("✅ Template registry seeded.");
 
   console.log("🌱 Seeding complete.");
