@@ -85,6 +85,7 @@ model User {
   bankDetails   BankDetail[]
   receivedGifts ReceivedGift[]
   comments      Comment[]
+  guests        Guest[]
 }
 
 model Plan {
@@ -309,4 +310,26 @@ model ReceivedGift {
   user        User     @relation(fields: [userId], references: [id])
   contactEmail String?
   contactPhone String?
+}
+
+model Guest {
+  id                  String   @id @default(cuid())
+  name                String
+  email               String?
+  phone               String?
+  customMessage       String?
+  invitationCard      String?
+  rsvpStatus          String   @default("PENDING") // PENDING, ATTENDING, DECLINED
+  mealPreference      String?
+  tableAssignment     Int?
+  plusOne             Boolean  @default(false)
+  dietaryRestrictions String?
+  invitedBy           String   // BRIDE, GROOM, BOTH
+  category            String   // FAMILY, FRIENDS, COLLEAGUES, OTHER
+  invitationToken     String   @unique
+  userId              String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
 }
