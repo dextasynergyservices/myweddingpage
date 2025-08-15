@@ -1,16 +1,6 @@
 import { NextResponse } from "next/server";
 import twilio from "twilio";
 
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const twilioPhoneNumber = process.env.TWILIO_WHATSAPP_NUMBER;
-
-if (!accountSid || !authToken || !twilioPhoneNumber) {
-  throw new Error("Twilio credentials not configured");
-}
-
-const client = twilio(accountSid, authToken);
-
 interface TwilioError extends Error {
   code?: number;
   moreInfo?: string;
@@ -18,6 +8,15 @@ interface TwilioError extends Error {
 }
 
 export async function POST(request: Request) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const twilioPhoneNumber = process.env.TWILIO_WHATSAPP_NUMBER;
+
+  // Prevent build-time crash — only check at request time
+  if (!accountSid || !authToken || !twilioPhoneNumber) {
+    return NextResponse.json({ error: "Twilio credentials not configured" }, { status: 500 });
+  }
+
   try {
     const { to, body } = await request.json();
 
@@ -33,6 +32,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid phone number format" }, { status: 400 });
     }
 
+    const client = twilio(accountSid, authToken);
+
     const message = await client.messages.create({
       body,
       from: `whatsapp:${twilioPhoneNumber}`,
@@ -47,7 +48,6 @@ export async function POST(request: Request) {
   } catch (error: unknown) {
     console.error("WhatsApp API error:", error);
 
-    // Handle Twilio errors
     if (error instanceof Error) {
       const twilioError = error as TwilioError;
       return NextResponse.json(
@@ -62,10 +62,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      {
-        error: "Failed to send WhatsApp message",
-        code: "internal_error",
-      },
+      { error: "Failed to send WhatsApp message", code: "internal_error" },
       { status: 500 }
     );
   }
