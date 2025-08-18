@@ -79,6 +79,7 @@ const InteractiveChecklist = () => {
   const [editingTask, setEditingTask] = useState<ChecklistItem | null>(null);
   const [taskLoading, setTaskLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [taskToDelete, setTaskToDelete] = useState<ChecklistItem | null>(null);
 
   const [newTask, setNewTask] = useState({
     title: "",
@@ -207,16 +208,15 @@ const InteractiveChecklist = () => {
     }
   };
 
-  const deleteTask = async (taskIdOrToken: string) => {
-    setTaskLoading(`delete-${taskIdOrToken}`);
-    try {
-      const taskToDelete = tasks.find(
-        (task) => task.id === taskIdOrToken || task.token === taskIdOrToken
-      );
-      if (!taskToDelete) {
-        throw new Error("Task not found");
-      }
+  const handleDeleteClick = (task: ChecklistItem) => {
+    setTaskToDelete(task);
+  };
 
+  const confirmDelete = async () => {
+    if (!taskToDelete) return;
+
+    setTaskLoading(`delete-${taskToDelete.id}`);
+    try {
       // Use the token in the API call if available, otherwise fall back to ID
       const identifier = taskToDelete.token || taskToDelete.id;
 
@@ -228,7 +228,9 @@ const InteractiveChecklist = () => {
         throw new Error(`Failed to delete task: ${response.status}`);
       }
 
-      setTasks(tasks.filter((task) => task.id !== taskIdOrToken && task.token !== taskIdOrToken));
+      setTasks(
+        tasks.filter((task) => task.id !== taskToDelete.id && task.token !== taskToDelete.token)
+      );
       toast.success("Task deleted successfully!", {
         icon: <CheckCircle className="text-green-500" />,
       });
@@ -237,7 +239,12 @@ const InteractiveChecklist = () => {
       toast.error("Failed to delete task");
     } finally {
       setTaskLoading(null);
+      setTaskToDelete(null);
     }
+  };
+
+  const cancelDelete = () => {
+    setTaskToDelete(null);
   };
 
   const sendTaskNotification = async (task: ChecklistItem, isUpdate = false) => {
@@ -268,27 +275,32 @@ const InteractiveChecklist = () => {
     };
 
     try {
-      // Email Notification
+      // Email Notification - only send if email exists
       if (task.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(task.email)) {
+        const changes = isUpdate ? "updated" : "assigned";
+        const action = isUpdate ? "Updated" : "New";
+
         await sendNotification(
           "/api/send-task-email",
           {
             to: task.email,
-            subject: `${isUpdate ? "Updated" : "New"} Task: ${task.title}`,
+            subject: `${action} Task: ${task.title}`,
             html: `
-            <h1>${isUpdate ? "Task Updated" : "New Task Assigned"}</h1>
+            <h1>Task ${changes}</h1>
             <p><strong>Title:</strong> ${task.title}</p>
             <p><strong>Description:</strong> ${task.description || "No description"}</p>
             <p><strong>Due Date:</strong> ${new Date(task.dueDate).toLocaleDateString()}</p>
             <p><strong>Priority:</strong> ${task.TaskPriority?.name || "Not specified"}</p>
+            <p><strong>Status:</strong> ${task.completed ? "Completed" : "Pending"}</p>
             <p>Click <a href="${process.env.NEXT_PUBLIC_APP_URL}/task/${task.token}">here</a> to view the task.</p>
+            ${isUpdate ? `<p><em>This task has been updated. Please review the changes.</em></p>` : ""}
           `,
           },
           "email"
         );
       }
 
-      // WhatsApp Notification
+      // WhatsApp Notification - only send if phone exists
       if (task.phone && /^\+?[1-9]\d{1,14}$/.test(task.phone)) {
         await sendNotification(
           "/api/send-task-whatsapp",
@@ -298,8 +310,10 @@ const InteractiveChecklist = () => {
               `${isUpdate ? "Updated" : "New"} Task: ${task.title}\n\n` +
               `Description: ${task.description || "None"}\n` +
               `Due: ${new Date(task.dueDate).toLocaleDateString()}\n` +
-              `Priority: ${task.TaskPriority?.name || "Not specified"}\n\n` +
-              `View: ${process.env.NEXT_PUBLIC_APP_URL}/task/${task.token}`,
+              `Priority: ${task.TaskPriority?.name || "Not specified"}\n` +
+              `Status: ${task.completed ? "Completed" : "Pending"}\n\n` +
+              `View: ${process.env.NEXT_PUBLIC_APP_URL}/task/${task.token}` +
+              (isUpdate ? "\n\nThis task has been updated. Please review the changes." : ""),
           },
           "WhatsApp"
         );
@@ -393,7 +407,7 @@ const InteractiveChecklist = () => {
       setEditingTask(null);
       setShowModal(false);
 
-      // Send notifications after successful update
+      // Always send notification when task is updated
       await sendTaskNotification(updatedTask, true);
 
       toast.success("Task updated successfully!", {
@@ -673,7 +687,7 @@ const InteractiveChecklist = () => {
                         <Edit className="h-4 w-4" />
                       </button>
                       <button
-                        onClick={() => !isDeleting && deleteTask(task.id)}
+                        onClick={() => !isDeleting && handleDeleteClick(task)}
                         disabled={isDeleting}
                         className="text-red-500 hover:text-red-700 dark:hover:text-red-400 disabled:opacity-50"
                       >
@@ -721,6 +735,49 @@ const InteractiveChecklist = () => {
           <p className="text-center text-sm text-muted-foreground">No tasks found.</p>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      {taskToDelete && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div
+            className={`bg-white dark:bg-slate-800 p-6 rounded-2xl w-full max-w-md ${isDarkMode ? "dark-scrollbar" : "light-scrollbar"}`}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
+                Confirm Deletion
+              </h2>
+              <button
+                onClick={cancelDelete}
+                className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <p className="text-slate-600 dark:text-slate-300 mb-6">
+              Are you sure you want to delete the task{" "}
+              <strong>&quot;{taskToDelete.title}&quot;</strong>? This action cannot be undone.
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={cancelDelete}
+                className={`text-sm px-4 py-2 rounded-xl border ${
+                  isDarkMode ? "border-slate-600" : "border-slate-300"
+                }`}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-4 py-2 rounded-xl text-sm transition duration-300 hover:opacity-90 cursor-pointer"
+              >
+                Delete Task
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Task Modal */}
       {(showModal || editingTask) && (
