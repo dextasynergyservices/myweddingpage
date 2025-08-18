@@ -2,21 +2,27 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/authOptions";
+import { Resend } from "resend";
+import twilio from "twilio";
+
+// Initialize Resend + Twilio
+const resend = new Resend(process.env.RESEND_API_KEY);
+const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const twilioPhoneNumber = process.env.TWILIO_WHATSAPP_NUMBER;
 
 // Helper function to check if string looks like an ID
 function isId(str: string): boolean {
   return /^[0-9a-fA-F]{24}$/.test(str);
 }
 
+// ========== GET ==========
 export async function GET(request: Request, { params }: { params: { token: string } }) {
   try {
-    // Try to find by token first
     let task = await prisma.task.findUnique({
       where: { token: params.token },
       include: { TaskCategory: true, TaskPriority: true },
     });
 
-    // If not found and looks like ID, try as ID
     if (!task && isId(params.token)) {
       task = await prisma.task.findUnique({
         where: { id: params.token },
@@ -35,41 +41,85 @@ export async function GET(request: Request, { params }: { params: { token: strin
   }
 }
 
+// ========== PUT ==========
 export async function PUT(request: Request, { params }: { params: { token: string } }) {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
-    // First try to find by token
-    let existingTask = await prisma.task.findUnique({
+    const body = await request.json();
+
+    // 🔹 Case 1: Mark as complete via token (NO session required)
+
+    // eslint-disable-next-line prefer-const
+    let taskByToken = await prisma.task.findUnique({
       where: { token: params.token },
+      include: { TaskCategory: true, TaskPriority: true, user: true },
     });
 
-    // If not found and looks like ID, try as ID
-    if (!existingTask && isId(params.token)) {
-      existingTask = await prisma.task.findUnique({
-        where: { id: params.token },
+    if (taskByToken) {
+      const updatedTask = await prisma.task.update({
+        where: { id: taskByToken.id },
+        data: {
+          completed: body.completed ?? taskByToken.completed,
+          completedAt: body.completed ? new Date() : null,
+        },
+        include: { TaskCategory: true, TaskPriority: true, user: true },
       });
+
+      // 🔔 Notify the task owner (User) via Email + WhatsApp
+      if (updatedTask.user) {
+        try {
+          // Send Email via Resend
+          if (updatedTask.user.email) {
+            await resend.emails.send({
+              from: "Tasks <info@myweddingpage.online>",
+              to: updatedTask.user.email,
+              subject: `Task "${updatedTask.title}" Completed`,
+              html: `<p>Hello ${updatedTask.user.groomName || "User"},</p>
+                     <p>The task <b>${updatedTask.title}</b> has just been marked as completed.</p>
+                     <p>Category: ${updatedTask.TaskCategory?.name || "N/A"}</p>
+                     <p>Priority: ${updatedTask.TaskPriority?.name || "N/A"}</p>
+                     <p>Completed at: ${new Date().toLocaleString()}</p>`,
+            });
+          }
+
+          // Send WhatsApp via Twilio
+          if (updatedTask.user.whatsapp) {
+            await twilioClient.messages.create({
+              from: `whatsapp:${twilioPhoneNumber}`,
+              to: `whatsapp:${updatedTask.user.whatsapp}`,
+              body: `✅ Task "${updatedTask.title}" has been marked as completed.`,
+            });
+          }
+        } catch (notifyError) {
+          console.error("Notification error:", notifyError);
+        }
+      }
+
+      return NextResponse.json(updatedTask);
     }
+
+    // 🔹 Case 2: Normal update by authenticated user
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // eslint-disable-next-line prefer-const
+    let existingTask = await prisma.task.findUnique({
+      where: { id: params.token },
+    });
 
     if (!existingTask || existingTask.userId !== session.user.id) {
       return NextResponse.json({ error: "Task not found" }, { status: 404 });
     }
 
-    const body = await request.json();
     const updatedTask = await prisma.task.update({
-      where: { id: existingTask.id }, // Always use the ID for update
+      where: { id: existingTask.id },
       data: {
         ...body,
         dueDate: body.dueDate ? new Date(body.dueDate) : undefined,
         completedAt: body.completed ? new Date() : undefined,
       },
-      include: {
-        TaskCategory: true,
-        TaskPriority: true,
-      },
+      include: { TaskCategory: true, TaskPriority: true },
     });
 
     return NextResponse.json(updatedTask);
@@ -79,6 +129,7 @@ export async function PUT(request: Request, { params }: { params: { token: strin
   }
 }
 
+// ========== DELETE ==========
 export async function DELETE(request: Request, { params }: { params: { token: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -87,6 +138,8 @@ export async function DELETE(request: Request, { params }: { params: { token: st
 
   try {
     // First try to find by token
+
+    // eslint-disable-next-line prefer-const
     let existingTask = await prisma.task.findUnique({
       where: { token: params.token },
     });
