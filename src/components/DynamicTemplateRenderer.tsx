@@ -1,92 +1,108 @@
 // components/DynamicTemplateRenderer.tsx
 "use client";
 
-import { PLANS } from "@/lib/plans";
-import {
-  templateRegistry,
-  componentMap,
-  TemplateComponent,
-  TemplateMeta,
-} from "@/lib/template-registry";
-import { Triangle } from "lucide-react";
+import { componentMap, ComponentType, ColorScheme } from "@/lib/component-registry";
+import { AlertTriangle } from "lucide-react";
 import React from "react";
 
 interface Props {
-  // templateName must match exact keys of templateRegistry
-  templateName: keyof typeof templateRegistry;
-  userPlan: keyof typeof PLANS;
+  template: {
+    id: string;
+    name: string;
+    components: any[];
+  };
+  userPlan: {
+    id: string;
+    name: string;
+    maxComponents: number;
+  };
   userData: {
     brideName?: string;
     groomName?: string;
     weddingDate?: string;
+    venue?: string;
   };
+  colorScheme?: ColorScheme;
+  onContentUpdate?: (componentId: string, content: any) => void;
+  editable?: boolean;
+}
+
+// Recursive function to replace placeholders in content
+function replacePlaceholders(obj: any, userData: Props["userData"]): any {
+  if (typeof obj === "string") {
+    return obj
+      .replace(/{brideName}/g, userData.brideName || "Bride")
+      .replace(/{groomName}/g, userData.groomName || "Groom")
+      .replace(/{weddingDate}/g, userData.weddingDate || "Date")
+      .replace(/{venue}/g, userData.venue || "Venue");
+  } else if (Array.isArray(obj)) {
+    return obj.map(item => replacePlaceholders(item, userData));
+  } else if (typeof obj === "object" && obj !== null) {
+    return Object.fromEntries(
+      Object.entries(obj).map(([key, value]) => [
+        key,
+        replacePlaceholders(value, userData)
+      ])
+    );
+  }
+  return obj;
 }
 
 export function DynamicTemplateRenderer({
-  templateName,
+  template,
   userPlan,
   userData,
+  colorScheme,
+  onContentUpdate,
+  editable = false
 }: Props) {
-  // 1. Get template from registry
-  const template: TemplateMeta = templateRegistry[templateName];
+  // Process components with user data
+  const processedComponents = template.components.map((component, index) => ({
+    ...component,
+    id: component.id || `${component.type}-${index}`,
+    content: replacePlaceholders(component.content, userData)
+  }));
 
-  // 2. Verify plan access
-  if (!PLANS[userPlan].allowedTemplates.includes(templateName)) {
-    return (
-      <div className="bg-red-50 p-6 rounded-lg flex items-start gap-3">
-        <Triangle className="h-5 w-5 text-red-500 mt-0.5" />
-        <div>
-          <h3 className="font-medium text-red-800">Plan Limit Reached</h3>
-          <p className="text-sm text-red-700">
-            This template requires {template.requiredPlan} plan
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Enforce component limit based on plan
+  const componentsToRender = processedComponents.slice(0, userPlan.maxComponents);
 
-  // 3. Replace placeholders with user data
-  const processedComponents: TemplateComponent[] = template.components.map(
-    (component: TemplateComponent) => ({
-      ...component,
-      content: Object.fromEntries(
-        Object.entries(component.content).map(([key, value]) => [
-          key,
-          typeof value === "string"
-            ? value
-                .replace(/{brideName}/g, userData.brideName || "Bride")
-                .replace(/{groomName}/g, userData.groomName || "Groom")
-                .replace(/{weddingDate}/g, userData.weddingDate || "Date")
-            : value,
-        ])
-      ),
-    })
-  );
-
-  // 4. Render with plan limits
   return (
-    <div className="space-y-12">
-      {processedComponents
-        .slice(0, PLANS[userPlan].maxComponents) // Enforce component limit
-        .map((component, index) => {
-          // Ensure TypeScript knows this is a React component
-          const Component =
-            componentMap[component.type as keyof typeof componentMap] as React.ComponentType<any>;
+    <div className="space-y-8">
+      {componentsToRender.map((component) => {
+        const Component = componentMap[component.type as ComponentType];
 
-          return Component ? (
-            <div key={`${component.type}-${index}`}>
-              <Component {...component} userPlan={userPlan} />
-            </div>
-          ) : null;
-        })}
+        if (!Component) {
+          console.warn(`Component type ${component.type} not found in componentMap`);
+          return null;
+        }
+
+        return (
+          <div key={component.id} className="template-component">
+            <Component
+              {...component}
+              userPlan={userPlan}
+              theme={colorScheme}
+              editable={editable}
+              onContentUpdate={(newContent: any) =>
+                onContentUpdate && onContentUpdate(component.id, newContent)
+              }
+            />
+          </div>
+        );
+      })}
+
+      {processedComponents.length > userPlan.maxComponents && (
+        <div className="bg-yellow-50 p-4 rounded-lg flex items-start gap-3">
+          <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5" />
+          <div>
+            <h3 className="font-medium text-yellow-800">Plan Limit Reached</h3>
+            <p className="text-sm text-yellow-700">
+              Your {userPlan.name} plan includes {userPlan.maxComponents} components.
+              Upgrade to access all {processedComponents.length} components in this template.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-// --- Example usage ---
-// const myTemplateName: keyof typeof templateRegistry = "classic";
-// <DynamicTemplateRenderer
-//   templateName={myTemplateName}
-//   userPlan="DELIGHT"
-//   userData={{ brideName: "Ada", groomName: "Emeka", weddingDate: "2025-12-12" }}
-// />

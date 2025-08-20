@@ -4,127 +4,151 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Seeding database...");
+  console.log("Seeding database...");
 
-  // ✅ Seed Plans
-  // await prisma.plan.createMany({
-  //   data: [
-  //     {
-  //       name: "Delight",
-  //       price: 100.0,
-  //       duration_days: 30,
-  //       max_photos: 15,
-  //       max_videos: 1,
-  //       max_tabs: 3,
-  //     },
-  //     {
-  //       name: "Darling",
-  //       price: 150.0,
-  //       duration_days: 30,
-  //       max_photos: 25,
-  //       max_videos: 2,
-  //       max_tabs: 5,
-  //     },
-  //     {
-  //       name: "Dazzle",
-  //       price: 250.0,
-  //       duration_days: 60,
-  //       max_photos: 50,
-  //       max_videos: 3,
-  //       max_tabs: 5,
-  //     },
-  //     {
-  //       name: "Dynasty Royale",
-  //       price: 500.0,
-  //       duration_days: 365,
-  //       max_photos: 100,
-  //       max_videos: 4,
-  //       max_tabs: 5,
-  //     },
-  //   ],
-  //   skipDuplicates: true,
-  // });
-  // console.log("✅ Plans seeded.");
+  // ✅ Seed Plans - ADD IDs to match your other seed file
+  await prisma.plan.createMany({
+    data: [
+      {
+        id: "plan_delight",
+        name: "DELIGHT",
+        price: 29.99,
+        duration_days: 30,
+        max_photos: 15,
+        max_videos: 1,
+        max_tabs: 7,
+      },
+      {
+        id: "plan_darling",
+        name: "DARLING",
+        price: 59.99,
+        duration_days: 30,
+        max_photos: 25,
+        max_videos: 2,
+        max_tabs: 10,
+      },
+      {
+        id: "plan_dazzle",
+        name: "DAZZLE",
+        price: 99.99,
+        duration_days: 365,
+        max_photos: 50,
+        max_videos: 3,
+        max_tabs: 15,
+      },
+      {
+        id: "plan_dynasty_royale",
+        name: "DYNASTY_ROYALE",
+        price: 199.99,
+        duration_days: 365,
+        max_photos: 100,
+        max_videos: 4,
+        max_tabs: 17,
+      },
+    ],
+    skipDuplicates: true,
+  });
+  console.log("Plans seeded.");
 
-  // ✅ Seed Templates
-  // await prisma.template.createMany({
-  //   data: [
-  //     {
-  //       name: "Classic Elegance",
-  //       description: "A timeless, elegant wedding page design.",
-  //       thumbnail_url: "https://example.com/classic-elegance.jpg",
-  //       layout_data: {},
-  //     },
-  //     {
-  //       name: "Rustic Charm",
-  //       description: "Warm, rustic vibes for your special day.",
-  //       thumbnail_url: "https://example.com/rustic-charm.jpg",
-  //       layout_data: {},
-  //     },
-  //   ],
-  //   skipDuplicates: true,
-  // });
-  // console.log("✅ Templates seeded.");
+  // ✅ Create a category first
+  const category = await prisma.templateCategory.upsert({
+    where: { name: "general" },
+    update: {},
+    create: {
+      name: "general",
+      description: "General wedding templates"
+    }
+  });
 
-  // ✅ Admin User
-  // const hashedPassword = await bcrypt.hash("AdminPassword123!", 10);
+  // ✅ Seed Templates - FIX field names and add required fields
+  await prisma.template.createMany({
+    data: [
+      {
+        name: "Classic Elegance",
+        description: "A timeless, elegant wedding page design.",
+        thumbnail: "https://example.com/classic-elegance.jpg",
+        layout_data: {},
+        categoryId: category.id,
+        components: [],
+        colorSchemes: []
+      },
+      {
+        name: "Rustic Charm",
+        description: "Warm, rustic vibes for your special day.",
+        thumbnail: "https://example.com/rustic-charm.jpg",
+        layout_data: {},
+        categoryId: category.id,
+        components: [],
+        colorSchemes: []
+      },
+    ],
+    skipDuplicates: true,
+  });
+  console.log("Templates seeded.");
 
-  // await prisma.user.upsert({
-  //   where: { email: "admin@myweddingpage.online" },
-  //   update: {},
-  //   create: {
-  //     name: "Admin User",
-  //     email: "admin@myweddingpage.online",
-  //     password: hashedPassword,
-  //     role: "ADMIN",
-  //     status: "ACTIVE",
-  //   },
-  // });
-  // console.log("✅ Admin User seeded.");
+  // ✅ Admin User - FIX: Your User model doesn't have 'name' field
+  const hashedPassword = await bcrypt.hash("AdminPassword123!", 10);
 
-  // ✅ Fetch IDs to use in weddingPage creation
-  // const adminUser = await prisma.user.findUnique({
-  //   where: { email: "admin@myweddingpage.online" },
-  // });
-  // const template = await prisma.template.findUnique({
-  //   where: { name: "Classic Elegance" }, // You must have made this name @unique in schema
-  // });
+  await prisma.user.upsert({
+    where: { email: "admin@myweddingpage.online" },
+    update: {},
+    create: {
+      email: "admin@myweddingpage.online",
+      password: hashedPassword,
+      role: "ADMIN",
+      status: "ACTIVE",
+      // Your User model doesn't have 'name' field, so remove it
+      // Add other fields your User model requires
+    },
+  });
+  console.log("Admin User seeded.");
 
-  // if (!adminUser || !template) {
-  //   throw new Error("❌ Could not find required User or Template for WeddingPage seed.");
-  // }
+  // ✅ Fetch admin user
+  const adminUser = await prisma.user.findUnique({
+    where: { email: "admin@myweddingpage.online" },
+  });
+  const template = await prisma.template.findUnique({
+    where: { name: "Classic Elegance" },
+  });
+
+  if (!adminUser || !template) {
+    throw new Error("Could not find required User or Template for WeddingPage seed.");
+  }
 
   // ✅ Seed WeddingPage
-  // await prisma.weddingPage.upsert({
-  //   where: {
-  //     slug: "john-and-jane",
-  //   },
-  //   update: {},
-  //   create: {
-  //     slug: "john-and-jane",
-  //     title: "John & Jane's Wedding",
-  //     is_live: true,
-  //     created_by_admin: true,
-  //     userId: adminUser.id,
-  //     templateId: template.id,
-  //   },
-  // });
+  await prisma.weddingPage.upsert({
+    where: {
+      slug: "john-and-jane",
+    },
+    update: {},
+    create: {
+      slug: "john-and-jane",
+      title: "John & Jane's Wedding",
+      is_live: true,
+      created_by_admin: true,
+      userId: adminUser.id,
+      templateId: template.id,
+    },
+  });
 
-  // console.log("✅ WeddingPage seeded.");
+  console.log("WeddingPage seeded.");
 
-  const delightPlanId = "8838eb28-4dde-4847-a821-fd6a92edc7e7";
-  const darlingPlanId = "c883dbff-0982-43fd-8621-d4e8bcd2e48f";
-  const dazzlePlanId = "5caaccb9-6e14-4a53-a49a-177de72b0ccf";
-  const dynastyRoyalePlanId = "3b4634ab-3a88-46b4-aff6-78306099620e";
+  // ✅ Use CORRECT plan IDs
+  const delightPlanId = "plan_delight";
+  const darlingPlanId = "plan_darling";
+  const dazzlePlanId = "plan_dazzle";
+  const dynastyRoyalePlanId = "plan_dynasty_royale";
 
+  // ✅ ADD skipDuplicates: true to avoid duplicate errors
   await prisma.planRenewalOption.createMany({
+    skipDuplicates: true,
     data: [
       // Delight Plan
       { planId: delightPlanId, duration: 30, price: 10 },
       { planId: delightPlanId, duration: 90, price: 25 },
       { planId: delightPlanId, duration: 365, price: 90 },
 
-      // Delight Plan
+      // Darling Plan
       { planId: darlingPlanId, duration: 30, price: 20 },
       { planId: darlingPlanId, duration: 90, price: 50 },
       { planId: darlingPlanId, duration: 365, price: 180 },
@@ -134,23 +158,20 @@ async function main() {
       { planId: dazzlePlanId, duration: 90, price: 100 },
       { planId: dazzlePlanId, duration: 365, price: 360 },
 
-      // Dazzle Plan
+      // Dynasty Royale Plan
       { planId: dynastyRoyalePlanId, duration: 30, price: 60 },
       { planId: dynastyRoyalePlanId, duration: 90, price: 200 },
       { planId: dynastyRoyalePlanId, duration: 365, price: 720 },
     ],
   });
 
-  console.log("Plan renewal options seeded ✅");
-
-  console.log("✅ Template registry seeded.");
-
-  console.log("🌱 Seeding complete.");
+  console.log("Plan renewal options seeded");
+  console.log("Seeding complete.");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Seeding error:", e);
+    console.error("Seeding error:", e);
     process.exit(1);
   })
   .finally(async () => {

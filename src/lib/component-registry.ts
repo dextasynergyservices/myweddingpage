@@ -1,10 +1,3 @@
-// lib/template-registry.ts
-import { PLANS } from "./plans";
-import { RusticTemplate } from "@/lib/sample-templates/rustic";
-import { modernTemplate } from "@/lib/sample-templates/modern";
-import { vintageTemplate } from "@/lib/sample-templates/vintage";
-import { luxuryTemplate } from "@/lib/sample-templates/luxury";
-
 import RusticHero from "@/components/sample-templates/rustic/RusticHero";
 import RuticOurStory from "@/components/sample-templates/rustic/RusticOurStory";
 import RuticGallery from "@/components/sample-templates/rustic/RusticGallery";
@@ -57,29 +50,16 @@ export const componentMap = {
 
 export type ComponentType = keyof typeof componentMap;
 
-// Define the TemplateMeta type for all templates
-export type TemplateMeta = {
+export interface ComponentConfig {
+  type: ComponentType;
+  content: Record<string, any>;
+  styles?: Record<string, string>;
+}
+
+export interface ColorScheme {
   name: string;
-  category: string;
-  thumbnail: string;
-  requiredPlan: keyof typeof PLANS;
-  components: Record<string, ComponentType>;
-};
-
-const type template = {
-
-} && TemplateMeta ;
-
-export type TemplateComponent = {
-    type: ComponentType;
-    content: Record<string, any>;
-  };
-
-export const templateRegistry: Record<string, TemplateMeta> = {
-  rustic: RusticTemplate,
-  modern: modernTemplate,
-  vintage: vintageTemplate,
-  luxury: luxuryTemplate,
-};
-
-export type TemplateName = keyof typeof templateRegistry;
+  primary: string;
+  secondary: string;
+  background: string;
+  text: string;
+}
