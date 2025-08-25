@@ -8,14 +8,12 @@ import {
   Camera,
   VideoOff,
   Users,
-  Settings,
   Play,
   Square,
   Eye,
   Share2,
   Monitor,
   Smartphone,
-  BarChart3,
   Plus,
   Copy,
   Trash2,
@@ -266,10 +264,10 @@ const LiveStreaming = () => {
     }
   };
 
-  const extractYouTubeID = (url: string): string => {
-    // This function is now handled by the API
-    return "";
-  };
+  // const extractYouTubeID = (url: string): string => {
+
+  //   return "";
+  // };
 
   const copyToClipboard = (url: string) => {
     navigator.clipboard.writeText(url);
