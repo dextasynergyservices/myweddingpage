@@ -14,7 +14,7 @@ export async function GET() {
           select: {
             id: true,
             name: true,
-            thumbnail_url: true,
+            thumbnail: true,
           },
         },
       },
