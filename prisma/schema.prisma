@@ -48,6 +48,12 @@ enum ReminderType {
   DAILY
 }
 
+enum MediaCategory {
+  before
+  during
+  after
+}
+
 model User {
   id                String        @id @default(uuid())
   email             String?        @unique
@@ -88,6 +94,7 @@ model User {
   guests        Guest[]
   tasks         Task[]
   streams       Stream[]
+  galleryMedias GalleryMedia[]
 }
 
 model Plan {
@@ -387,4 +394,14 @@ model Stream {
   updatedAt   DateTime @updatedAt
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GalleryMedia {
+  id        String   @id @default(uuid())
+  url       String
+  type      MediaType
+  category  MediaCategory
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
 }
