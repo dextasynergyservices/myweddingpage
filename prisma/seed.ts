@@ -53,13 +53,13 @@ async function main() {
   //     {
   //       name: "Classic Elegance",
   //       description: "A timeless, elegant wedding page design.",
-  //       thumbnail_url: "https://example.com/classic-elegance.jpg",
+  //       thumbnail: "https://example.com/classic-elegance.jpg",
   //       layout_data: {},
   //     },
   //     {
   //       name: "Rustic Charm",
   //       description: "Warm, rustic vibes for your special day.",
-  //       thumbnail_url: "https://example.com/rustic-charm.jpg",
+  //       thumbnail: "https://example.com/rustic-charm.jpg",
   //       layout_data: {},
   //     },
   //   ],

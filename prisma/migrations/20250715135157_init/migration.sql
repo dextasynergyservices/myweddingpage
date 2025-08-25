@@ -64,7 +64,7 @@ CREATE TABLE "Template" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "thumbnail_url" TEXT NOT NULL,
+    "thumbnail" TEXT NOT NULL,
     "layout_data" JSONB NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
