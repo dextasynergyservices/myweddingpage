@@ -87,6 +87,7 @@ model User {
   comments      Comment[]
   guests        Guest[]
   tasks         Task[]
+  streams       Stream[]
 }
 
 model Plan {
@@ -126,7 +127,7 @@ model Template {
   id            String   @id @default(uuid())
   name          String   @unique
   description   String
-  thumbnail_url String
+  thumbnail String
   layout_data   Json
   created_at    DateTime @default(now())
 
@@ -371,4 +372,19 @@ model TaskPriority {
   level Int      // e.g., 1 = Low, 2 = Medium, 3 = High
   color String?  // Optional for UI styling
   tasks Task[]
+}
+
+model Stream {
+  id          String   @id @default(cuid())
+  name        String
+  youtubeUrl  String
+  youtubeId   String
+  camera      String
+  quality     String
+  isActive    Boolean  @default(false)
+  viewerCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

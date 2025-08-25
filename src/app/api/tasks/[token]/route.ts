@@ -139,7 +139,6 @@ export async function DELETE(request: Request, { params }: { params: { token: st
   try {
     // First try to find by token
 
-    // eslint-disable-next-line prefer-const
     let existingTask = await prisma.task.findUnique({
       where: { token: params.token },
     });

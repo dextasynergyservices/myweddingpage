@@ -15,7 +15,7 @@ export type Template = {
   id: string;
   name: string;
   description: string;
-  thumbnail_url: string;
+  thumbnail: string;
   layout_data: Record<string, unknown>;
 };
 
