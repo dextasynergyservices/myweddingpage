@@ -6,9 +6,11 @@ frontend:
         - corepack enable
         - corepack prepare pnpm@latest --activate
         - pnpm install --frozen-lockfile
+        - echo "Using DATABASE_URL=${DATABASE_URL}" # confirms env is set
         - pnpm prisma generate
     build:
       commands:
+        - pnpm prisma generate
         - pnpm run build
   artifacts:
     baseDirectory: .next
