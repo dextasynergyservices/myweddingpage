@@ -10,7 +10,6 @@ frontend:
         - pnpm prisma generate
     build:
       commands:
-        - pnpm prisma generate
         - pnpm run build
   artifacts:
     baseDirectory: .next
