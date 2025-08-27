@@ -1,15 +1,19 @@
 version: 1
 frontend:
+  runtime:
+    name: nodejs
+    version: 20
   phases:
     preBuild:
       commands:
         - corepack enable
         - corepack prepare pnpm@latest --activate
         - pnpm install --frozen-lockfile
-        - echo "Using DATABASE_URL=${DATABASE_URL}" # confirms env is set
+        - echo "Using DATABASE_URL=${DATABASE_URL}"
         - pnpm prisma generate
     build:
       commands:
+        - pnpm prisma generate
         - pnpm run build
   artifacts:
     baseDirectory: .next
