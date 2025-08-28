@@ -55,12 +55,12 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: "myweddingpage"
-          environment_name: "Myweddingpage-env"
+          application_name: "weddingpage"
+          environment_name: "Weddingpage-env"
           region: "eu-central-1"
           version_label: "build-${{ github.run_number }}"
-          deployment_package: "myweddingpage.zip"
+          deployment_package: "weddingpage.zip"
 
       - name: Cleanup bundle
         if: always()
-        run: rm -f myweddingpage.zip
+        run: rm -f weddingpage.zip

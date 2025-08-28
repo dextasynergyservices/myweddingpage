@@ -40,7 +40,6 @@ RUN pnpm install --prod --frozen-lockfile
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/package.json ./
 
 # Expose port
 EXPOSE 8080
