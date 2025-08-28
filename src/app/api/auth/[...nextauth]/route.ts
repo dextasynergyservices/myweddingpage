@@ -33,11 +33,16 @@ const authOptions: NextAuthOptions = {
         if (!user) throw new Error("No user found");
         if (!user.password) throw new Error("User has no password set");
 
-        const isValid = await verifyPassword(credentials.password, user.password as string);
+        const isValid = await verifyPassword(credentials.password, user.password);
 
         if (!isValid) throw new Error("Invalid credentials");
 
-        return user;
+        return {
+          id: user.id,
+          email: user.email,
+          whatsapp: user.whatsapp,
+          role: user.role,
+        };
       },
     }),
   ],
@@ -45,10 +50,11 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id as string;
-        session.user.email = token.email;
-        session.user.name = token.name;
-        session.user.whatsapp = (token as any).whatsapp; // 👈 include whatsapp
+        session.user.id = token.id;
+        session.user.email = token.email ?? null;
+        session.user.name = token.name ?? null;
+        session.user.whatsapp = token.whatsapp ?? null;
+        session.user.role = token.role ?? null;
       }
       return session;
     },
@@ -57,12 +63,12 @@ const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.email = user.email ?? undefined;
         token.name = user.name ?? undefined;
-        token.whatsapp = (user as any).whatsapp ?? undefined; // 👈 include whatsapp
+        token.whatsapp = user.whatsapp ?? undefined;
+        token.role = user.role ?? undefined;
       }
       return token;
     },
   },
-
   pages: {
     signIn: "/login",
   },

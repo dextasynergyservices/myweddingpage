@@ -23,6 +23,6 @@ declare module "next-auth/jwt" {
     email?: string | null;
     name?: string | null;
     role?: string | null;
-    whatsapp?: string;
+    whatsapp?: string | null;
   }
 }
