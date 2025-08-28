@@ -43,12 +43,12 @@ jobs:
       - name: Prepare deployment bundle
         run: |
           zip -r myweddingpage.zip . \
-          -x '*.git*' \
-          -x 'node_modules/*' \
-          -x '.github/*' \
-          -x '.env*' \  # Exclude local env files
-          -x '*.log' \  # Exclude log files
-          -x '.next/cache/*'  # Exclude build cache
+            -x '*.git*' \
+            -x 'node_modules/*' \
+            -x '.github/*' \
+            -x '.env*' \
+            -x '*.log' \
+            -x '.next/cache/*'
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
