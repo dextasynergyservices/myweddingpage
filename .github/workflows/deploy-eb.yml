@@ -1,0 +1,55 @@
+name: Deploy to Elastic Beanstalk
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
+      - name: Build Next.js app
+        run: pnpm build
+
+      - name: Prepare deployment bundle
+        run: |
+          zip -r myweddingpage.zip . \
+          -x '*.git*' \
+          -x 'node_modules/*' \
+          -x '.github/*'
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: "myweddingpage"
+          environment_name: "myweddingpage-env"
+          region: "us-east-1"
+          version_label: "build-${{ github.run_number }}"
+          deployment_package: "myweddingpage.zip"
+
+      - name: Cleanup bundle
+        if: always()
+        run: rm -f myweddingpage.zip
