@@ -24,9 +24,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 };
 
@@ -37,28 +35,30 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
+
+  // Only run on client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
-    // Check for existing session
+    if (!isClient) return;
+
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
     setLoading(false);
-  }, []);
+  }, [isClient]);
 
   const login = async (email: string, password: string) => {
     try {
       setLoading(true);
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Validate credentials
-      if (password !== "password") {
-        throw new Error("Invalid credentials");
-      }
+      if (password !== "password") throw new Error("Invalid credentials");
 
-      // Mock user data
       const userData: User = {
         id: "1",
         email,
@@ -71,8 +71,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
       toast.success("Welcome back!");
-
-      // Return user data for redirect logic
       return userData;
     } catch (error) {
       console.error("Login error:", error);
@@ -85,7 +83,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const loginWithGoogle = async () => {
     try {
       setLoading(true);
-      // Simulate Google OAuth
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const userData: User = {
@@ -100,8 +97,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
       toast.success("Successfully signed in with Google!");
-
-      // Return user data for redirect logic
       return userData;
     } catch (error) {
       toast.error("Google sign-in failed. Please try again.");
@@ -114,7 +109,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signup = async (email: string, password: string, name: string) => {
     try {
       setLoading(true);
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const userData: User = {
@@ -129,8 +123,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
       toast.success("Account created successfully!");
-
-      // Return user data for redirect logic
       return userData;
     } catch (error) {
       toast.error("Signup failed. Please try again.");
@@ -142,18 +134,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
+    if (typeof window !== "undefined") localStorage.removeItem("user");
     toast.success("Logged out successfully");
   };
 
-  const value = {
-    user,
-    loading,
-    login,
-    loginWithGoogle,
-    signup,
-    logout,
-  };
+  const value = { user, loading, login, loginWithGoogle, signup, logout };
+
+  // Only render children once on client to prevent SSR mismatch
+  if (!isClient) return null;
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
