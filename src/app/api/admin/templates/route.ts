@@ -51,7 +51,7 @@
 // }
 
 // Temporary placeholder for /api/weddingPage
-// This prevents Prisma/auth errors during EBS deploy
+// This prevents Prisma/auth errors during EBS deployemnt
 import { NextResponse } from "next/server";
 
 export async function GET() {
