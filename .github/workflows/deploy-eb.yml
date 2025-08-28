@@ -11,6 +11,11 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
+    # Add environment variables at the job level
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      NODE_ENV: production
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,7 +42,10 @@ jobs:
           zip -r myweddingpage.zip . \
           -x '*.git*' \
           -x 'node_modules/*' \
-          -x '.github/*'
+          -x '.github/*' \
+          -x '.env*' \  # Exclude local env files
+          -x '*.log' \  # Exclude log files
+          -x '.next/cache/*'  # Exclude build cache
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
@@ -49,9 +57,6 @@ jobs:
           region: "us-east-1"
           version_label: "build-${{ github.run_number }}"
           deployment_package: "myweddingpage.zip"
-
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Cleanup bundle
         if: always()
