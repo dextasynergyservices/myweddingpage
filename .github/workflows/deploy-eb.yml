@@ -50,6 +50,9 @@ jobs:
           version_label: "build-${{ github.run_number }}"
           deployment_package: "myweddingpage.zip"
 
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Cleanup bundle
         if: always()
         run: rm -f myweddingpage.zip
