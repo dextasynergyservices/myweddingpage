@@ -2,20 +2,23 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install pnpm
+# Install pnpm first (cached layer)
 RUN npm install -g pnpm
 
-# Copy package files
+# Copy only package files first (better caching)
 COPY package.json pnpm-lock.yaml* ./
 
-# Install all dependencies
+# Install dependencies (cached if package.json doesn't change)
 RUN pnpm install --frozen-lockfile
 
-# Copy source code
-COPY . .
+# Copy Prisma schema (cached if schema doesn't change)
+COPY prisma/schema.prisma ./prisma/
 
 # Generate Prisma client
 RUN pnpm prisma generate
+
+# Copy rest of the source code
+COPY . .
 
 # Build Next.js app
 RUN pnpm build
@@ -27,7 +30,7 @@ WORKDIR /app
 ENV NODE_ENV production
 ENV PORT 8080
 
-# Install pnpm
+# Install only pnpm (small layer)
 RUN npm install -g pnpm
 
 # Copy package files
