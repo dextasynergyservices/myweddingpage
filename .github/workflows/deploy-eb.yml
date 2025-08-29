@@ -11,7 +11,6 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
-    # Add environment variables at the job level
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
@@ -42,13 +41,17 @@ jobs:
 
       - name: Prepare deployment bundle
         run: |
-          zip -r myweddingpage.zip . \
+          zip -r weddingpage.zip . \
             -x '*.git*' \
             -x 'node_modules/*' \
             -x '.github/*' \
             -x '.env*' \
             -x '*.log' \
             -x '.next/cache/*'
+
+          # Verify the zip was created
+          ls -la weddingpage.zip
+          echo "Zip file created successfully!"
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
