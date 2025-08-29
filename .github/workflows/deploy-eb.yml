@@ -11,13 +11,6 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-      EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
-      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
-      NODE_ENV: production
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,27 +23,46 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Install dependencies and build
+        run: |
+          # Install all dependencies (including dev dependencies for build)
+          pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
-        run: pnpm prisma generate
+          # Generate Prisma client
+          pnpm prisma generate
 
-      - name: Build Next.js app
-        run: pnpm build
+          # Build Next.js app with environment variables
+          DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+          RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
+          EMAIL_FROM="${{ secrets.EMAIL_FROM }}" \
+          NEXT_PUBLIC_APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL }}" \
+          NODE_ENV=production \
+          pnpm build
 
       - name: Prepare deployment bundle
         run: |
-          zip -r weddingpage.zip . \
-            -x '*.git*' \
-            -x 'node_modules/*' \
-            -x '.github/*' \
-            -x '.env*' \
-            -x '*.log' \
-            -x '.next/cache/*'
+          # Create zip with specific included files
+          zip -r weddingpage.zip \
+            .next/ \
+            public/ \
+            package.json \
+            pnpm-lock.yaml \
+            node_modules/ \
+            Dockerfile \
+            .dockerignore \
+            .ebextensions/ \
+            tailwind.config.ts \
+            next.config.ts \
+            postcss.config.js \
+            tsconfig.json \
+            tsconfig.seed.json \
+            next-env.d.ts \
+            README.md
 
-          # Verify the zip was created
+          # Verify the zip was created and check contents
           ls -la weddingpage.zip
+          echo "Zip file size: $(du -h weddingpage.zip | cut -f1)"
+          unzip -l weddingpage.zip | head -20
           echo "Zip file created successfully!"
 
       - name: Deploy to Elastic Beanstalk
