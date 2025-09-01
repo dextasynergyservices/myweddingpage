@@ -45,6 +45,7 @@ jobs:
           zip -r weddingpage.zip \
             .next/ \
             public/ \
+            src/ \
             package.json \
             pnpm-lock.yaml \
             prisma/ \
