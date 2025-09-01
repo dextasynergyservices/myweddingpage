@@ -47,7 +47,6 @@ jobs:
             public/ \
             package.json \
             pnpm-lock.yaml \
-            node_modules/ \
             Dockerfile \
             .dockerignore \
             .ebextensions/ \
