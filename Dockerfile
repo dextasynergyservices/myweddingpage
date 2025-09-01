@@ -1,4 +1,5 @@
-FROM node:20-alpine
+# Stage 1: Builder (install everything, build, generate)
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -8,19 +9,32 @@ RUN npm install -g pnpm
 # Copy package files
 COPY package.json pnpm-lock.yaml* ./
 
-# Install ALL dependencies (including dev deps for Prisma generation)
+# Install ALL dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy Prisma schema and generate client
-COPY prisma/schema.prisma ./prisma/
+# Copy source code and build
+COPY . .
 RUN pnpm prisma generate
+RUN pnpm build
 
-# Copy pre-built application from CI
-COPY .next ./.next
-COPY public ./public
+# Stage 2: Production image
+FROM node:20-alpine AS production
 
-# Install production dependencies only (clean up dev deps)
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Copy package files
+COPY package.json pnpm-lock.yaml* ./
+
+# Install production dependencies only
 RUN pnpm install --prod --frozen-lockfile
+
+# Copy built application from builder stage
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Expose port
 EXPOSE 8080
