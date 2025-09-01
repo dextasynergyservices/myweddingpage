@@ -5,23 +5,19 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm
 
-# Copy package files
+# Copy package files first (for better Docker layer caching)
 COPY package.json pnpm-lock.yaml* ./
 
-# Install ALL dependencies (including dev deps for Prisma generation)
+# Install all dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy Prisma schema and generate client
-COPY prisma/schema.prisma ./prisma/
+# Copy ALL source code (including src/, prisma/, config files, etc.)
+COPY . .
+
+# Generate Prisma client and build the app
+# (Environment variables will be available from Elastic Beanstalk)
 RUN pnpm prisma generate
-
-# Copy pre-built application from CI (already built with DATABASE_URL)
-COPY .next ./.next
-COPY public ./public
-COPY src ./src
-
-# Don't clean up dev dependencies - the built app might need them!
-# Just use the existing node_modules
+RUN pnpm build
 
 # Expose port
 EXPOSE 8080
