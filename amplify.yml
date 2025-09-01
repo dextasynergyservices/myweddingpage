@@ -1,25 +1,36 @@
 version: 1
 frontend:
-  runtime:
-    name: nodejs
-    version: 20
   phases:
     preBuild:
       commands:
+        # Use Node.js 20 (best practice for Next.js 15 + Prisma)
+        - nvm install 20
+        - nvm use 20
+        - node -v
+
+        # Enable corepack + pnpm
         - corepack enable
         - corepack prepare pnpm@latest --activate
+
+        # Install dependencies
         - pnpm install --frozen-lockfile
-        - echo "Using DATABASE_URL=${DATABASE_URL}"
+
+        # Generate Prisma client
         - pnpm prisma generate
+
     build:
       commands:
-        - pnpm prisma generate
-        - pnpm run build
+        # Build Next.js app
+        - pnpm build
+
   artifacts:
     baseDirectory: .next
     files:
       - "**/*"
+
   cache:
     paths:
       - node_modules/**/*
       - .pnpm-store/**/*
+      - .next/cache/**/*
+      - prisma/**/*
