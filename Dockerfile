@@ -8,13 +8,19 @@ RUN npm install -g pnpm
 # Copy package files
 COPY package.json pnpm-lock.yaml* ./
 
-# Install production dependencies only
-RUN pnpm install --prod --frozen-lockfile
+# Install ALL dependencies (including dev deps for Prisma generation)
+RUN pnpm install --frozen-lockfile
+
+# Copy Prisma schema and generate client
+COPY prisma/schema.prisma ./prisma/
+RUN pnpm prisma generate
 
 # Copy pre-built application from CI
 COPY .next ./.next
 COPY public ./public
-COPY node_modules/.prisma ./node_modules/.prisma
+
+# Install production dependencies only (clean up dev deps)
+RUN pnpm install --prod --frozen-lockfile
 
 # Expose port
 EXPOSE 8080
