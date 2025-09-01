@@ -15,56 +15,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install dependencies and build
-        run: |
-          # Install all dependencies (including dev dependencies for build)
-          pnpm install --frozen-lockfile
-
-          # Generate Prisma client
-          pnpm prisma generate
-
-          # Build Next.js app with environment variables
-          DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-          RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
-          EMAIL_FROM="${{ secrets.EMAIL_FROM }}" \
-          NEXT_PUBLIC_APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL }}" \
-          NODE_ENV=production \
-          pnpm build
-
       - name: Prepare deployment bundle
         run: |
-          # Create zip with specific included files
+          # Create zip with ALL source files needed for building
           zip -r weddingpage.zip \
-            .next/ \
-            public/ \
-            src/ \
-            package.json \
-            pnpm-lock.yaml \
-            prisma/ \
-            Dockerfile \
-            .dockerignore \
-            .ebextensions/ \
-            tailwind.config.ts \
-            next.config.ts \
-            postcss.config.js \
-            tsconfig.json \
-            tsconfig.seed.json \
-            next-env.d.ts \
-            README.md
+            . \
+            -x "*.git*" \
+            -x "node_modules/*" \
+            -x ".github/*" \
+            -x ".next/*"
 
-          # Verify the zip was created and check contents
-          ls -la weddingpage.zip
-          echo "Zip file size: $(du -h weddingpage.zip | cut -f1)"
-          unzip -l weddingpage.zip | head -20
-          echo "Zip file created successfully!"
+          # Verify critical directories are included
+          echo "=== Verifying source files are included ==="
+          unzip -l weddingpage.zip | grep -E "(src/|prisma/|package.json|next.config)" | head -10
+          echo "=== Total files in zip ==="
+          unzip -l weddingpage.zip | wc -l
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
@@ -76,7 +41,3 @@ jobs:
           region: "eu-central-1"
           version_label: "build-${{ github.run_number }}"
           deployment_package: "weddingpage.zip"
-
-      - name: Cleanup bundle
-        if: always()
-        run: rm -f weddingpage.zip
