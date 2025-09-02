@@ -143,6 +143,7 @@ model Template {
   components   Json
   colorSchemes Json
   hero_image  String?
+  previewData  Json?
   isActive      Boolean  @default(true)
   created_at    DateTime @default(now())
 
