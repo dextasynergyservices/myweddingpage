@@ -1,11 +1,24 @@
 "use client";
 
-import React from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import React, { ReactNode, useEffect, useState } from "react";
+import { getSession } from "next-auth/react";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
-const AuthGate = ({ children }: { children: React.ReactNode }) => {
-  const { loading } = useAuth();
+interface AuthGateProps {
+  children: ReactNode;
+}
+
+const AuthGate: React.FC<AuthGateProps> = ({ children }) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      setLoading(true);
+      await getSession(); // still fetch session in case you want it later
+      setLoading(false);
+    };
+    fetchSession();
+  }, []);
 
   if (loading) {
     return (

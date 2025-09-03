@@ -1,11 +1,11 @@
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/auth";
 
-const handler = NextAuth({
+const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -30,38 +30,50 @@ const handler = NextAuth({
           },
         });
 
-        if (!user) {
-          throw new Error("No user found");
-        }
+        if (!user) throw new Error("No user found");
+        if (!user.password) throw new Error("User has no password set");
 
-        if (!user.password) {
-          throw new Error("User has no password set");
-        }
+        const isValid = await verifyPassword(credentials.password, user.password);
 
-        const isValid = await verifyPassword(credentials.password, user.password as string);
+        if (!isValid) throw new Error("Invalid credentials");
 
-        if (!isValid) {
-          throw new Error("Invalid credentials");
-        }
-
-        return user;
+        return {
+          id: user.id,
+          email: user.email,
+          whatsapp: user.whatsapp,
+          role: user.role,
+        };
       },
     }),
   ],
   session: { strategy: "jwt" },
   callbacks: {
     async session({ session, token }) {
-      if (token) session.user.id = token.id as string;
+      if (token) {
+        session.user.id = token.id;
+        session.user.email = token.email ?? null;
+        session.user.name = token.name ?? null;
+        session.user.whatsapp = token.whatsapp ?? null;
+        session.user.role = token.role ?? null;
+      }
       return session;
     },
     async jwt({ token, user }) {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+        token.email = user.email ?? undefined;
+        token.name = user.name ?? undefined;
+        token.whatsapp = user.whatsapp ?? undefined;
+        token.role = user.role ?? undefined;
+      }
       return token;
     },
   },
   pages: {
     signIn: "/login",
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

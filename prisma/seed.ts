@@ -6,59 +6,65 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding database...");
 
-  // ✅ Seed Plans - ADD IDs to match your other seed file
-  await prisma.plan.createMany({
-    data: [
-      {
-        id: "plan_delight",
-        name: "DELIGHT",
-        price: 29.99,
-        duration_days: 30,
-        max_photos: 15,
-        max_videos: 1,
-        max_tabs: 7,
-      },
-      {
-        id: "plan_darling",
-        name: "DARLING",
-        price: 59.99,
-        duration_days: 30,
-        max_photos: 25,
-        max_videos: 2,
-        max_tabs: 10,
-      },
-      {
-        id: "plan_dazzle",
-        name: "DAZZLE",
-        price: 99.99,
-        duration_days: 365,
-        max_photos: 50,
-        max_videos: 3,
-        max_tabs: 15,
-      },
-      {
-        id: "plan_dynasty_royale",
-        name: "DYNASTY_ROYALE",
-        price: 199.99,
-        duration_days: 365,
-        max_photos: 100,
-        max_videos: 4,
-        max_tabs: 17,
-      },
-    ],
-    skipDuplicates: true,
-  });
-  console.log("Plans seeded.");
+  // ✅ Seed Plans
+  // await prisma.plan.createMany({
+  //   data: [
+  //     {
+  //       name: "Delight",
+  //       price: 100.0,
+  //       duration_days: 30,
+  //       max_photos: 15,
+  //       max_videos: 1,
+  //       max_tabs: 3,
+  //     },
+  //     {
+  //       name: "Darling",
+  //       price: 150.0,
+  //       duration_days: 30,
+  //       max_photos: 25,
+  //       max_videos: 2,
+  //       max_tabs: 5,
+  //     },
+  //     {
+  //       name: "Dazzle",
+  //       price: 250.0,
+  //       duration_days: 60,
+  //       max_photos: 50,
+  //       max_videos: 3,
+  //       max_tabs: 5,
+  //     },
+  //     {
+  //       name: "Dynasty Royale",
+  //       price: 500.0,
+  //       duration_days: 365,
+  //       max_photos: 100,
+  //       max_videos: 4,
+  //       max_tabs: 5,
+  //     },
+  //   ],
+  //   skipDuplicates: true,
+  // });
+  // console.log("✅ Plans seeded.");
 
-  // ✅ Create a category first
-  const category = await prisma.templateCategory.upsert({
-    where: { name: "general" },
-    update: {},
-    create: {
-      name: "general",
-      description: "General wedding templates"
-    }
-  });
+  // ✅ Seed Templates
+  // await prisma.template.createMany({
+  //   data: [
+  //     {
+  //       name: "Classic Elegance",
+  //       description: "A timeless, elegant wedding page design.",
+  //       thumbnail_url: "https://example.com/classic-elegance.jpg",
+  //       layout_data: {},
+  //     },
+  //     {
+  //       name: "Rustic Charm",
+  //       description: "Warm, rustic vibes for your special day.",
+  //       thumbnail_url: "https://example.com/rustic-charm.jpg",
+  //       layout_data: {},
+  //     },
+  //   ],
+  //   skipDuplicates: true,
+  // });
+  // console.log("✅ Templates seeded.");
 
   // ✅ Seed Templates - FIX field names and add required fields
   await prisma.template.createMany({
