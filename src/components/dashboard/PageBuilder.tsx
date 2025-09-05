@@ -71,7 +71,7 @@ interface WeddingPage {
 
 const WeddingPageBuilder = () => {
   const { isDarkMode } = useTheme();
-  const [isSelect, setIsSelect] = useState(true);
+  const [isSelect, setIsSelect] = useState(false);
   const [templates, setTemplates] = useState<Template[]>([]);
   const [filteredTemplates, setFilteredTemplates] = useState<Template[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
@@ -91,7 +91,7 @@ const WeddingPageBuilder = () => {
       setIsLoading(true);
       try {
         // Fetch user plan
-        const planResponse = await fetch("/api/user/plan");
+        const planResponse = await fetch("/api/user/plans");
         if (planResponse.ok) {
           const planData = await planResponse.json();
           setUserPlan(planData);
@@ -104,8 +104,10 @@ const WeddingPageBuilder = () => {
           setUserTemplate(templateData);
           if (templateData.template) {
             setSelectedTemplate(templateData.template);
-            setIsSelect(false);
+            setIsSelect(false); // Switch to customize mode if template is selected
           }
+        } else {
+          setIsSelect(true); // Switch to choose template mode if no template selected
         }
 
         // Fetch wedding page if published
@@ -172,9 +174,14 @@ const WeddingPageBuilder = () => {
         const userTemplateData = await response.json();
         setUserTemplate(userTemplateData);
         setSelectedTemplate(userTemplateData.template);
-        setIsSelect(false);
+        setIsSelect(false); // Switch to customize mode after selection
       } else {
-        throw new Error("Failed to select template");
+        const errorData = await response.json();
+        if (response.status === 400 && errorData.error.includes("already been selected")) {
+          alert("A template has already been selected and cannot be changed.");
+        } else {
+          throw new Error("Failed to select template");
+        }
       }
     } catch (error) {
       console.error("Error selecting template:", error);
@@ -274,8 +281,8 @@ const WeddingPageBuilder = () => {
         </h1>
         <p className={`text-sm md:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
           {isSelect
-            ? "Choose a template for your wedding page"
-            : "Customize your selected template"}
+            ? "Customize your selected template"
+            : "Choose a template for your wedding page"}
         </p>
       </div>
 
@@ -285,9 +292,9 @@ const WeddingPageBuilder = () => {
           className={`p-1 rounded-lg inline-flex ${isDarkMode ? "bg-slate-700" : "bg-slate-200"}`}
         >
           <button
-            onClick={() => setIsSelect(true)}
+            onClick={() => setIsSelect(false)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              isSelect
+              !isSelect
                 ? "bg-white text-slate-900 shadow"
                 : isDarkMode
                   ? "text-slate-300 hover:text-white"
@@ -297,7 +304,7 @@ const WeddingPageBuilder = () => {
             Choose Template
           </button>
           <button
-            onClick={() => setIsSelect(false)}
+            onClick={() => setIsSelect(true)}
             disabled={!selectedTemplate}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               !isSelect
@@ -314,7 +321,7 @@ const WeddingPageBuilder = () => {
 
       {/* Content */}
       <div className="flex-1 overflow-auto">
-        {isSelect ? (
+        {!isSelect ? (
           <div
             className={`rounded-xl p-4 md:p-6 shadow-lg border mb-4 ${
               isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
@@ -426,15 +433,27 @@ const WeddingPageBuilder = () => {
                     >
                       {template.sections?.length || 0} sections
                     </p>
-                    <button
-                      onClick={() => {
-                        setSelectedTemplate(template);
-                        setShowPreviewModal(true);
-                      }}
-                      className="w-full mt-2 px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 transition-colors"
-                    >
-                      Preview & Select
-                    </button>
+                    {selectedTemplate?.id === template.id ? (
+                      <div className="w-full mt-2 px-3 py-1 bg-green-600 text-white text-xs rounded-lg flex items-center justify-center gap-1">
+                        <CheckCircle className="h-3 w-3" />
+                        Selected
+                      </div>
+                    ) : userTemplate ? (
+                      <div className="w-full mt-2 px-3 py-1 bg-gray-400 text-white text-xs rounded-lg flex items-center justify-center gap-1 cursor-not-allowed">
+                        <X className="h-3 w-3" />
+                        Template Selected
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setSelectedTemplate(template);
+                          setShowPreviewModal(true);
+                        }}
+                        className="w-full mt-2 px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 transition-colors"
+                      >
+                        Preview
+                      </button>
+                    )}
                   </motion.div>
                 ))}
               </div>
@@ -508,20 +527,59 @@ const WeddingPageBuilder = () => {
                   }`}
                 >
                   {selectedTemplate.sections && selectedTemplate.sections.length > 0 ? (
-                    <DynamicTemplateRenderer
-                      template={selectedTemplate}
-                      userPlan={userPlan || { id: "default", name: "Default", maxComponents: 10 }}
-                      userData={{
-                        brideName: "Bride",
-                        groomName: "Groom",
-                        weddingDate: new Date().toISOString(),
-                        venue: "Venue",
-                      }}
-                      colorScheme={userTemplate?.colorScheme || selectedTemplate.colorSchemes?.[0]}
-                      onContentUpdate={handleContentUpdate}
-                      editable={true}
-                      editedSections={editedSections}
-                    />
+                    <div className="space-y-4">
+                      {selectedTemplate.sections.map((section) => (
+                        <motion.div
+                          key={section.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className={`p-4 rounded-xl border-2 border-dashed transition-all duration-300 cursor-pointer group hover:border-indigo-400 ${
+                            isDarkMode
+                              ? "border-slate-600 bg-slate-800/50"
+                              : "border-slate-300 bg-slate-50"
+                          }`}
+                          onClick={() => {
+                            // Handle section click for editing
+                            console.log("Edit section:", section.id, section.type);
+                          }}
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
+                                {section.type === "HERO" && (
+                                  <Heart className="h-4 w-4 text-indigo-600" />
+                                )}
+                                {section.type === "STORY" && (
+                                  <FileText className="h-4 w-4 text-indigo-600" />
+                                )}
+                                {section.type === "GALLERY" && (
+                                  <ImageIcon className="h-4 w-4 text-indigo-600" />
+                                )}
+                                {section.type === "REGISTRY" && (
+                                  <Gift className="h-4 w-4 text-indigo-600" />
+                                )}
+                                {section.type === "WISHES" && (
+                                  <Users className="h-4 w-4 text-indigo-600" />
+                                )}
+                              </div>
+                              <h3 className="text-sm font-medium">
+                                {section.type.charAt(0) + section.type.slice(1).toLowerCase()}
+                              </h3>
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                console.log("Edit section:", section.id);
+                              }}
+                              className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              Edit
+                            </button>
+                          </div>
+                          <div className="text-xs text-slate-500">Click to edit this section</div>
+                        </motion.div>
+                      ))}
+                    </div>
                   ) : (
                     <div className="flex items-center justify-center h-64 text-center">
                       <p className={isDarkMode ? "text-slate-400" : "text-slate-600"}>
@@ -560,7 +618,7 @@ const WeddingPageBuilder = () => {
           weddingPage={weddingPage}
           userPlan={userPlan}
           onSelectTemplate={handleTemplateSelect}
-          isSelect={isSelect}
+          isSelect={!isSelect} // Invert: true for Choose Template, false for Customize
         />
       )}
     </div>

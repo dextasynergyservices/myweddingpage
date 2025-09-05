@@ -59,9 +59,22 @@ export async function GET(req: Request) {
       welcomeMessage: user.weddingPages[0]?.welcomeMessage || "Welcome to our wedding",
     };
 
+    const ourStory = {
+      content:
+        user.weddingPages[0]?.welcomeMessage ||
+        (selectedTemplate as any)?.previewData?.welcomeMessage ||
+        "Our story will appear here...",
+      imageUrl:
+        user.weddingPages[0]?.story_image ||
+        (selectedTemplate as any)?.story_image ||
+        (selectedTemplate as any)?.hero_image ||
+        "/default-story.jpg",
+    };
+
     return NextResponse.json({
       template: selectedTemplate,
       userData,
+      ourStory,
     });
   } catch (error) {
     console.error("Error fetching wedding data:", error);

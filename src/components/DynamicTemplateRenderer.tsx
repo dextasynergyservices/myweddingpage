@@ -67,8 +67,8 @@ export function DynamicTemplateRenderer({
 }: Props) {
   const [localEditedSections, setLocalEditedSections] = useState<string[]>(editedSections);
 
-  // Process sections with user data
-  const processedSections = template.sections.map((section) => ({
+  // Process sections with user data (defensive against undefined)
+  const processedSections = (template?.sections ?? []).map((section) => ({
     ...section,
     components: replacePlaceholders(section.components, userData),
   }));

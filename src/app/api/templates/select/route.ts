@@ -21,11 +21,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // First, set all user templates to not selected
-    await prisma.userTemplate.updateMany({
-      where: { userId: user.id },
-      data: { isSelected: false },
+    // Guard: prevent changing template if one is already selected and differs
+    const existingSelected = await prisma.userTemplate.findFirst({
+      where: { userId: user.id, isSelected: true },
+      include: { template: { include: { sections: { orderBy: { order: "asc" } } } } },
     });
+
+    if (existingSelected && existingSelected.templateId !== templateId) {
+      return NextResponse.json(
+        {
+          error: "A template has already been selected and cannot be changed.",
+          userTemplate: existingSelected,
+        },
+        { status: 400 }
+      );
+    }
 
     // Check if user already has this template
     let userTemplate = await prisma.userTemplate.findUnique({
@@ -48,19 +58,21 @@ export async function POST(req: Request) {
 
     if (userTemplate) {
       // Update existing template to be selected
-      userTemplate = await prisma.userTemplate.update({
-        where: { id: userTemplate.id },
-        data: { isSelected: true },
-        include: {
-          template: {
-            include: {
-              sections: {
-                orderBy: { order: "asc" },
+      if (!userTemplate.isSelected) {
+        userTemplate = await prisma.userTemplate.update({
+          where: { id: userTemplate.id },
+          data: { isSelected: true },
+          include: {
+            template: {
+              include: {
+                sections: {
+                  orderBy: { order: "asc" },
+                },
               },
             },
           },
-        },
-      });
+        });
+      }
     } else {
       // Create new template and set as selected
       userTemplate = await prisma.userTemplate.create({

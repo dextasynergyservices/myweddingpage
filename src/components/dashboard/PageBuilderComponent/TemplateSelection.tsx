@@ -9,7 +9,7 @@ import TemplatePreviewModal from "@/components/TemplatePreviewModal";
 import { Template, UserPlan } from "@/types/wedding";
 
 interface TemplateSelectionProps {
-  onTemplateSelect: (template: Template) => void;
+  onTemplateSelect: (template: Template) => Promise<void>;
   userPlan: UserPlan | null;
 }
 
@@ -129,7 +129,7 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
             {[1, 2, 3, 4].map((i) => (
               <motion.div
                 key={i}
-                className="p-4 rounded-xl bg-slate-200 dark:bg-slate-700 h-32 md: h-40"
+                className="p-4 rounded-xl bg-slate-200 dark:bg-slate-700 h-32 md:h-40"
                 initial={{ opacity: 0.5 }}
                 animate={{ opacity: 1 }}
                 transition={{ repeat: Infinity, duration: 1.5, repeatType: "reverse" }}
@@ -214,7 +214,8 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
           }}
           template={templateToPreview}
           onSelectTemplate={onTemplateSelect}
-          userPlan={userPlan}
+          userPlan={userPlan || undefined}
+          isSelect={false}
         />
       )}
     </>

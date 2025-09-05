@@ -18,12 +18,15 @@ export async function GET() {
           include: {
             template: {
               include: {
-                category: true
-              }
-            }
-          }
-        }
-      }
+                category: true,
+                sections: {
+                  orderBy: { order: "asc" },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -33,10 +36,7 @@ export async function GET() {
     return NextResponse.json(user.userTemplates);
   } catch (error) {
     console.error("Failed to fetch user templates:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     const { templateId, content, colorScheme } = await req.json();
 
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email }
+      where: { email: session.user.email },
     });
 
     if (!user) {
@@ -63,9 +63,9 @@ export async function POST(req: Request) {
       where: {
         userId_templateId: {
           userId: user.id,
-          templateId
-        }
-      }
+          templateId,
+        },
+      },
     });
 
     let userTemplate;
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
       // Update existing template
       userTemplate = await prisma.userTemplate.update({
         where: { id: existingTemplate.id },
-        data: { content, colorScheme }
+        data: { content, colorScheme },
       });
     } else {
       // Create new template
@@ -82,17 +82,14 @@ export async function POST(req: Request) {
           userId: user.id,
           templateId,
           content,
-          colorScheme
-        }
+          colorScheme,
+        },
       });
     }
 
     return NextResponse.json(userTemplate);
   } catch (error) {
     console.error("Failed to save user template:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

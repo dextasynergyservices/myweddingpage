@@ -65,6 +65,11 @@ const HomePackages = () => {
         const res = await fetch("/api/plans");
         const data = await res.json();
 
+        if (!res.ok || !Array.isArray(data)) {
+          setPlans([]);
+          return;
+        }
+
         const enriched = data.map((plan: Plan, idx: number) => ({
           ...plan,
           gradient: defaultGradients[idx % defaultGradients.length],

@@ -26,11 +26,11 @@ export async function GET() {
             max_tabs: true,
             gradient: true,
             popular: true,
-            created_at: true
+            created_at: true,
             // EXCLUDE isActive for now
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     if (!user || !user.planId) {
@@ -43,20 +43,20 @@ export async function GET() {
       include: {
         template: {
           include: {
-            category: true
-          }
-        }
-      }
+            category: true,
+            sections: {
+              orderBy: { order: "asc" },
+            },
+          },
+        },
+      },
     });
 
-    const templates = planTemplates.map(pt => pt.template);
+    const templates = planTemplates.map((pt) => pt.template);
 
     return NextResponse.json(templates);
   } catch (error) {
     console.error("Failed to fetch templates:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
