@@ -66,20 +66,3 @@ export type TemplateMeta = {
   components: Record<string, ComponentType>;
 };
 
-const type template = {
-
-} && TemplateMeta ;
-
-export type TemplateComponent = {
-    type: ComponentType;
-    content: Record<string, any>;
-  };
-
-export const templateRegistry: Record<string, TemplateMeta> = {
-  rustic: RusticTemplate,
-  modern: modernTemplate,
-  vintage: vintageTemplate,
-  luxury: luxuryTemplate,
-};
-
-export type TemplateName = keyof typeof templateRegistry;

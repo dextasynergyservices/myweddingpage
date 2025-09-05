@@ -1,15 +1,23 @@
-// components/DynamicTemplateRenderer.tsx
 "use client";
 
+import { SectionType } from "@/generated/prisma";
 import { componentMap, ComponentType, ColorScheme } from "@/lib/component-registry";
-import { AlertTriangle } from "lucide-react";
-import React from "react";
+import { AlertTriangle, Eye, CheckCircle } from "lucide-react";
+import React, { useState } from "react";
+
+interface TemplateSection {
+  id: string;
+  type: SectionType;
+  layout: string;
+  components: any;
+  order: number;
+}
 
 interface Props {
   template: {
     id: string;
     name: string;
-    components: any[];
+    sections: TemplateSection[];
   };
   userPlan: {
     id: string;
@@ -23,8 +31,10 @@ interface Props {
     venue?: string;
   };
   colorScheme?: ColorScheme;
-  onContentUpdate?: (componentId: string, content: any) => void;
+  onContentUpdate?: (sectionId: string, content: any) => void;
   editable?: boolean;
+  isPreview?: boolean;
+  editedSections?: string[]; // Track which sections have been edited
 }
 
 // Recursive function to replace placeholders in content
@@ -36,13 +46,10 @@ function replacePlaceholders(obj: any, userData: Props["userData"]): any {
       .replace(/{weddingDate}/g, userData.weddingDate || "Date")
       .replace(/{venue}/g, userData.venue || "Venue");
   } else if (Array.isArray(obj)) {
-    return obj.map(item => replacePlaceholders(item, userData));
+    return obj.map((item) => replacePlaceholders(item, userData));
   } else if (typeof obj === "object" && obj !== null) {
     return Object.fromEntries(
-      Object.entries(obj).map(([key, value]) => [
-        key,
-        replacePlaceholders(value, userData)
-      ])
+      Object.entries(obj).map(([key, value]) => [key, replacePlaceholders(value, userData)])
     );
   }
   return obj;
@@ -54,51 +61,81 @@ export function DynamicTemplateRenderer({
   userData,
   colorScheme,
   onContentUpdate,
-  editable = false
+  editable = false,
+  isPreview = false,
+  editedSections = [],
 }: Props) {
-  // Process components with user data
-  const processedComponents = template.components.map((component, index) => ({
-    ...component,
-    id: component.id || `${component.type}-${index}`,
-    content: replacePlaceholders(component.content, userData)
+  const [localEditedSections, setLocalEditedSections] = useState<string[]>(editedSections);
+
+  // Process sections with user data
+  const processedSections = template.sections.map((section) => ({
+    ...section,
+    components: replacePlaceholders(section.components, userData),
   }));
 
   // Enforce component limit based on plan
-  const componentsToRender = processedComponents.slice(0, userPlan.maxComponents);
+  const sectionsToRender = processedSections.slice(0, userPlan.maxComponents);
+
+  const handleContentUpdate = (sectionId: string, content: any) => {
+    if (onContentUpdate) {
+      onContentUpdate(sectionId, content);
+    }
+
+    // Mark section as edited
+    if (!localEditedSections.includes(sectionId)) {
+      setLocalEditedSections([...localEditedSections, sectionId]);
+    }
+  };
 
   return (
-    <div className="space-y-8">
-      {componentsToRender.map((component) => {
-        const Component = componentMap[component.type as ComponentType];
+    <div className="space-y-8 relative">
+      {isPreview && (
+        <div className="absolute top-2 right-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-2 py-1 rounded-md shadow">
+          <Eye className="w-3 h-3" />
+          Preview
+        </div>
+      )}
+
+      {sectionsToRender.map((section) => {
+        const Component = componentMap[section.layout as ComponentType];
 
         if (!Component) {
-          console.warn(`Component type ${component.type} not found in componentMap`);
+          console.warn(`Component layout ${section.layout} not found in componentMap`);
           return null;
         }
 
+        const isEdited = localEditedSections.includes(section.id);
+
         return (
-          <div key={component.id} className="template-component">
+          <div key={section.id} className="template-section relative">
+            {isEdited && editable && (
+              <div className="absolute top-2 right-2 z-10 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                <CheckCircle className="h-3 w-3" />
+                Edited
+              </div>
+            )}
+
             <Component
-              {...component}
+              {...section.components}
+              sectionId={section.id}
+              sectionType={section.type}
               userPlan={userPlan}
               theme={colorScheme}
-              editable={editable}
-              onContentUpdate={(newContent: any) =>
-                onContentUpdate && onContentUpdate(component.id, newContent)
-              }
+              editable={editable && !isPreview}
+              onContentUpdate={(newContent: any) => handleContentUpdate(section.id, newContent)}
             />
           </div>
         );
       })}
 
-      {processedComponents.length > userPlan.maxComponents && (
+      {processedSections.length > userPlan.maxComponents && (
         <div className="bg-yellow-50 p-4 rounded-lg flex items-start gap-3">
           <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5" />
           <div>
             <h3 className="font-medium text-yellow-800">Plan Limit Reached</h3>
             <p className="text-sm text-yellow-700">
-              Your {userPlan.name} plan includes {userPlan.maxComponents} components.
-              Upgrade to access all {processedComponents.length} components in this template.
+              Your {userPlan.name} plan includes {userPlan.maxComponents} sections. Upgrade to
+              access all {processedSections.length} sections in this template.
             </p>
           </div>
         </div>

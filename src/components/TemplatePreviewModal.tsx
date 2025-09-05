@@ -1,23 +1,23 @@
-// src/components/TemplatePreviewModal.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
 import { X, Check } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
 import { Template, UserTemplate, WeddingPage, UserPlan } from "@/types/wedding";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 interface TemplatePreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   template: Template;
-  userTemplate?: UserTemplate; // make optional
+  userTemplate?: UserTemplate;
   weddingPage?: WeddingPage;
   userPlan?: UserPlan;
   onSelectTemplate: (template: Template) => Promise<void>;
+  isSelect: boolean; // New prop to determine if we're in selection mode
 }
 
 const TemplatePreviewModal = ({
@@ -28,33 +28,47 @@ const TemplatePreviewModal = ({
   weddingPage,
   userPlan,
   onSelectTemplate,
+  isSelect,
 }: TemplatePreviewModalProps) => {
   const { isDarkMode } = useTheme();
   const [isSelecting, setIsSelecting] = useState(false);
+  const [previewData, setPreviewData] = useState<any>(null);
+  const [loadingData, setLoadingData] = useState(false);
 
-  // Safe userTemplate to avoid TS null error
-  const safeUserTemplate: UserTemplate | undefined = userTemplate || undefined;
+  const isSelected = userTemplate?.isSelected || false;
 
-  // Determine which data source to use
-  const getUserData = () => {
-    if (safeUserTemplate?.isSelected) {
-      // Dynamic mode → user template content
-      return safeUserTemplate.content || {};
-    } else if (weddingPage) {
-      // Published mode → wedding page layout_data
-      return weddingPage.layout_data?.components?.reduce((acc: any, comp: any) => {
-        acc[comp.type] = comp.content;
-        return acc;
-      }, {}) || {};
-    } else {
-      // Static mode → template previewData
-      return template.previewData || {};
-    }
-  };
+  // Fetch correct data source when modal opens
+  useEffect(() => {
+    if (!isOpen) return;
 
-  const userData = getUserData();
-  const isSelected = safeUserTemplate?.isSelected || false;
-  const isPublished = !!weddingPage;
+    const fetchData = async () => {
+      setLoadingData(true);
+      try {
+        let url;
+
+        if (isSelect && isSelected) {
+          // Fetch dynamic data from wedding-data API for selected template
+          url = `/api/wedding-data?templateId=${template.id}`;
+        } else {
+          // Fetch static data from template-preview API
+          url = `/api/template-preview?templateId=${template.id}`;
+        }
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Failed to fetch preview data");
+
+        const data = await res.json();
+        setPreviewData(data);
+      } catch (error) {
+        console.error("Error fetching preview data:", error);
+        toast.error("Failed to load template data");
+      } finally {
+        setLoadingData(false);
+      }
+    };
+
+    fetchData();
+  }, [isOpen, isSelect, isSelected, template.id]);
 
   const handleSelectTemplate = async () => {
     setIsSelecting(true);
@@ -69,6 +83,18 @@ const TemplatePreviewModal = ({
       setIsSelecting(false);
     }
   };
+
+  // Determine what data to pass to the renderer
+  const rendererData =
+    isSelect && isSelected
+      ? {
+          template: previewData?.template,
+          userData: previewData?.userData,
+        }
+      : {
+          template: { ...template, sections: template.sections || [] },
+          userData: previewData,
+        };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -91,30 +117,37 @@ const TemplatePreviewModal = ({
             {isSelected ? (
               <div className="flex items-center gap-2 text-green-600">
                 <Check className="h-4 w-4" />
-                <span>This is your selected template</span>
+                <span>This is your selected template (live data)</span>
               </div>
-            ) : isPublished ? (
-              <span>Published version - Viewing live data</span>
             ) : (
-              <span>Preview mode - Showing sample data</span>
+              <span>Preview mode - Showing sample template data</span>
             )}
           </div>
         </div>
 
         {/* Template Preview */}
         <div className="border rounded-lg overflow-hidden">
-          <DynamicTemplateRenderer
-            template={template}
-            userPlan={userPlan || { id: "preview", name: "Preview", maxComponents: 10, maxPhotos: 10 }}
-            userData={userData}
-            colorScheme={safeUserTemplate?.colorScheme || template.colorSchemes?.[0]}
-            isPreview={!isSelected}
-          />
+          {loadingData ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+            </div>
+          ) : previewData ? (
+            <DynamicTemplateRenderer
+              template={rendererData.template}
+              userPlan={userPlan || { id: "preview", name: "Preview", maxComponents: 10 }}
+              userData={rendererData.userData}
+              colorScheme={userTemplate?.colorScheme || template.colorSchemes?.[0]}
+              editable={isSelect && isSelected}
+              isPreview={!isSelected}
+            />
+          ) : (
+            <p className="text-center text-red-500 py-6">Failed to load data</p>
+          )}
         </div>
 
         {/* Action Buttons */}
         <div className="flex gap-3 mt-6">
-          {!isSelected && !isPublished && (
+          {!isSelected && isSelect && (
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -126,16 +159,14 @@ const TemplatePreviewModal = ({
             </motion.button>
           )}
 
-          {(isSelected || isPublished) && (
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={onClose}
-              className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg"
-            >
-              Close
-            </motion.button>
-          )}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onClose}
+            className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg"
+          >
+            Close
+          </motion.button>
         </div>
       </div>
     </Modal>

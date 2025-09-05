@@ -78,9 +78,13 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
 
   return (
     <>
-      <div className={`rounded-xl p-4 md:p-6 shadow-lg border mb-4 ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}>
+      <div
+        className={`rounded-xl p-4 md:p-6 shadow-lg border mb-4 ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}
+      >
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-          <h2 className={`text-lg md:text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+          <h2
+            className={`text-lg md:text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
+          >
             Choose a Template
           </h2>
 
@@ -125,7 +129,7 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
             {[1, 2, 3, 4].map((i) => (
               <motion.div
                 key={i}
-                className="p-4 rounded-xl bg-slate-200 dark:bg-slate-700 h-32 md:h-40"
+                className="p-4 rounded-xl bg-slate-200 dark:bg-slate-700 h-32 md: h-40"
                 initial={{ opacity: 0.5 }}
                 animate={{ opacity: 1 }}
                 transition={{ repeat: Infinity, duration: 1.5, repeatType: "reverse" }}
@@ -176,14 +180,18 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
                     <Eye className="h-6 w-6 text-white opacity-0 hover:opacity-100 transition-opacity duration-300" />
                   </div>
                 </div>
-                <h4 className={`text-sm md:text-base font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                <h4
+                  className={`text-sm md:text-base font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                >
                   {template.name}
                 </h4>
-                <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"} line-clamp-2`}>
+                <p
+                  className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"} line-clamp-2`}
+                >
                   {template.description}
                 </p>
                 <p className={`text-xs mt-1 ${isDarkMode ? "text-slate-500" : "text-slate-500"}`}>
-                  {template.components.length} components
+                  {template.sections?.length || 0} sections
                 </p>
                 <button
                   onClick={() => handlePreviewTemplate(template)}
@@ -206,6 +214,7 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
           }}
           template={templateToPreview}
           onSelectTemplate={onTemplateSelect}
+          userPlan={userPlan}
         />
       )}
     </>

@@ -9,7 +9,8 @@ interface ModalProps {
   onClose: () => void;
   children: React.ReactNode;
   title?: string;
-  maxWidth?: string; // Tailwind max-width class e.g., "max-w-lg"
+  maxWidth?: string;
+  size?: "sm" | "md" | "lg" | "xl";
 }
 
 const Modal: React.FC<ModalProps> = ({

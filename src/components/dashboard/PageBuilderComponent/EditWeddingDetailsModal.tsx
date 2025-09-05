@@ -1,4 +1,3 @@
-// src/components/dashboard/EditWeddingDetailsModal.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,7 +5,7 @@ import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
 import { X, Upload, User, Calendar, MapPin, FileText } from "lucide-react";
 import Modal from "@/components/ui/Modal";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 interface EditWeddingDetailsModalProps {
   isOpen: boolean;
@@ -70,7 +69,12 @@ const EditWeddingDetailsModal = ({
       formDataToSend.append("storyImage", storyImageFile);
     }
 
-    await onSave(formDataToSend);
+    try {
+      await onSave(formDataToSend);
+      toast.success("Wedding details updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update wedding details");
+    }
   };
 
   const resetForm = () => {
