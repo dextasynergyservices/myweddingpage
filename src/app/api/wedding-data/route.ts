@@ -13,10 +13,11 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get user with selected template
+    // Get user with selected template and related data needed for previews
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
       include: {
+        plan: true,
         userTemplates: {
           where: { isSelected: true },
           include: {
@@ -33,7 +34,15 @@ export async function GET(req: Request) {
           where: { is_live: true },
           orderBy: { created_at: "desc" },
           take: 1,
+          include: {
+            mediaUploads: true,
+            comments: true,
+          },
         },
+        galleryMedias: true,
+        guests: true,
+        gifts: true,
+        bankDetails: true,
       },
     });
 
@@ -41,40 +50,59 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Get selected template or the one specified
-    const selectedTemplate = templateId
-      ? user.userTemplates.find((ut) => ut.templateId === templateId)?.template
-      : user.userTemplates[0]?.template;
+    // Get selected template (either explicit or the user's selected one)
+    const selectedUserTemplate = templateId
+      ? user.userTemplates.find((ut) => ut.templateId === templateId)
+      : user.userTemplates[0];
 
-    if (!selectedTemplate) {
-      return NextResponse.json({ error: "No template selected" }, { status: 404 });
-    }
+    const selectedTemplate = selectedUserTemplate?.template || null;
 
-    // Get user data for dynamic content
+    // Grab the live wedding page (if any)
+    const weddingPage = user.weddingPages?.[0] ?? null;
+
+    // Merge data from several possible sources: user fields, wedding page ai/layout data,
+    // and user template content. This gives the renderer many avenues to find bride/groom/date/etc.
+    const wpAi = (weddingPage?.ai_data as any) ?? (weddingPage?.layout_data as any) ?? {};
+    const utContent = (selectedUserTemplate?.content as any) ?? {};
+
     const userData = {
-      brideName: user.brideName || "Bride",
-      groomName: user.groomName || "Groom",
-      weddingDate: user.weddingDate?.toISOString() || new Date().toISOString(),
-      venue: user.weddingPages[0]?.venue || "Venue",
-      welcomeMessage: user.weddingPages[0]?.welcomeMessage || "Welcome to our wedding",
-    };
+      // Prefer explicit user fields, then AI/page data, then userTemplate content, then sensible defaults
+      brideName: user.brideName || wpAi?.brideName || wpAi?.bride_name || utContent?.brideName || utContent?.bride_name || "Bride",
+      groomName: user.groomName || wpAi?.groomName || wpAi?.groom_name || utContent?.groomName || utContent?.groom_name || "Groom",
+      weddingDate:
+        (user.weddingDate && user.weddingDate.toISOString()) || wpAi?.weddingDate || wpAi?.wedding_date || utContent?.weddingDate || null,
+      venue: weddingPage?.venue || wpAi?.venue || utContent?.venue || null,
+      welcomeMessage: weddingPage?.welcomeMessage || wpAi?.welcomeMessage || utContent?.welcomeMessage || null,
+      // expose raw objects for templates that expect different shapes
+      _raw: {
+        user: user,
+        weddingPage: weddingPage,
+        userTemplate: selectedUserTemplate,
+        wpAi,
+        utContent,
+      },
+    } as any;
+
+    // safe-access previewData which can be Json
+    const selectedPreviewData: any = (selectedTemplate as any)?.previewData ?? {};
 
     const ourStory = {
-      content:
-        user.weddingPages[0]?.welcomeMessage ||
-        (selectedTemplate as any)?.previewData?.welcomeMessage ||
-        "Our story will appear here...",
+      content: userData.welcomeMessage || selectedPreviewData?.welcomeMessage || "Our story will appear here...",
       imageUrl:
-        user.weddingPages[0]?.story_image ||
-        (selectedTemplate as any)?.story_image ||
-        (selectedTemplate as any)?.hero_image ||
-        "/default-story.jpg",
+        (weddingPage as any)?.story_image || selectedPreviewData?.story_image || (selectedTemplate as any)?.hero_image || "/default-story.jpg",
     };
 
     return NextResponse.json({
       template: selectedTemplate,
       userData,
       ourStory,
+      weddingPage,
+      gallery: user.galleryMedias ?? [],
+      guests: user.guests ?? [],
+      gifts: user.gifts ?? [],
+      bankDetails: user.bankDetails ?? [],
+      userTemplate: selectedUserTemplate ?? null,
+      plan: user.plan ?? null,
     });
   } catch (error) {
     console.error("Error fetching wedding data:", error);

@@ -1,0 +1,10 @@
+src/app/wedding-pages/[slug]/page.tsx(34,21): error TS2352: Conversion of type '{ template: { id: string; name: string; created_at: Date; description: string; thumbnail: string; layout_data: JsonValue; categoryId: string; components: JsonValue; colorSchemes: JsonValue; hero_image: string | null; previewData: JsonValue; isActive: boolean; }; comments: { ...; }[]; mediaUploads: { ...; }[]; } & { ...' to type 'WeddingPageData' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Types of property 'template' are incompatible.
+    Type '{ id: string; name: string; created_at: Date; description: string; thumbnail: string; layout_data: JsonValue; categoryId: string; components: JsonValue; colorSchemes: JsonValue; hero_image: string | null; previewData: JsonValue; isActive: boolean; }' is missing the following properties from type 'Template': category, createdAt, updatedAt
+src/app/wedding/[couple]/page.tsx(1,10): error TS2305: Module '"@/lib/template-registry"' has no exported member 'templateRegistry'.
+src/app/wedding/[couple]/page.tsx(24,33): error TS7006: Parameter 'component' implicitly has an 'any' type.
+src/app/wedding/[couple]/page.tsx(24,44): error TS7006: Parameter 'index' implicitly has an 'any' type.
+src/app/wedding/[couple]/page.tsx(25,27): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ readonly rustic_hero: ({ weddingData }: { weddingData?: WeddingData | undefined; }) => Element; readonly rustic_story: () => Element; readonly rustic_gift: () => Element; ... 16 more ...; readonly luxury_story: () => Element; }'.
+src/components/TemplatePicker.tsx(6,3): error TS2305: Module '"@/lib/template-registry"' has no exported member 'templateRegistry'.
+src/components/TemplatePicker.tsx(7,3): error TS2305: Module '"@/lib/template-registry"' has no exported member 'TemplateName'.
+src/components/TemplatePicker.tsx(8,3): error TS2305: Module '"@/lib/template-registry"' has no exported member 'TemplateMeta'.

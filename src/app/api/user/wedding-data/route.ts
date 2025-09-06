@@ -3,9 +3,12 @@ import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
+    const { searchParams } = new URL(req.url);
+    const templateId = searchParams.get("templateId");
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -14,9 +17,28 @@ export async function GET() {
       where: { email: session.user.email },
       include: {
         plan: true,
-        weddingPages: {
-          include: { template: true, mediaUploads: true, comments: true },
+        userTemplates: {
+          where: { isSelected: true },
+          include: {
+            template: {
+              include: {
+                sections: {
+                  orderBy: { order: "asc" },
+                },
+              },
+            },
+          },
         },
+        weddingPages: {
+          where: { is_live: true },
+          orderBy: { created_at: "desc" },
+          take: 1,
+          include: { mediaUploads: true, comments: true },
+        },
+        galleryMedias: true,
+        guests: true,
+        gifts: true,
+        bankDetails: true,
       },
     });
 
@@ -24,9 +46,62 @@ export async function GET() {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
+    // Determine the selected template (either the query param or the user's selected template)
+    const selectedTemplate = templateId
+      ? user.userTemplates.find((ut) => ut.templateId === templateId)?.template
+      : user.userTemplates[0]?.template;
+
+    // Build a comprehensive userData object merging User and WeddingPage info
+    const livePage = user.weddingPages?.[0] || null;
+
+    const userData = {
+      id: user.id,
+      email: user.email,
+      brideName: user.brideName || null,
+      groomName: user.groomName || null,
+      weddingDate: user.weddingDate ? user.weddingDate.toISOString() : null,
+      plan: user.plan || null,
+      page: livePage
+        ? {
+            id: livePage.id,
+            title: livePage.title,
+            slug: livePage.slug,
+            hero_image: livePage.hero_image || null,
+            story_image: livePage.story_image || null,
+            venue: livePage.venue || null,
+            welcomeMessage: livePage.welcomeMessage || null,
+            media: livePage.mediaUploads || [],
+            comments: livePage.comments || [],
+          }
+        : null,
+      gallery: user.galleryMedias || [],
+      guests: user.guests || [],
+      gifts: user.gifts || [],
+      bankDetails: user.bankDetails || [],
+      userTemplate: user.userTemplates?.[0] || null,
+    };
+
+    const ourStory = {
+      content:
+        livePage?.welcomeMessage ||
+        (selectedTemplate as any)?.previewData?.welcomeMessage ||
+        "Our story will appear here...",
+      imageUrl:
+        livePage?.story_image ||
+        (selectedTemplate as any)?.story_image ||
+        (selectedTemplate as any)?.hero_image ||
+        "/default-story.jpg",
+    };
+
     return NextResponse.json({
-      planName: user.plan?.name,
-      weddingPages: user.weddingPages,
+      template: selectedTemplate || null,
+      userData,
+      ourStory,
+      weddingPage: livePage || null,
+      selectedUserTemplate: user.userTemplates?.[0] || null,
+      gallery: user.galleryMedias || [],
+      guests: user.guests || [],
+      gifts: user.gifts || [],
     });
   } catch (error) {
     console.error("Error fetching wedding data:", error);

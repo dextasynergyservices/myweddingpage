@@ -24,12 +24,7 @@ interface Props {
     name: string;
     maxComponents: number;
   };
-  userData: {
-    brideName?: string;
-    groomName?: string;
-    weddingDate?: string;
-    venue?: string;
-  };
+  userData: Record<string, any>;
   colorScheme?: ColorScheme;
   onContentUpdate?: (sectionId: string, content: any) => void;
   editable?: boolean;
@@ -38,13 +33,25 @@ interface Props {
 }
 
 // Recursive function to replace placeholders in content
-function replacePlaceholders(obj: any, userData: Props["userData"]): any {
+function replacePlaceholders(obj: any, userData: any): any {
+  const b = userData?.brideName || userData?.bride_name || userData?.bride || "Bride";
+  const g = userData?.groomName || userData?.groom_name || userData?.groom || "Groom";
+  const d = userData?.weddingDate || userData?.wedding_date || userData?.date || "Date";
+  const v = userData?.venue || userData?.location || userData?.place || "Venue";
+
   if (typeof obj === "string") {
     return obj
-      .replace(/{brideName}/g, userData.brideName || "Bride")
-      .replace(/{groomName}/g, userData.groomName || "Groom")
-      .replace(/{weddingDate}/g, userData.weddingDate || "Date")
-      .replace(/{venue}/g, userData.venue || "Venue");
+      .replace(/\{\s*brideName\s*\}/gi, b)
+      .replace(/\{\s*bride_name\s*\}/gi, b)
+      .replace(/\{\s*bride\s*\}/gi, b)
+      .replace(/\{\s*groomName\s*\}/gi, g)
+      .replace(/\{\s*groom_name\s*\}/gi, g)
+      .replace(/\{\s*groom\s*\}/gi, g)
+      .replace(/\{\s*weddingDate\s*\}/gi, d)
+      .replace(/\{\s*wedding_date\s*\}/gi, d)
+      .replace(/\{\s*date\s*\}/gi, d)
+      .replace(/\{\s*venue\s*\}/gi, v)
+      .replace(/\{\s*location\s*\}/gi, v);
   } else if (Array.isArray(obj)) {
     return obj.map((item) => replacePlaceholders(item, userData));
   } else if (typeof obj === "object" && obj !== null) {
@@ -52,6 +59,8 @@ function replacePlaceholders(obj: any, userData: Props["userData"]): any {
       Object.entries(obj).map(([key, value]) => [key, replacePlaceholders(value, userData)])
     );
   }
+
+  // Primitives (number, boolean, null)
   return obj;
 }
 
@@ -67,10 +76,18 @@ export function DynamicTemplateRenderer({
 }: Props) {
   const [localEditedSections, setLocalEditedSections] = useState<string[]>(editedSections);
 
+  // Normalize userData to common keys to support multiple API shapes
+  const normalizedUserData = {
+    brideName: userData?.brideName || userData?.bride_name || userData?.bride || "",
+    groomName: userData?.groomName || userData?.groom_name || userData?.groom || "",
+    weddingDate: userData?.weddingDate || userData?.wedding_date || userData?.date || "",
+    venue: userData?.venue || userData?.location || userData?.place || "",
+  };
+
   // Process sections with user data (defensive against undefined)
   const processedSections = (template?.sections ?? []).map((section) => ({
     ...section,
-    components: replacePlaceholders(section.components, userData),
+    components: replacePlaceholders(section.components, normalizedUserData),
   }));
 
   // Enforce component limit based on plan

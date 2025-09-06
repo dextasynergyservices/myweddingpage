@@ -4,16 +4,24 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
-import { Search, Eye } from "lucide-react";
+import { Search, Eye, X, Check } from "lucide-react";
 import TemplatePreviewModal from "@/components/TemplatePreviewModal";
+import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import { Template, UserPlan } from "@/types/wedding";
 
 interface TemplateSelectionProps {
-  onTemplateSelect: (template: Template) => Promise<void>;
+  // Called when a template has been selected and persisted on the server.
+  onUserTemplateSelected?: (userTemplate: any) => void;
   userPlan: UserPlan | null;
+  // Current user template (if any) so we can render selected/disabled states
+  userTemplate?: any;
 }
 
-const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProps) => {
+const TemplateSelection = ({
+  onUserTemplateSelected,
+  userPlan,
+  userTemplate,
+}: TemplateSelectionProps) => {
   const { isDarkMode } = useTheme();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [filteredTemplates, setFilteredTemplates] = useState<Template[]>([]);
@@ -22,6 +30,8 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showTemplatePreviewModal, setShowTemplatePreviewModal] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [pendingDeleteTemplateId, setPendingDeleteTemplateId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -76,14 +86,44 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
     setShowTemplatePreviewModal(true);
   };
 
+  // 🔹 This is the fix → Select template and persist in Prisma
+  // const handleSelectTemplate = async (template: Template) => {
+  //   try {
+  //     const res = await fetch("/api/user-templates", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ templateId: template.id }),
+  //     });
+
+  //     if (!res.ok) {
+  //       console.error("Failed to select template");
+  //       return;
+  //     }
+
+  //     // Call parent handler
+  //     await onTemplateSelect(template);
+
+  //     // Close modal
+  //     setShowTemplatePreviewModal(false);
+  //     setTemplateToPreview(null);
+  //   } catch (err) {
+  //     console.error("Error selecting template:", err);
+  //   }
+  // };
+
   return (
     <>
       <div
-        className={`rounded-xl p-4 md:p-6 shadow-lg border mb-4 ${isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}
+        className={`rounded-xl p-4 md:p-6 shadow-lg border mb-4 ${
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+        }`}
       >
+        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
           <h2
-            className={`text-lg md:text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
+            className={`text-lg md:text-xl font-semibold ${
+              isDarkMode ? "text-white" : "text-slate-900"
+            }`}
           >
             Choose a Template
           </h2>
@@ -124,6 +164,7 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
           </div>
         </div>
 
+        {/* Template List */}
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((i) => (
@@ -179,32 +220,63 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
                   <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                     <Eye className="h-6 w-6 text-white opacity-0 hover:opacity-100 transition-opacity duration-300" />
                   </div>
+
+                  {/* Selected overlay: green check in top-right */}
+                  {userTemplate?.isSelected && userTemplate?.templateId === template.id && (
+                    <div className="absolute top-2 right-2 bg-green-600 text-white p-1.5 rounded-full shadow-lg">
+                      <Check className="h-4 w-4" />
+                    </div>
+                  )}
                 </div>
                 <h4
-                  className={`text-sm md:text-base font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                  className={`text-sm md:text-base font-medium ${
+                    isDarkMode ? "text-white" : "text-slate-900"
+                  }`}
                 >
                   {template.name}
                 </h4>
                 <p
-                  className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"} line-clamp-2`}
+                  className={`text-xs ${
+                    isDarkMode ? "text-slate-400" : "text-slate-600"
+                  } line-clamp-2`}
                 >
                   {template.description}
                 </p>
                 <p className={`text-xs mt-1 ${isDarkMode ? "text-slate-500" : "text-slate-500"}`}>
                   {template.sections?.length || 0} sections
                 </p>
-                <button
-                  onClick={() => handlePreviewTemplate(template)}
-                  className="w-full mt-2 px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 transition-colors"
-                >
-                  Preview & Select
-                </button>
+
+                {/* If this template is the one the user selected show Delete in place of Preview */}
+                {userTemplate?.isSelected && userTemplate?.templateId === template.id ? (
+                  <button
+                    onClick={() => {
+                      setPendingDeleteTemplateId(template.id);
+                      setShowConfirmDelete(true);
+                    }}
+                    className="w-full mt-2 px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    Delete
+                  </button>
+                ) : userTemplate ? (
+                  <div className="w-full mt-2 px-3 py-1 bg-gray-400 text-white text-xs rounded-lg flex items-center justify-center gap-1 cursor-not-allowed">
+                    <X className="h-3 w-3" />
+                    Template Selected
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handlePreviewTemplate(template)}
+                    className="w-full mt-2 px-3 py-1 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 transition-colors"
+                  >
+                    Preview & Select
+                  </button>
+                )}
               </motion.div>
             ))}
           </div>
         )}
       </div>
 
+      {/* Preview Modal */}
       {templateToPreview && (
         <TemplatePreviewModal
           isOpen={showTemplatePreviewModal}
@@ -213,11 +285,47 @@ const TemplateSelection = ({ onTemplateSelect, userPlan }: TemplateSelectionProp
             setTemplateToPreview(null);
           }}
           template={templateToPreview}
-          onSelectTemplate={onTemplateSelect}
-          userPlan={userPlan || undefined}
+          // When the modal completes a selection it will return the persisted userTemplate
+          onSelectTemplate={(userTemplate) => {
+            if (typeof onUserTemplateSelected === "function") {
+              onUserTemplateSelected(userTemplate);
+            }
+
+            // close modal after callback
+            setShowTemplatePreviewModal(false);
+            setTemplateToPreview(null);
+          }}
+          userTemplate={userTemplate ?? undefined}
+          userPlan={userPlan ?? undefined}
           isSelect={false}
         />
       )}
+
+      <ConfirmDeleteModal
+        isOpen={showConfirmDelete}
+        onClose={() => {
+          setShowConfirmDelete(false);
+          setPendingDeleteTemplateId(null);
+        }}
+        onConfirm={async () => {
+          if (!pendingDeleteTemplateId) return;
+
+          const res = await fetch("/api/templates/delete", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ templateId: pendingDeleteTemplateId }),
+          });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err?.error || "Failed to delete template");
+          }
+
+          if (typeof onUserTemplateSelected === "function") {
+            onUserTemplateSelected(undefined as any);
+          }
+        }}
+      />
     </>
   );
 };

@@ -2,52 +2,33 @@
 
 import { Heart, Calendar, MapPin } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useEffect, useState } from "react";
 
 interface WeddingData {
-  brideName: string;
-  groomName: string;
-  weddingDate: string;
-  venue: string;
-  welcomeMessage: string;
+  brideName?: string;
+  groomName?: string;
+  weddingDate?: string;
+  venue?: string;
+  welcomeMessage?: string;
   colorTheme?: string;
 }
 
-export default function RusticHero() {
+export default function RusticHero({ weddingData }: { weddingData?: WeddingData }) {
   const { isDarkMode } = useTheme();
-  const [weddingData, setWeddingData] = useState<WeddingData | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchWeddingData = async () => {
-      try {
-        const response = await fetch("/api/wedding-data");
-        const data = await response.json();
-        if (response.ok) setWeddingData(data);
-      } catch (error) {
-        console.error("Error fetching wedding data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Provide fallbacks so we never crash
+  const brideName = weddingData?.brideName || "Bride";
+  const groomName = weddingData?.groomName || "Groom";
+  const venue = weddingData?.venue || "Wedding Venue";
+  const welcomeMessage =
+    weddingData?.welcomeMessage || "Welcome to our wedding celebration";
+  const dateValue = weddingData?.weddingDate
+    ? new Date(weddingData.weddingDate)
+    : new Date();
 
-    fetchWeddingData();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-600"></div>
-      </div>
-    );
-  }
-
-  if (!weddingData) return <div>Error loading wedding data</div>;
-
-  const formattedDate = new Date(weddingData.weddingDate).toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
+  const formattedDate = dateValue.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
   });
 
   return (
@@ -60,7 +41,7 @@ export default function RusticHero() {
     >
       <section
         className="relative text-stone-800 overflow-hidden bg-gradient-to-br from-amber-700 via-amber-600 to-amber-800"
-        style={{ backgroundColor: weddingData.colorTheme }}
+        style={{ backgroundColor: weddingData?.colorTheme }}
       >
         {/* Rustic texture overlay */}
         <div className="absolute inset-0 bg-[url('/rustic-texture.png')] opacity-10 mix-blend-overlay"></div>
@@ -74,13 +55,16 @@ export default function RusticHero() {
           <div className="text-center pt-12">
             <div className="flex justify-center mb-8">
               <div className="relative p-6 bg-white/10 backdrop-blur-sm rounded-3xl border border-amber-300/30">
-                <Heart className="h-16 w-16 text-amber-100" fill="currentColor" />
+                <Heart
+                  className="h-16 w-16 text-amber-100"
+                  fill="currentColor"
+                />
                 <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-amber-500 to-brown-600 rounded-full animate-pulse"></div>
               </div>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-serif font-medium mb-6 tracking-tight text-amber-100">
-              {weddingData.brideName} & {weddingData.groomName}
+              {brideName} & {groomName}
             </h1>
 
             <div className="flex items-center justify-center gap-8 text-lg mb-8 flex-wrap">
@@ -90,12 +74,12 @@ export default function RusticHero() {
               </div>
               <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-2xl border border-amber-300/20 text-amber-100">
                 <MapPin className="h-5 w-5" />
-                <span>{weddingData.venue}</span>
+                <span>{venue}</span>
               </div>
             </div>
 
             <p className="text-xl opacity-90 max-w-2xl mx-auto font-light leading-relaxed text-amber-100">
-              {weddingData.welcomeMessage}
+              {welcomeMessage}
             </p>
           </div>
         </div>
