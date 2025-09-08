@@ -3,73 +3,130 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Send } from "lucide-react";
+import { toast } from "react-hot-toast";
+import { useParams } from "next/navigation";
 
 interface GuestMessage {
   id: string;
-  guest: string;
+  guest?: string;
+  name?: string;
   message: string;
-  date: string;
+  date?: string;
+  created_at?: string;
 }
 
-export default function ModernGuest() {
+interface ModernGuestProps {
+  guests?: GuestMessage[];
+  guestMessages?: GuestMessage[]; // Legacy support
+  initialComments?: GuestMessage[]; // compatible with VintageGuest
+}
+
+export default function ModernGuest(props: ModernGuestProps) {
   const { isDarkMode } = useTheme();
+  const params = useParams();
   const [messages, setMessages] = useState<GuestMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [guestName, setGuestName] = useState("");
-  const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [loadingComments, setLoadingComments] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/wedding-data");
-        const data = await response.json();
-        setMessages(data.guestMessages || []);
-      } catch (error) {
-        console.error("Error fetching guest messages:", error);
-      } finally {
-        setLoading(false);
+  // Get slug from URL params (e.g., /alison-favour)
+  const slug = params.slug as string;
+
+  // Extract guest messages from props (prioritize initialComments > guests > guestMessages)
+  const initialMessages = props.initialComments || props.guests || props.guestMessages || [];
+
+  const fetchComments = async () => {
+    if (!slug) return;
+
+    setLoadingComments(true);
+    try {
+      const response = await fetch(`/api/guests/comments?slug=${encodeURIComponent(slug)}`);
+      if (response.ok) {
+        const commentsData = await response.json();
+        setMessages(commentsData);
+      } else {
+        console.error("Failed to fetch comments");
+        if (initialMessages && initialMessages.length > 0) {
+          setMessages(initialMessages);
+        }
       }
-    };
-    fetchData();
-  }, []);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      if (initialMessages && initialMessages.length > 0) {
+        setMessages(initialMessages);
+      }
+    } finally {
+      setLoadingComments(false);
+    }
+  };
+
+  // Initialize messages
+  useEffect(() => {
+    if (initialMessages && initialMessages.length > 0) {
+      setMessages(initialMessages);
+    } else {
+      fetchComments();
+    }
+  }, [props.initialComments, slug]);
 
   const handleSendMessage = async () => {
-    if (!guestName || !newMessage) return;
+    if (!guestName.trim() || !newMessage.trim()) {
+      toast.error("Please enter both your name and a message");
+      return;
+    }
+
+    if (!slug) {
+      toast.error("Unable to identify wedding page. Please refresh and try again.");
+      return;
+    }
+
     setSending(true);
+    const loadingToast = toast.loading("Sending your message...");
 
     try {
-      const response = await fetch("/api/guest-messages", {
+      const response = await fetch("/api/guests/comments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          guest: guestName,
-          message: newMessage
+          name: guestName.trim(),
+          message: newMessage.trim(),
+          slug: slug,
         }),
       });
 
+      const responseText = await response.text();
+
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (e) {
+        console.error("Non-JSON response:", responseText.substring(0, 200));
+        throw new Error("Server returned an error page");
+      }
+
       if (response.ok) {
-        const newMsg = await response.json();
-        setMessages([newMsg, ...messages]);
+        toast.dismiss(loadingToast);
+        toast.success("Thank you for your message! It will be visible after approval.");
         setNewMessage("");
         setGuestName("");
+
+        // Refresh comments after successful submission
+        fetchComments();
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error(responseData.error || "Failed to send message");
       }
     } catch (error) {
       console.error("Error sending message:", error);
+      toast.dismiss(loadingToast);
+      toast.error("An error occurred while sending your message");
     } finally {
       setSending(false);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
-  }
 
   return (
     <div
@@ -165,11 +222,12 @@ export default function ModernGuest() {
       ) : (
         <div className="space-y-8">
           {messages.map((message) => {
-            const messageDate = new Date(message.date);
-            const formattedDate = messageDate.toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric'
+            const dateString = message.created_at || message.date || new Date().toISOString();
+            const messageDate = new Date(dateString);
+            const formattedDate = messageDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
             });
 
             return (

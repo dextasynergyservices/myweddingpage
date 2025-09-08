@@ -65,7 +65,8 @@ async function main() {
           type: "rustic_gift",
           content: {
             title: "Gift Registry",
-            message: "Your presence is the greatest gift, but if you wish to honor us with something more...",
+            message:
+              "Your presence is the greatest gift, but if you wish to honor us with something more...",
           },
         },
       ],

@@ -16,7 +16,7 @@ interface WeddingPageOurStoryProps {
 export default function WeddingPageOurStory({
   content,
   imageUrl,
-  styles
+  styles,
 }: WeddingPageOurStoryProps) {
   const { isDarkMode } = useTheme();
 
@@ -24,9 +24,7 @@ export default function WeddingPageOurStory({
   const defaultImage = "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg";
 
   // Ensure we handle multiple paragraphs
-  const paragraphs = (content || defaultContent)
-    .split("\n")
-    .filter((p) => p.trim() !== "");
+  const paragraphs = (content || defaultContent).split("\n").filter((p) => p.trim() !== "");
 
   return (
     <motion.div
@@ -37,7 +35,7 @@ export default function WeddingPageOurStory({
       }`}
       style={{
         backgroundColor: styles?.backgroundColor || (isDarkMode ? "#1e293b" : "#ffffff"),
-        color: styles?.textColor || (isDarkMode ? "#e2e8f0" : "#1e293b")
+        color: styles?.textColor || (isDarkMode ? "#e2e8f0" : "#1e293b"),
       }}
     >
       <div className="text-center mb-8 md:mb-12">
@@ -95,12 +93,12 @@ export default function WeddingPageOurStory({
             <motion.div
               animate={{
                 scale: [1, 1.1, 1],
-                opacity: [0.2, 0.3, 0.2]
+                opacity: [0.2, 0.3, 0.2],
               }}
               transition={{
                 repeat: Infinity,
                 duration: 4,
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
               className="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full opacity-20 blur-xl"
             />

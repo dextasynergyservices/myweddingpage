@@ -1,5 +1,5 @@
 // hooks/useWeddingData.ts
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface WeddingData {
   brideName: string;
@@ -15,7 +15,13 @@ interface WeddingData {
     imageUrl: string;
   };
   galleryPhotos?: Array<{ id: string; url: string; title: string; category: string }>;
-  giftRegistry?: Array<{ id: string; item: string; price: string; image: string; purchased: boolean }>;
+  giftRegistry?: Array<{
+    id: string;
+    item: string;
+    price: string;
+    image: string;
+    purchased: boolean;
+  }>;
   guestMessages?: Array<{ id: string; guest: string; message: string; date: string }>;
 }
 
@@ -30,7 +36,7 @@ export function useWeddingData() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/api/wedding-data');
+        const response = await fetch("/api/wedding-data");
 
         if (!response.ok) {
           throw new Error(`Failed to load data: ${response.status}`);
@@ -44,8 +50,8 @@ export function useWeddingData() {
 
         setData(result);
       } catch (err: any) {
-        console.error('Error fetching wedding data:', err);
-        setError(err.message || 'Failed to load wedding data');
+        console.error("Error fetching wedding data:", err);
+        setError(err.message || "Failed to load wedding data");
       } finally {
         setLoading(false);
       }

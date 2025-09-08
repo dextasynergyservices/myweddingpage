@@ -16,22 +16,22 @@ const templateData = [
         content: {
           title: "{brideName} & {groomName}",
           date: "{weddingDate}",
-          venue: "{venue}"
-        }
+          venue: "{venue}",
+        },
       },
       {
         type: "rustic_story",
         content: {
           title: "Our Story",
-          text: "From our first meeting to this special day..."
-        }
+          text: "From our first meeting to this special day...",
+        },
       },
       {
         type: "rustic_gallery",
         content: {
-          images: ["/default1.jpg", "/default2.jpg"]
-        }
-      }
+          images: ["/default1.jpg", "/default2.jpg"],
+        },
+      },
     ],
     colorSchemes: [
       {
@@ -39,31 +39,31 @@ const templateData = [
         primary: "#8B4513",
         secondary: "#F5DEB3",
         background: "#FFF8DC",
-        text: "#333333"
+        text: "#333333",
       },
       {
         name: "Forest Greens",
         primary: "#228B22",
         secondary: "#DEB887",
         background: "#F5F5DC",
-        text: "#333333"
-      }
+        text: "#333333",
+      },
     ],
     layout_data: {
       sections: [
         {
           id: "hero",
           type: "fullwidth",
-          components: ["rustic_hero"]
+          components: ["rustic_hero"],
         },
         {
           id: "content",
           type: "grid",
           columns: 2,
-          components: ["rustic_story", "rustic_gallery"]
-        }
-      ]
-    }
+          components: ["rustic_story", "rustic_gallery"],
+        },
+      ],
+    },
   },
   {
     name: "Modern Minimal",
@@ -77,22 +77,22 @@ const templateData = [
         content: {
           coupleNames: "{brideName} & {groomName}",
           weddingDate: "{weddingDate}",
-          location: "{venue}"
-        }
+          location: "{venue}",
+        },
       },
       {
         type: "modern_gallery",
         content: {
-          images: ["/default1.jpg", "/default2.jpg"]
-        }
+          images: ["/default1.jpg", "/default2.jpg"],
+        },
       },
       {
         type: "modern_story",
         content: {
           title: "Our Journey",
-          text: "Share your love story here..."
-        }
-      }
+          text: "Share your love story here...",
+        },
+      },
     ],
     colorSchemes: [
       {
@@ -100,31 +100,31 @@ const templateData = [
         primary: "#333333",
         secondary: "#CCCCCC",
         background: "#FFFFFF",
-        text: "#333333"
+        text: "#333333",
       },
       {
         name: "Blue Accents",
         primary: "#1E40AF",
         secondary: "#93C5FD",
         background: "#F8FAFC",
-        text: "#1F2937"
-      }
+        text: "#1F2937",
+      },
     ],
     layout_data: {
       sections: [
         {
           id: "header",
           type: "fullwidth",
-          components: ["modern_hero"]
+          components: ["modern_hero"],
         },
         {
           id: "main",
           type: "grid",
           columns: 2,
-          components: ["modern_story", "modern_gallery"]
-        }
-      ]
-    }
+          components: ["modern_story", "modern_gallery"],
+        },
+      ],
+    },
   },
   {
     name: "Vintage Romance",
@@ -138,22 +138,22 @@ const templateData = [
         content: {
           title: "{brideName} & {groomName}",
           date: "{weddingDate}",
-          venue: "{venue}"
-        }
+          venue: "{venue}",
+        },
       },
       {
         type: "vintage_story",
         content: {
           title: "Our Love Story",
-          text: "From our first meeting to this special day..."
-        }
+          text: "From our first meeting to this special day...",
+        },
       },
       {
         type: "vintage_gallery",
         content: {
-          images: ["/vintage1.jpg", "/vintage2.jpg"]
-        }
-      }
+          images: ["/vintage1.jpg", "/vintage2.jpg"],
+        },
+      },
     ],
     colorSchemes: [
       {
@@ -161,31 +161,31 @@ const templateData = [
         primary: "#8B4513",
         secondary: "#D2B48C",
         background: "#FAF0E6",
-        text: "#654321"
+        text: "#654321",
       },
       {
         name: "Pastel Romance",
         primary: "#D87093",
         secondary: "#F0E68C",
         background: "#FFF0F5",
-        text: "#696969"
-      }
+        text: "#696969",
+      },
     ],
     layout_data: {
       sections: [
         {
           id: "hero-section",
           type: "fullwidth",
-          components: ["vintage_hero"]
+          components: ["vintage_hero"],
         },
         {
           id: "content-section",
           type: "grid",
           columns: 2,
-          components: ["vintage_story", "vintage_gallery"]
-        }
-      ]
-    }
+          components: ["vintage_story", "vintage_gallery"],
+        },
+      ],
+    },
   },
   {
     name: "Luxury Affair",
@@ -198,22 +198,22 @@ const templateData = [
         type: "luxury_hero",
         content: {
           title: "{brideName} & {groomName}",
-          subtitle: "{weddingDate} | Exclusive Resort"
-        }
+          subtitle: "{weddingDate} | Exclusive Resort",
+        },
       },
       {
         type: "luxury_story",
         content: {
           title: "Our Story",
-          text: "Share your love story here..."
-        }
+          text: "Share your love story here...",
+        },
       },
       {
         type: "luxury_gallery",
         content: {
-          images: ["/luxury1.jpg", "/luxury2.jpg"]
-        }
-      }
+          images: ["/luxury1.jpg", "/luxury2.jpg"],
+        },
+      },
     ],
     colorSchemes: [
       {
@@ -221,39 +221,39 @@ const templateData = [
         primary: "#FFD700",
         secondary: "#FFFFF0",
         background: "#FAFAD2",
-        text: "#333333"
+        text: "#333333",
       },
       {
         name: "Royal Purple",
         primary: "#9370DB",
         secondary: "#E6E6FA",
         background: "#F8F8FF",
-        text: "#4B0082"
-      }
+        text: "#4B0082",
+      },
     ],
     layout_data: {
       sections: [
         {
           id: "luxury-hero",
           type: "fullwidth",
-          components: ["luxury_hero"]
+          components: ["luxury_hero"],
         },
         {
           id: "luxury-content",
           type: "grid",
           columns: 2,
-          components: ["luxury_story", "luxury_gallery"]
-        }
-      ]
-    }
-  }
+          components: ["luxury_story", "luxury_gallery"],
+        },
+      ],
+    },
+  },
 ];
 
 const PLAN_IDS = {
   DELIGHT: "plan_delight",
   DARLING: "plan_darling",
   DAZZLE: "plan_dazzle",
-  DYNASTY_ROYALE: "plan_dynasty_royale"
+  DYNASTY_ROYALE: "plan_dynasty_royale",
 };
 
 async function main() {
@@ -269,8 +269,8 @@ async function main() {
         price: 29.99,
         max_photos: 15,
         max_videos: 1,
-        max_tabs:  7,
-        duration_days: 30
+        max_tabs: 7,
+        duration_days: 30,
       },
       create: {
         id: PLAN_IDS.DELIGHT,
@@ -278,9 +278,9 @@ async function main() {
         price: 29.99,
         max_photos: 15,
         max_videos: 1,
-        max_tabs:  7,
-        duration_days: 365
-      }
+        max_tabs: 7,
+        duration_days: 365,
+      },
     }),
     prisma.plan.upsert({
       where: { id: PLAN_IDS.DARLING },
@@ -289,8 +289,8 @@ async function main() {
         price: 59.99,
         max_photos: 25,
         max_videos: 2,
-        max_tabs:  10,
-        duration_days: 30
+        max_tabs: 10,
+        duration_days: 30,
       },
       create: {
         id: PLAN_IDS.DARLING,
@@ -298,9 +298,9 @@ async function main() {
         price: 59.99,
         max_photos: 25,
         max_videos: 2,
-        max_tabs:  10,
-        duration_days: 30
-      }
+        max_tabs: 10,
+        duration_days: 30,
+      },
     }),
     prisma.plan.upsert({
       where: { id: PLAN_IDS.DAZZLE },
@@ -309,8 +309,8 @@ async function main() {
         price: 99.99,
         max_photos: 50,
         max_videos: 3,
-        max_tabs:  15,
-        duration_days: 365
+        max_tabs: 15,
+        duration_days: 365,
       },
       create: {
         id: PLAN_IDS.DAZZLE,
@@ -318,9 +318,9 @@ async function main() {
         price: 99.99,
         max_photos: 50,
         max_videos: 3,
-        max_tabs:  15,
-        duration_days: 365
-      }
+        max_tabs: 15,
+        duration_days: 365,
+      },
     }),
     prisma.plan.upsert({
       where: { id: PLAN_IDS.DYNASTY_ROYALE },
@@ -329,8 +329,8 @@ async function main() {
         price: 199.99,
         max_photos: 100,
         max_videos: 4,
-        max_tabs:  17,
-        duration_days: 365
+        max_tabs: 17,
+        duration_days: 365,
       },
       create: {
         id: PLAN_IDS.DYNASTY_ROYALE,
@@ -338,10 +338,10 @@ async function main() {
         price: 199.99,
         max_photos: 100,
         max_videos: 4,
-        max_tabs:  17,
-        duration_days: 365
-      }
-    })
+        max_tabs: 17,
+        duration_days: 365,
+      },
+    }),
   ]);
 
   // Create categories
@@ -350,55 +350,55 @@ async function main() {
     prisma.templateCategory.upsert({
       where: { name: "rustic" },
       update: {
-        description: "Rustic themed templates with natural elements"
+        description: "Rustic themed templates with natural elements",
       },
       create: {
         name: "rustic",
-        description: "Rustic themed templates with natural elements"
-      }
+        description: "Rustic themed templates with natural elements",
+      },
     }),
     prisma.templateCategory.upsert({
       where: { name: "modern" },
       update: {
-        description: "Modern and minimalistic templates"
+        description: "Modern and minimalistic templates",
       },
       create: {
         name: "modern",
-        description: "Modern and minimalistic templates"
-      }
+        description: "Modern and minimalistic templates",
+      },
     }),
     prisma.templateCategory.upsert({
       where: { name: "vintage" },
       update: {
-        description: "Vintage and classic templates"
+        description: "Vintage and classic templates",
       },
       create: {
         name: "vintage",
-        description: "Vintage and classic templates"
-      }
+        description: "Vintage and classic templates",
+      },
     }),
     prisma.templateCategory.upsert({
       where: { name: "luxury" },
       update: {
-        description: "Luxury and premium templates"
+        description: "Luxury and premium templates",
       },
       create: {
         name: "luxury",
-        description: "Luxury and premium templates"
-      }
-    })
+        description: "Luxury and premium templates",
+      },
+    }),
   ]);
 
   // Create templates
   console.log("Creating templates...");
   for (const template of templateData) {
-    const category = categories.find(c => c.name === template.category);
+    const category = categories.find((c) => c.name === template.category);
     if (!category) {
       console.warn(`Category ${template.category} not found for template ${template.name}`);
       continue;
     }
 
-    const plan = plans.find(p => p.name === template.requiredPlan);
+    const plan = plans.find((p) => p.name === template.requiredPlan);
     if (!plan) {
       console.warn(`Plan ${template.requiredPlan} not found for template ${template.name}`);
       continue;
@@ -413,7 +413,7 @@ async function main() {
         categoryId: category.id,
         components: template.components,
         colorSchemes: template.colorSchemes,
-        layout_data: template.layout_data
+        layout_data: template.layout_data,
       },
       create: {
         name: template.name,
@@ -422,8 +422,8 @@ async function main() {
         categoryId: category.id,
         components: template.components,
         colorSchemes: template.colorSchemes,
-        layout_data: template.layout_data
-      }
+        layout_data: template.layout_data,
+      },
     });
 
     // Link template to plan
@@ -431,14 +431,14 @@ async function main() {
       where: {
         planId_templateId: {
           planId: plan.id,
-          templateId: createdTemplate.id
-        }
+          templateId: createdTemplate.id,
+        },
       },
       update: {},
       create: {
         planId: plan.id,
-        templateId: createdTemplate.id
-      }
+        templateId: createdTemplate.id,
+      },
     });
   }
 

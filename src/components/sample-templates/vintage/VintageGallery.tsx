@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "@/contexts/ThemeContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 interface GalleryPhoto {
@@ -11,34 +11,17 @@ interface GalleryPhoto {
   category: string;
 }
 
-export default function VintageGallery() {
+interface VintageGalleryProps {
+  gallery?: GalleryPhoto[];
+  galleryPhotos?: GalleryPhoto[]; // Legacy support
+}
+
+export default function VintageGallery(props: VintageGalleryProps) {
   const { isDarkMode } = useTheme();
-  const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/wedding-data");
-        const data = await response.json();
-        setPhotos(data.galleryPhotos || []);
-      } catch (error) {
-        console.error("Error fetching gallery photos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
-  }
+  // Extract gallery data from props (prioritize gallery over galleryPhotos for consistency with API)
+  const photos = props.gallery || props.galleryPhotos || [];
 
   const filteredPhotos =
     selectedCategory === "all"
@@ -95,7 +78,7 @@ export default function VintageGallery() {
               <div className="relative overflow-hidden rounded-3xl shadow-lg">
                 <Image
                   src={photo.url}
-                  alt={photo.title}
+                  alt={photo.title || `Wedding photo ${photo.id}`}
                   width={600}
                   height={400}
                   className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110"

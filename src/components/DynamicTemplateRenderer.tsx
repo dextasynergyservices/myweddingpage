@@ -84,11 +84,47 @@ export function DynamicTemplateRenderer({
     venue: userData?.venue || userData?.location || userData?.place || "",
   };
 
+  // Debug logging
+  console.log("DynamicTemplateRenderer - userData:", userData);
+  console.log("DynamicTemplateRenderer - sections data:", userData?.sections);
+  console.log(
+    "DynamicTemplateRenderer - template sections:",
+    template?.sections?.map((s) => ({ id: s.id, type: s.type }))
+  );
+
   // Process sections with user data (defensive against undefined)
-  const processedSections = (template?.sections ?? []).map((section) => ({
-    ...section,
-    components: replacePlaceholders(section.components, normalizedUserData),
-  }));
+  const processedSections = (template?.sections ?? []).map((section) => {
+    // Get user's edited content for this section
+    const userSectionContent = userData?.sections?.[section.id] || {};
+
+    // Merge template components with user's edited content
+    const mergedComponents = {
+      ...section.components,
+      ...userSectionContent,
+    };
+
+    console.log(`Section ${section.id} (${section.type}):`, {
+      templateComponents: section.components,
+      userSectionContent,
+      mergedComponents,
+    });
+
+    // Debug image data for STORY sections
+    if (section.type === "STORY") {
+      console.log(`STORY section ${section.id} image data:`, {
+        templateImageUrl: section.components?.imageUrl,
+        userImageUrl: userSectionContent?.imageUrl,
+        userStoryImage: userSectionContent?.storyImage,
+        mergedImageUrl: mergedComponents?.imageUrl,
+        mergedStoryImage: mergedComponents?.storyImage,
+      });
+    }
+
+    return {
+      ...section,
+      components: replacePlaceholders(mergedComponents, normalizedUserData),
+    };
+  });
 
   // Enforce component limit based on plan
   const sectionsToRender = processedSections.slice(0, userPlan.maxComponents);
@@ -124,7 +160,7 @@ export function DynamicTemplateRenderer({
         const isEdited = localEditedSections.includes(section.id);
 
         return (
-          <div key={section.id} className="template-section relative">
+          <div key={section.id} id={section.id} className="template-section relative">
             {isEdited && editable && (
               <div className="absolute top-2 right-2 z-10 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
                 <CheckCircle className="h-3 w-3" />
@@ -140,6 +176,11 @@ export function DynamicTemplateRenderer({
               theme={colorScheme}
               editable={editable && !isPreview}
               onContentUpdate={(newContent: any) => handleContentUpdate(section.id, newContent)}
+              // Pass additional data from userData for Gallery, Gift, and Guest components
+              gallery={userData?.gallery}
+              gifts={userData?.gifts}
+              guests={userData?.guests}
+              bankDetails={userData?.bankDetails}
             />
           </div>
         );

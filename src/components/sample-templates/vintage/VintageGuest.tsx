@@ -3,73 +3,129 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Send } from "lucide-react";
+import { toast } from "react-hot-toast";
+import { useParams } from "next/navigation";
 
-interface GuestMessage {
+interface Comment {
   id: string;
-  guest: string;
+  name: string;
   message: string;
-  date: string;
+  created_at: string;
 }
 
-export default function VintageGuest() {
+interface VintageGuestProps {
+  initialComments?: Comment[];
+}
+
+export default function VintageGuest(props: VintageGuestProps) {
   const { isDarkMode } = useTheme();
-  const [messages, setMessages] = useState<GuestMessage[]>([]);
+  const params = useParams();
+  const [comments, setComments] = useState<Comment[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [guestName, setGuestName] = useState("");
-  const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [loadingComments, setLoadingComments] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/wedding-data");
-        const data = await response.json();
-        setMessages(data.guestMessages || []);
-      } catch (error) {
-        console.error("Error fetching guest messages:", error);
-      } finally {
-        setLoading(false);
+  // Get slug from URL params (e.g., /alison-favour)
+  const slug = params.slug as string;
+
+  // Fetch approved comments
+  const fetchComments = async () => {
+    if (!slug) return;
+
+    setLoadingComments(true);
+    try {
+      const response = await fetch(`/api/guests/comments?slug=${encodeURIComponent(slug)}`);
+
+      if (response.ok) {
+        const commentsData = await response.json();
+        setComments(commentsData);
+      } else {
+        console.error("Failed to fetch comments");
+        // Fall back to initial comments if provided
+        if (props.initialComments && props.initialComments.length > 0) {
+          setComments(props.initialComments);
+        }
       }
-    };
-    fetchData();
-  }, []);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      // Fall back to initial comments if provided
+      if (props.initialComments && props.initialComments.length > 0) {
+        setComments(props.initialComments);
+      }
+    } finally {
+      setLoadingComments(false);
+    }
+  };
+
+  // Initialize comments
+  useEffect(() => {
+    if (props.initialComments && props.initialComments.length > 0) {
+      setComments(props.initialComments);
+    } else {
+      // If no initial comments provided, fetch them
+      fetchComments();
+    }
+  }, [props.initialComments, slug]);
 
   const handleSendMessage = async () => {
-    if (!guestName || !newMessage) return;
+    if (!guestName.trim() || !newMessage.trim()) {
+      toast.error("Please enter both your name and a message");
+      return;
+    }
+
+    if (!slug) {
+      toast.error("Unable to identify wedding page. Please refresh and try again.");
+      return;
+    }
+
     setSending(true);
+    const loadingToast = toast.loading("Sending your message...");
 
     try {
-      const response = await fetch("/api/guest-messages", {
+      const response = await fetch("/api/guests/comments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          guest: guestName,
-          message: newMessage
+          name: guestName.trim(),
+          message: newMessage.trim(),
+          slug: slug,
         }),
       });
 
+      const responseText = await response.text();
+
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (e) {
+        console.error("Non-JSON response:", responseText.substring(0, 200));
+        throw new Error("Server returned an error page");
+      }
+
       if (response.ok) {
-        const newMsg = await response.json();
-        setMessages([newMsg, ...messages]);
+        toast.dismiss(loadingToast);
+        toast.success("Thank you for your message! It will be visible after approval.");
         setNewMessage("");
         setGuestName("");
+
+        // Refresh comments after successful submission
+        // (Note: new comment won't appear until it's approved)
+        fetchComments();
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error(responseData.error || "Failed to send message");
       }
     } catch (error) {
       console.error("Error sending message:", error);
+      toast.dismiss(loadingToast);
+      toast.error("An error occurred while sending your message");
     } finally {
       setSending(false);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
-  }
 
   return (
     <div
@@ -156,7 +212,13 @@ export default function VintageGuest() {
       </div>
 
       {/* Messages */}
-      {messages.length === 0 ? (
+      {loadingComments ? (
+        <div className="text-center py-12">
+          <p className={`text-lg ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+            Loading messages...
+          </p>
+        </div>
+      ) : comments.length === 0 ? (
         <div className="text-center py-12">
           <p className={`text-lg ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
             No messages yet. Be the first to leave a message!
@@ -164,17 +226,17 @@ export default function VintageGuest() {
         </div>
       ) : (
         <div className="space-y-8">
-          {messages.map((message) => {
-            const messageDate = new Date(message.date);
-            const formattedDate = messageDate.toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric'
+          {comments.map((comment) => {
+            const commentDate = new Date(comment.created_at);
+            const formattedDate = commentDate.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
             });
 
             return (
               <div
-                key={message.id}
+                key={comment.id}
                 className={`border-l-4 border-indigo-500 pl-8 py-6 rounded-r-3xl ${
                   isDarkMode ? "bg-slate-700" : "bg-slate-50"
                 }`}
@@ -183,7 +245,7 @@ export default function VintageGuest() {
                   <h3
                     className={`font-semibold text-lg ${isDarkMode ? "text-white" : "text-slate-900"}`}
                   >
-                    {message.guest}
+                    {comment.name}
                   </h3>
                   <span
                     className={`text-sm px-3 py-1 rounded-full ${
@@ -196,7 +258,7 @@ export default function VintageGuest() {
                 <p
                   className={`leading-relaxed font-light text-lg ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}
                 >
-                  {message.message}
+                  {comment.message}
                 </p>
               </div>
             );

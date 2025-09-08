@@ -37,7 +37,7 @@ export type TemplateCategory = {
   description: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 export type Plan = {
   id: string;

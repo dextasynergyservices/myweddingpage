@@ -2,52 +2,46 @@
 
 import { Heart, Calendar, MapPin } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useEffect, useState } from "react";
 
 interface WeddingData {
-  brideName: string;
-  groomName: string;
-  weddingDate: string;
-  venue: string;
-  welcomeMessage: string;
+  brideName?: string;
+  groomName?: string;
+  weddingDate?: string;
+  venue?: string;
+  welcomeMessage?: string;
   colorTheme?: string;
 }
 
-export default function VintageHero() {
+interface VintageHeroProps {
+  brideName?: string;
+  groomName?: string;
+  weddingDate?: string;
+  venue?: string;
+  welcomeMessage?: string;
+  colorTheme?: string;
+  // Legacy support for weddingData prop
+  weddingData?: WeddingData;
+}
+
+export default function VintageHero(props: VintageHeroProps) {
   const { isDarkMode } = useTheme();
-  const [weddingData, setWeddingData] = useState<WeddingData | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchWeddingData = async () => {
-      try {
-        const response = await fetch("/api/wedding-data");
-        const data = await response.json();
-        if (response.ok) setWeddingData(data);
-      } catch (error) {
-        console.error("Error fetching wedding data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Extract data from props (prioritize direct props over weddingData object)
+  const brideName = props.brideName || props.weddingData?.brideName || "Bride";
+  const groomName = props.groomName || props.weddingData?.groomName || "Groom";
+  const venue = props.venue || props.weddingData?.venue || "Wedding Venue";
+  const welcomeMessage =
+    props.welcomeMessage ||
+    props.weddingData?.welcomeMessage ||
+    "Welcome to our wedding celebration";
+  const dateValue = props.weddingDate || props.weddingData?.weddingDate;
 
-    fetchWeddingData();
-  }, []);
+  const weddingDate = dateValue ? new Date(dateValue) : new Date();
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-slate-500"></div>
-      </div>
-    );
-  }
-
-  if (!weddingData) return <div>Error loading wedding data</div>;
-
-  const formattedDate = new Date(weddingData.weddingDate).toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
+  const formattedDate = weddingDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
   });
 
   return (
@@ -70,7 +64,7 @@ export default function VintageHero() {
             </div>
 
             <h1 className="text-4xl md:text-6xl font-sans font-light mb-6 tracking-tighter text-slate-900">
-              {weddingData.brideName} <span className="text-slate-400">&</span> {weddingData.groomName}
+              {brideName} <span className="text-slate-400">&</span> {groomName}
             </h1>
 
             <div className="flex items-center justify-center gap-8 text-lg mb-8 flex-wrap">
@@ -80,12 +74,12 @@ export default function VintageHero() {
               </div>
               <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 text-slate-700">
                 <MapPin className="h-5 w-5 text-rose-500" />
-                <span>{weddingData.venue}</span>
+                <span>{venue}</span>
               </div>
             </div>
 
             <p className="text-xl opacity-80 max-w-2xl mx-auto font-light leading-relaxed text-slate-600">
-              {weddingData.welcomeMessage}
+              {welcomeMessage}
             </p>
           </div>
         </div>

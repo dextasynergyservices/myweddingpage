@@ -24,6 +24,7 @@ import Modal from "@/components/ui/Modal";
 import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
 import TemplatePreviewModal from "@/components/TemplatePreviewModal";
 import TemplateSelection from "@/components/dashboard/PageBuilderComponent/TemplateFetch";
+import TemplateEditor from "@/components/dashboard/PageBuilderComponent/TemplateEditor";
 import { Template, UserTemplate, UserPlan, WeddingPage } from "@/types/wedding";
 
 const WeddingPageBuilder = () => {
@@ -137,35 +138,33 @@ const WeddingPageBuilder = () => {
   const handleContentUpdate = async (sectionId: string, content: any) => {
     if (!userTemplate || !selectedTemplate) return;
 
-    // Update local state
-    const updatedSections = selectedTemplate.sections.map((section) =>
-      section.id === sectionId
-        ? { ...section, components: { ...section.components, ...content } }
-        : section
-    );
-
-    setSelectedTemplate({
-      ...selectedTemplate,
-      sections: updatedSections,
-    });
-
-    // Mark section as edited
-    if (!editedSections.includes(sectionId)) {
-      setEditedSections([...editedSections, sectionId]);
-    }
-
-    // Save to backend
     try {
-      const response = await fetch("/api/user/templates/content", {
+      // Save to backend using the new API
+      const response = await fetch("/api/template-sections/edit", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           templateId: selectedTemplate.id,
-          content: { [sectionId]: content },
+          sectionId,
+          content,
         }),
       });
 
       if (!response.ok) throw new Error("Failed to save content");
+
+      const data = await response.json();
+      console.log("Section edit response:", data);
+
+      // Update local state
+      if (data.userTemplate) {
+        console.log("Updating userTemplate with:", data.userTemplate);
+        setUserTemplate(data.userTemplate);
+      }
+
+      // Mark section as edited
+      if (!editedSections.includes(sectionId)) {
+        setEditedSections([...editedSections, sectionId]);
+      }
     } catch (error) {
       console.error("Error saving template content:", error);
     }
@@ -276,137 +275,17 @@ const WeddingPageBuilder = () => {
             userTemplate={userTemplate ?? undefined}
           />
         ) : selectedTemplate ? (
-          <>
-            {/* Editor Header */}
-            <div
-              className={`flex flex-col md:flex-row items-center justify-between p-4 rounded-xl mb-4 ${
-                isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
-              } border shadow-lg gap-4 md:gap-0`}
-            >
-              <div>
-                <h2
-                  className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
-                >
-                  Editing: {selectedTemplate.name}
-                </h2>
-                <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-                  Customize your wedding website with your details
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowPreviewModal(true)}
-                  className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-colors text-sm ${
-                    isDarkMode
-                      ? "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                      : "bg-slate-200 text-slate-700 hover:bg-slate-300"
-                  }`}
-                >
-                  <Eye className="h-3 w-3 md:h-4 md:w-4" />
-                  Preview
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={publishTemplate}
-                  disabled={isSaving}
-                  className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-colors text-sm ${
-                    isSaving
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : weddingPage && weddingPage.is_live
-                        ? "bg-green-600 hover:bg-green-700"
-                        : "bg-purple-600 hover:bg-purple-700"
-                  } text-white`}
-                >
-                  <Download className="h-3 w-3 md:h-4 md:w-4" />
-                  {isSaving
-                    ? "Publishing..."
-                    : weddingPage && weddingPage.is_live
-                      ? "Update Live Site"
-                      : "Publish"}
-                </motion.button>
-              </div>
-            </div>
-
-            {/* Template Editor */}
-            <div className="flex-1 overflow-auto">
-              <div className="mx-auto max-w-full">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={`min-h-64 md:min-h-96 rounded-xl border-2 border-dashed ${
-                    isDarkMode ? "border-slate-600 bg-slate-800/50" : "border-slate-300 bg-slate-50"
-                  }`}
-                >
-                  {selectedTemplate.sections && selectedTemplate.sections.length > 0 ? (
-                    <div className="space-y-4">
-                      {selectedTemplate.sections.map((section) => (
-                        <motion.div
-                          key={section.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className={`p-4 rounded-xl border-2 border-dashed transition-all duration-300 cursor-pointer group hover:border-indigo-400 ${
-                            isDarkMode
-                              ? "border-slate-600 bg-slate-800/50"
-                              : "border-slate-300 bg-slate-50"
-                          }`}
-                          onClick={() => {
-                            // Handle section click for editing
-                            console.log("Edit section:", section.id, section.type);
-                          }}
-                        >
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                              <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
-                                {section.type === "HERO" && (
-                                  <Heart className="h-4 w-4 text-indigo-600" />
-                                )}
-                                {section.type === "STORY" && (
-                                  <FileText className="h-4 w-4 text-indigo-600" />
-                                )}
-                                {section.type === "GALLERY" && (
-                                  <ImageIcon className="h-4 w-4 text-indigo-600" />
-                                )}
-                                {section.type === "REGISTRY" && (
-                                  <Gift className="h-4 w-4 text-indigo-600" />
-                                )}
-                                {section.type === "WISHES" && (
-                                  <Users className="h-4 w-4 text-indigo-600" />
-                                )}
-                              </div>
-                              <h3 className="text-sm font-medium">
-                                {section.type.charAt(0) + section.type.slice(1).toLowerCase()}
-                              </h3>
-                            </div>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                console.log("Edit section:", section.id);
-                              }}
-                              className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              Edit
-                            </button>
-                          </div>
-                          <div className="text-xs text-slate-500">Click to edit this section</div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center h-64 text-center">
-                      <p className={isDarkMode ? "text-slate-400" : "text-slate-600"}>
-                        No sections available for this template.
-                      </p>
-                    </div>
-                  )}
-                </motion.div>
-              </div>
-            </div>
-          </>
+          <TemplateEditor
+            userTemplate={userTemplate}
+            selectedTemplate={selectedTemplate}
+            weddingPage={weddingPage}
+            userPlan={userPlan}
+            onTemplateUpdate={(template) => setSelectedTemplate(template)}
+            onContentUpdate={handleContentUpdate}
+            editedSections={editedSections}
+            onWeddingPageUpdate={(wp) => setWeddingPage(wp)}
+            onUserTemplateUpdate={(ut) => setUserTemplate(ut)}
+          />
         ) : (
           <div
             className={`rounded-xl p-8 text-center ${isDarkMode ? "bg-slate-800" : "bg-slate-100"}`}

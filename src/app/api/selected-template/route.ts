@@ -17,7 +17,13 @@ export async function GET() {
         userTemplates: {
           where: { isSelected: true },
           include: {
-            template: true,
+            template: {
+              include: {
+                sections: {
+                  orderBy: { order: "asc" },
+                },
+              },
+            },
           },
         },
       },

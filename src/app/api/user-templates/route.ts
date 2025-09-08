@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       create: {
         userId,
         templateId,
-        colorScheme: {}, 
+        colorScheme: {},
         content: {},
         isSelected: true,
       },

@@ -76,7 +76,7 @@ async function main() {
         layout_data: {},
         categoryId: category.id,
         components: [],
-        colorSchemes: []
+        colorSchemes: [],
       },
       {
         name: "Rustic Charm",
@@ -85,7 +85,7 @@ async function main() {
         layout_data: {},
         categoryId: category.id,
         components: [],
-        colorSchemes: []
+        colorSchemes: [],
       },
     ],
     skipDuplicates: true,

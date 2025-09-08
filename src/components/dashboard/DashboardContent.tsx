@@ -49,7 +49,7 @@ const DashboardContent = ({
     switch (activeTab) {
       case "builder":
         return <WeddingPageBuilder />;
-        case "page-builder":
+      case "page-builder":
         return <PageBuilder />;
       case "gallery":
         return <Gallery />;

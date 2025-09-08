@@ -19,11 +19,8 @@ export default function RusticHero({ weddingData }: { weddingData?: WeddingData 
   const brideName = weddingData?.brideName || "Bride";
   const groomName = weddingData?.groomName || "Groom";
   const venue = weddingData?.venue || "Wedding Venue";
-  const welcomeMessage =
-    weddingData?.welcomeMessage || "Welcome to our wedding celebration";
-  const dateValue = weddingData?.weddingDate
-    ? new Date(weddingData.weddingDate)
-    : new Date();
+  const welcomeMessage = weddingData?.welcomeMessage || "Welcome to our wedding celebration";
+  const dateValue = weddingData?.weddingDate ? new Date(weddingData.weddingDate) : new Date();
 
   const formattedDate = dateValue.toLocaleDateString("en-US", {
     month: "long",
@@ -55,10 +52,7 @@ export default function RusticHero({ weddingData }: { weddingData?: WeddingData 
           <div className="text-center pt-12">
             <div className="flex justify-center mb-8">
               <div className="relative p-6 bg-white/10 backdrop-blur-sm rounded-3xl border border-amber-300/30">
-                <Heart
-                  className="h-16 w-16 text-amber-100"
-                  fill="currentColor"
-                />
+                <Heart className="h-16 w-16 text-amber-100" fill="currentColor" />
                 <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-amber-500 to-brown-600 rounded-full animate-pulse"></div>
               </div>
             </div>

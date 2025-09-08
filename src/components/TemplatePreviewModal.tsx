@@ -64,6 +64,11 @@ const TemplatePreviewModal = ({
 
         const data = await res.json();
         console.log("TemplatePreviewModal fetched:", { url, data });
+        console.log("TemplatePreviewModal - template data:", data.template);
+        console.log("TemplatePreviewModal - previewData:", data.previewData);
+        console.log("TemplatePreviewModal - userTemplate prop:", userTemplate);
+        console.log("TemplatePreviewModal - userData:", data.userData);
+        console.log("TemplatePreviewModal - userTemplate from API:", data.userTemplate);
         setPreviewData(data);
       } catch (error) {
         console.error("Error fetching preview data:", error);
@@ -74,7 +79,7 @@ const TemplatePreviewModal = ({
     };
 
     fetchData();
-  }, [isOpen, isSelect, template.id]);
+  }, [isOpen, isSelect, template.id, userTemplate?.id]);
 
   const handleSelectTemplate = async () => {
     setIsSelecting(true);
@@ -152,13 +157,16 @@ const TemplatePreviewModal = ({
   const fallbackTemplate = previewData?.template ||
     userTemplate?.template || { ...template, sections: template.sections || [] };
 
-  const fallbackUserData =
-    previewData?.userData ||
-    previewData?.previewData ||
-    userTemplate?.content ||
-    extractUserDataFromWeddingPage(weddingPage) ||
-    template.previewData ||
-    {};
+  // For customize mode, use the userData directly from API (contains sections)
+  // For preview mode, use static preview data
+  const fallbackUserData = isSelect
+    ? previewData?.userData || // From API wedding-data - contains sections
+      extractUserDataFromWeddingPage(weddingPage) ||
+      template.previewData ||
+      {}
+    : previewData?.previewData || // For preview mode - static data
+      template.previewData ||
+      {};
 
   // ✅ Corrected renderer logic
   const rendererData = isSelect
@@ -172,6 +180,16 @@ const TemplatePreviewModal = ({
         template: fallbackTemplate,
         userData: previewData?.previewData || template.previewData || {},
       };
+
+  // Debug logging for customize mode
+  if (isSelect) {
+    console.log("TemplatePreviewModal - Customize mode data:", {
+      previewData,
+      fallbackUserData,
+      rendererData,
+      sections: fallbackUserData?.sections,
+    });
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-[95vw]">
@@ -239,7 +257,7 @@ const TemplatePreviewModal = ({
                 whileTap={{ scale: isSelecting || isAnotherTemplateSelected ? 1 : 0.98 }}
                 onClick={handleSelectTemplate}
                 disabled={isSelecting || isAnotherTemplateSelected}
-                className={`w-full text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors hidden ${
+                className={`w-full text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors ${
                   isSelecting || isAnotherTemplateSelected
                     ? "bg-indigo-400 text-white cursor-not-allowed opacity-70"
                     : "bg-indigo-600 hover:bg-indigo-700 text-white"
@@ -249,7 +267,7 @@ const TemplatePreviewModal = ({
               </motion.button>
 
               {isAnotherTemplateSelected && (
-                <p className="mt-2 text-xs text-slate-400 px-5 py-5">
+                <p className="mt-2 text-xs font-bold text-slate-900 px-5 py-5">
                   You already have a selected template. Delete it first to choose a different
                   template.
                 </p>

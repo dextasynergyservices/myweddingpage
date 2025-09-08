@@ -48,7 +48,8 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
-      url: result.secure_url,
+      secure_url: result.secure_url,
+      url: result.secure_url, // For backward compatibility
       publicId: result.public_id,
       width: result.width,
       height: result.height,

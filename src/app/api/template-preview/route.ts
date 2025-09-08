@@ -33,12 +33,18 @@ export async function GET(req: Request) {
     }
 
     return NextResponse.json({
-      id: template.id,
-      name: template.name,
-      description: template.description,
-      thumbnail: template.thumbnail,
-      sections: template.sections,
-      data: weddingPage || {
+      template: {
+        id: template.id,
+        name: template.name,
+        description: template.description,
+        thumbnail: template.thumbnail,
+        sections: template.sections,
+        layout_data: template.layout_data,
+        components: template.components,
+        colorSchemes: template.colorSchemes,
+        previewData: template.previewData,
+      },
+      previewData: {
         brideName: "Bride",
         groomName: "Groom",
         weddingDate: new Date().toISOString(),

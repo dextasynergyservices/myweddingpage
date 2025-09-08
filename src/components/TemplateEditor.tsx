@@ -18,7 +18,7 @@ export default function TemplateEditor({
   userPlan,
   userData,
   onSave,
-  onBack
+  onBack,
 }: TemplateEditorProps) {
   const [selectedColorScheme, setSelectedColorScheme] = useState<ColorScheme | null>(null);
   const [customContent, setCustomContent] = useState<Record<string, any>>({});
@@ -33,9 +33,9 @@ export default function TemplateEditor({
   }, [template]);
 
   const handleContentUpdate = (componentId: string, content: any) => {
-    setCustomContent(prev => ({
+    setCustomContent((prev) => ({
       ...prev,
-      [componentId]: content
+      [componentId]: content,
     }));
   };
 
@@ -61,10 +61,7 @@ export default function TemplateEditor({
       <div className="editor-header bg-white p-4 border-b shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200"
-            >
+            <button onClick={onBack} className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200">
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
@@ -143,9 +140,9 @@ export default function TemplateEditor({
               ...comp,
               content: {
                 ...comp.content,
-                ...(customContent[comp.id] || {})
-              }
-            }))
+                ...(customContent[comp.id] || {}),
+              },
+            })),
           }}
           userPlan={userPlan}
           userData={userData}

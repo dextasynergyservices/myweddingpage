@@ -67,12 +67,29 @@ export async function GET(req: Request) {
 
     const userData = {
       // Prefer explicit user fields, then AI/page data, then userTemplate content, then sensible defaults
-      brideName: user.brideName || wpAi?.brideName || wpAi?.bride_name || utContent?.brideName || utContent?.bride_name || "Bride",
-      groomName: user.groomName || wpAi?.groomName || wpAi?.groom_name || utContent?.groomName || utContent?.groom_name || "Groom",
+      brideName:
+        user.brideName ||
+        wpAi?.brideName ||
+        wpAi?.bride_name ||
+        utContent?.brideName ||
+        utContent?.bride_name ||
+        "Bride",
+      groomName:
+        user.groomName ||
+        wpAi?.groomName ||
+        wpAi?.groom_name ||
+        utContent?.groomName ||
+        utContent?.groom_name ||
+        "Groom",
       weddingDate:
-        (user.weddingDate && user.weddingDate.toISOString()) || wpAi?.weddingDate || wpAi?.wedding_date || utContent?.weddingDate || null,
+        (user.weddingDate && user.weddingDate.toISOString()) ||
+        wpAi?.weddingDate ||
+        wpAi?.wedding_date ||
+        utContent?.weddingDate ||
+        null,
       venue: weddingPage?.venue || wpAi?.venue || utContent?.venue || null,
-      welcomeMessage: weddingPage?.welcomeMessage || wpAi?.welcomeMessage || utContent?.welcomeMessage || null,
+      welcomeMessage:
+        weddingPage?.welcomeMessage || wpAi?.welcomeMessage || utContent?.welcomeMessage || null,
       // expose raw objects for templates that expect different shapes
       _raw: {
         user: user,
@@ -87,14 +104,25 @@ export async function GET(req: Request) {
     const selectedPreviewData: any = (selectedTemplate as any)?.previewData ?? {};
 
     const ourStory = {
-      content: userData.welcomeMessage || selectedPreviewData?.welcomeMessage || "Our story will appear here...",
+      content:
+        userData.welcomeMessage ||
+        selectedPreviewData?.welcomeMessage ||
+        "Our story will appear here...",
       imageUrl:
-        (weddingPage as any)?.story_image || selectedPreviewData?.story_image || (selectedTemplate as any)?.hero_image || "/default-story.jpg",
+        (weddingPage as any)?.story_image ||
+        selectedPreviewData?.story_image ||
+        (selectedTemplate as any)?.hero_image ||
+        "/default-story.jpg",
     };
 
-    return NextResponse.json({
+    const responseData = {
       template: selectedTemplate,
-      userData,
+      userData: {
+        ...userData,
+        // Include full section content for dynamic rendering
+        sections: utContent,
+        userTemplate: selectedUserTemplate,
+      },
       ourStory,
       weddingPage,
       gallery: user.galleryMedias ?? [],
@@ -103,7 +131,16 @@ export async function GET(req: Request) {
       bankDetails: user.bankDetails ?? [],
       userTemplate: selectedUserTemplate ?? null,
       plan: user.plan ?? null,
+    };
+
+    // Debug logging
+    console.log("API wedding-data response:", {
+      utContent,
+      sections: utContent,
+      userData: responseData.userData,
     });
+
+    return NextResponse.json(responseData);
   } catch (error) {
     console.error("Error fetching wedding data:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
