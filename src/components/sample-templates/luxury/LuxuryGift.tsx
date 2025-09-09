@@ -73,8 +73,8 @@ export default function LuxuryGift(props: LuxuryGiftProps) {
             isDarkMode ? "text-slate-400" : "text-slate-600"
           }`}
         >
-          Your presence is the only present we need, but if you'd like to give a gift, here are some
-          ideas.
+          Your presence is the only present we need, but if you&apos;d like to give a gift, here are
+          some ideas.
         </p>
       </div>
 

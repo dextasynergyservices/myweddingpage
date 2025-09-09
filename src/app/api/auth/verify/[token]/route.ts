@@ -5,7 +5,6 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
   const { token } = await params;
 
   try {
-
     if (!token || typeof token !== "string") {
       return NextResponse.json({ error: "Token is required" }, { status: 400 });
     }

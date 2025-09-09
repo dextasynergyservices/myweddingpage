@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
-import { X, Check } from "lucide-react";
+import { X } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
@@ -35,7 +35,7 @@ const TemplatePreviewModal = ({
 }: TemplatePreviewModalProps) => {
   const { isDarkMode } = useTheme();
   const [isSelecting, setIsSelecting] = useState(false);
-  const [previewData, setPreviewData] = useState<any>(null);
+  const [previewData, setPreviewData] = useState<Record<string, unknown> | null>(null);
   const [loadingData, setLoadingData] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -79,7 +79,7 @@ const TemplatePreviewModal = ({
     };
 
     fetchData();
-  }, [isOpen, isSelect, template.id, userTemplate?.id]);
+  }, [isOpen, isSelect, template.id, userTemplate?.id, userTemplate]);
 
   const handleSelectTemplate = async () => {
     setIsSelecting(true);
@@ -103,7 +103,7 @@ const TemplatePreviewModal = ({
       if (onSelectTemplate) onSelectTemplate(userTemplateData as UserTemplate);
 
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error selecting template:", error);
       toast.error(error?.message || "Failed to select template");
     } finally {
@@ -129,10 +129,10 @@ const TemplatePreviewModal = ({
       toast.success("Template deleted successfully");
 
       // Notify parent to clear selection
-      if (onSelectTemplate) onSelectTemplate(undefined as any);
+      if (onSelectTemplate) onSelectTemplate(undefined);
 
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting template:", error);
       toast.error(error?.message || "Failed to delete template");
     } finally {
@@ -143,7 +143,13 @@ const TemplatePreviewModal = ({
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   // Extract basic data from wedding page if needed
-  const extractUserDataFromWeddingPage = (wp: any) => {
+  const extractUserDataFromWeddingPage = (wp: {
+    brideName?: string;
+    groomName?: string;
+    weddingDate?: string;
+    venue?: string;
+    welcomeMessage?: string;
+  }) => {
     if (!wp) return undefined;
     const ai = wp.ai_data || wp.layout_data || {};
     return {

@@ -9,7 +9,7 @@ interface TemplateSection {
   id: string;
   type: SectionType;
   layout: string;
-  components: any;
+  components: Record<string, unknown>;
   order: number;
 }
 
@@ -24,29 +24,29 @@ interface Props {
     name: string;
     maxComponents: number;
   };
-  userData: Record<string, any>;
+  userData: Record<string, unknown>;
   colorScheme?: ColorScheme;
-  onContentUpdate?: (sectionId: string, content: any) => void;
+  onContentUpdate?: (sectionId: string, content: Record<string, unknown>) => void;
   editable?: boolean;
   isPreview?: boolean;
   editedSections?: string[]; // Track which sections have been edited
 }
 
 // Optimized function to replace placeholders in content
-function replacePlaceholders(obj: any, userData: any): any {
+function replacePlaceholders(obj: unknown, userData: Record<string, unknown>): unknown {
   // Pre-compute replacement values
   const replacements = {
-    '{brideName}': userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
-    '{bride_name}': userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
-    '{bride}': userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
-    '{groomName}': userData?.groomName || userData?.groom_name || userData?.groom || "Groom",
-    '{groom_name}': userData?.groomName || userData?.groom_name || userData?.groom || "Groom",
-    '{groom}': userData?.groomName || userData?.groom_name || userData?.groom || "Groom",
-    '{weddingDate}': userData?.weddingDate || userData?.wedding_date || userData?.date || "Date",
-    '{wedding_date}': userData?.weddingDate || userData?.wedding_date || userData?.date || "Date",
-    '{date}': userData?.weddingDate || userData?.wedding_date || userData?.date || "Date",
-    '{venue}': userData?.venue || userData?.location || userData?.place || "Venue",
-    '{location}': userData?.venue || userData?.location || userData?.place || "Venue",
+    "{brideName}": userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
+    "{bride_name}": userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
+    "{bride}": userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
+    "{groomName}": userData?.groomName || userData?.groom_name || userData?.groom || "Groom",
+    "{groom_name}": userData?.groomName || userData?.groom_name || userData?.groom || "Groom",
+    "{groom}": userData?.groomName || userData?.groom_name || userData?.groom || "Groom",
+    "{weddingDate}": userData?.weddingDate || userData?.wedding_date || userData?.date || "Date",
+    "{wedding_date}": userData?.weddingDate || userData?.wedding_date || userData?.date || "Date",
+    "{date}": userData?.weddingDate || userData?.wedding_date || userData?.date || "Date",
+    "{venue}": userData?.venue || userData?.location || userData?.place || "Venue",
+    "{location}": userData?.venue || userData?.location || userData?.place || "Venue",
   };
 
   if (typeof obj === "string") {
@@ -58,7 +58,7 @@ function replacePlaceholders(obj: any, userData: any): any {
   } else if (Array.isArray(obj)) {
     return obj.map((item) => replacePlaceholders(item, userData));
   } else if (typeof obj === "object" && obj !== null) {
-    const result: any = {};
+    const result: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(obj)) {
       result[key] = replacePlaceholders(value, userData);
     }
@@ -82,15 +82,28 @@ const DynamicTemplateRendererComponent = ({
   const [localEditedSections, setLocalEditedSections] = useState<string[]>(editedSections);
 
   // Memoize normalized userData to prevent unnecessary recalculations
-  const normalizedUserData = useMemo(() => ({
-    brideName: userData?.brideName || userData?.bride_name || userData?.bride || "",
-    groomName: userData?.groomName || userData?.groom_name || userData?.groom || "",
-    weddingDate: userData?.weddingDate || userData?.wedding_date || userData?.date || "",
-    venue: userData?.venue || userData?.location || userData?.place || "",
-  }), [userData?.brideName, userData?.bride_name, userData?.bride,
-         userData?.groomName, userData?.groom_name, userData?.groom,
-         userData?.weddingDate, userData?.wedding_date, userData?.date,
-         userData?.venue, userData?.location, userData?.place]);
+  const normalizedUserData = useMemo(
+    () => ({
+      brideName: userData?.brideName || userData?.bride_name || userData?.bride || "",
+      groomName: userData?.groomName || userData?.groom_name || userData?.groom || "",
+      weddingDate: userData?.weddingDate || userData?.wedding_date || userData?.date || "",
+      venue: userData?.venue || userData?.location || userData?.place || "",
+    }),
+    [
+      userData?.brideName,
+      userData?.bride_name,
+      userData?.bride,
+      userData?.groomName,
+      userData?.groom_name,
+      userData?.groom,
+      userData?.weddingDate,
+      userData?.wedding_date,
+      userData?.date,
+      userData?.venue,
+      userData?.location,
+      userData?.place,
+    ]
+  );
 
   // Debug logging (only in development)
   if (process.env.NODE_ENV === "development") {
@@ -119,19 +132,22 @@ const DynamicTemplateRendererComponent = ({
   // Enforce component limit based on plan
   const sectionsToRender = processedSections.slice(0, userPlan.maxComponents);
 
-  const handleContentUpdate = useCallback((sectionId: string, content: any) => {
-    if (onContentUpdate) {
-      onContentUpdate(sectionId, content);
-    }
-
-    // Mark section as edited
-    setLocalEditedSections(prev => {
-      if (!prev.includes(sectionId)) {
-        return [...prev, sectionId];
+  const handleContentUpdate = useCallback(
+    (sectionId: string, content: Record<string, unknown>) => {
+      if (onContentUpdate) {
+        onContentUpdate(sectionId, content);
       }
-      return prev;
-    });
-  }, [onContentUpdate]);
+
+      // Mark section as edited
+      setLocalEditedSections((prev) => {
+        if (!prev.includes(sectionId)) {
+          return [...prev, sectionId];
+        }
+        return prev;
+      });
+    },
+    [onContentUpdate]
+  );
 
   return (
     <div className="space-y-8 relative">
@@ -147,7 +163,7 @@ const DynamicTemplateRendererComponent = ({
 
         if (!Component) {
           if (process.env.NODE_ENV === "development") {
-          console.warn(`Component layout ${section.layout} not found in componentMap`);
+            console.warn(`Component layout ${section.layout} not found in componentMap`);
           }
           return null;
         }
@@ -170,7 +186,9 @@ const DynamicTemplateRendererComponent = ({
               userPlan={userPlan}
               theme={colorScheme}
               editable={editable && !isPreview}
-              onContentUpdate={(newContent: any) => handleContentUpdate(section.id, newContent)}
+              onContentUpdate={(newContent: Record<string, unknown>) =>
+                handleContentUpdate(section.id, newContent)
+              }
               // Pass additional data from userData for Gallery, Gift, and Guest components
               gallery={userData?.gallery}
               gifts={userData?.gifts}

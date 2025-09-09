@@ -18,7 +18,11 @@ export type Template = {
   thumbnail: string;
   layout_data: Record<string, unknown>;
   category: TemplateCategory;
-  components: any[];
+  components: Array<{
+    id: string;
+    type: string;
+    content: Record<string, unknown>;
+  }>;
   colorSchemes: Array<{
     name: string;
     primary: string;
@@ -88,8 +92,8 @@ export interface UserTemplate {
   userId: string;
   templateId: string;
   template: Template;
-  colorScheme: any;
-  content: any;
+  colorScheme: Record<string, unknown>;
+  content: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
 }

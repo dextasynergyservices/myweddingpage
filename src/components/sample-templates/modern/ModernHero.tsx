@@ -24,7 +24,7 @@ interface ModernHeroProps {
 }
 
 export default function ModernHero(props: ModernHeroProps) {
-  const { isDarkMode } = useTheme();
+  const {} = useTheme();
 
   // Extract data from props (prioritize direct props over weddingData object)
   const brideName = props.brideName || props.weddingData?.brideName || "Bride";

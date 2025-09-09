@@ -52,7 +52,7 @@ export type ComponentType = keyof typeof componentMap;
 
 export interface ComponentConfig {
   type: ComponentType;
-  content: Record<string, any>;
+  content: Record<string, unknown>;
   styles?: Record<string, string>;
 }
 

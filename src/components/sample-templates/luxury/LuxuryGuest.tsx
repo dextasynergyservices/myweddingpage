@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Send } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -28,13 +28,15 @@ export default function LuxuryGuest(props: LuxuryGuestProps) {
   const [newMessage, setNewMessage] = useState("");
   const [guestName, setGuestName] = useState("");
   const [sending, setSending] = useState(false);
-  const [loadingComments, setLoadingComments] = useState(false);
 
   const slug = params.slug as string;
 
-  const initialMessages = props.initialComments || props.guests || props.guestMessages || [];
+  const initialMessages = useMemo(
+    () => props.initialComments || props.guests || props.guestMessages || [],
+    [props.initialComments, props.guests, props.guestMessages]
+  );
 
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     if (!slug) return;
 
     setLoadingComments(true);
@@ -57,7 +59,7 @@ export default function LuxuryGuest(props: LuxuryGuestProps) {
     } finally {
       setLoadingComments(false);
     }
-  };
+  }, [slug, initialMessages]);
 
   useEffect(() => {
     if (initialMessages && initialMessages.length > 0) {
@@ -65,7 +67,7 @@ export default function LuxuryGuest(props: LuxuryGuestProps) {
     } else {
       fetchComments();
     }
-  }, [props.initialComments, slug]);
+  }, [initialMessages, fetchComments]);
 
   const handleSendMessage = async () => {
     if (!guestName.trim() || !newMessage.trim()) {
@@ -98,7 +100,7 @@ export default function LuxuryGuest(props: LuxuryGuestProps) {
       let responseData;
       try {
         responseData = JSON.parse(responseText);
-      } catch (e) {
+      } catch {
         console.error("Non-JSON response:", responseText.substring(0, 200));
         throw new Error("Server returned an error page");
       }

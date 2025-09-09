@@ -11,10 +11,26 @@ import { Template, UserPlan } from "@/types/wedding";
 
 interface TemplateSelectionProps {
   // Called when a template has been selected and persisted on the server.
-  onUserTemplateSelected?: (userTemplate: any) => void;
+  onUserTemplateSelected?: (
+    userTemplate: {
+      id: string;
+      templateId: string;
+      template: Template;
+      content: Record<string, unknown>;
+      colorScheme: Record<string, unknown>;
+    } | null
+  ) => void;
   userPlan: UserPlan | null;
   // Current user template (if any) so we can render selected/disabled states
-  userTemplate?: any;
+  userTemplate?:
+    | {
+        id: string;
+        templateId: string;
+        template: Template;
+        content: Record<string, unknown>;
+        colorScheme: Record<string, unknown>;
+      }
+    | undefined;
 }
 
 const TemplateSelection = ({
@@ -322,7 +338,7 @@ const TemplateSelection = ({
           }
 
           if (typeof onUserTemplateSelected === "function") {
-            onUserTemplateSelected(undefined as any);
+            onUserTemplateSelected(null);
           }
         }}
       />

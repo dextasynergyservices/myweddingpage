@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Menu, X, Heart, Home, Users, Camera, Gift, MessageCircle } from "lucide-react";
+import { Menu, X, Heart, Home, Camera, Gift, MessageCircle } from "lucide-react";
 
 interface WeddingPageHeaderProps {
   brideName?: string;

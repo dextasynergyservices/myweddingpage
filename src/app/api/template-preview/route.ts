@@ -25,9 +25,8 @@ export async function GET(req: Request) {
     }
 
     // Try to fetch user's wedding page for this template
-    let weddingPage = null;
     if (userId) {
-      weddingPage = await prisma.weddingPage.findFirst({
+      await prisma.weddingPage.findFirst({
         where: { userId, templateId },
       });
     }

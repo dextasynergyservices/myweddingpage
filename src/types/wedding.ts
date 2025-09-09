@@ -12,7 +12,7 @@ export interface ComponentContent {
   welcomeMessage?: string;
   brideName?: string;
   groomName?: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | string[] | undefined;
 }
 
 export interface TemplateComponent {
@@ -37,22 +37,28 @@ export interface Template {
   thumbnail: string;
   category: TemplateCategory;
   components: TemplateComponent[];
-  colorSchemes: any[];
-  layout_data: any;
+  colorSchemes: Array<{
+    name: string;
+    primary: string;
+    secondary: string;
+    background: string;
+    text: string;
+  }>;
+  layout_data: Record<string, unknown>;
   isActive: boolean;
   created_at: string;
   sections: Array<{
     id: string;
     type: SectionType;
     layout: string;
-    components: any;
+    components: Record<string, unknown>;
     order: number;
   }>;
   categoryId: string;
   hero_image: string | null;
   story_image: string | null;
   story_text: string | null;
-  previewData?: Record<string, any>;
+  previewData?: Record<string, unknown>;
 }
 
 export interface UserPlan {
@@ -70,8 +76,8 @@ export interface UserTemplate {
   id: string;
   userId: string;
   templateId: string;
-  colorScheme: any;
-  content: Record<string, any>;
+  colorScheme: Record<string, unknown>;
+  content: Record<string, unknown>;
   isSelected: boolean;
   createdAt: string;
   updatedAt: string;
@@ -84,7 +90,7 @@ export interface WeddingPage {
   templateId: string;
   title: string;
   slug: string;
-  ai_data?: any;
+  ai_data?: Record<string, unknown>;
   layout_data?: { components: TemplateComponent[] };
   color_theme?: string;
   hero_image?: string;

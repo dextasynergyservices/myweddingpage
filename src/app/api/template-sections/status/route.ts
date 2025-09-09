@@ -46,7 +46,7 @@ export async function GET(req: Request) {
     }
 
     const template = userTemplate.template;
-    const userContent = (userTemplate.content as any) || {};
+    const userContent = (userTemplate.content as Record<string, unknown>) || {};
 
     // Check completion status for each section
     const sectionStatus = template.sections.map((section) => {

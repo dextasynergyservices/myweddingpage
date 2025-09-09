@@ -62,8 +62,11 @@ export async function GET(req: Request) {
 
     // Merge data from several possible sources: user fields, wedding page ai/layout data,
     // and user template content. This gives the renderer many avenues to find bride/groom/date/etc.
-    const wpAi = (weddingPage?.ai_data as any) ?? (weddingPage?.layout_data as any) ?? {};
-    const utContent = (selectedUserTemplate?.content as any) ?? {};
+    const wpAi =
+      (weddingPage?.ai_data as Record<string, unknown>) ??
+      (weddingPage?.layout_data as Record<string, unknown>) ??
+      {};
+    const utContent = (selectedUserTemplate?.content as Record<string, unknown>) ?? {};
 
     const userData = {
       // Prefer explicit user fields, then AI/page data, then userTemplate content, then sensible defaults
@@ -98,10 +101,11 @@ export async function GET(req: Request) {
         wpAi,
         utContent,
       },
-    } as any;
+    } as Record<string, unknown>;
 
     // safe-access previewData which can be Json
-    const selectedPreviewData: any = (selectedTemplate as any)?.previewData ?? {};
+    const selectedPreviewData: Record<string, unknown> =
+      (selectedTemplate as { previewData?: Record<string, unknown> })?.previewData ?? {};
 
     const ourStory = {
       content:
@@ -109,9 +113,9 @@ export async function GET(req: Request) {
         selectedPreviewData?.welcomeMessage ||
         "Our story will appear here...",
       imageUrl:
-        (weddingPage as any)?.story_image ||
+        (weddingPage as { story_image?: string })?.story_image ||
         selectedPreviewData?.story_image ||
-        (selectedTemplate as any)?.hero_image ||
+        (selectedTemplate as { hero_image?: string })?.hero_image ||
         "/default-story.jpg",
     };
 

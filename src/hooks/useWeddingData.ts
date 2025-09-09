@@ -49,9 +49,9 @@ export function useWeddingData() {
         }
 
         setData(result);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error fetching wedding data:", err);
-        setError(err.message || "Failed to load wedding data");
+        setError((err as Error).message || "Failed to load wedding data");
       } finally {
         setLoading(false);
       }

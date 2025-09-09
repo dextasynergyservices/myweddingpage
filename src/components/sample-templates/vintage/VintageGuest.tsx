@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Send } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -30,7 +30,7 @@ export default function VintageGuest(props: VintageGuestProps) {
   const slug = params.slug as string;
 
   // Fetch approved comments
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     if (!slug) return;
 
     setLoadingComments(true);
@@ -56,7 +56,7 @@ export default function VintageGuest(props: VintageGuestProps) {
     } finally {
       setLoadingComments(false);
     }
-  };
+  }, [slug, props.initialComments]);
 
   // Initialize comments
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function VintageGuest(props: VintageGuestProps) {
       // If no initial comments provided, fetch them
       fetchComments();
     }
-  }, [props.initialComments, slug]);
+  }, [props.initialComments, slug, fetchComments]);
 
   const handleSendMessage = async () => {
     if (!guestName.trim() || !newMessage.trim()) {
@@ -100,7 +100,7 @@ export default function VintageGuest(props: VintageGuestProps) {
       let responseData;
       try {
         responseData = JSON.parse(responseText);
-      } catch (e) {
+      } catch {
         console.error("Non-JSON response:", responseText.substring(0, 200));
         throw new Error("Server returned an error page");
       }

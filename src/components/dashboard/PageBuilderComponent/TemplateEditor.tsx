@@ -6,7 +6,6 @@ import { useTheme } from "@/contexts/ThemeContext";
 import {
   Eye,
   Save,
-  ExternalLink,
   Download,
   Edit,
   Heart,
@@ -33,7 +32,7 @@ interface TemplateEditorProps {
   weddingPage: WeddingPage | null;
   userPlan: UserPlan | null;
   onTemplateUpdate: (template: Template) => void;
-  onContentUpdate: (sectionId: string, content: any) => void;
+  onContentUpdate: (sectionId: string, content: Record<string, unknown>) => void;
   editedSections: string[];
   onWeddingPageUpdate?: (weddingPage: WeddingPage | null) => void;
   onUserTemplateUpdate?: (userTemplate: UserTemplate | null) => void;
@@ -44,15 +43,14 @@ const TemplateEditor = ({
   selectedTemplate,
   weddingPage,
   userPlan,
-  onTemplateUpdate,
   onContentUpdate,
   editedSections = [],
   onWeddingPageUpdate,
   onUserTemplateUpdate,
 }: TemplateEditorProps) => {
   const { isDarkMode } = useTheme();
-  const [selectedSection, setSelectedSection] = useState<any>(null);
-  const [selectedColorScheme, setSelectedColorScheme] = useState<any>(null);
+  const [selectedSection, setSelectedSection] = useState<{ id: string; type: string } | null>(null);
+  const [selectedColorScheme] = useState<Record<string, unknown> | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -60,7 +58,9 @@ const TemplateEditor = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSlugModal, setShowSlugModal] = useState(false);
   const [slug, setSlug] = useState("");
-  const [sectionStatus, setSectionStatus] = useState<any[]>([]);
+  const [sectionStatus, setSectionStatus] = useState<
+    Array<{ sectionId: string; type: string; isComplete: boolean; hasContent: boolean }>
+  >([]);
   const [deleteConfirmation, setDeleteConfirmation] = useState({
     brideName: "",
     groomName: "",
@@ -230,7 +230,7 @@ const TemplateEditor = ({
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to publish template");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error publishing template:", error);
       toast.error(error.message || "Failed to publish wedding page");
     } finally {
@@ -268,7 +268,7 @@ const TemplateEditor = ({
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to delete wedding page");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting wedding page:", error);
       toast.error(error.message || "Failed to delete wedding page");
     } finally {
@@ -276,7 +276,7 @@ const TemplateEditor = ({
     }
   };
 
-  const openEditModal = (section: any) => {
+  const openEditModal = (section: { id: string; type: string }) => {
     // Only allow editing for hero and story sections
     if (!section.type.includes("HERO") && !section.type.includes("STORY")) {
       return;
@@ -286,11 +286,15 @@ const TemplateEditor = ({
     setShowEditModal(true);
   };
 
-  const handleSectionContentUpdate = (sectionId: string, content: any) => {
+  const handleSectionContentUpdate = (sectionId: string, content: Record<string, unknown>) => {
     onContentUpdate(sectionId, content);
   };
 
-  const renderSectionContent = (section: any) => {
+  const renderSectionContent = (section: {
+    id: string;
+    type: string;
+    components: Record<string, unknown>;
+  }) => {
     const content = userTemplate?.content?.[section.id] || section.components || {};
 
     switch (section.type) {
@@ -330,7 +334,7 @@ const TemplateEditor = ({
           <div>
             <h2 className="text-xl md:text-2xl font-semibold mb-2">Photo Gallery</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {(content.images || [1, 2, 3]).map((img: any, i: number) =>
+              {((content.images as string[]) || [1, 2, 3]).map((img: string | number, i: number) =>
                 typeof img === "string" ? (
                   <div key={i} className="aspect-square relative bg-gray-200 rounded">
                     <div className="absolute inset-0 flex items-center justify-center text-gray-500">
@@ -738,7 +742,7 @@ const TemplateEditor = ({
                 <label
                   className={`block text-sm mb-1 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
                 >
-                  Enter Bride's Name to Confirm
+                  Enter Bride&apos;s Name to Confirm
                 </label>
                 <input
                   type="text"
@@ -758,7 +762,7 @@ const TemplateEditor = ({
                 <label
                   className={`block text-sm mb-1 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
                 >
-                  Enter Groom's Name to Confirm
+                  Enter Groom&apos;s Name to Confirm
                 </label>
                 <input
                   type="text"

@@ -2,14 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { DynamicTemplateRenderer } from "./DynamicTemplateRenderer";
-import { Save, Palette, Edit3, ArrowLeft } from "lucide-react";
+import { Save, Palette, ArrowLeft } from "lucide-react";
 import { ColorScheme } from "@/lib/component-registry";
 
 interface TemplateEditorProps {
-  template: any;
-  userPlan: any;
-  userData: any;
-  onSave: (content: any, colorScheme: ColorScheme) => Promise<void>;
+  template: {
+    id: string;
+    name: string;
+    sections: Array<{ id: string; type: string; components: Record<string, unknown> }>;
+    colorSchemes: ColorScheme[];
+  };
+  userPlan: { id: string; name: string; maxComponents: number };
+  userData: Record<string, unknown>;
+  onSave: (content: Record<string, unknown>, colorScheme: ColorScheme) => Promise<void>;
   onBack: () => void;
 }
 
@@ -21,7 +26,7 @@ export default function TemplateEditor({
   onBack,
 }: TemplateEditorProps) {
   const [selectedColorScheme, setSelectedColorScheme] = useState<ColorScheme | null>(null);
-  const [customContent, setCustomContent] = useState<Record<string, any>>({});
+  const [customContent, setCustomContent] = useState<Record<string, unknown>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
 
@@ -32,7 +37,7 @@ export default function TemplateEditor({
     }
   }, [template]);
 
-  const handleContentUpdate = (componentId: string, content: any) => {
+  const handleContentUpdate = (componentId: string, content: Record<string, unknown>) => {
     setCustomContent((prev) => ({
       ...prev,
       [componentId]: content,
@@ -136,13 +141,15 @@ export default function TemplateEditor({
         <DynamicTemplateRenderer
           template={{
             ...template,
-            components: template.components.map((comp: any) => ({
-              ...comp,
-              content: {
-                ...comp.content,
-                ...(customContent[comp.id] || {}),
-              },
-            })),
+            components: template.components.map(
+              (comp: { id: string; content: Record<string, unknown> }) => ({
+                ...comp,
+                content: {
+                  ...comp.content,
+                  ...(customContent[comp.id] || {}),
+                },
+              })
+            ),
           }}
           userPlan={userPlan}
           userData={userData}

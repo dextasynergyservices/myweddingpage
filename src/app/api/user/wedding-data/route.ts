@@ -84,12 +84,13 @@ export async function GET(req: Request) {
     const ourStory = {
       content:
         livePage?.welcomeMessage ||
-        (selectedTemplate as any)?.previewData?.welcomeMessage ||
+        (selectedTemplate as { previewData?: { welcomeMessage?: string } })?.previewData
+          ?.welcomeMessage ||
         "Our story will appear here...",
       imageUrl:
         livePage?.story_image ||
-        (selectedTemplate as any)?.story_image ||
-        (selectedTemplate as any)?.hero_image ||
+        (selectedTemplate as { story_image?: string })?.story_image ||
+        (selectedTemplate as { hero_image?: string })?.hero_image ||
         "/default-story.jpg",
     };
 

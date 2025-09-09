@@ -50,7 +50,7 @@ export async function PUT(req: Request) {
     }
 
     // Update the specific section content
-    const currentContent = (userTemplate.content as any) || {};
+    const currentContent = (userTemplate.content as Record<string, unknown>) || {};
     const updatedContent = {
       ...currentContent,
       [sectionId]: {
@@ -139,7 +139,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Section not found" }, { status: 404 });
     }
 
-    const sectionContent = (userTemplate.content as any)?.[sectionId] || {};
+    const sectionContent = (userTemplate.content as Record<string, unknown>)?.[sectionId] || {};
 
     return NextResponse.json({
       section,

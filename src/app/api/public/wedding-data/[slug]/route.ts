@@ -62,8 +62,8 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
     }
 
     // Merge data from several sources (same logic as /api/wedding-data)
-    const wpAi = (weddingPage.ai_data as any) ?? (weddingPage.layout_data as any) ?? {};
-    const utContent = (selectedUserTemplate?.content as any) ?? {};
+    const wpAi = (weddingPage.ai_data as Record<string, unknown>) ?? (weddingPage.layout_data as Record<string, unknown>) ?? {};
+    const utContent = (selectedUserTemplate?.content as Record<string, unknown>) ?? {};
 
     // Create userData object with all the data needed for rendering
     const userData = {
@@ -106,7 +106,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
         userData.welcomeMessage ||
         "Our story will appear here...",
       imageUrl:
-        (weddingPage as any)?.story_image ||
+        (weddingPage as { story_image?: string })?.story_image ||
         "/default-story.jpg",
     };
 

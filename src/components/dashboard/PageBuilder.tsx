@@ -1,27 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
-import Image from "next/image";
-import {
-  Eye,
-  Save,
-  Download,
-  X,
-  Search,
-  CheckCircle,
-  Layout,
-  Image as ImageIcon,
-  Users,
-  FileText,
-  Gift,
-  Heart,
-  Calendar,
-  MapPin,
-} from "lucide-react";
-import Modal from "@/components/ui/Modal";
-import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
 import TemplatePreviewModal from "@/components/TemplatePreviewModal";
 import TemplateSelection from "@/components/dashboard/PageBuilderComponent/TemplateFetch";
 import TemplateEditor from "@/components/dashboard/PageBuilderComponent/TemplateEditor";
@@ -30,17 +10,13 @@ import { Template, UserTemplate, UserPlan, WeddingPage } from "@/types/wedding";
 const WeddingPageBuilder = () => {
   const { isDarkMode } = useTheme();
   const [isSelect, setIsSelect] = useState(false);
-  const [templates, setTemplates] = useState<Template[]>([]);
-  const [filteredTemplates, setFilteredTemplates] = useState<Template[]>([]);
+  const [, setTemplates] = useState<Template[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [userTemplate, setUserTemplate] = useState<UserTemplate | null>(null);
   const [weddingPage, setWeddingPage] = useState<WeddingPage | null>(null);
   const [userPlan, setUserPlan] = useState<UserPlan | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [searchTerm, setSearchTerm] = useState("");
   const [editedSections, setEditedSections] = useState<string[]>([]);
 
   // Fetch user data and templates
@@ -80,7 +56,6 @@ const WeddingPageBuilder = () => {
         if (templatesResponse.ok) {
           const templatesData = await templatesResponse.json();
           setTemplates(templatesData);
-          setFilteredTemplates(templatesData);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -92,35 +67,7 @@ const WeddingPageBuilder = () => {
     fetchUserData();
   }, []);
 
-  // Filter templates by category and search
-  useEffect(() => {
-    let filtered = templates;
-
-    if (activeCategory !== "all") {
-      filtered = filtered.filter((template) => template.category.name === activeCategory);
-    }
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (template) =>
-          template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          template.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredTemplates(filtered);
-  }, [activeCategory, searchTerm, templates]);
-
-  // Get unique categories from templates
-  const templateCategories = [
-    { id: "all", name: "All Templates" },
-    ...Array.from(new Set(templates.map((t) => t.category.name))).map((category) => ({
-      id: category,
-      name: category.charAt(0).toUpperCase() + category.slice(1),
-    })),
-  ];
-
-  const handleTemplateSelect = (userTemplateData: any) => {
+  const handleTemplateSelect = (userTemplateData: UserTemplate | null) => {
     // Accepts the server-returned UserTemplate (or undefined when deleted)
     if (!userTemplateData) {
       // template deleted: clear selection
@@ -135,7 +82,7 @@ const WeddingPageBuilder = () => {
     setIsSelect(true);
   };
 
-  const handleContentUpdate = async (sectionId: string, content: any) => {
+  const handleContentUpdate = async (sectionId: string, content: Record<string, unknown>) => {
     if (!userTemplate || !selectedTemplate) return;
 
     try {
@@ -168,45 +115,6 @@ const WeddingPageBuilder = () => {
     } catch (error) {
       console.error("Error saving template content:", error);
     }
-  };
-
-  const publishTemplate = async () => {
-    if (!selectedTemplate || !userTemplate) return;
-
-    setIsSaving(true);
-    try {
-      const templateName = userTemplate.template?.name ?? selectedTemplate.name;
-
-      const response = await fetch("/api/wedding-data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          templateId: selectedTemplate.id,
-          content: userTemplate.content,
-          colorScheme: userTemplate.colorScheme,
-          title: `${templateName} Wedding Page`,
-          slug: `${templateName.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
-        }),
-      });
-
-      if (response.ok) {
-        const weddingPageData = await response.json();
-        setWeddingPage(weddingPageData);
-        alert("Wedding page published successfully!");
-      } else {
-        throw new Error("Failed to publish template");
-      }
-    } catch (error) {
-      console.error("Error publishing template:", error);
-      alert("Failed to publish wedding page");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const switchToTemplateSelection = () => {
-    setIsSelect(true);
-    setSelectedTemplate(null);
   };
 
   if (isLoading) {

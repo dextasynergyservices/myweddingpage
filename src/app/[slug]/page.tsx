@@ -47,7 +47,7 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
           groomName={userData.groomName}
           weddingDate={userData.weddingDate}
           sections={
-            template.sections?.map((section: any) => ({
+            template.sections?.map((section: { id: string; type: string }) => ({
               id: section.id,
               type: section.type,
               title: section.type,

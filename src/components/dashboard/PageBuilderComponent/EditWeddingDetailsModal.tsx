@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
-import { X, Upload, User, Calendar, MapPin, FileText } from "lucide-react";
+import { X, Upload } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 interface EditWeddingDetailsModalProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ interface EditWeddingDetailsModalProps {
     type: string;
   };
   templateId: string;
-  onSave: (sectionId: string, content: any) => Promise<void>;
+  onSave: (sectionId: string, content: Record<string, unknown>) => Promise<void>;
   isSaving: boolean;
 }
 
@@ -37,8 +38,6 @@ const EditWeddingDetailsModal = ({
     heroImage: "",
     storyImage: "",
   });
-  const [heroImageFile, setHeroImageFile] = useState<File | null>(null);
-  const [storyImageFile, setStoryImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState({
     hero: "",
     story: "",
@@ -167,7 +166,7 @@ const EditWeddingDetailsModal = ({
 
       await onSave(section.id, content);
       toast.success("Section updated successfully!");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update section");
     }
   };
@@ -226,7 +225,7 @@ const EditWeddingDetailsModal = ({
                     <label
                       className={`block text-xs mb-1 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
                     >
-                      Groom's Name
+                      Groom&apos;s Name
                     </label>
                     <input
                       type="text"
@@ -244,7 +243,7 @@ const EditWeddingDetailsModal = ({
                     <label
                       className={`block text-xs mb-1 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
                     >
-                      Bride's Name
+                      Bride&apos;s Name
                     </label>
                     <input
                       type="text"
@@ -319,9 +318,11 @@ const EditWeddingDetailsModal = ({
                       Upload Hero Image
                     </label>
                     {imagePreview.hero && (
-                      <img
+                      <Image
                         src={imagePreview.hero}
                         alt="Hero preview"
+                        width={400}
+                        height={80}
                         className="w-full h-20 object-cover rounded"
                       />
                     )}
@@ -373,9 +374,11 @@ const EditWeddingDetailsModal = ({
                       Upload Story Image
                     </label>
                     {imagePreview.story && (
-                      <img
+                      <Image
                         src={imagePreview.story}
                         alt="Story preview"
+                        width={400}
+                        height={80}
                         className="w-full h-20 object-cover rounded"
                       />
                     )}

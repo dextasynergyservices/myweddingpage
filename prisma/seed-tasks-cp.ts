@@ -82,8 +82,14 @@ async function main() {
   );
 
   console.log("✅ Successfully seeded Task Categories and Priorities!");
-  console.log(`📁 Created ${taskCategories.length} Task Categories:`, taskCategories.map(c => c.name));
-  console.log(`📊 Created ${taskPriorities.length} Task Priorities:`, taskPriorities.map(p => `${p.name} (Level ${p.level})`));
+  console.log(
+    `📁 Created ${taskCategories.length} Task Categories:`,
+    taskCategories.map((c) => c.name)
+  );
+  console.log(
+    `📊 Created ${taskPriorities.length} Task Priorities:`,
+    taskPriorities.map((p) => `${p.name} (Level ${p.level})`)
+  );
 }
 
 main()
@@ -94,5 +100,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
-
