@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 export async function POST(req: NextRequest, { params }: { params: { token: string } }) {
+  const { token } = await params;
+
   try {
-    const token = params.token;
 
     if (!token || typeof token !== "string") {
       return NextResponse.json({ error: "Token is required" }, { status: 400 });

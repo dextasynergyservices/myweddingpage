@@ -12,7 +12,7 @@ type PageProps = {
 };
 
 export default async function WeddingPage({ params }: PageProps): Promise<JSX.Element> {
-  const slug = params.slug;
+  const { slug } = await params;
 
   try {
     // Fetch complete wedding data using our new API route

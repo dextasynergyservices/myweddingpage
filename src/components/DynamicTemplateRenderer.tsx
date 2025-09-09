@@ -3,7 +3,7 @@
 import { SectionType } from "@/generated/prisma";
 import { componentMap, ComponentType, ColorScheme } from "@/lib/component-registry";
 import { AlertTriangle, Eye, CheckCircle } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 
 interface TemplateSection {
   id: string;
@@ -32,39 +32,44 @@ interface Props {
   editedSections?: string[]; // Track which sections have been edited
 }
 
-// Recursive function to replace placeholders in content
+// Optimized function to replace placeholders in content
 function replacePlaceholders(obj: any, userData: any): any {
-  const b = userData?.brideName || userData?.bride_name || userData?.bride || "Bride";
-  const g = userData?.groomName || userData?.groom_name || userData?.groom || "Groom";
-  const d = userData?.weddingDate || userData?.wedding_date || userData?.date || "Date";
-  const v = userData?.venue || userData?.location || userData?.place || "Venue";
+  // Pre-compute replacement values
+  const replacements = {
+    '{brideName}': userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
+    '{bride_name}': userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
+    '{bride}': userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
+    '{groomName}': userData?.groomName || userData?.groom_name || userData?.groom || "Groom",
+    '{groom_name}': userData?.groomName || userData?.groom_name || userData?.groom || "Groom",
+    '{groom}': userData?.groomName || userData?.groom_name || userData?.groom || "Groom",
+    '{weddingDate}': userData?.weddingDate || userData?.wedding_date || userData?.date || "Date",
+    '{wedding_date}': userData?.weddingDate || userData?.wedding_date || userData?.date || "Date",
+    '{date}': userData?.weddingDate || userData?.wedding_date || userData?.date || "Date",
+    '{venue}': userData?.venue || userData?.location || userData?.place || "Venue",
+    '{location}': userData?.venue || userData?.location || userData?.place || "Venue",
+  };
 
   if (typeof obj === "string") {
-    return obj
-      .replace(/\{\s*brideName\s*\}/gi, b)
-      .replace(/\{\s*bride_name\s*\}/gi, b)
-      .replace(/\{\s*bride\s*\}/gi, b)
-      .replace(/\{\s*groomName\s*\}/gi, g)
-      .replace(/\{\s*groom_name\s*\}/gi, g)
-      .replace(/\{\s*groom\s*\}/gi, g)
-      .replace(/\{\s*weddingDate\s*\}/gi, d)
-      .replace(/\{\s*wedding_date\s*\}/gi, d)
-      .replace(/\{\s*date\s*\}/gi, d)
-      .replace(/\{\s*venue\s*\}/gi, v)
-      .replace(/\{\s*location\s*\}/gi, v);
+    // Single pass replacement for better performance
+    return Object.entries(replacements).reduce(
+      (str, [placeholder, value]) => str.replaceAll(placeholder, value),
+      obj
+    );
   } else if (Array.isArray(obj)) {
     return obj.map((item) => replacePlaceholders(item, userData));
   } else if (typeof obj === "object" && obj !== null) {
-    return Object.fromEntries(
-      Object.entries(obj).map(([key, value]) => [key, replacePlaceholders(value, userData)])
-    );
+    const result: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = replacePlaceholders(value, userData);
+    }
+    return result;
   }
 
   // Primitives (number, boolean, null)
   return obj;
 }
 
-export function DynamicTemplateRenderer({
+const DynamicTemplateRendererComponent = ({
   template,
   userPlan,
   userData,
@@ -73,72 +78,60 @@ export function DynamicTemplateRenderer({
   editable = false,
   isPreview = false,
   editedSections = [],
-}: Props) {
+}: Props) => {
   const [localEditedSections, setLocalEditedSections] = useState<string[]>(editedSections);
 
-  // Normalize userData to common keys to support multiple API shapes
-  const normalizedUserData = {
+  // Memoize normalized userData to prevent unnecessary recalculations
+  const normalizedUserData = useMemo(() => ({
     brideName: userData?.brideName || userData?.bride_name || userData?.bride || "",
     groomName: userData?.groomName || userData?.groom_name || userData?.groom || "",
     weddingDate: userData?.weddingDate || userData?.wedding_date || userData?.date || "",
     venue: userData?.venue || userData?.location || userData?.place || "",
-  };
+  }), [userData?.brideName, userData?.bride_name, userData?.bride,
+         userData?.groomName, userData?.groom_name, userData?.groom,
+         userData?.weddingDate, userData?.wedding_date, userData?.date,
+         userData?.venue, userData?.location, userData?.place]);
 
-  // Debug logging
-  console.log("DynamicTemplateRenderer - userData:", userData);
-  console.log("DynamicTemplateRenderer - sections data:", userData?.sections);
-  console.log(
-    "DynamicTemplateRenderer - template sections:",
-    template?.sections?.map((s) => ({ id: s.id, type: s.type }))
-  );
+  // Debug logging (only in development)
+  if (process.env.NODE_ENV === "development") {
+    console.log("DynamicTemplateRenderer - template sections:", template?.sections?.length);
+  }
 
-  // Process sections with user data (defensive against undefined)
-  const processedSections = (template?.sections ?? []).map((section) => {
-    // Get user's edited content for this section
-    const userSectionContent = userData?.sections?.[section.id] || {};
+  // Memoize processed sections to prevent expensive recalculations on every render
+  const processedSections = useMemo(() => {
+    return (template?.sections ?? []).map((section) => {
+      // Get user's edited content for this section
+      const userSectionContent = userData?.sections?.[section.id] || {};
 
-    // Merge template components with user's edited content
-    const mergedComponents = {
-      ...section.components,
-      ...userSectionContent,
-    };
+      // Merge template components with user's edited content
+      const mergedComponents = {
+        ...section.components,
+        ...userSectionContent,
+      };
 
-    console.log(`Section ${section.id} (${section.type}):`, {
-      templateComponents: section.components,
-      userSectionContent,
-      mergedComponents,
+      return {
+        ...section,
+        components: replacePlaceholders(mergedComponents, normalizedUserData),
+      };
     });
-
-    // Debug image data for STORY sections
-    if (section.type === "STORY") {
-      console.log(`STORY section ${section.id} image data:`, {
-        templateImageUrl: section.components?.imageUrl,
-        userImageUrl: userSectionContent?.imageUrl,
-        userStoryImage: userSectionContent?.storyImage,
-        mergedImageUrl: mergedComponents?.imageUrl,
-        mergedStoryImage: mergedComponents?.storyImage,
-      });
-    }
-
-    return {
-      ...section,
-      components: replacePlaceholders(mergedComponents, normalizedUserData),
-    };
-  });
+  }, [template?.sections, userData?.sections, normalizedUserData]);
 
   // Enforce component limit based on plan
   const sectionsToRender = processedSections.slice(0, userPlan.maxComponents);
 
-  const handleContentUpdate = (sectionId: string, content: any) => {
+  const handleContentUpdate = useCallback((sectionId: string, content: any) => {
     if (onContentUpdate) {
       onContentUpdate(sectionId, content);
     }
 
     // Mark section as edited
-    if (!localEditedSections.includes(sectionId)) {
-      setLocalEditedSections([...localEditedSections, sectionId]);
-    }
-  };
+    setLocalEditedSections(prev => {
+      if (!prev.includes(sectionId)) {
+        return [...prev, sectionId];
+      }
+      return prev;
+    });
+  }, [onContentUpdate]);
 
   return (
     <div className="space-y-8 relative">
@@ -153,7 +146,9 @@ export function DynamicTemplateRenderer({
         const Component = componentMap[section.layout as ComponentType];
 
         if (!Component) {
+          if (process.env.NODE_ENV === "development") {
           console.warn(`Component layout ${section.layout} not found in componentMap`);
+          }
           return null;
         }
 
@@ -200,4 +195,7 @@ export function DynamicTemplateRenderer({
       )}
     </div>
   );
-}
+};
+
+// Memoize the entire component to prevent unnecessary re-renders
+export const DynamicTemplateRenderer = React.memo(DynamicTemplateRendererComponent);

@@ -14,7 +14,8 @@
     "lint-all": "pnpm lint && pnpm format",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "seed:tasks": "tsx prisma/seed-tasks-cp.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

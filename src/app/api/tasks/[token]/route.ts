@@ -17,15 +17,17 @@ function isId(str: string): boolean {
 
 // ========== GET ==========
 export async function GET(request: Request, { params }: { params: { token: string } }) {
+  const { token } = await params;
+
   try {
     let task = await prisma.task.findUnique({
-      where: { token: params.token },
+      where: { token: token },
       include: { TaskCategory: true, TaskPriority: true },
     });
 
-    if (!task && isId(params.token)) {
+    if (!task && isId(token)) {
       task = await prisma.task.findUnique({
-        where: { id: params.token },
+        where: { id: token },
         include: { TaskCategory: true, TaskPriority: true },
       });
     }
@@ -36,13 +38,15 @@ export async function GET(request: Request, { params }: { params: { token: strin
 
     return NextResponse.json(task);
   } catch (error) {
-    console.error(`GET /api/tasks/${params.token} error:`, error);
+    console.error(`GET /api/tasks/${token} error:`, error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
 // ========== PUT ==========
 export async function PUT(request: Request, { params }: { params: { token: string } }) {
+  const { token } = await params;
+
   try {
     const body = await request.json();
 
@@ -50,7 +54,7 @@ export async function PUT(request: Request, { params }: { params: { token: strin
 
     // eslint-disable-next-line prefer-const
     let taskByToken = await prisma.task.findUnique({
-      where: { token: params.token },
+      where: { token: token },
       include: { TaskCategory: true, TaskPriority: true, user: true },
     });
 
@@ -105,7 +109,7 @@ export async function PUT(request: Request, { params }: { params: { token: strin
 
     // eslint-disable-next-line prefer-const
     let existingTask = await prisma.task.findUnique({
-      where: { id: params.token },
+      where: { id: token },
     });
 
     if (!existingTask || existingTask.userId !== session.user.id) {
@@ -124,13 +128,15 @@ export async function PUT(request: Request, { params }: { params: { token: strin
 
     return NextResponse.json(updatedTask);
   } catch (error) {
-    console.error(`PUT /api/tasks/${params.token} error:`, error);
+    console.error(`PUT /api/tasks/${token} error:`, error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
 // ========== DELETE ==========
 export async function DELETE(request: Request, { params }: { params: { token: string } }) {
+  const { token } = await params;
+
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -140,13 +146,13 @@ export async function DELETE(request: Request, { params }: { params: { token: st
     // First try to find by token
 
     let existingTask = await prisma.task.findUnique({
-      where: { token: params.token },
+      where: { token: token },
     });
 
     // If not found and looks like ID, try as ID
-    if (!existingTask && isId(params.token)) {
+    if (!existingTask && isId(token)) {
       existingTask = await prisma.task.findUnique({
-        where: { id: params.token },
+        where: { id: token },
       });
     }
 
@@ -160,7 +166,7 @@ export async function DELETE(request: Request, { params }: { params: { token: st
 
     return new NextResponse(null, { status: 204 });
   } catch (error) {
-    console.error(`DELETE /api/tasks/${params.token} error:`, error);
+    console.error(`DELETE /api/tasks/${token} error:`, error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
