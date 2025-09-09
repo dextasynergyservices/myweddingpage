@@ -19,6 +19,7 @@ interface LuxuryHeroProps {
   venue?: string;
   welcomeMessage?: string;
   colorTheme?: string;
+  heroImage?: string;
   // Legacy support for weddingData prop
   weddingData?: WeddingData;
 }
@@ -46,7 +47,15 @@ export default function LuxuryHero(props: LuxuryHeroProps) {
 
   return (
     <main className="max-h-screen transition-colors duration-300">
-      <section className="relative text-white overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <section
+        className="relative text-white overflow-hidden bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: props.heroImage
+            ? `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${props.heroImage})`
+            : undefined,
+          backgroundColor: props.heroImage ? undefined : "rgb(15 23 42)",
+        }}
+      >
         {/* Luxury texture overlay */}
         <div className="absolute inset-0 bg-[url('/luxury-texture.png')] opacity-20 mix-blend-overlay"></div>
 

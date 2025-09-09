@@ -12,17 +12,34 @@ interface WeddingData {
   colorTheme?: string;
 }
 
-export default function RusticHero({ weddingData }: { weddingData?: WeddingData }) {
+interface RusticHeroProps {
+  brideName?: string;
+  groomName?: string;
+  weddingDate?: string;
+  venue?: string;
+  welcomeMessage?: string;
+  colorTheme?: string;
+  heroImage?: string;
+  // Legacy support for weddingData prop
+  weddingData?: WeddingData;
+}
+
+export default function RusticHero(props: RusticHeroProps) {
   const { isDarkMode } = useTheme();
 
-  // Provide fallbacks so we never crash
-  const brideName = weddingData?.brideName || "Bride";
-  const groomName = weddingData?.groomName || "Groom";
-  const venue = weddingData?.venue || "Wedding Venue";
-  const welcomeMessage = weddingData?.welcomeMessage || "Welcome to our wedding celebration";
-  const dateValue = weddingData?.weddingDate ? new Date(weddingData.weddingDate) : new Date();
+  // Extract data from props (prioritize direct props over weddingData object)
+  const brideName = props.brideName || props.weddingData?.brideName || "Bride";
+  const groomName = props.groomName || props.weddingData?.groomName || "Groom";
+  const venue = props.venue || props.weddingData?.venue || "Wedding Venue";
+  const welcomeMessage =
+    props.welcomeMessage ||
+    props.weddingData?.welcomeMessage ||
+    "Welcome to our wedding celebration";
+  const dateValue = props.weddingDate || props.weddingData?.weddingDate;
 
-  const formattedDate = dateValue.toLocaleDateString("en-US", {
+  const weddingDate = dateValue ? new Date(dateValue) : new Date();
+
+  const formattedDate = weddingDate.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -37,8 +54,15 @@ export default function RusticHero({ weddingData }: { weddingData?: WeddingData 
       }`}
     >
       <section
-        className="relative text-stone-800 overflow-hidden bg-gradient-to-br from-amber-700 via-amber-600 to-amber-800"
-        style={{ backgroundColor: weddingData?.colorTheme }}
+        className="relative text-white overflow-hidden bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: props.heroImage
+            ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${props.heroImage})`
+            : undefined,
+          backgroundColor: props.heroImage
+            ? undefined
+            : "linear-gradient(to bottom right, #b45309, #d97706, #ea580c)",
+        }}
       >
         {/* Rustic texture overlay */}
         <div className="absolute inset-0 bg-[url('/rustic-texture.png')] opacity-10 mix-blend-overlay"></div>

@@ -1,5 +1,5 @@
 import RusticHero from "@/components/sample-templates/rustic/RusticHero";
-import RuticOurStory from "@/components/sample-templates/rustic/RusticOurStory";
+import RusticOurStory from "@/components/sample-templates/rustic/RusticOurStory";
 import RuticGallery from "@/components/sample-templates/rustic/RusticGallery";
 import RuticGuest from "@/components/sample-templates/rustic/RusticGuest";
 import RuticGift from "@/components/sample-templates/rustic/RusticGift";
@@ -24,7 +24,7 @@ import LuxuryOurStory from "@/components/sample-templates/luxury/LuxuryOurStory"
 
 export const componentMap = {
   rustic_hero: RusticHero,
-  rustic_story: RuticOurStory,
+  rustic_story: RusticOurStory,
   rustic_gift: RuticGift,
   rustic_gallery: RuticGallery,
   rustic_guest: RuticGuest,

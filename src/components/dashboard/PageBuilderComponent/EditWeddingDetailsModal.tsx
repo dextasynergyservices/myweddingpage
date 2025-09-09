@@ -37,10 +37,13 @@ const EditWeddingDetailsModal = ({
     story: "",
     heroImage: "",
     storyImage: "",
+    logoUrl: "",
+    logoAlt: "",
   });
   const [imagePreview, setImagePreview] = useState({
     hero: "",
     story: "",
+    logo: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -66,11 +69,14 @@ const EditWeddingDetailsModal = ({
             story: content.story || content.text || content.content || "",
             heroImage: content.heroImage || content.hero_image || "",
             storyImage: content.storyImage || content.story_image || "",
+            logoUrl: content.logoUrl || content.logo_url || "",
+            logoAlt: content.logoAlt || content.logo_alt || "",
           });
 
           setImagePreview({
             hero: content.heroImage || content.hero_image || "",
             story: content.storyImage || content.story_image || "",
+            logo: content.logoUrl || content.logo_url || "",
           });
         }
       } catch (error) {
@@ -86,7 +92,7 @@ const EditWeddingDetailsModal = ({
 
   const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    imageType: "hero" | "story"
+    imageType: "hero" | "story" | "logo"
   ) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -94,9 +100,11 @@ const EditWeddingDetailsModal = ({
       if (imageType === "hero") {
         setHeroImageFile(file);
         setImagePreview((prev) => ({ ...prev, hero: URL.createObjectURL(file) }));
-      } else {
+      } else if (imageType === "story") {
         setStoryImageFile(file);
         setImagePreview((prev) => ({ ...prev, story: URL.createObjectURL(file) }));
+      } else if (imageType === "logo") {
+        setImagePreview((prev) => ({ ...prev, logo: URL.createObjectURL(file) }));
       }
 
       // Upload to Cloudinary via our API
@@ -118,8 +126,70 @@ const EditWeddingDetailsModal = ({
           // Update form data with the uploaded image URL
           if (imageType === "hero") {
             setFormData((prev) => ({ ...prev, heroImage: imageUrl }));
-          } else {
+
+            // Save hero image to the wedding page
+            try {
+              const heroResponse = await fetch("/api/wedding-pages/hero-image", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ heroImage: imageUrl }),
+              });
+
+              if (heroResponse.ok) {
+                console.log("Hero image saved to wedding page successfully");
+              } else {
+                console.error("Failed to save hero image to wedding page");
+              }
+            } catch (error) {
+              console.error("Error saving hero image to wedding page:", error);
+            }
+          } else if (imageType === "story") {
             setFormData((prev) => ({ ...prev, storyImage: imageUrl }));
+
+            // Save story image to the wedding page
+            try {
+              const storyResponse = await fetch("/api/wedding-pages/story-image", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ storyImage: imageUrl }),
+              });
+
+              if (storyResponse.ok) {
+                console.log("Story image saved to wedding page successfully");
+              } else {
+                console.error("Failed to save story image to wedding page");
+              }
+            } catch (error) {
+              console.error("Error saving story image to wedding page:", error);
+            }
+          } else if (imageType === "logo") {
+            setFormData((prev) => ({ ...prev, logoUrl: imageUrl }));
+
+            // Save logo to the wedding page
+            try {
+              const logoResponse = await fetch("/api/wedding-pages/logo", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  logoUrl: imageUrl,
+                  logoAlt: formData.logoAlt || "Wedding Logo",
+                }),
+              });
+
+              if (logoResponse.ok) {
+                console.log("Logo saved to wedding page successfully");
+              } else {
+                console.error("Failed to save logo to wedding page");
+              }
+            } catch (error) {
+              console.error("Error saving logo to wedding page:", error);
+            }
           }
 
           toast.success("Image uploaded successfully!");
@@ -325,6 +395,54 @@ const EditWeddingDetailsModal = ({
                         height={80}
                         className="w-full h-20 object-cover rounded"
                       />
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    className={`block text-xs mb-1 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                  >
+                    Wedding Logo (Optional)
+                  </label>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, "logo")}
+                      className="hidden"
+                      id="logoImage"
+                    />
+                    <label
+                      htmlFor="logoImage"
+                      className="flex items-center justify-center gap-2 px-3 py-2 border border-dashed rounded-lg cursor-pointer text-sm"
+                    >
+                      <Upload className="h-4 w-4" />
+                      Upload Logo
+                    </label>
+                    {imagePreview.logo && (
+                      <div className="flex items-center gap-2">
+                        <Image
+                          src={imagePreview.logo}
+                          alt="Logo preview"
+                          width={60}
+                          height={60}
+                          className="w-15 h-15 object-contain rounded border"
+                        />
+                        <div className="flex-1">
+                          <input
+                            type="text"
+                            value={formData.logoAlt}
+                            onChange={(e) => setFormData({ ...formData, logoAlt: e.target.value })}
+                            className={`w-full px-2 py-1 rounded border text-xs ${
+                              isDarkMode
+                                ? "bg-slate-700 border-slate-600 text-white"
+                                : "bg-white border-slate-300 text-slate-900"
+                            }`}
+                            placeholder="Logo alt text (for accessibility)"
+                          />
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>

@@ -67,6 +67,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
 
     // Create userData object with all the data needed for rendering
     const userData = {
+      id: user.id, // Add user ID for gift components
       brideName:
         user.brideName ||
         wpAi?.brideName ||
@@ -90,14 +91,24 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       venue: weddingPage.venue || wpAi?.venue || utContent?.venue || null,
       welcomeMessage:
         weddingPage.welcomeMessage || wpAi?.welcomeMessage || utContent?.welcomeMessage || null,
+      // Include hero image for hero components
+      heroImage: weddingPage.hero_image || null,
+      // Include story image for story components
+      storyImage: weddingPage.story_image || null,
+      // Include logo for header components
+      logoUrl: weddingPage.logo_url || null,
+      logoAlt: weddingPage.logo_alt || null,
+      // Include gallery data for gallery components
+      gallery: user.galleryMedias ?? [],
+      // Include gifts data for gift components
+      gifts: user.gifts ?? [],
+      // Include guests data for guest components
+      guests: user.guests ?? [],
+      // Include bank details for gift components
+      bankDetails: user.bankDetails ?? [],
       // Include full section content for dynamic rendering
       sections: utContent,
       userTemplate: selectedUserTemplate,
-      // Include additional data for Gallery, Gift, Guest components
-      gallery: user.galleryMedias ?? [],
-      guests: user.guests ?? [],
-      gifts: user.gifts ?? [],
-      bankDetails: user.bankDetails ?? [],
     };
 
     // Create ourStory object

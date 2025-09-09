@@ -93,6 +93,23 @@ export async function GET(req: Request) {
       venue: weddingPage?.venue || wpAi?.venue || utContent?.venue || null,
       welcomeMessage:
         weddingPage?.welcomeMessage || wpAi?.welcomeMessage || utContent?.welcomeMessage || null,
+      // Include hero image for hero components
+      heroImage: weddingPage?.hero_image || null,
+      // Include story image for story components
+      storyImage: weddingPage?.story_image || null,
+      // Include logo for header components
+      logoUrl: weddingPage?.logo_url || null,
+      logoAlt: weddingPage?.logo_alt || null,
+      // Include user ID for components that need it
+      id: user.id,
+      // Include gallery data for gallery components
+      gallery: user.galleryMedias ?? [],
+      // Include gifts data for gift components
+      gifts: user.gifts ?? [],
+      // Include guests data for guest components
+      guests: user.guests ?? [],
+      // Include bank details for gift components
+      bankDetails: user.bankDetails ?? [],
       // expose raw objects for templates that expect different shapes
       _raw: {
         user: user,

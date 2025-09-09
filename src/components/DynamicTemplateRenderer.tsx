@@ -170,6 +170,34 @@ const DynamicTemplateRendererComponent = ({
 
         const isEdited = localEditedSections.includes(section.id);
 
+        // Debug: Log userData for Gift components
+        if (
+          section.layout === "ModernGift" ||
+          section.layout === "RusticGift" ||
+          section.layout === "LuxuryGift" ||
+          section.layout === "VintageGift"
+        ) {
+          console.log(`Debug for ${section.layout}:`, {
+            userData,
+            userId: userData?.id,
+            gifts: userData?.gifts,
+          });
+        }
+
+        // Debug: Log userData for Story components
+        if (
+          section.layout === "modern_story" ||
+          section.layout === "rustic_story" ||
+          section.layout === "luxury_story" ||
+          section.layout === "vintage_story"
+        ) {
+          console.log(`Debug for ${section.layout}:`, {
+            userData,
+            storyImage: userData?.storyImage,
+            section: section.layout,
+          });
+        }
+
         return (
           <div key={section.id} id={section.id} className="template-section relative">
             {isEdited && editable && (
@@ -194,6 +222,11 @@ const DynamicTemplateRendererComponent = ({
               gifts={userData?.gifts}
               guests={userData?.guests}
               bankDetails={userData?.bankDetails}
+              userId={userData?.id}
+              // Pass hero image for hero components
+              heroImage={userData?.heroImage}
+              // Pass story image for story components
+              storyImage={userData?.storyImage}
             />
           </div>
         );

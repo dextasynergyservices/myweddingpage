@@ -45,7 +45,8 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
         <WeddingPageHeader
           brideName={userData.brideName}
           groomName={userData.groomName}
-          weddingDate={userData.weddingDate}
+          logoUrl={userData.logoUrl}
+          logoAlt={userData.logoAlt}
           sections={
             template.sections?.map((section: { id: string; type: string }) => ({
               id: section.id,
@@ -74,6 +75,8 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
           groomName={userData.groomName}
           weddingDate={userData.weddingDate}
           venue={userData.venue}
+          logoUrl={userData.logoUrl}
+          logoAlt={userData.logoAlt}
           guestMessageCount={comments?.length || 0}
         />
       </div>

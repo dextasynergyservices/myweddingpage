@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, Heart, Home, Camera, Gift, MessageCircle } from "lucide-react";
+import Image from "next/image";
 
 interface WeddingPageHeaderProps {
   brideName?: string;
   groomName?: string;
-  weddingDate?: string;
+  logoUrl?: string;
+  logoAlt?: string;
   sections?: Array<{
     id: string;
     type: string;
@@ -18,7 +20,8 @@ interface WeddingPageHeaderProps {
 export default function WeddingPageHeader({
   brideName = "Bride",
   groomName = "Groom",
-  weddingDate,
+  logoUrl,
+  logoAlt,
   sections = [],
 }: WeddingPageHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -134,21 +137,6 @@ export default function WeddingPageHeader({
     setIsMobileMenuOpen(false);
   };
 
-  // Format wedding date
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return "";
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      });
-    } catch {
-      return dateString;
-    }
-  };
-
   return (
     <motion.header
       initial={{ y: -100 }}
@@ -165,20 +153,29 @@ export default function WeddingPageHeader({
           {/* Logo/Couple Names */}
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="flex items-center space-x-2 cursor-pointer"
+            className="flex items-center space-x-3 cursor-pointer"
             onClick={() => scrollToSection("hero")}
           >
-            <div className="flex items-center space-x-1">
+            {/* Custom Logo or Default Heart Icon */}
+            {logoUrl ? (
+              <div className="relative w-10 h-10 md:w-12 md:h-12">
+                <Image
+                  src={logoUrl}
+                  alt={logoAlt || "Wedding Logo"}
+                  fill
+                  className="object-contain rounded-lg"
+                />
+              </div>
+            ) : (
               <Heart className="h-5 w-5 text-pink-500" />
+            )}
+
+            {/* Couple Names */}
+            <div className="flex items-center space-x-1">
               <span className="text-lg md:text-xl font-bold text-gray-800">
                 {groomName} & {brideName}
               </span>
             </div>
-            {weddingDate && (
-              <span className="hidden md:block text-sm text-gray-600 ml-2">
-                {formatDate(weddingDate)}
-              </span>
-            )}
           </motion.div>
 
           {/* Desktop Navigation */}

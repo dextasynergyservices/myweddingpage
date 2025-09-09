@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    if (!body.name || (!body.giftId && !body.amount)) {
+    if (!body.name || (!body.giftId && !body.amount) || !body.userId) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
         date: new Date(body.date || new Date()),
         contactEmail: body.contactEmail || null,
         contactPhone: body.contactPhone || null,
-        userId: user.id,
+        userId: body.userId, // Use the provided userId (wedding page owner)
       },
     });
 
@@ -171,28 +171,36 @@ export async function PATCH(request: Request) {
 
     // Send email if contact email exists
     if (gift.contactEmail && gift.contactEmail.includes("@")) {
+      console.log("Attempting to send email to:", gift.contactEmail);
+      console.log("Email message:", message);
       try {
-        await resend.emails.send({
+        const emailResult = await resend.emails.send({
           from: "noreply@myweddingpage.online",
           to: gift.contactEmail,
           subject: "Thank you for your gift!",
           text: message,
         });
+        console.log("Email sent successfully:", emailResult);
         notificationResults.email.sent = true;
       } catch (emailError) {
         console.error("Email sending failed:", emailError);
         notificationResults.email.error =
           emailError instanceof Error ? emailError.message : "Failed to send email";
       }
+    } else {
+      console.log("No valid email address found:", gift.contactEmail);
     }
 
     // Send WhatsApp message if contact phone exists
     if (gift.contactPhone) {
+      console.log("Attempting to send WhatsApp to:", gift.contactPhone);
+      console.log("WhatsApp message:", message);
       try {
-        await WhatsAppService.sendMessage({
+        const whatsappResult = await WhatsAppService.sendMessage({
           to: gift.contactPhone,
           message: message,
         });
+        console.log("WhatsApp sent successfully:", whatsappResult);
         notificationResults.whatsapp.sent = true;
       } catch (whatsappError) {
         console.error("WhatsApp sending failed:", whatsappError);
@@ -201,6 +209,8 @@ export async function PATCH(request: Request) {
             ? whatsappError.message
             : "Failed to send WhatsApp message";
       }
+    } else {
+      console.log("No phone number found:", gift.contactPhone);
     }
 
     // Update thanked status regardless of notification success
@@ -211,6 +221,8 @@ export async function PATCH(request: Request) {
         thankedAt: new Date(),
       },
     });
+
+    console.log("Final notification results:", notificationResults);
 
     return NextResponse.json({
       ...updatedGift,

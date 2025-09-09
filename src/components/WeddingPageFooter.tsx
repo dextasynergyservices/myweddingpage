@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Heart, Calendar, MapPin, Mail, Phone, Instagram, Facebook } from "lucide-react";
+import Image from "next/image";
 
 interface WeddingPageFooterProps {
   brideName?: string;
@@ -10,6 +11,8 @@ interface WeddingPageFooterProps {
   venue?: string;
   contactEmail?: string;
   contactPhone?: string;
+  logoUrl?: string;
+  logoAlt?: string;
   socialMedia?: {
     instagram?: string;
     facebook?: string;
@@ -24,6 +27,8 @@ export default function WeddingPageFooter({
   venue,
   contactEmail,
   contactPhone,
+  logoUrl,
+  logoAlt,
   socialMedia,
   guestMessageCount = 0,
 }: WeddingPageFooterProps) {
@@ -55,8 +60,22 @@ export default function WeddingPageFooter({
             transition={{ duration: 0.5 }}
             className="text-center md:text-left"
           >
-            <div className="flex items-center justify-center md:justify-start space-x-2 mb-4">
-              <Heart className="h-6 w-6 text-pink-500" />
+            <div className="flex items-center justify-center md:justify-start space-x-3 mb-4">
+              {/* Custom Logo or Default Heart Icon */}
+              {logoUrl ? (
+                <div className="relative w-10 h-10 md:w-12 md:h-12">
+                  <Image
+                    src={logoUrl}
+                    alt={logoAlt || "Wedding Logo"}
+                    fill
+                    className="object-contain rounded-lg"
+                  />
+                </div>
+              ) : (
+                <Heart className="h-6 w-6 text-pink-500" />
+              )}
+
+              {/* Couple Names */}
               <h3 className="text-xl font-bold text-gray-800">
                 {groomName} & {brideName}
               </h3>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Send } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -14,6 +14,8 @@ interface Comment {
 }
 
 interface VintageGuestProps {
+  guests?: Comment[];
+  guestMessages?: Comment[]; // Legacy support
   initialComments?: Comment[];
 }
 
@@ -29,6 +31,12 @@ export default function VintageGuest(props: VintageGuestProps) {
   // Get slug from URL params (e.g., /alison-favour)
   const slug = params.slug as string;
 
+  // Extract guest messages from props (prioritize initialComments > guests > guestMessages)
+  const initialComments = useMemo(
+    () => props.initialComments || props.guests || props.guestMessages || [],
+    [props.initialComments, props.guests, props.guestMessages]
+  );
+
   // Fetch approved comments
   const fetchComments = useCallback(async () => {
     if (!slug) return;
@@ -43,30 +51,30 @@ export default function VintageGuest(props: VintageGuestProps) {
       } else {
         console.error("Failed to fetch comments");
         // Fall back to initial comments if provided
-        if (props.initialComments && props.initialComments.length > 0) {
-          setComments(props.initialComments);
+        if (initialComments && initialComments.length > 0) {
+          setComments(initialComments);
         }
       }
     } catch (error) {
       console.error("Error fetching comments:", error);
       // Fall back to initial comments if provided
-      if (props.initialComments && props.initialComments.length > 0) {
-        setComments(props.initialComments);
+      if (initialComments && initialComments.length > 0) {
+        setComments(initialComments);
       }
     } finally {
       setLoadingComments(false);
     }
-  }, [slug, props.initialComments]);
+  }, [slug, initialComments]);
 
   // Initialize comments
   useEffect(() => {
-    if (props.initialComments && props.initialComments.length > 0) {
-      setComments(props.initialComments);
-    } else {
-      // If no initial comments provided, fetch them
+    if (initialComments && initialComments.length > 0) {
+      setComments(initialComments);
+    } else if (slug) {
+      // Only fetch from API if we have a slug and no initial comments
       fetchComments();
     }
-  }, [props.initialComments, slug, fetchComments]);
+  }, [initialComments, slug, fetchComments]);
 
   const handleSendMessage = async () => {
     if (!guestName.trim() || !newMessage.trim()) {

@@ -224,6 +224,8 @@ model WeddingPage {
 
   hero_image        String?
   story_image       String?
+  logo_url          String?
+  logo_alt          String?
   venue             String?
   welcomeMessage    String?
 

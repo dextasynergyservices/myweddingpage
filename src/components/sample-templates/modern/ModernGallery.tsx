@@ -3,30 +3,46 @@
 import { useTheme } from "@/contexts/ThemeContext";
 import { useState } from "react";
 import Image from "next/image";
+import MediaModal from "@/components/ui/MediaModal";
 
-interface GalleryPhoto {
+interface GalleryMedia {
   id: string;
   url: string;
-  title: string;
-  category: string;
+  type: "PHOTO" | "VIDEO";
+  category: "before" | "during" | "after";
+  createdAt?: string;
 }
 
 interface ModernGalleryProps {
-  gallery?: GalleryPhoto[];
-  galleryPhotos?: GalleryPhoto[]; // Legacy support
+  gallery?: GalleryMedia[];
+  galleryPhotos?: GalleryMedia[]; // Legacy support
 }
 
 export default function ModernGallery(props: ModernGalleryProps) {
   const { isDarkMode } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedMedia, setSelectedMedia] = useState<GalleryMedia | null>(null);
+  const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
 
   // Extract gallery data from props (prioritize gallery over galleryPhotos for consistency with API)
-  const photos = props.gallery || props.galleryPhotos || [];
+  const media = props.gallery || props.galleryPhotos || [];
 
-  const filteredPhotos =
-    selectedCategory === "all"
-      ? photos
-      : photos.filter((photo) => photo.category === selectedCategory);
+  const filteredMedia =
+    selectedCategory === "all" ? media : media.filter((item) => item.category === selectedCategory);
+
+  const handleMediaClick = (item: GalleryMedia, index: number) => {
+    setSelectedMedia(item);
+    setSelectedMediaIndex(index);
+  };
+
+  const handleNavigate = (index: number) => {
+    setSelectedMediaIndex(index);
+    setSelectedMedia(filteredMedia[index]);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMedia(null);
+  };
 
   return (
     <div
@@ -58,40 +74,79 @@ export default function ModernGallery(props: ModernGalleryProps) {
               }`}
             >
               {category === "all"
-                ? "All Photos"
+                ? "All Media"
                 : `${category.charAt(0).toUpperCase() + category.slice(1)} Wedding`}
             </button>
           ))}
         </div>
       </div>
 
-      {filteredPhotos.length === 0 ? (
+      {filteredMedia.length === 0 ? (
         <div className="text-center py-12">
           <p className={`text-lg ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-            No photos found in this category
+            No media found in this category
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPhotos.map((photo) => (
-            <div key={photo.id} className="group cursor-pointer">
+          {filteredMedia.map((item, index) => (
+            <div
+              key={item.id}
+              className="group cursor-pointer"
+              onClick={() => handleMediaClick(item, index)}
+            >
               <div className="relative overflow-hidden rounded-3xl shadow-lg">
-                <Image
-                  src={photo.url}
-                  alt={photo.title || `Wedding photo ${photo.id}`}
-                  width={600}
-                  height={400}
-                  className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
+                {item.type === "VIDEO" ? (
+                  <video
+                    src={item.url}
+                    className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110"
+                    preload="metadata"
+                    poster={item.url.replace(/\.(mp4|mov|avi)$/i, ".jpg")} // Use video thumbnail if available
+                  />
+                ) : (
+                  <Image
+                    src={item.url}
+                    alt={`Wedding ${item.type.toLowerCase()} ${item.id}`}
+                    width={600}
+                    height={400}
+                    className="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute bottom-6 left-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <h3 className="font-medium text-lg">{photo.title}</h3>
+                  <h3 className="font-medium text-lg capitalize">
+                    {item.type.toLowerCase()} - {item.category}
+                  </h3>
                 </div>
+                {/* Media type indicator */}
+                <div className="absolute top-4 right-4 bg-black/50 text-white px-2 py-1 rounded-full text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {item.type === "VIDEO" ? "🎥" : "📷"}
+                </div>
+                {/* Play button overlay for videos */}
+                {item.type === "VIDEO" && (
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="bg-black/50 rounded-full p-4">
+                      <svg className="h-8 w-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ))}
         </div>
       )}
+
+      {/* Media Modal */}
+      <MediaModal
+        isOpen={!!selectedMedia}
+        onClose={handleCloseModal}
+        media={selectedMedia}
+        mediaList={filteredMedia}
+        currentIndex={selectedMediaIndex}
+        onNavigate={handleNavigate}
+      />
     </div>
   );
 }

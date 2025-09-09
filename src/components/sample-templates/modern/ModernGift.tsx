@@ -3,7 +3,8 @@
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import Modal from "@/components/ui/Modal";
+import PurchaseModal from "@/components/ui/PurchaseModal";
+import { formatCurrency, parsePriceToNumber } from "@/lib/utils";
 
 interface BankDetail {
   id: string;
@@ -26,6 +27,8 @@ interface GiftItem {
 interface ModernGiftProps {
   gifts?: GiftItem[];
   giftRegistry?: GiftItem[]; // Legacy support
+  userId?: string; // Wedding page owner's user ID
+  bankDetails?: BankDetail[]; // Bank details for the wedding page owner
 }
 
 export default function ModernGift(props: ModernGiftProps) {
@@ -35,23 +38,83 @@ export default function ModernGift(props: ModernGiftProps) {
   const [bankDetails, setBankDetails] = useState<BankDetail[]>([]);
   const [loadingBanks, setLoadingBanks] = useState(false);
 
+  // Debug: Log props to see what's being passed
+  console.log("ModernGift props:", props);
+
   // Extract gifts data from props (prioritize gifts over giftRegistry for consistency with API)
   const gifts = props.gifts || props.giftRegistry || [];
 
   const openPurchase = (gift: GiftItem) => {
+    console.log("openPurchase called with gift:", gift);
+    console.log("Current props.userId:", props.userId);
     setSelected(gift);
     setOpen(true);
   };
 
+  const handlePurchase = async (data: {
+    name: string;
+    email: string;
+    phone: string;
+    message?: string;
+  }) => {
+    console.log("handlePurchase called with:", { selected, userId: props.userId, data });
+
+    if (!selected) {
+      console.log("No selected gift, returning early");
+      return;
+    }
+
+    if (!props.userId) {
+      console.log("No userId provided, returning early");
+      return;
+    }
+
+    try {
+      const requestData = {
+        name: data.name,
+        contactEmail: data.email,
+        contactPhone: data.phone,
+        message: data.message,
+        giftId: selected.id,
+        amount: parsePriceToNumber(selected.price),
+        userId: props.userId, // Use the wedding page owner's user ID
+      };
+
+      console.log("Sending request to API with data:", requestData);
+
+      const response = await fetch("/api/public/received-gifts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      console.log("API response status:", response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log("API error response:", errorText);
+        throw new Error("Failed to submit purchase information");
+      }
+
+      const responseData = await response.json();
+      console.log("API success response:", responseData);
+
+      // Mark gift as purchased locally
+      setSelected({ ...selected, purchased: true });
+    } catch (error) {
+      console.error("Purchase submission error:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (!open) return;
-    setLoadingBanks(true);
-    fetch("/api/bank-details")
-      .then((r) => r.json())
-      .then((data) => setBankDetails(data || []))
-      .catch((e) => console.error("Failed to load bank details", e))
-      .finally(() => setLoadingBanks(false));
-  }, [open]);
+    // Use bank details passed from props instead of fetching from API
+    setBankDetails(props.bankDetails || []);
+    setLoadingBanks(false);
+  }, [open, props.bankDetails]);
 
   return (
     <div
@@ -120,7 +183,7 @@ export default function ModernGift(props: ModernGiftProps) {
                     isDarkMode ? "text-slate-400" : "text-slate-600"
                   }`}
                 >
-                  {gift.price}
+                  {formatCurrency(gift.price)}
                 </p>
 
                 {gift.link && (
@@ -152,67 +215,14 @@ export default function ModernGift(props: ModernGiftProps) {
         </div>
       )}
 
-      <Modal
-        open={open}
+      <PurchaseModal
+        isOpen={open}
         onClose={() => setOpen(false)}
-        title={selected ? selected.item : "Purchase"}
-      >
-        {!selected ? (
-          <p>No gift selected</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Image
-                src={selected.image}
-                alt={(selected?.item ?? selected?.name) || `Gift image ${selected?.id ?? ""}`}
-                width={800}
-                height={600}
-                className="rounded-xl w-full h-auto object-cover"
-              />
-              <h4 className="mt-4 font-semibold text-lg">{selected.item}</h4>
-              {selected.description && (
-                <p className="text-sm text-slate-600 dark:text-slate-300">{selected.description}</p>
-              )}
-              <p className="mt-2 font-medium">Price: {selected.price}</p>
-              {selected.link && (
-                <a
-                  className="text-indigo-600 hover:underline mt-2 block"
-                  href={selected.link}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Open product link
-                </a>
-              )}
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-2">Bank Details</h4>
-              {loadingBanks ? (
-                <p>Loading bank details...</p>
-              ) : bankDetails.length === 0 ? (
-                <p className="text-sm text-slate-500">No bank details available for this user.</p>
-              ) : (
-                <div className="space-y-4">
-                  {bankDetails.map((b) => (
-                    <div key={b.id} className="p-4 rounded-lg border bg-slate-50 dark:bg-slate-700">
-                      <p className="font-semibold">{b.bankName}</p>
-                      <p className="text-sm">Account Name: {b.accountName}</p>
-                      <p className="text-sm">Account Number: {b.accountNumber}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div className="mt-6">
-                <button className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 px-4 rounded-2xl">
-                  Proceed to Pay
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </Modal>
+        gift={selected}
+        bankDetails={bankDetails}
+        loadingBanks={loadingBanks}
+        onPurchase={handlePurchase}
+      />
     </div>
   );
 }

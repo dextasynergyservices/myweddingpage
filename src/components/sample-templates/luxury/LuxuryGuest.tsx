@@ -64,10 +64,11 @@ export default function LuxuryGuest(props: LuxuryGuestProps) {
   useEffect(() => {
     if (initialMessages && initialMessages.length > 0) {
       setMessages(initialMessages);
-    } else {
+    } else if (slug) {
+      // Only fetch from API if we have a slug and no initial messages
       fetchComments();
     }
-  }, [initialMessages, fetchComments]);
+  }, [initialMessages, fetchComments, slug]);
 
   const handleSendMessage = async () => {
     if (!guestName.trim() || !newMessage.trim()) {

@@ -19,6 +19,7 @@ interface ModernHeroProps {
   venue?: string;
   welcomeMessage?: string;
   colorTheme?: string;
+  heroImage?: string;
   // Legacy support for weddingData prop
   weddingData?: WeddingData;
 }
@@ -46,16 +47,30 @@ export default function ModernHero(props: ModernHeroProps) {
 
   return (
     <main className="max-h-screen transition-colors duration-300">
-      <section className="relative text-slate-900 overflow-hidden bg-white">
-        {/* Modern geometric pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,#f8fafc_25%,transparent_25%,transparent_75%,#f8fafc_75%),linear-gradient(135deg,#f8fafc_25%,transparent_25%,transparent_75%,#f8fafc_75%)] bg-[length:40px_40px] opacity-10"></div>
+      <section
+        className="relative text-white overflow-hidden bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: props.heroImage
+            ? `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${props.heroImage})`
+            : undefined,
+          backgroundColor: props.heroImage ? undefined : "white",
+        }}
+      >
+        {/* Modern geometric pattern - only show if no hero image */}
+        {!props.heroImage && (
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,#f8fafc_25%,transparent_25%,transparent_75%,#f8fafc_75%),linear-gradient(135deg,#f8fafc_25%,transparent_25%,transparent_75%,#f8fafc_75%)] bg-[length:40px_40px] opacity-10"></div>
+        )}
 
-        {/* Modern decorative elements */}
-        <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-white to-transparent"></div>
-        <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-gradient-to-br from-slate-100 to-slate-300 blur-3xl opacity-40"></div>
+        {/* Modern decorative elements - only show if no hero image */}
+        {!props.heroImage && (
+          <>
+            <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-white to-transparent"></div>
+            <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-gradient-to-br from-slate-100 to-slate-300 blur-3xl opacity-40"></div>
+          </>
+        )}
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-          <div className="text-center pt-12">
+          <div className={`text-center pt-12 ${props.heroImage ? "text-white" : "text-slate-900"}`}>
             <div className="flex justify-center mb-8">
               <div className="relative p-6 bg-white rounded-full shadow-lg border border-slate-200">
                 <Heart className="h-16 w-16 text-rose-500" fill="currentColor" />
