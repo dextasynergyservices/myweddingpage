@@ -98,10 +98,8 @@ const EditWeddingDetailsModal = ({
     if (file) {
       // Show preview immediately
       if (imageType === "hero") {
-        setHeroImageFile(file);
         setImagePreview((prev) => ({ ...prev, hero: URL.createObjectURL(file) }));
       } else if (imageType === "story") {
-        setStoryImageFile(file);
         setImagePreview((prev) => ({ ...prev, story: URL.createObjectURL(file) }));
       } else if (imageType === "logo") {
         setImagePreview((prev) => ({ ...prev, logo: URL.createObjectURL(file) }));
@@ -250,12 +248,13 @@ const EditWeddingDetailsModal = ({
       story: "",
       heroImage: "",
       storyImage: "",
+      logoUrl: "",
+      logoAlt: "",
     });
-    setHeroImageFile(null);
-    setStoryImageFile(null);
     setImagePreview({
       hero: "",
       story: "",
+      logo: "",
     });
   };
 
