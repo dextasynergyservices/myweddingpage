@@ -218,6 +218,7 @@ model WeddingPage {
   templateId        String
   title             String
   slug              String   @unique
+  views             Int      @default(0)
   ai_data           Json?
   layout_data       Json?
   color_theme       String?

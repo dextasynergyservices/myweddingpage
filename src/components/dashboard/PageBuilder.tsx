@@ -36,19 +36,26 @@ const WeddingPageBuilder = () => {
         if (templateResponse.ok) {
           const templateData = await templateResponse.json();
           setUserTemplate(templateData);
-          if (templateData.template) {
-            setSelectedTemplate(templateData.template);
+          // templateData.template may be undefined; normalize to null for state
+          setSelectedTemplate((templateData && templateData.template) || null);
+          if (templateData && templateData.template) {
             setIsSelect(true); // Switch to customize mode if template is selected
           }
         } else {
+          setSelectedTemplate(null);
           setIsSelect(false); // Switch to choose template mode if no template selected
         }
 
-        // Fetch wedding page if published
+        // Fetch wedding page if published. The API returns a wrapper object
+        // (not just the wedding page). Normalize to the actual weddingPage
+        // object so the UI can rely on `weddingPage.is_live` etc.
         const weddingPageResponse = await fetch("/api/wedding-data");
         if (weddingPageResponse.ok) {
           const weddingPageData = await weddingPageResponse.json();
-          setWeddingPage(weddingPageData);
+          // API shape: { weddingPage: {...}, ... } — use the inner weddingPage when present
+          setWeddingPage(
+            (weddingPageData && weddingPageData.weddingPage) || weddingPageData || null
+          );
         }
 
         // Fetch available templates
@@ -67,10 +74,17 @@ const WeddingPageBuilder = () => {
     fetchUserData();
   }, []);
 
-  const handleTemplateSelect = (userTemplateData: UserTemplate | null) => {
+  // Ensure we pass a userTemplate that definitely has a `template` field to TemplateSelection.
+  // This prevents a type error when the underlying `userTemplate.template` may be undefined.
+  const safeUserTemplate =
+    userTemplate && userTemplate.template
+      ? { ...userTemplate, template: userTemplate.template as Template }
+      : undefined;
+
+  const handleTemplateSelect = (userTemplateData?: UserTemplate | null) => {
     // Accepts the server-returned UserTemplate (or undefined when deleted)
     if (!userTemplateData) {
-      // template deleted: clear selection
+      // template deleted or not set: clear selection
       setUserTemplate(null);
       setSelectedTemplate(null);
       setIsSelect(false);
@@ -78,7 +92,8 @@ const WeddingPageBuilder = () => {
     }
 
     setUserTemplate(userTemplateData);
-    setSelectedTemplate(userTemplateData.template);
+    // template may be undefined on some shapes; normalize to null
+    setSelectedTemplate(userTemplateData.template ?? null);
     setIsSelect(true);
   };
 
@@ -86,6 +101,12 @@ const WeddingPageBuilder = () => {
     if (!userTemplate || !selectedTemplate) return;
 
     try {
+      console.log("Making request to /api/template-sections/edit with:", {
+        templateId: selectedTemplate.id,
+        sectionId,
+        content,
+      });
+
       // Save to backend using the new API
       const response = await fetch("/api/template-sections/edit", {
         method: "PUT",
@@ -97,7 +118,14 @@ const WeddingPageBuilder = () => {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to save content");
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Response error:", errorText);
+        throw new Error(`Failed to save content: ${response.status} ${errorText}`);
+      }
 
       const data = await response.json();
       console.log("Section edit response:", data);
@@ -114,6 +142,7 @@ const WeddingPageBuilder = () => {
       }
     } catch (error) {
       console.error("Error saving template content:", error);
+      throw error; // Re-throw to be caught by the caller
     }
   };
 
@@ -178,9 +207,13 @@ const WeddingPageBuilder = () => {
       <div className="flex-1 overflow-auto">
         {!isSelect ? (
           <TemplateSelection
-            onUserTemplateSelected={(userTemplate) => handleTemplateSelect(userTemplate)}
+            // Cast the callback argument to match our internal handler type
+            onUserTemplateSelected={(userTemplate) =>
+              handleTemplateSelect(userTemplate as unknown as UserTemplate | null)
+            }
             userPlan={userPlan ?? null}
-            userTemplate={userTemplate ?? undefined}
+            // Provide a safe userTemplate only when it includes a template
+            userTemplate={safeUserTemplate}
           />
         ) : selectedTemplate ? (
           <TemplateEditor

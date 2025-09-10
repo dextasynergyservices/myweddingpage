@@ -4,6 +4,7 @@ import { SectionType } from "@/generated/prisma";
 import { componentMap, ComponentType, ColorScheme } from "@/lib/component-registry";
 import { AlertTriangle, Eye, CheckCircle } from "lucide-react";
 import React, { useState, useMemo, useCallback } from "react";
+import { UserData, ComponentProps } from "@/types/user-data";
 
 interface TemplateSection {
   id: string;
@@ -24,7 +25,7 @@ interface Props {
     name: string;
     maxComponents: number;
   };
-  userData: Record<string, unknown>;
+  userData: UserData;
   colorScheme?: ColorScheme;
   onContentUpdate?: (sectionId: string, content: Record<string, unknown>) => void;
   editable?: boolean;
@@ -33,9 +34,9 @@ interface Props {
 }
 
 // Optimized function to replace placeholders in content
-function replacePlaceholders(obj: unknown, userData: Record<string, unknown>): unknown {
-  // Pre-compute replacement values
-  const replacements = {
+function replacePlaceholders(obj: unknown, userData: UserData): unknown {
+  // Pre-compute replacement values as string entries
+  const replacementsObj = {
     "{brideName}": userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
     "{bride_name}": userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
     "{bride}": userData?.brideName || userData?.bride_name || userData?.bride || "Bride",
@@ -47,11 +48,15 @@ function replacePlaceholders(obj: unknown, userData: Record<string, unknown>): u
     "{date}": userData?.weddingDate || userData?.wedding_date || userData?.date || "Date",
     "{venue}": userData?.venue || userData?.location || userData?.place || "Venue",
     "{location}": userData?.venue || userData?.location || userData?.place || "Venue",
-  };
+  } as Record<string, unknown>;
+  const replacementEntries: [string, string][] = Object.entries(replacementsObj).map(([k, v]) => [
+    k,
+    String(v ?? ""),
+  ]);
 
   if (typeof obj === "string") {
     // Single pass replacement for better performance
-    return Object.entries(replacements).reduce(
+    return replacementEntries.reduce(
       (str, [placeholder, value]) => str.replaceAll(placeholder, value),
       obj
     );
@@ -87,7 +92,7 @@ const DynamicTemplateRendererComponent = ({
       brideName: userData?.brideName || userData?.bride_name || userData?.bride || "",
       groomName: userData?.groomName || userData?.groom_name || userData?.groom || "",
       weddingDate: userData?.weddingDate || userData?.wedding_date || userData?.date || "",
-      venue: userData?.venue || userData?.location || userData?.place || "",
+      venue: String(userData?.venue || userData?.location || userData?.place || ""),
     }),
     [
       userData?.brideName,
@@ -113,8 +118,9 @@ const DynamicTemplateRendererComponent = ({
   // Memoize processed sections to prevent expensive recalculations on every render
   const processedSections = useMemo(() => {
     return (template?.sections ?? []).map((section) => {
-      // Get user's edited content for this section
-      const userSectionContent = userData?.sections?.[section.id] || {};
+      // Get user's edited content for this section (userData can be arbitrary shape)
+      const sectionsObj = (userData?.sections ?? {}) as Record<string, Record<string, unknown>>;
+      const userSectionContent = sectionsObj[section.id] || {};
 
       // Merge template components with user's edited content
       const mergedComponents = {
@@ -127,7 +133,7 @@ const DynamicTemplateRendererComponent = ({
         components: replacePlaceholders(mergedComponents, normalizedUserData),
       };
     });
-  }, [template?.sections, userData?.sections, normalizedUserData]);
+  }, [template?.sections, userData, normalizedUserData]);
 
   // Enforce component limit based on plan
   const sectionsToRender = processedSections.slice(0, userPlan.maxComponents);
@@ -160,6 +166,8 @@ const DynamicTemplateRendererComponent = ({
 
       {sectionsToRender.map((section) => {
         const Component = componentMap[section.layout as ComponentType];
+        // Use flexible typing to accommodate different component prop structures
+        const RenderComponent = Component as React.ComponentType<Record<string, unknown>>;
 
         if (!Component) {
           if (process.env.NODE_ENV === "development") {
@@ -207,27 +215,27 @@ const DynamicTemplateRendererComponent = ({
               </div>
             )}
 
-            <Component
-              {...section.components}
-              sectionId={section.id}
-              sectionType={section.type}
-              userPlan={userPlan}
-              theme={colorScheme}
-              editable={editable && !isPreview}
-              onContentUpdate={(newContent: Record<string, unknown>) =>
-                handleContentUpdate(section.id, newContent)
-              }
-              // Pass additional data from userData for Gallery, Gift, and Guest components
-              gallery={userData?.gallery}
-              gifts={userData?.gifts}
-              guests={userData?.guests}
-              bankDetails={userData?.bankDetails}
-              userId={userData?.id}
-              // Pass hero image for hero components
-              heroImage={userData?.heroImage}
-              // Pass story image for story components
-              storyImage={userData?.storyImage}
-            />
+            {(() => {
+              const componentProps: ComponentProps = {
+                ...(section.components as Record<string, unknown>),
+                sectionId: section.id,
+                sectionType: section.type,
+                userPlan,
+                theme: colorScheme,
+                editable: editable && !isPreview,
+                onContentUpdate: (newContent: Record<string, unknown>) =>
+                  handleContentUpdate(section.id, newContent),
+                gallery: userData?.gallery,
+                gifts: userData?.gifts,
+                guests: userData?.guests,
+                bankDetails: userData?.bankDetails,
+                userId: userData?.id,
+                heroImage: userData?.heroImage,
+                storyImage: userData?.storyImage,
+              };
+
+              return <RenderComponent {...componentProps} />;
+            })()}
           </div>
         );
       })}

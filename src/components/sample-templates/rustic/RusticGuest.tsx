@@ -28,6 +28,7 @@ export default function RusticGuest(props: RusticGuestProps) {
   const [newMessage, setNewMessage] = useState("");
   const [guestName, setGuestName] = useState("");
   const [sending, setSending] = useState(false);
+  const [, setLoadingComments] = useState(false);
 
   const slug = params.slug as string;
 

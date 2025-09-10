@@ -238,7 +238,7 @@ const TemplateSelection = ({
                   </div>
 
                   {/* Selected overlay: green check in top-right */}
-                  {userTemplate?.isSelected && userTemplate?.templateId === template.id && (
+                  {userTemplate?.templateId === template.id && (
                     <div className="absolute top-2 right-2 bg-green-600 text-white p-1.5 rounded-full shadow-lg">
                       <Check className="h-4 w-4" />
                     </div>
@@ -263,7 +263,7 @@ const TemplateSelection = ({
                 </p>
 
                 {/* If this template is the one the user selected show Delete in place of Preview */}
-                {userTemplate?.isSelected && userTemplate?.templateId === template.id ? (
+                {userTemplate?.templateId === template.id ? (
                   <button
                     onClick={() => {
                       setPendingDeleteTemplateId(template.id);
@@ -304,14 +304,36 @@ const TemplateSelection = ({
           // When the modal completes a selection it will return the persisted userTemplate
           onSelectTemplate={(userTemplate) => {
             if (typeof onUserTemplateSelected === "function") {
-              onUserTemplateSelected(userTemplate);
+              if (userTemplate && userTemplate.template) {
+                onUserTemplateSelected(
+                  userTemplate as {
+                    id: string;
+                    templateId: string;
+                    template: Template;
+                    content: Record<string, unknown>;
+                    colorScheme: Record<string, unknown>;
+                  }
+                );
+              } else {
+                onUserTemplateSelected(null);
+              }
             }
 
             // close modal after callback
             setShowTemplatePreviewModal(false);
             setTemplateToPreview(null);
           }}
-          userTemplate={userTemplate ?? undefined}
+          userTemplate={
+            userTemplate
+              ? {
+                  ...userTemplate,
+                  userId: (userTemplate as { userId?: string }).userId ?? "",
+                  isSelected: (userTemplate as { isSelected?: boolean }).isSelected ?? false,
+                  createdAt: (userTemplate as { createdAt?: string }).createdAt ?? "",
+                  updatedAt: (userTemplate as { updatedAt?: string }).updatedAt ?? "",
+                }
+              : undefined
+          }
           userPlan={userPlan ?? undefined}
           isSelect={false}
         />

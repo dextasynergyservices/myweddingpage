@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
+import { ColorScheme } from "@/lib/component-registry";
 import {
   Eye,
   Save,
@@ -50,7 +51,7 @@ const TemplateEditor = ({
 }: TemplateEditorProps) => {
   const { isDarkMode } = useTheme();
   const [selectedSection, setSelectedSection] = useState<{ id: string; type: string } | null>(null);
-  const [selectedColorScheme] = useState<Record<string, unknown> | null>(null);
+  const [selectedColorScheme] = useState<ColorScheme | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -230,9 +231,9 @@ const TemplateEditor = ({
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to publish template");
       }
-    } catch (error: unknown) {
-      console.error("Error publishing template:", error);
-      toast.error(error.message || "Failed to publish wedding page");
+    } catch (err: unknown) {
+      console.error("Error publishing template:", err);
+      toast.error((err as Error)?.message || String(err) || "Failed to publish wedding page");
     } finally {
       setIsPublishing(false);
     }
@@ -268,9 +269,9 @@ const TemplateEditor = ({
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to delete wedding page");
       }
-    } catch (error: unknown) {
-      console.error("Error deleting wedding page:", error);
-      toast.error(error.message || "Failed to delete wedding page");
+    } catch (err: unknown) {
+      console.error("Error deleting wedding page:", err);
+      toast.error((err as Error)?.message || String(err) || "Failed to delete wedding page");
     } finally {
       setIsSaving(false);
     }
@@ -295,24 +296,36 @@ const TemplateEditor = ({
     type: string;
     components: Record<string, unknown>;
   }) => {
-    const content = userTemplate?.content?.[section.id] || section.components || {};
+    const content =
+      (userTemplate?.content?.[section.id] as Record<string, unknown> | undefined) ||
+      (section.components as Record<string, unknown> | undefined) ||
+      {};
+
+    const renderText = (value: unknown, fallback?: string): string | undefined => {
+      if (value === null || value === undefined) return fallback ?? undefined;
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean")
+        return String(value);
+      return fallback ?? undefined;
+    };
 
     switch (section.type) {
       case "HERO":
         return (
           <div className="text-center">
             <h1 className="text-2xl md:text-4xl font-bold mb-2">
-              {content.title ||
-                `${userData.groomName || "Groom"} & ${userData.brideName || "Bride"}`}
+              {renderText(
+                content.title,
+                `${userData.groomName || "Groom"} & ${userData.brideName || "Bride"}`
+              )}
             </h1>
             <div className="flex items-center justify-center gap-2 text-lg md:text-xl">
               <Calendar className="h-5 w-5" />
-              <p>{content.subtitle || content.date || userData.weddingDate}</p>
+              <p>{renderText(content.subtitle, renderText(content.date, userData.weddingDate))}</p>
             </div>
             {(content.venue || content.location || userData.venue) && (
               <div className="flex items-center justify-center gap-2 text-sm md:text-base mt-2">
                 <MapPin className="h-4 w-4" />
-                <p>{content.venue || content.location || userData.venue}</p>
+                <p>{renderText(content.venue, renderText(content.location, userData.venue))}</p>
               </div>
             )}
           </div>
@@ -322,10 +335,13 @@ const TemplateEditor = ({
           <div>
             <h2 className="text-xl md:text-2xl font-semibold mb-2 flex items-center gap-2">
               <Heart className="h-5 w-5 text-pink-500" />
-              {content.title || "Our Story"}
+              {renderText(content.title, "Our Story")}
             </h2>
             <p className="text-sm md:text-base">
-              {content.text || content.content || "Your love story goes here..."}
+              {renderText(
+                content.text,
+                renderText(content.content, "Your love story goes here...")
+              )}
             </p>
           </div>
         );
@@ -334,7 +350,10 @@ const TemplateEditor = ({
           <div>
             <h2 className="text-xl md:text-2xl font-semibold mb-2">Photo Gallery</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {((content.images as string[]) || [1, 2, 3]).map((img: string | number, i: number) =>
+              {(() => {
+                const imgs = (content as Record<string, unknown>).images;
+                return Array.isArray(imgs) ? (imgs as (string | number)[]) : [1, 2, 3];
+              })().map((img: string | number, i: number) =>
                 typeof img === "string" ? (
                   <div key={i} className="aspect-square relative bg-gray-200 rounded">
                     <div className="absolute inset-0 flex items-center justify-center text-gray-500">
@@ -356,7 +375,7 @@ const TemplateEditor = ({
               Gift Registry
             </h2>
             <p className="text-sm md:text-base">
-              {content.content || "Browse our gift registry..."}
+              {renderText(content.content, "Browse our gift registry...")}
             </p>
           </div>
         );
@@ -368,7 +387,7 @@ const TemplateEditor = ({
               Guest Wishes
             </h2>
             <p className="text-sm md:text-base">
-              {content.content || "Leave your wishes for the couple..."}
+              {renderText(content.content, "Leave your wishes for the couple...")}
             </p>
           </div>
         );
@@ -517,6 +536,7 @@ const TemplateEditor = ({
           }}
           section={selectedSection}
           templateId={selectedTemplate.id}
+          weddingPage={weddingPage}
           onSave={async (sectionId, content) => {
             await handleSectionContentUpdate(sectionId, content);
             setShowEditModal(false);
@@ -643,7 +663,22 @@ const TemplateEditor = ({
               template={selectedTemplate}
               userPlan={userPlan || { id: "default", name: "Default", maxComponents: 10 }}
               userData={userData}
-              colorScheme={selectedColorScheme || userTemplate?.colorScheme}
+              colorScheme={((): ColorScheme | undefined => {
+                if (selectedColorScheme) return selectedColorScheme;
+                const cs = userTemplate?.colorScheme as unknown;
+                if (!cs || typeof cs !== "object") return undefined;
+                const maybe = cs as Partial<ColorScheme>;
+                if (
+                  maybe.name &&
+                  maybe.primary &&
+                  maybe.secondary &&
+                  maybe.background &&
+                  maybe.text
+                ) {
+                  return maybe as ColorScheme;
+                }
+                return undefined;
+              })()}
               editable={false}
             />
           </div>

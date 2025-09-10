@@ -123,7 +123,7 @@ export default function VintageOurStory(props: VintageOurStoryProps) {
         maxWidth="max-w-4xl"
         forceLight
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="p-4">
           <div>
             {paragraphs.map((para: string, idx: number) => (
               <p
@@ -133,15 +133,6 @@ export default function VintageOurStory(props: VintageOurStoryProps) {
                 {para}
               </p>
             ))}
-          </div>
-          <div className="flex justify-center">
-            <Image
-              src={imageUrl}
-              alt="Vintage style couple photo for the story section"
-              width={800}
-              height={600}
-              className="rounded-xl w-full h-auto object-cover"
-            />
           </div>
         </div>
       </Modal>

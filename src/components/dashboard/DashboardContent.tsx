@@ -33,6 +33,8 @@ interface DashboardContentProps {
   handleCreateWedding: () => void;
   handleViewWedding: (weddingId: string) => void;
   setActiveTab: (tab: string) => void;
+  tasksTotal?: number;
+  tasksCompleted?: number;
 }
 
 const DashboardContent = ({
@@ -44,6 +46,9 @@ const DashboardContent = ({
   userWeddings,
   handleCreateWedding,
   handleViewWedding,
+  setActiveTab,
+  tasksTotal,
+  tasksCompleted,
 }: DashboardContentProps) => {
   const renderContent = () => {
     switch (activeTab) {
@@ -71,6 +76,10 @@ const DashboardContent = ({
             userWeddings={userWeddings}
             handleCreateWedding={handleCreateWedding}
             handleViewWedding={handleViewWedding}
+            setActiveTab={setActiveTab}
+            // pass task totals for card progress
+            tasksTotal={tasksTotal}
+            tasksCompleted={tasksCompleted}
           />
         );
     }

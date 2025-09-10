@@ -28,6 +28,7 @@ export default function ModernGuest(props: ModernGuestProps) {
   const [newMessage, setNewMessage] = useState("");
   const [guestName, setGuestName] = useState("");
   const [sending, setSending] = useState(false);
+  const [, setLoadingComments] = useState(false);
 
   // Get slug from URL params (e.g., /alison-favour)
   const slug = params.slug as string;

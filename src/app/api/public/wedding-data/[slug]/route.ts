@@ -61,7 +61,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       return NextResponse.json({ error: "Template not found" }, { status: 404 });
     }
 
-    // Merge data from several sources (same logic as /api/wedding-data)
+  // Merge data from several sources (same logic as /api/wedding-data)
     const wpAi = (weddingPage.ai_data as Record<string, unknown>) ?? (weddingPage.layout_data as Record<string, unknown>) ?? {};
     const utContent = (selectedUserTemplate?.content as Record<string, unknown>) ?? {};
 
@@ -121,11 +121,49 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
         "/default-story.jpg",
     };
 
+  // Allow callers to skip incrementing (server-side fetches should set ?noIncrement=1)
+  const { searchParams } = new URL(req.url);
+  const noIncrement = searchParams.get("noIncrement") === "1";
+
+  // Cookie-based unique-per-day counting + simple UA bot filter
+    const userAgent = req.headers.get("user-agent") ?? "";
+    const botRegex = /bot|crawler|spider|curl|slurp|bingpreview|facebookexternalhit|facebookcatalog|twitterbot|discordbot|whatsapp|pinterest|whatsapp|telegrambot/i;
+    const isBot = botRegex.test(userAgent);
+
+    // Use the weddingPage id in the cookie name to ensure uniqueness
+    const cookieName = `w_viewed_${weddingPage.id}`;
+    const seenCookie = req.cookies.get(cookieName)?.value;
+
+    let updatedViews: number | null = null;
+
+  if (!noIncrement && !isBot && !seenCookie) {
+      try {
+        // Atomic increment
+        await prisma.$executeRaw`UPDATE "WeddingPage" SET views = COALESCE(views, 0) + 1 WHERE id = ${weddingPage.id}`;
+        // Read back the updated value
+        const refreshed = await prisma.weddingPage.findUnique({ where: { id: weddingPage.id }, select: { views: true } });
+        updatedViews = refreshed?.views ?? null;
+      } catch (err) {
+        console.error("Failed to increment wedding page views (raw):", err);
+      }
+    }
+
+    // Determine the views to return: prefer the freshly updated value, otherwise use existing value or 0
+  const viewsToReturn = updatedViews ?? ((weddingPage as { views?: number })?.views ?? 0);
+
+    // Return the weddingPage with an explicit views field
+    const weddingPageWithViews = {
+      ...weddingPage,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      views: viewsToReturn,
+    } as typeof weddingPage & { views: number };
+
     const responseData = {
       template: selectedTemplate,
       userData,
       ourStory,
-      weddingPage,
+      weddingPage: weddingPageWithViews,
       gallery: user.galleryMedias ?? [],
       guests: user.guests ?? [],
       gifts: user.gifts ?? [],
@@ -135,7 +173,21 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       comments: weddingPage.comments,
     };
 
-    return NextResponse.json(responseData);
+    const res = NextResponse.json(responseData);
+
+  // If we incremented, set a cookie so this browser won't be counted again for 24 hours
+  if (!noIncrement && !isBot && !seenCookie && updatedViews !== null) {
+      const isProd = process.env.NODE_ENV === "production";
+      res.cookies.set(cookieName, "1", {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24, // 24 hours
+        sameSite: "lax",
+        secure: isProd,
+        path: "/",
+      });
+    }
+
+    return res;
   } catch (error) {
     console.error("Error fetching public wedding data:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

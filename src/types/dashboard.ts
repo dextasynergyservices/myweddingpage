@@ -105,7 +105,10 @@ export interface OverviewContentProps {
   userWeddings: Wedding[];
   handleCreateWedding: () => void;
   handleViewWedding: (weddingId: string) => void;
+  setActiveTab?: (tab: string) => void;
   userPlan?: UserPlan | null;
+  tasksTotal?: number;
+  tasksCompleted?: number;
 }
 
 export interface DashboardContentProps {
@@ -118,4 +121,6 @@ export interface DashboardContentProps {
   handleCreateWedding: () => void;
   handleViewWedding: (weddingId: string) => void;
   setActiveTab: (tab: string) => void;
+  tasksTotal?: number;
+  tasksCompleted?: number;
 }

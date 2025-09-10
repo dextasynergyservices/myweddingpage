@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
+import WeddingViewIncrementer from "@/components/WeddingViewIncrementer";
 import { JSX } from "react";
 
 export const dynamic = "force-dynamic";
@@ -15,9 +16,11 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
   const { slug } = await params;
 
   try {
-    // Fetch complete wedding data using our new API route
+    // Fetch complete wedding data using our new API route. We avoid incrementing here
+    // because server-side fetches (ISR/SSR) would double-count. The client will
+    // call the increment endpoint once on mount.
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/public/wedding-data/${slug}`,
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/public/wedding-data/${slug}?noIncrement=1`,
       {
         cache: "no-store",
       }
@@ -48,6 +51,10 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
           editable={false} // Public pages are not editable
           isPreview={false} // This is the live page
         />
+
+        {/* Client-side view increment: runs once per browser (sets cookie on server) */}
+        {/* Use a client component to reliably POST to the increment endpoint */}
+        <WeddingViewIncrementer slug={slug} />
 
         {/* Optional: Add a footer with wedding page info */}
         <footer className="bg-gray-50 py-8 mt-16">

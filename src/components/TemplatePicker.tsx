@@ -1,14 +1,27 @@
-// components/TemplatePicker.tsx
 "use client";
 
 import { PLANS } from "@/lib/plans";
-import {
-  templateRegistry,
-  TemplateName,
-  TemplateMeta,
-  componentMap,
-  ComponentType,
-} from "@/lib/template-registry";
+import { componentMap, ComponentType } from "@/lib/component-registry";
+import { RusticTemplate } from "@/lib/sample-templates/rustic";
+import { modernTemplate } from "@/lib/sample-templates/modern";
+import { vintageTemplate } from "@/lib/sample-templates/vintage";
+import { luxuryTemplate } from "@/lib/sample-templates/luxury";
+
+type TemplateName = "rustic" | "modern" | "vintage" | "luxury";
+
+type TemplateMeta = {
+  name: string;
+  category?: string;
+  requiredPlan?: string;
+  components: Array<{ type: ComponentType } | Record<string, unknown>>;
+};
+
+const templateRegistry: Record<string, TemplateMeta> = {
+  rustic: RusticTemplate as TemplateMeta,
+  modern: modernTemplate as TemplateMeta,
+  vintage: vintageTemplate as TemplateMeta,
+  luxury: luxuryTemplate as TemplateMeta,
+};
 import Link from "next/link";
 
 interface Props {

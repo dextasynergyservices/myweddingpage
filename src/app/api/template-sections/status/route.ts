@@ -50,7 +50,7 @@ export async function GET(req: Request) {
 
     // Check completion status for each section
     const sectionStatus = template.sections.map((section) => {
-      const sectionContent = userContent[section.id] || {};
+      const sectionContent = (userContent[section.id] as Record<string, unknown>) || {};
       let isComplete = false;
 
       switch (section.type) {
@@ -62,9 +62,11 @@ export async function GET(req: Request) {
         case "STORY":
           isComplete = Boolean(sectionContent.text || sectionContent.content);
           break;
-        case "GALLERY":
-          isComplete = Boolean(sectionContent.images && sectionContent.images.length > 0);
+        case "GALLERY": {
+          const imgs = (sectionContent as Record<string, unknown>)?.images;
+          isComplete = Array.isArray(imgs) && imgs.length > 0;
           break;
+        }
         case "REGISTRY":
           isComplete = Boolean(sectionContent.content || sectionContent.description);
           break;

@@ -60,16 +60,29 @@ export async function GET(req: Request) {
     // Grab the live wedding page (if any)
     const weddingPage = user.weddingPages?.[0] ?? null;
 
-    // Merge data from several possible sources: user fields, wedding page ai/layout data,
-    // and user template content. This gives the renderer many avenues to find bride/groom/date/etc.
+    // If we found a weddingPage, explicitly fetch its latest `views` value to avoid
+    // any cases where the nested include doesn't surface the scalar correctly.
+    let latestWeddingPageViews: number | null = null;
+    if (weddingPage?.id) {
+      try {
+        const wpSelect = await prisma.weddingPage.findUnique({
+          where: { id: weddingPage.id },
+          select: { views: true },
+        });
+        latestWeddingPageViews = wpSelect?.views ?? null;
+      } catch (err) {
+        console.error("Failed to fetch latest weddingPage.views:", err);
+      }
+    }
+
     const wpAi =
-      (weddingPage?.ai_data as Record<string, unknown>) ??
-      (weddingPage?.layout_data as Record<string, unknown>) ??
+      (weddingPage?.ai_data as Record<string, unknown> | undefined) ??
+      (weddingPage?.layout_data as Record<string, unknown> | undefined) ??
       {};
-    const utContent = (selectedUserTemplate?.content as Record<string, unknown>) ?? {};
+    const utContent = (selectedUserTemplate?.content as Record<string, unknown> | undefined) ?? {};
 
     const userData = {
-      // Prefer explicit user fields, then AI/page data, then userTemplate content, then sensible defaults
+      id: user.id, // Add user ID for gift components
       brideName:
         user.brideName ||
         wpAi?.brideName ||
@@ -100,8 +113,6 @@ export async function GET(req: Request) {
       // Include logo for header components
       logoUrl: weddingPage?.logo_url || null,
       logoAlt: weddingPage?.logo_alt || null,
-      // Include user ID for components that need it
-      id: user.id,
       // Include gallery data for gallery components
       gallery: user.galleryMedias ?? [],
       // Include gifts data for gift components
@@ -110,6 +121,9 @@ export async function GET(req: Request) {
       guests: user.guests ?? [],
       // Include bank details for gift components
       bankDetails: user.bankDetails ?? [],
+      // Include full section content for dynamic rendering
+      sections: utContent,
+      userTemplate: selectedUserTemplate,
       // expose raw objects for templates that expect different shapes
       _raw: {
         user: user,
@@ -122,7 +136,7 @@ export async function GET(req: Request) {
 
     // safe-access previewData which can be Json
     const selectedPreviewData: Record<string, unknown> =
-      (selectedTemplate as { previewData?: Record<string, unknown> })?.previewData ?? {};
+      (selectedTemplate as { previewData?: Record<string, unknown> } | null)?.previewData ?? {};
 
     const ourStory = {
       content:
@@ -136,6 +150,15 @@ export async function GET(req: Request) {
         "/default-story.jpg",
     };
 
+    // Ensure weddingPage.views is a number for consumers (in case existing rows are null)
+    const weddingPageWithViews = weddingPage
+      ? {
+          ...weddingPage,
+          // Prefer the freshly selected views value when available
+          views: latestWeddingPageViews ?? (weddingPage as { views?: number })?.views ?? 0,
+        }
+      : null;
+
     const responseData = {
       template: selectedTemplate,
       userData: {
@@ -145,7 +168,9 @@ export async function GET(req: Request) {
         userTemplate: selectedUserTemplate,
       },
       ourStory,
-      weddingPage,
+      weddingPage: weddingPageWithViews,
+      // Expose views at top-level for easier debugging in network tab (temporary)
+      views: (weddingPageWithViews as { views?: number } | null)?.views ?? 0,
       gallery: user.galleryMedias ?? [],
       guests: user.guests ?? [],
       gifts: user.gifts ?? [],
@@ -159,6 +184,8 @@ export async function GET(req: Request) {
       utContent,
       sections: utContent,
       userData: responseData.userData,
+      // Log weddingPage.views explicitly to help debug dashboard fetches
+      weddingPageViews: (weddingPageWithViews as { views?: number } | null)?.views,
     });
 
     return NextResponse.json(responseData);

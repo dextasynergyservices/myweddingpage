@@ -16,6 +16,7 @@ interface EditWeddingDetailsModalProps {
     type: string;
   };
   templateId: string;
+  weddingPage?: unknown;
   onSave: (sectionId: string, content: Record<string, unknown>) => Promise<void>;
   isSaving: boolean;
 }
@@ -25,6 +26,7 @@ const EditWeddingDetailsModal = ({
   onClose,
   section,
   templateId,
+  weddingPage,
   onSave,
   isSaving,
 }: EditWeddingDetailsModalProps) => {
@@ -107,13 +109,14 @@ const EditWeddingDetailsModal = ({
 
       // Upload to Cloudinary via our API
       try {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("imageType", imageType);
+        // Use a distinct name to avoid shadowing the component's state named `formData`
+        const uploadData = new FormData();
+        uploadData.append("file", file);
+        uploadData.append("imageType", imageType);
 
         const response = await fetch("/api/upload-image", {
           method: "POST",
-          body: formData,
+          body: uploadData,
         });
 
         if (response.ok) {
@@ -126,67 +129,84 @@ const EditWeddingDetailsModal = ({
             setFormData((prev) => ({ ...prev, heroImage: imageUrl }));
 
             // Save hero image to the wedding page
-            try {
-              const heroResponse = await fetch("/api/wedding-pages/hero-image", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ heroImage: imageUrl }),
-              });
+            // Only attempt to save to a wedding page if one exists for this user
+            if (weddingPage) {
+              try {
+                const heroResponse = await fetch("/api/wedding-pages/hero-image", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ heroImage: imageUrl }),
+                });
 
-              if (heroResponse.ok) {
-                console.log("Hero image saved to wedding page successfully");
-              } else {
-                console.error("Failed to save hero image to wedding page");
+                if (heroResponse.ok) {
+                  console.log("Hero image saved to wedding page successfully");
+                } else {
+                  console.error("Failed to save hero image to wedding page");
+                }
+              } catch (error) {
+                console.error("Error saving hero image to wedding page:", error);
               }
-            } catch (error) {
-              console.error("Error saving hero image to wedding page:", error);
+            } else {
+              console.log(
+                "No wedding page found for user - skipping saving hero image to wedding page"
+              );
             }
           } else if (imageType === "story") {
             setFormData((prev) => ({ ...prev, storyImage: imageUrl }));
 
             // Save story image to the wedding page
-            try {
-              const storyResponse = await fetch("/api/wedding-pages/story-image", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ storyImage: imageUrl }),
-              });
+            if (weddingPage) {
+              try {
+                const storyResponse = await fetch("/api/wedding-pages/story-image", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ storyImage: imageUrl }),
+                });
 
-              if (storyResponse.ok) {
-                console.log("Story image saved to wedding page successfully");
-              } else {
-                console.error("Failed to save story image to wedding page");
+                if (storyResponse.ok) {
+                  console.log("Story image saved to wedding page successfully");
+                } else {
+                  console.error("Failed to save story image to wedding page");
+                }
+              } catch (error) {
+                console.error("Error saving story image to wedding page:", error);
               }
-            } catch (error) {
-              console.error("Error saving story image to wedding page:", error);
+            } else {
+              console.log(
+                "No wedding page found for user - skipping saving story image to wedding page"
+              );
             }
           } else if (imageType === "logo") {
             setFormData((prev) => ({ ...prev, logoUrl: imageUrl }));
 
             // Save logo to the wedding page
-            try {
-              const logoResponse = await fetch("/api/wedding-pages/logo", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  logoUrl: imageUrl,
-                  logoAlt: formData.logoAlt || "Wedding Logo",
-                }),
-              });
+            if (weddingPage) {
+              try {
+                const logoResponse = await fetch("/api/wedding-pages/logo", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    logoUrl: imageUrl,
+                    logoAlt: formData.logoAlt || "Wedding Logo",
+                  }),
+                });
 
-              if (logoResponse.ok) {
-                console.log("Logo saved to wedding page successfully");
-              } else {
-                console.error("Failed to save logo to wedding page");
+                if (logoResponse.ok) {
+                  console.log("Logo saved to wedding page successfully");
+                } else {
+                  console.error("Failed to save logo to wedding page");
+                }
+              } catch (error) {
+                console.error("Error saving logo to wedding page:", error);
               }
-            } catch (error) {
-              console.error("Error saving logo to wedding page:", error);
+            } else {
+              console.log("No wedding page found for user - skipping saving logo to wedding page");
             }
           }
 
@@ -227,8 +247,8 @@ const EditWeddingDetailsModal = ({
           text: formData.story,
           content: formData.story,
           story: formData.story,
-          imageUrl: formData.storyImage, // Save as imageUrl to match template structure
-          storyImage: formData.storyImage, // Keep for backward compatibility
+          imageUrl: formData.storyImage,
+          storyImage: formData.storyImage,
         };
       }
 

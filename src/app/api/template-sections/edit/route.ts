@@ -5,15 +5,23 @@ import { prisma } from "@/lib/prisma";
 
 export async function PUT(req: Request) {
   try {
+    console.log("PUT /api/template-sections/edit - Starting request");
+
     const session = await getServerSession(authOptions);
+    console.log("Session:", session);
 
     if (!session?.user?.email) {
+      console.log("No session or user email found");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { templateId, sectionId, content } = await req.json();
+    const body = await req.json();
+    console.log("Request body:", body);
+
+    const { templateId, sectionId, content } = body;
 
     if (!templateId || !sectionId || !content) {
+      console.log("Missing required fields:", { templateId, sectionId, content });
       return NextResponse.json(
         { error: "Template ID, section ID, and content are required" },
         { status: 400 }
@@ -23,8 +31,10 @@ export async function PUT(req: Request) {
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     });
+    console.log("Found user:", user?.id);
 
     if (!user) {
+      console.log("User not found for email:", session.user.email);
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
@@ -51,19 +61,21 @@ export async function PUT(req: Request) {
 
     // Update the specific section content
     const currentContent = (userTemplate.content as Record<string, unknown>) || {};
+    const existingSection = (currentContent[sectionId] as Record<string, unknown>) || {};
     const updatedContent = {
       ...currentContent,
       [sectionId]: {
-        ...currentContent[sectionId],
+        ...existingSection,
         ...content,
         updatedAt: new Date().toISOString(),
       },
-    };
+    } as Record<string, unknown>;
 
     const updatedUserTemplate = await prisma.userTemplate.update({
       where: { id: userTemplate.id },
       data: {
-        content: updatedContent,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        content: updatedContent as any, // Prisma Json field requires any cast
         updatedAt: new Date(),
       },
       include: {
@@ -75,6 +87,12 @@ export async function PUT(req: Request) {
           },
         },
       },
+    });
+
+    console.log("Final response data:", {
+      success: true,
+      userTemplate: updatedUserTemplate,
+      sectionContent: updatedContent[sectionId],
     });
 
     return NextResponse.json({

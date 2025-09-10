@@ -3,17 +3,20 @@
 import { useState, useEffect } from "react";
 import { DynamicTemplateRenderer } from "./DynamicTemplateRenderer";
 import { Save, Palette, ArrowLeft } from "lucide-react";
+import { SectionType } from "@/generated/prisma";
 import { ColorScheme } from "@/lib/component-registry";
+import { UserData } from "@/types/user-data";
 
 interface TemplateEditorProps {
   template: {
     id: string;
     name: string;
+    description?: string;
     sections: Array<{ id: string; type: string; components: Record<string, unknown> }>;
     colorSchemes: ColorScheme[];
   };
   userPlan: { id: string; name: string; maxComponents: number };
-  userData: Record<string, unknown>;
+  userData: UserData;
   onSave: (content: Record<string, unknown>, colorScheme: ColorScheme) => Promise<void>;
   onBack: () => void;
 }
@@ -141,15 +144,18 @@ export default function TemplateEditor({
         <DynamicTemplateRenderer
           template={{
             ...template,
-            components: template.components.map(
-              (comp: { id: string; content: Record<string, unknown> }) => ({
-                ...comp,
-                content: {
-                  ...comp.content,
-                  ...(customContent[comp.id] || {}),
-                },
-              })
-            ),
+            sections: template.sections.map((section) => ({
+              ...section,
+              // ensure required fields for TemplateSection
+              layout:
+                (section as unknown as { layout?: string }).layout ?? (section.type as string),
+              type: section.type as unknown as SectionType,
+              order: (section as unknown as { order?: number }).order ?? 0,
+              components: {
+                ...(section.components || {}),
+                ...(customContent[section.id] || {}),
+              },
+            })),
           }}
           userPlan={userPlan}
           userData={userData}

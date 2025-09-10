@@ -17,6 +17,8 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: User }) {
+      console.log("JWT callback - token:", token, "user:", user);
+
       if (user) {
         // 🔹 Check if user already exists
         const existingUser = await prisma.user.findUnique({
@@ -40,20 +42,25 @@ export const authOptions: NextAuthOptions = {
         }
 
         // ✅ Add user details to token
-        token.id = user.id;
+        token.id = existingUser?.id || user.id;
         token.email = user.email ?? "";
         token.name = user.name ?? "";
-        token.role = user.role ?? "USER";
+        token.role = existingUser?.role ?? "USER";
       }
+      console.log("JWT callback - final token:", token);
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
+      console.log("Session callback - token:", token, "session:", session);
+
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
         session.user.role = token.role as string;
       }
+
+      console.log("Session callback - final session:", session);
       return session;
     },
 

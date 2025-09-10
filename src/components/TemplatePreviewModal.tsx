@@ -8,6 +8,7 @@ import Modal from "@/components/ui/Modal";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
 import { Template, UserTemplate, WeddingPage, UserPlan } from "@/types/wedding";
+import { UserData } from "@/types/user-data";
 import toast from "react-hot-toast";
 
 interface TemplatePreviewModalProps {
@@ -35,7 +36,7 @@ const TemplatePreviewModal = ({
 }: TemplatePreviewModalProps) => {
   const { isDarkMode } = useTheme();
   const [isSelecting, setIsSelecting] = useState(false);
-  const [previewData, setPreviewData] = useState<Record<string, unknown> | null>(null);
+  const [previewData, setPreviewData] = useState<UserData | null>(null);
   const [loadingData, setLoadingData] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -105,7 +106,7 @@ const TemplatePreviewModal = ({
       onClose();
     } catch (error: unknown) {
       console.error("Error selecting template:", error);
-      toast.error(error?.message || "Failed to select template");
+      toast.error(getErrorMessage(error) || "Failed to select template");
     } finally {
       setIsSelecting(false);
     }
@@ -134,7 +135,7 @@ const TemplatePreviewModal = ({
       onClose();
     } catch (error: unknown) {
       console.error("Error deleting template:", error);
-      toast.error(error?.message || "Failed to delete template");
+      toast.error(getErrorMessage(error) || "Failed to delete template");
     } finally {
       setIsDeleting(false);
     }
@@ -143,36 +144,57 @@ const TemplatePreviewModal = ({
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   // Extract basic data from wedding page if needed
-  const extractUserDataFromWeddingPage = (wp: {
-    brideName?: string;
-    groomName?: string;
-    weddingDate?: string;
-    venue?: string;
-    welcomeMessage?: string;
-  }) => {
+  const extractUserDataFromWeddingPage = (
+    wp?: WeddingPage | Record<string, unknown> | null
+  ): UserData | undefined => {
     if (!wp) return undefined;
-    const ai = wp.ai_data || wp.layout_data || {};
+    const ai =
+      (wp as Record<string, unknown>).ai_data || (wp as Record<string, unknown>).layout_data || {};
     return {
-      brideName: ai?.brideName || ai?.bride_name || wp?.welcomeMessage,
-      groomName: ai?.groomName || ai?.groom_name,
-      weddingDate: ai?.weddingDate || wp?.created_at,
-      venue: wp?.venue || ai?.venue,
+      brideName: String(
+        (ai as Record<string, unknown>)?.brideName ||
+          (ai as Record<string, unknown>)?.bride_name ||
+          (wp as Record<string, unknown>)?.welcomeMessage ||
+          ""
+      ),
+      groomName: String(
+        (ai as Record<string, unknown>)?.groomName ||
+          (ai as Record<string, unknown>)?.groom_name ||
+          ""
+      ),
+      weddingDate: String(
+        (ai as Record<string, unknown>)?.weddingDate ||
+          (wp as Record<string, unknown>)?.created_at ||
+          ""
+      ),
+      venue: String(
+        (wp as Record<string, unknown>)?.venue || (ai as Record<string, unknown>)?.venue || ""
+      ),
     };
   };
 
-  const fallbackTemplate = previewData?.template ||
-    userTemplate?.template || { ...template, sections: template.sections || [] };
+  const fallbackTemplate = (previewData?.template ||
+    userTemplate?.template || { ...template, sections: template.sections || [] }) as Template;
+
+  // Create a default UserData object that satisfies the interface
+  const createDefaultUserData = (): UserData => ({
+    id: "",
+    brideName: "",
+    groomName: "",
+    weddingDate: "",
+    venue: "",
+  });
 
   // For customize mode, use the userData directly from API (contains sections)
   // For preview mode, use static preview data
-  const fallbackUserData = isSelect
-    ? previewData?.userData || // From API wedding-data - contains sections
+  const fallbackUserData: UserData = isSelect
+    ? (previewData?.userData as UserData) || // From API wedding-data - contains sections
       extractUserDataFromWeddingPage(weddingPage) ||
-      template.previewData ||
-      {}
-    : previewData?.previewData || // For preview mode - static data
-      template.previewData ||
-      {};
+      (template.previewData as UserData) ||
+      createDefaultUserData()
+    : (previewData?.previewData as UserData) || // For preview mode - static data
+      (template.previewData as UserData) ||
+      createDefaultUserData();
 
   // ✅ Corrected renderer logic
   const rendererData = isSelect
@@ -195,6 +217,15 @@ const TemplatePreviewModal = ({
       rendererData,
       sections: fallbackUserData?.sections,
     });
+  }
+
+  // Helper to normalize unknown errors
+  function getErrorMessage(err: unknown) {
+    if (!err) return "Unknown error";
+    if (err instanceof Error) return err.message;
+    if (typeof err === "object" && err && "message" in err)
+      return String((err as { message: unknown }).message);
+    return String(err);
   }
 
   return (
@@ -222,19 +253,6 @@ const TemplatePreviewModal = ({
           </motion.button>
         </div>
 
-        {/* <div className="mb-6">
-          <div className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-            {!isSelect ? (
-              <span>Preview mode – showing sample template data</span>
-            ) : (
-              <div className="flex items-center gap-2 text-green-600">
-                <Check className="h-4 w-4" />
-                <span>Your selected template with your customizations</span>
-              </div>
-            )}
-          </div>
-        </div> */}
-
         <div className="w-full overflow-auto">
           {loadingData ? (
             <div className="flex justify-center items-center h-64">
@@ -242,10 +260,18 @@ const TemplatePreviewModal = ({
             </div>
           ) : rendererData.template ? (
             <DynamicTemplateRenderer
-              template={rendererData.template}
+              template={rendererData.template as Template}
               userPlan={userPlan || { id: "preview", name: "Preview", maxComponents: 10 }}
-              userData={rendererData.userData}
-              colorScheme={userTemplate?.colorScheme || template.colorSchemes?.[0]}
+              userData={rendererData.userData as UserData}
+              colorScheme={
+                (userTemplate?.colorScheme || template.colorSchemes?.[0]) as {
+                  name: string;
+                  primary: string;
+                  secondary: string;
+                  background: string;
+                  text: string;
+                }
+              }
               editable={isSelect} // allow editing only when customizing
               isPreview={!isSelect} // true for static preview
             />
