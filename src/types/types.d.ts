@@ -17,6 +17,30 @@ export type Template = {
   description: string;
   thumbnail: string;
   layout_data: Record<string, unknown>;
+  category: TemplateCategory;
+  components: Array<{
+    id: string;
+    type: string;
+    content: Record<string, unknown>;
+  }>;
+  colorSchemes: Array<{
+    name: string;
+    primary: string;
+    secondary: string;
+    background: string;
+    text: string;
+  }>;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TemplateCategory = {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Plan = {
@@ -27,6 +51,9 @@ export type Plan = {
   max_photos: number;
   max_videos: number;
   max_tabs: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Payment = {
@@ -59,3 +86,14 @@ export type User = {
   whatsapp?: string;
   verification_code?: string;
 };
+
+export interface UserTemplate {
+  id: string;
+  userId: string;
+  templateId: string;
+  template: Template;
+  colorScheme: Record<string, unknown>;
+  content: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+}

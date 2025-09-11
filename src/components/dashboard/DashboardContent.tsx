@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Wedding, StatItem, QuickAction } from "@/types/dashboard";
 import WeddingPageBuilder from "@/components/dashboard/WeddingPageBuilder";
+import PageBuilder from "@/components/dashboard/PageBuilder";
 import Gallery from "@/components/dashboard/Gallery";
 import GuestManagement from "@/components/dashboard/GuestManagement";
 import LiveStreaming from "@/components/dashboard/LiveStreaming";
@@ -32,6 +33,8 @@ interface DashboardContentProps {
   handleCreateWedding: () => void;
   handleViewWedding: (weddingId: string) => void;
   setActiveTab: (tab: string) => void;
+  tasksTotal?: number;
+  tasksCompleted?: number;
 }
 
 const DashboardContent = ({
@@ -43,11 +46,16 @@ const DashboardContent = ({
   userWeddings,
   handleCreateWedding,
   handleViewWedding,
+  setActiveTab,
+  tasksTotal,
+  tasksCompleted,
 }: DashboardContentProps) => {
   const renderContent = () => {
     switch (activeTab) {
       case "builder":
         return <WeddingPageBuilder />;
+      case "page-builder":
+        return <PageBuilder />;
       case "gallery":
         return <Gallery />;
       case "guests":
@@ -68,6 +76,10 @@ const DashboardContent = ({
             userWeddings={userWeddings}
             handleCreateWedding={handleCreateWedding}
             handleViewWedding={handleViewWedding}
+            setActiveTab={setActiveTab}
+            // pass task totals for card progress
+            tasksTotal={tasksTotal}
+            tasksCompleted={tasksCompleted}
           />
         );
     }

@@ -8,18 +8,29 @@ interface ProgressBarProps {
 }
 
 const ProgressBar = ({ title, current, total, color, isDarkMode, format }: ProgressBarProps) => {
-  const percentage = (current / total) * 100;
+  // Guard against division by zero or invalid numbers
+  const safeCurrent = Number.isFinite(current) ? current : 0;
+  const safeTotal = Number.isFinite(total) && total > 0 ? total : 0;
+  const rawPercentage = safeTotal > 0 ? (safeCurrent / safeTotal) * 100 : 0;
+  const percentage = Math.max(0, Math.min(100, Number.isFinite(rawPercentage) ? rawPercentage : 0));
 
   const formatValue = () => {
+    // When there's no total, show a friendly placeholder instead of 0/0 or NaN%
+    if (safeTotal === 0) {
+      // If the title looks like RSVP/Guests, show a clearer message
+      if (/rsvp|guest/i.test(title)) return "No guests";
+      return "—";
+    }
+
     switch (format) {
       case "currency":
-        return `$${current.toLocaleString()}/${total.toLocaleString()}`;
+        return `$${safeCurrent.toLocaleString()}/${safeTotal.toLocaleString()}`;
       case "percentage":
         return `${Math.round(percentage)}%`;
       case "count":
-        return `${current}/${total}`;
+        return `${safeCurrent}/${safeTotal}`;
       default:
-        return `${current}/${total}`;
+        return `${safeCurrent}/${safeTotal}`;
     }
   };
 

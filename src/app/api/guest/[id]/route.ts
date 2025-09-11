@@ -4,8 +4,10 @@ import { getCurrentUser } from "@/lib/session";
 import cloudinary from "@/lib/cloudinary";
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+  const { id } = await params;
+
   try {
-    console.log("Deleting guest with ID:", params.id);
+    console.log("Deleting guest with ID:", id);
     const user = await getCurrentUser();
     if (!user) {
       console.log("No user found");
@@ -14,7 +16,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
     // Verify guest exists and belongs to user
     const guest = await prisma.guest.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!guest) {
@@ -44,7 +46,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
     await prisma.guest.delete({
       where: {
-        id: params.id,
+        id: id,
         userId: user.id, // Ensure user can only delete their own guests
       },
     });

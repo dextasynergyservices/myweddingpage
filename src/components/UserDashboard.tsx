@@ -10,8 +10,8 @@ import {
   Gift,
   CheckSquare,
   Eye,
-  DollarSign,
   Calendar,
+  // (DollarSign was removed as it was unused)
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -53,10 +53,10 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
   const baseItems: NavigationItem[] = [
     { id: "overview", label: "Overview", icon: BarChart3, description: "Dashboard overview" },
     {
-      id: "builder",
+      id: "page-builder",
       label: "Page Builder",
       icon: Layout,
-      description: "Drag & drop wedding page builder",
+      description: "Wedding page builder",
     },
     { id: "gallery", label: "Gallery", icon: Camera, description: "Photos" },
     {
@@ -72,7 +72,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
     { id: "streaming", label: "Live Stream", icon: Video, description: "Live streaming setup" },
     {
       id: "checklist",
-      label: "Checklist",
+      label: "Task/Checklist",
       icon: CheckSquare,
       description: "Interactive planning checklist",
     },
@@ -88,27 +88,191 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
     navigationItems = [...navigationItems, ...extraItems]; // add all
   }
 
-  const userWeddings: Wedding[] = [
-    {
-      id: "my-wedding-1",
-      title: "Our Dream Wedding",
-      date: "2024-08-15",
-      status: "published",
-      views: 1247,
-      messages: 23,
-      photos: 45,
-      gifts: 12,
-      budget: 25000,
-      spent: 18500,
-      guestCount: 150,
-      rsvpCount: 127,
-    },
-  ];
+  const [userWeddings, setUserWeddings] = useState<Wedding[]>([]);
+  const [totalViews, setTotalViews] = useState<number | null>(null);
+  const [tasksTotal, setTasksTotal] = useState<number>(0);
+  const [tasksCompleted, setTasksCompleted] = useState<number>(0);
+  const [guestsTotal, setGuestsTotal] = useState<number>(0);
+  const [guestsResponded, setGuestsResponded] = useState<number>(0);
+
+  // Fetch tasks to compute checklist totals
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await fetch("/api/tasks", { credentials: "same-origin" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setTasksTotal(data.length);
+          // Narrow items that have a completed property
+          const hasCompleted = (x: unknown): x is { completed?: boolean } =>
+            typeof x === "object" && x !== null && "completed" in x;
+          setTasksCompleted(data.filter(hasCompleted).filter((t) => !!t.completed).length);
+        }
+      } catch (error) {
+        console.error("Failed to fetch tasks for dashboard stats:", error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  // Fetch user's wedding / template data and create a dashboard-friendly Wedding[]
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchWeddingOverview = async () => {
+      try {
+        const res = await fetch("/api/wedding-data", { credentials: "same-origin" });
+        if (!res.ok) {
+          if (mounted) setUserWeddings([]);
+          return;
+        }
+        const data = await res.json();
+
+        const wp = data?.weddingPage ?? null;
+        const u = data?.userData ?? {};
+        const guests = Array.isArray(data?.guests) ? data.guests : [];
+        const gifts = Array.isArray(data?.gifts) ? data.gifts : [];
+        const gallery = Array.isArray(data?.gallery) ? data.gallery : [];
+
+        const guestCount = guests.length;
+        const hasRsvpStatus = (x: unknown): x is { rsvpStatus?: string } =>
+          typeof x === "object" && x !== null && "rsvpStatus" in x;
+        const rsvpCount = guests.filter(
+          (g: unknown) => hasRsvpStatus(g) && !!g.rsvpStatus && g.rsvpStatus !== "PENDING"
+        ).length;
+
+        const hasPurchased = (x: unknown): x is { purchased?: boolean } =>
+          typeof x === "object" && x !== null && "purchased" in x;
+        const giftsReceived =
+          gifts.filter(hasPurchased).filter((g: { purchased?: boolean }) => !!g.purchased).length ||
+          gifts.length ||
+          0;
+
+        const messages =
+          (data?.userData?.guestMessages?.length as number) ||
+          (wp?.comments?.length as number) ||
+          0;
+
+        const photos = gallery.length;
+
+        const title = `${u.groomName || "Groom"} & ${u.brideName || "Bride"}`;
+
+        const isoDate = u.weddingDate
+          ? new Date(u.weddingDate).toISOString().split("T")[0]
+          : wp?.wedding_date
+            ? new Date(wp.wedding_date).toISOString().split("T")[0]
+            : "";
+
+        const status = wp?.is_live ? "published" : data?.userTemplate ? "customizing" : "draft";
+
+        const weddingObj: Wedding = {
+          id: wp?.id ?? u.id ?? "",
+          title,
+          date: isoDate,
+          status,
+          views: wp?.views ?? data?.views ?? 0,
+          messages: messages ?? 0,
+          photos: photos,
+          gifts: giftsReceived,
+          budget: 0,
+          spent: 0,
+          guestCount,
+          rsvpCount,
+        };
+
+        if (mounted) setUserWeddings([weddingObj]);
+      } catch (err) {
+        console.error("Failed to fetch dashboard wedding data:", err);
+        if (mounted) setUserWeddings([]);
+      }
+    };
+
+    fetchWeddingOverview();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Fetch guests to compute RSVP totals
+  useEffect(() => {
+    const fetchGuests = async () => {
+      try {
+        const res = await fetch("/api/guests", { credentials: "same-origin" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setGuestsTotal(data.length);
+          const hasRsvpStatus = (x: unknown): x is { rsvpStatus?: string } =>
+            typeof x === "object" && x !== null && "rsvpStatus" in x;
+          setGuestsResponded(
+            data.filter((g) => hasRsvpStatus(g) && !!g.rsvpStatus && g.rsvpStatus !== "PENDING")
+              .length
+          );
+        }
+      } catch (error) {
+        console.error("Failed to fetch guests for dashboard stats:", error);
+      }
+    };
+
+    fetchGuests();
+  }, []);
+
+  // Fetch lightweight endpoint that returns only views (authenticated)
+  useEffect(() => {
+    let mounted = true;
+    const fetchWeddingViews = async () => {
+      try {
+        const res = await fetch("/api/wedding-views", { credentials: "same-origin" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (mounted && typeof data?.views === "number") {
+          setTotalViews(data.views);
+          // Also update the per-wedding displayed views so OverviewContent reflects
+          // the same refreshed value as the Total Views stat.
+          setUserWeddings((prev) => {
+            if (!prev || prev.length === 0) return prev;
+            return prev.map((w, idx) => {
+              // If the polled response included a weddingPage id, try to match by id;
+              // otherwise, apply the views to the first (primary) wedding object.
+              const polledId = data?.weddingPage?.id;
+              if (polledId && w.id === polledId) {
+                return { ...w, views: data.views };
+              }
+              if (!polledId && idx === 0) {
+                return { ...w, views: data.views };
+              }
+              return w;
+            });
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch wedding views:", err);
+      }
+    };
+
+    fetchWeddingViews();
+
+    // Poll every 30 seconds
+    const id = setInterval(fetchWeddingViews, 30 * 1000);
+
+    // Refresh when window regains focus
+    const onFocus = () => fetchWeddingViews();
+    window.addEventListener("focus", onFocus);
+
+    return () => {
+      mounted = false;
+      clearInterval(id);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, []);
 
   const baseStats: StatItem[] = [
     {
       title: "Total Views",
-      value: "1,247",
+      value: totalViews != null ? totalViews.toLocaleString() : "—",
       change: "+12%",
       icon: Eye,
       color: "from-blue-500 to-indigo-600",
@@ -118,17 +282,9 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
 
   const extraStats: StatItem[] = [
     {
-      title: "Budget Used",
-      value: "74%",
-      change: "+8%",
-      icon: DollarSign,
-      color: "from-amber-500 to-orange-600",
-      allowedPlans: ["Dazzle", "Dynasty Royale"],
-    },
-    {
       title: "Check List",
-      value: "68/95",
-      change: "+12",
+      value: `${tasksCompleted}/${tasksTotal}`,
+      change: tasksTotal > 0 ? `+${Math.round((tasksCompleted / tasksTotal) * 100)}%` : "+0%",
       icon: CheckSquare,
       color: "from-purple-500 to-pink-500",
       allowedPlans: ["Dazzle", "Dynasty Royale"],
@@ -136,7 +292,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
 
     {
       title: "RSVP Responses",
-      value: "127/150",
+      value: `${guestsResponded}/${guestsTotal}`,
       change: "+5",
       icon: Users,
       color: "from-emerald-500 to-teal-600",
@@ -147,7 +303,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
   let stats: StatItem[] = [...baseStats];
 
   if (planName === "Dazzle") {
-    stats = [...stats, extraStats[1]]; // Add Check List
+    stats = [...stats, extraStats[0]]; // Add Check List
   }
 
   if (planName === "Dynasty Royale") {
@@ -160,10 +316,10 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
   const baseQuickActions: QuickAction[] = [
     {
       title: "Build Wedding Page",
-      description: "Use drag & drop builder",
+      description: "Wedding Page Builder",
       icon: Layout,
       color: "from-indigo-600 to-purple-600",
-      action: () => setActiveTab("builder"),
+      action: () => setActiveTab("page-builder"),
       allowedPlans: ["Delight", "Darling", "Dazzle", "Dynasty Royale"],
     },
     {
@@ -198,7 +354,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
       description: "Hour-by-hour schedule",
       icon: Calendar,
       color: "from-amber-500 to-orange-600",
-      action: () => setActiveTab("checklists"),
+      action: () => setActiveTab("checklist"),
       allowedPlans: ["Dazzle", "Dynasty Royale"],
     },
     {
@@ -222,7 +378,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
   }
 
   const handleCreateWedding = () => {
-    router.push("/wedding/new");
+    setActiveTab?.("page-builder");
   };
 
   const handleViewWedding = (weddingId: string) => {
@@ -278,6 +434,8 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                 handleCreateWedding={handleCreateWedding}
                 handleViewWedding={handleViewWedding}
                 setActiveTab={setActiveTab}
+                tasksTotal={tasksTotal}
+                tasksCompleted={tasksCompleted}
               />
             </div>
           </div>

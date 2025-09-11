@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
 import { StatItem, QuickAction, Wedding } from "@/types/dashboard";
-import { Plus } from "lucide-react";
+import { Plus, Edit2, AccessibilityIcon } from "lucide-react";
 import WeddingCard from "@/components/dashboard/WeddingCard";
 import NoWeddings from "@/components/dashboard/NoWeddings";
 import Button from "@/components/ui/Button";
 import { useEffect, useState, useCallback } from "react";
 import RenewalModal from "@/components/dashboard/RenewalModal";
+import ContactUpgradeModal from "@/components/dashboard/ContactUpgradeModal";
 import toast from "react-hot-toast";
 
 interface UserData {
@@ -28,6 +29,14 @@ interface OverviewContentProps {
   userWeddings: Wedding[];
   handleCreateWedding: () => void;
   handleViewWedding: (weddingId: string) => void;
+  setActiveTab?: (tab: string) => void;
+  tasksTotal?: number;
+  tasksCompleted?: number;
+}
+
+interface RemoteInfo {
+  weddingPage?: { slug?: string; is_live?: boolean };
+  userTemplate?: unknown;
 }
 
 const OverviewContent = ({
@@ -38,9 +47,17 @@ const OverviewContent = ({
   userWeddings,
   handleCreateWedding,
   handleViewWedding,
+  setActiveTab,
+  tasksTotal,
+  tasksCompleted,
 }: OverviewContentProps) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isRenewalOpen, setRenewalOpen] = useState(false);
+  const [isContactUpgradeOpen, setContactUpgradeOpen] = useState(false);
+  const [remoteInfo, setRemoteInfo] = useState<RemoteInfo | null>(null);
+  const [loadingRemoteInfo, setLoadingRemoteInfo] = useState(true);
+  const [tasksByWedding] = useState<Record<string, { total: number; completed: number }>>({});
+  const [polledViews, setPolledViews] = useState<number | null>(null);
 
   // ✅ Make fetchUserData reusable
   const fetchUserData = useCallback(async () => {
@@ -55,7 +72,51 @@ const OverviewContent = ({
 
   useEffect(() => {
     fetchUserData();
+    // fetch wedding/template status for conditional buttons
+    const fetchRemote = async () => {
+      setLoadingRemoteInfo(true);
+      try {
+        const res = await fetch("/api/wedding-views", { credentials: "same-origin" });
+        if (!res.ok) {
+          setRemoteInfo(null);
+          return;
+        }
+        const data = await res.json();
+        setRemoteInfo(data);
+      } catch (err) {
+        console.error("Failed to fetch wedding/template info:", err);
+        setRemoteInfo(null);
+      } finally {
+        setLoadingRemoteInfo(false);
+      }
+    };
+
+    fetchRemote();
   }, [fetchUserData]);
+
+  // Poll `/api/wedding-views` every 30s so the dashboard shows up-to-date values
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchPolledViews = async () => {
+      try {
+        const res = await fetch("/api/wedding-views", { credentials: "same-origin" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (mounted && typeof data?.views === "number") setPolledViews(data.views);
+      } catch (err) {
+        console.error("Failed to fetch polled wedding views:", err);
+      }
+    };
+
+    fetchPolledViews();
+    const id = setInterval(fetchPolledViews, 30 * 1000);
+
+    return () => {
+      mounted = false;
+      clearInterval(id);
+    };
+  }, []);
 
   // 🔹 Paystack verification effect (updated to handle early undefined user)
   useEffect(() => {
@@ -162,7 +223,13 @@ const OverviewContent = ({
             />
           </div>
           <div className="p-3 md:p-4">
-            <Button type="submit">Update Plan</Button>
+            <Button type="button" onClick={() => setContactUpgradeOpen(true)}>
+              Update Plan
+            </Button>
+            <ContactUpgradeModal
+              isOpen={isContactUpgradeOpen}
+              onClose={() => setContactUpgradeOpen(false)}
+            />
           </div>
         </div>
       </div>
@@ -262,28 +329,71 @@ const OverviewContent = ({
               isDarkMode ? "text-white" : "text-slate-900"
             }`}
           >
-            My Wedding Pages
+            My Wedding Page
           </h2>
-          <button
-            onClick={handleCreateWedding}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-medium hover:shadow-lg transition-all duration-300 flex items-center gap-2"
-          >
-            <Plus className="h-3 md:h-4 w-3 md:w-4" />
-            <span className="text-sm md:text-base">Create New</span>
-          </button>
+          {/* Change Create New behavior depending on whether the user has a weddingPage or selected template */}
+          {loadingRemoteInfo ? (
+            <button className="bg-slate-300 text-slate-700 px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-medium">
+              Loading...
+            </button>
+          ) : remoteInfo?.weddingPage ? (
+            <button
+              onClick={() => setActiveTab && setActiveTab("page-builder")}
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-medium hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+            >
+              <Edit2 className="h-3 md:h-4 w-3 md:w-4" />
+              <span className="text-sm md:text-base">Edit Wedding page</span>
+            </button>
+          ) : remoteInfo?.userTemplate ? (
+            <button
+              onClick={() => setActiveTab && setActiveTab("page-builder")}
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-medium hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+            >
+              <AccessibilityIcon className="h-3 md:h-4 w-3 md:w-4" />
+              <span className="text-sm md:text-base">Customize Template</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleCreateWedding}
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-medium hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+            >
+              <Plus className="h-3 md:h-4 w-3 md:w-4" />
+              <span className="text-sm md:text-base">Create New</span>
+            </button>
+          )}
         </div>
 
         {userWeddings.length > 0 ? (
           <div className="space-y-4 md:space-y-6">
-            {userWeddings.map((wedding) => (
-              <WeddingCard
-                key={wedding.id}
-                wedding={wedding}
-                isDarkMode={isDarkMode}
-                handleViewWedding={handleViewWedding}
-                setActiveTab={() => {}}
-              />
-            ))}
+            {userWeddings.map((wedding) => {
+              const perWedding = tasksByWedding[wedding.id] ?? {
+                total: typeof tasksTotal === "number" ? tasksTotal : 0,
+                completed: typeof tasksCompleted === "number" ? tasksCompleted : 0,
+              };
+
+              // If we have a polled live value for views, prefer it for display
+              const displayWedding = {
+                ...wedding,
+                views: typeof polledViews === "number" ? polledViews : wedding.views,
+              } as Wedding;
+
+              return (
+                <WeddingCard
+                  key={wedding.id}
+                  wedding={displayWedding}
+                  isDarkMode={isDarkMode}
+                  handleViewWedding={handleViewWedding}
+                  setActiveTab={(tab: string) => setActiveTab && setActiveTab(tab)}
+                  // pass published/template info when available from the /api/wedding-data response
+                  hasTemplate={!!remoteInfo?.userTemplate}
+                  hasWeddingPage={!!remoteInfo?.weddingPage}
+                  liveSlug={remoteInfo?.weddingPage?.slug ?? null}
+                  isLive={remoteInfo?.weddingPage?.is_live ?? false}
+                  tasksTotal={perWedding.total}
+                  tasksCompleted={perWedding.completed}
+                />
+              );
+            })}
           </div>
         ) : (
           <NoWeddings isDarkMode={isDarkMode} handleCreateWedding={handleCreateWedding} />

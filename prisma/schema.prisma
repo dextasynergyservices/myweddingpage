@@ -54,6 +54,14 @@ enum MediaCategory {
   after
 }
 
+enum SectionType {
+  HERO
+  STORY
+  GALLERY
+  REGISTRY
+  WISHES
+}
+
 model User {
   id                String        @id @default(uuid())
   email             String?        @unique
@@ -150,7 +158,23 @@ model Template {
   weddingPages  WeddingPage[]
   planTemplate  PlanTemplate[]
   userTemplates UserTemplate[]
+  sections       TemplateSection[]
 }
+
+model TemplateSection {
+  id          String   @id @default(cuid())
+  templateId  String
+  template    Template @relation(fields: [templateId], references: [id])
+
+  type        SectionType   // HERO, STORY, GALLERY, REGISTRY, WISHES
+  layout      String        // e.g. "hero_split_image_text", "story_timeline"
+  components  Json          // holds config: slots, typography, positions, etc.
+  order       Int           // order on the page
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 
 model TemplateCategory {
   id          String     @id @default(uuid())
@@ -194,12 +218,15 @@ model WeddingPage {
   templateId        String
   title             String
   slug              String   @unique
+  views             Int      @default(0)
   ai_data           Json?
   layout_data       Json?
   color_theme       String?
 
   hero_image        String?
   story_image       String?
+  logo_url          String?
+  logo_alt          String?
   venue             String?
   welcomeMessage    String?
 
@@ -431,7 +458,7 @@ model TaskPriority {
   name  String   // e.g., Low, Medium, High
   level Int      // e.g., 1 = Low, 2 = Medium, 3 = High
   color String?  // Optional for UI styling
-  tasks Task[]
+  tasks Task[]
 }
 
 model Stream {

@@ -30,7 +30,7 @@ export default function ManualVerificationPage() {
       if (remaining > 0) {
         setCooldown(remaining);
       } else {
-        localStorage.removeItem("resendCooldownUntil");
+        localStorage.remove("resendCooldownUntil");
       }
     }
   }, []);

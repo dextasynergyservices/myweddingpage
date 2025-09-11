@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
-import prisma from "@/lib/prisma";
-import { WeddingPageData } from "@/types/types";
+import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
+import WeddingViewIncrementer from "@/components/WeddingViewIncrementer";
 import { JSX } from "react";
 
 export const dynamic = "force-dynamic";
@@ -14,62 +13,66 @@ type PageProps = {
 };
 
 export default async function WeddingPage({ params }: PageProps): Promise<JSX.Element> {
-  const slug = params.slug;
+  const { slug } = await params;
 
-  const page = await prisma.weddingPage.findUnique({
-    where: { slug },
-    include: {
-      template: true,
-      mediaUploads: true,
-      comments: {
-        where: { approved: true },
-      },
-    },
-  });
+  try {
+    // Fetch complete wedding data using our new API route. We avoid incrementing here
+    // because server-side fetches (ISR/SSR) would double-count. The client will
+    // call the increment endpoint once on mount.
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/public/wedding-data/${slug}?noIncrement=1`,
+      {
+        cache: "no-store",
+      }
+    );
 
-  if (!page || !page.is_live) {
+    if (!response.ok) {
+      if (response.status === 404) {
+        notFound();
+      }
+      throw new Error("Failed to fetch wedding data");
+    }
+
+    const data = await response.json();
+    const { template, userData, userTemplate, plan, comments } = data;
+
+    if (!template) {
+      notFound();
+    }
+
+    return (
+      <div className="min-h-screen bg-white">
+        {/* Render the wedding page using DynamicTemplateRenderer */}
+        <DynamicTemplateRenderer
+          template={template}
+          userPlan={plan || { id: "public", name: "Public", maxComponents: 10 }}
+          userData={userData}
+          colorScheme={userTemplate?.colorScheme}
+          editable={false} // Public pages are not editable
+          isPreview={false} // This is the live page
+        />
+
+        {/* Client-side view increment: runs once per browser (sets cookie on server) */}
+        {/* Use a client component to reliably POST to the increment endpoint */}
+        <WeddingViewIncrementer slug={slug} />
+
+        {/* Optional: Add a footer with wedding page info */}
+        <footer className="bg-gray-50 py-8 mt-16">
+          <div className="max-w-4xl mx-auto px-4 text-center text-gray-600">
+            <p className="text-sm">Created with using our wedding page builder</p>
+            {comments && comments.length > 0 && (
+              <p className="text-xs mt-2">
+                {comments.length} guest {comments.length === 1 ? "message" : "messages"}
+              </p>
+            )}
+          </div>
+        </footer>
+      </div>
+    );
+  } catch (error) {
+    console.error("Error rendering wedding page:", error);
     notFound();
   }
-
-  const typedPage = page as WeddingPageData;
-
-  return (
-    <main className="max-w-4xl mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-4">{typedPage.title}</h1>
-      <p className="text-gray-600 mb-2">Template: {typedPage.template?.name ?? "No template"}</p>
-      {typedPage.description && <p className="mb-4 text-gray-700">{typedPage.description}</p>}
-
-      <section className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-        {typedPage.mediaUploads?.length > 0 ? (
-          typedPage.mediaUploads.map((media) => (
-            <div key={media.id} className="relative w-full h-48">
-              <Image
-                src={media.cloudinary_url}
-                alt={media.type}
-                fill
-                className="object-cover rounded-md"
-              />
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500">No media uploaded yet.</p>
-        )}
-      </section>
-
-      <section className="mt-8">
-        <h2 className="text-xl font-semibold mb-2">Guest Comments</h2>
-        {typedPage.comments.length === 0 && <p className="text-gray-500">No comments yet.</p>}
-        <ul className="space-y-4">
-          {typedPage.comments.map((comment) => (
-            <li key={comment.id} className="bg-gray-100 p-4 rounded">
-              <p className="font-semibold">{comment.name}</p>
-              <p>{comment.message}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </main>
-  );
 }
 
 export async function generateStaticParams() {

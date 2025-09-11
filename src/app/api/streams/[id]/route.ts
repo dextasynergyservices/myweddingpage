@@ -4,6 +4,8 @@ import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/authOptions";
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = await params;
+
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
@@ -12,13 +14,13 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     const body = await request.json();
     // Verify the stream belongs to the user
     const existingStream = await prisma.stream.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
     if (!existingStream || existingStream.userId !== session.user.id) {
       return NextResponse.json({ error: "Stream not found or access denied" }, { status: 404 });
     }
     const stream = await prisma.stream.update({
-      where: { id: params.id },
+      where: { id: id },
       data: body,
     });
     return NextResponse.json(stream);
@@ -29,6 +31,8 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = await params;
+
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
@@ -36,13 +40,13 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     }
     // Verify the stream belongs to the user
     const existingStream = await prisma.stream.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
     if (!existingStream || existingStream.userId !== session.user.id) {
       return NextResponse.json({ error: "Stream not found or access denied" }, { status: 404 });
     }
     await prisma.stream.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
     return NextResponse.json({ success: true });
   } catch (error) {
