@@ -1,0 +1,1121 @@
+/* Bloom Wedding Design System - Romantic & Elegant */
+
+/* CSS Variables for this template only - scoped to template root */
+.templateRoot {
+  /* Romantic Color Palette */
+  --bloom-background: 355 100% 98%;
+  --bloom-foreground: 340 10% 20%;
+
+  --bloom-card: 0 0% 100%;
+  --bloom-card-foreground: 340 10% 20%;
+  --bloom-card-elevated: 0 0% 100%;
+
+  --bloom-popover: 0 0% 100%;
+  --bloom-popover-foreground: 340 10% 20%;
+
+  /* Romantic Rose Gold & Blush */
+  --bloom-primary: 340 75% 55%;
+  --bloom-primary-foreground: 0 0% 98%;
+
+  --bloom-secondary: 340 20% 95%;
+  --bloom-secondary-foreground: 340 10% 20%;
+
+  --bloom-muted: 340 15% 92%;
+  --bloom-muted-foreground: 340 10% 45%;
+
+  --bloom-accent: 340 30% 90%;
+  --bloom-accent-foreground: 340 10% 20%;
+
+  --bloom-destructive: 0 84% 60%;
+  --bloom-destructive-foreground: 0 0% 98%;
+
+  --bloom-border: 340 20% 88%;
+  --bloom-border-light: 340 20% 92%;
+  --bloom-input: 340 20% 88%;
+  --bloom-ring: 340 75% 55%;
+
+  /* Design Tokens */
+  --bloom-radius: 0.75rem;
+  --bloom-radius-sm: 0.5rem;
+  --bloom-radius-lg: 1rem;
+
+  /* Romantic Gradients */
+  --bloom-gradient-primary: linear-gradient(
+    135deg,
+    hsl(355, 100%, 98%) 0%,
+    hsl(340, 20%, 95%) 100%
+  );
+  --bloom-gradient-rose: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(340, 60%, 65%) 100%);
+  --bloom-gradient-blush: linear-gradient(135deg, hsl(340, 30%, 90%) 0%, hsl(340, 20%, 95%) 100%);
+
+  /* Shadows */
+  --bloom-shadow-elegant: 0 8px 32px -8px hsl(var(--bloom-foreground) / 0.1);
+  --bloom-shadow-soft: 0 4px 16px -4px hsl(var(--bloom-foreground) / 0.08);
+  --bloom-shadow-subtle: 0 2px 8px -2px hsl(var(--bloom-foreground) / 0.05);
+
+  /* Typography Scale */
+  --bloom-font-heading: "Playfair Display", Georgia, serif;
+  --bloom-font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --bloom-font-script: "Dancing Script", cursive;
+
+  /* Spacing Scale */
+  --bloom-space-section: 8rem;
+  --bloom-space-section-sm: 4rem;
+}
+
+/* Template Root Styles */
+.templateRoot {
+  color: hsl(var(--bloom-foreground));
+  font-family: var(--bloom-font-body);
+  min-height: 100vh;
+}
+
+.templateRoot * {
+  box-sizing: border-box;
+}
+
+/* Google Fonts Import */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap");
+
+/* Custom Animation Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes gentlePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Animation Classes */
+.animateFadeUp {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.animateScaleIn {
+  animation: scaleIn 0.6s ease-out;
+}
+
+.animateSlideLeft {
+  animation: slideInFromLeft 0.8s ease-out;
+}
+
+.animateSlideRight {
+  animation: slideInFromRight 0.8s ease-out;
+}
+
+.animatePulseGentle {
+  animation: gentlePulse 3s ease-in-out infinite;
+}
+
+.animateFloat {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Layout Utilities */
+.containerBloom {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 80rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .containerBloom {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .containerBloom {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.sectionPadding {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .sectionPadding {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sectionPadding {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Typography Utilities */
+.fontHeading {
+  font-family: var(--bloom-font-heading);
+}
+
+.fontBody {
+  font-family: var(--bloom-font-body);
+}
+
+.fontScript {
+  font-family: var(--bloom-font-script);
+}
+
+/* Color Utilities */
+.textForeground {
+  color: hsl(var(--bloom-foreground));
+}
+
+.bgBackground {
+  background: hsl(var(--bloom-background));
+}
+
+.bgCard {
+  background: hsl(var(--bloom-card));
+}
+
+.bgCardElevated {
+  background: hsl(var(--bloom-card-elevated));
+}
+
+.bgPrimary {
+  background: hsl(var(--bloom-primary));
+}
+
+.textPrimary {
+  color: hsl(var(--bloom-primary));
+}
+
+.bgSecondary {
+  background: hsl(var(--bloom-secondary));
+}
+
+.textSecondary {
+  color: hsl(var(--bloom-secondary-foreground));
+}
+
+.bgMuted {
+  background: hsl(var(--bloom-muted));
+}
+
+.textMuted {
+  color: hsl(var(--bloom-muted-foreground));
+}
+
+.bgAccent {
+  background: hsl(var(--bloom-accent));
+}
+
+.textAccent {
+  color: hsl(var(--bloom-accent-foreground));
+}
+
+.borderBorder {
+  border-color: hsl(var(--bloom-border));
+}
+
+.borderBorderLight {
+  border-color: hsl(var(--bloom-border-light));
+}
+
+/* Background Gradients */
+.bgGradientPrimary {
+  background: var(--bloom-gradient-primary);
+}
+
+.bgGradientRose {
+  background: var(--bloom-gradient-rose);
+}
+
+.bgGradientBlush {
+  background: var(--bloom-gradient-blush);
+}
+
+/* Shadow Utilities */
+.shadowElegant {
+  box-shadow: var(--bloom-shadow-elegant);
+}
+
+.shadowSoft {
+  box-shadow: var(--bloom-shadow-soft);
+}
+
+.shadowSubtle {
+  box-shadow: var(--bloom-shadow-subtle);
+}
+
+/* Border Radius Utilities */
+.roundedLg {
+  border-radius: var(--bloom-radius);
+}
+
+.roundedMd {
+  border-radius: var(--bloom-radius-sm);
+}
+
+.roundedSm {
+  border-radius: calc(var(--bloom-radius) - 2px);
+}
+
+/* Card Components */
+.elegantCard {
+  background: hsl(var(--bloom-card));
+  border-radius: var(--bloom-radius);
+  box-shadow: var(--bloom-shadow-elegant);
+  border: 1px solid hsl(var(--bloom-border-light));
+  backdrop-filter: blur(10px);
+}
+
+/* Hero Background */
+.heroBackground {
+  background: var(--bloom-gradient-primary);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Floating Elements */
+.floatingElement {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+  filter: blur(40px);
+}
+
+/* Romantic Text Gradient */
+.textGradient {
+  background: linear-gradient(135deg, hsl(var(--bloom-primary)) 0%, hsl(var(--bloom-accent)) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hero Section Styles */
+.heroSection {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 0 1rem;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+.heroIcon {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 2rem;
+  color: hsl(var(--bloom-primary-foreground));
+}
+
+.heroTitle {
+  font-family: var(--bloom-font-heading);
+  font-size: 3.75rem;
+  font-weight: 700;
+  color: hsl(var(--bloom-primary-foreground));
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+}
+
+.heroDateContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.heroDateLine {
+  height: 1px;
+  background-color: hsl(var(--bloom-primary-foreground) / 0.5);
+  width: 4rem;
+}
+
+.heroDate {
+  font-family: var(--bloom-font-heading);
+  font-size: 1.5rem;
+  color: hsl(var(--bloom-primary-foreground) / 0.9);
+  font-weight: 500;
+}
+
+.heroDescription {
+  font-size: 1.25rem;
+  color: hsl(var(--bloom-primary-foreground) / 0.8);
+  margin-bottom: 3rem;
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.gradientHero {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--bloom-primary) / 0.3) 0%,
+    hsl(var(--bloom-accent) / 0.2) 100%
+  );
+}
+
+.animateFadeInUp {
+  animation: fadeInUp 1s ease-out;
+}
+
+/* Additional missing utility classes */
+.gradientSoft {
+  background: var(--bloom-gradient-blush);
+}
+
+.gradientRomantic {
+  background: var(--bloom-gradient-rose);
+}
+
+.shadowRomantic {
+  box-shadow: 0 8px 32px -8px hsl(var(--bloom-primary) / 0.2);
+}
+
+.shadowGlow {
+  box-shadow: 0 0 20px hsl(var(--bloom-primary) / 0.3);
+}
+
+.transitionRomantic {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transitionSmooth {
+  transition: all 0.2s ease-in-out;
+}
+
+.animateRomanticFloat {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animateGentlePulse {
+  animation: gentlePulse 3s ease-in-out infinite;
+}
+
+/* Masonry Grid */
+.masonryGrid {
+  column-count: 1;
+  column-gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .masonryGrid {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .masonryGrid {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .masonryGrid {
+    column-count: 4;
+  }
+}
+
+/* Hero Button Styles */
+.heroButtonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .heroButtonContainer {
+    flex-direction: row;
+  }
+}
+
+.heroButton {
+  font-size: 1.125rem;
+  padding: 1rem 2rem;
+  height: auto;
+  font-weight: 500;
+}
+
+.heroButtonOutline {
+  font-size: 1.125rem;
+  padding: 1rem 2rem;
+  height: auto;
+  font-weight: 500;
+  border-color: hsl(var(--bloom-primary-foreground));
+  color: hsl(var(--bloom-primary-foreground));
+}
+
+.heroButtonOutline:hover {
+  background-color: hsl(var(--bloom-primary-foreground));
+  color: hsl(var(--bloom-primary));
+}
+
+/* Floating Hearts */
+.floatingHeart {
+  position: absolute;
+  z-index: 5;
+}
+
+.floatingHeartIcon {
+  color: hsl(var(--bloom-primary-foreground));
+}
+
+/* Scroll Indicator */
+.scrollIndicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.scrollIndicatorContainer {
+  width: 1.5rem;
+  height: 2.5rem;
+  border: 2px solid hsl(var(--bloom-primary-foreground) / 0.5);
+  border-radius: 9999px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 0.5rem;
+}
+
+.scrollIndicatorDot {
+  width: 0.25rem;
+  height: 0.75rem;
+  background-color: hsl(var(--bloom-primary-foreground) / 0.5);
+  border-radius: 9999px;
+  margin-top: 0.5rem;
+}
+
+/* Story Section Styles */
+.storyContent {
+  display: grid;
+  gap: 4rem;
+  align-items: center;
+  margin-bottom: 5rem;
+}
+
+@media (min-width: 1024px) {
+  .storyContent {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.storyImageContainer {
+  position: relative;
+}
+
+.storyText {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Gallery Styles */
+.galleryItem {
+  position: relative;
+  cursor: pointer;
+  border-radius: var(--bloom-radius);
+  overflow: hidden;
+  box-shadow: var(--bloom-shadow-soft);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.galleryItem:hover {
+  box-shadow: 0 8px 32px -8px hsl(var(--bloom-primary) / 0.2);
+}
+
+/* Gift Section Styles */
+.giftGrid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .giftGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .giftGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Guest Section Styles */
+.guestContainer {
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+/* Timeline Styles */
+.timelineContainer {
+  position: relative;
+}
+
+.timelineLine {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.25rem;
+  background: var(--bloom-gradient-rose);
+  height: 100%;
+}
+
+@media (max-width: 767px) {
+  .timelineLine {
+    display: none;
+  }
+}
+
+.timelineItems {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.timelineItemHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.timelineIcon {
+  color: hsl(var(--bloom-primary));
+}
+
+.timelineDate {
+  font-weight: 500;
+  color: hsl(var(--bloom-primary));
+}
+
+.timelineDot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1rem;
+  height: 1rem;
+  background: var(--bloom-gradient-rose);
+  border-radius: 50%;
+  border: 4px solid hsl(var(--bloom-background));
+  z-index: 10;
+}
+
+@media (max-width: 767px) {
+  .timelineDot {
+    display: none;
+  }
+}
+
+/* Gallery Video Styles */
+.videoPlaceholder {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--bloom-primary) / 0.2) 0%,
+    hsl(var(--bloom-accent) / 0.2) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.videoPlayIcon {
+  color: hsl(var(--bloom-primary-foreground));
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.videoPlayIcon:hover {
+  opacity: 1;
+}
+
+.videoOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, hsl(var(--bloom-primary) / 0.4) 0%, transparent 100%);
+}
+
+.galleryOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    hsl(var(--bloom-primary) / 0.6) 0%,
+    transparent 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: flex-end;
+}
+
+.galleryOverlay:hover {
+  opacity: 1;
+}
+
+.galleryOverlayContent {
+  padding: 1rem;
+  color: hsl(var(--bloom-primary-foreground));
+}
+
+.galleryOverlayText {
+  font-weight: 500;
+}
+
+.galleryOverlaySubtext {
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+/* Gift Section Styles */
+.giftImage {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.giftImage:hover {
+  transform: scale(1.05);
+}
+
+.giftPurchasedOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: hsl(var(--bloom-primary) / 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.giftPurchasedContent {
+  text-align: center;
+  color: hsl(var(--bloom-primary-foreground));
+}
+
+.giftPurchasedIcon {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 0.5rem;
+}
+
+.giftPurchasedText {
+  font-weight: 600;
+}
+
+.giftPriorityBadge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.giftPriorityHigh {
+  background-color: hsl(var(--bloom-primary));
+  color: hsl(var(--bloom-primary-foreground));
+}
+
+.giftPriorityMedium {
+  background-color: hsl(var(--bloom-accent));
+  color: hsl(var(--bloom-accent-foreground));
+}
+
+.giftPriorityLow {
+  background-color: hsl(var(--bloom-muted));
+  color: hsl(var(--bloom-muted-foreground));
+}
+
+.giftDetails {
+  padding: 1.5rem;
+}
+
+.giftPriceContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.giftPrice {
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: hsl(var(--bloom-primary));
+}
+
+.giftPurchasedButton {
+  opacity: 0.6;
+}
+
+.giftPurchaseButton {
+  /* Button styles handled by variant="romantic" */
+}
+
+.giftButtonIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.giftInfoIcon {
+  width: 3rem;
+  height: 3rem;
+  color: hsl(var(--bloom-primary));
+  margin: 0 auto 1rem;
+}
+
+.giftInfoButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .giftInfoButtons {
+    flex-direction: row;
+  }
+}
+
+.giftInfoButton {
+  /* Button styles handled by variant="outline" */
+}
+
+/* Guest Section Styles */
+.commentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formLabel {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--bloom-foreground));
+  margin-bottom: 0.5rem;
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid hsl(var(--bloom-border));
+  border-radius: 0.5rem;
+  background-color: hsl(var(--bloom-background));
+  color: hsl(var(--bloom-foreground));
+  transition: all 0.2s ease-in-out;
+}
+
+.formInput:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: hsl(var(--bloom-primary));
+  border-color: transparent;
+}
+
+.formTextarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid hsl(var(--bloom-border));
+  border-radius: 0.5rem;
+  background-color: hsl(var(--bloom-background));
+  color: hsl(var(--bloom-foreground));
+  resize: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.formTextarea:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: hsl(var(--bloom-primary));
+  border-color: transparent;
+}
+
+.commentSubmitButton {
+  /* Button styles handled by variant="romantic" */
+}
+
+.commentButtonIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.commentSubmitButton:hover .commentButtonIcon {
+  transform: translateX(0.25rem);
+}
+
+.commentHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.commentAuthor {
+  font-weight: 600;
+  color: hsl(var(--bloom-foreground));
+  font-size: 1.125rem;
+}
+
+.commentTimestamp {
+  font-size: 0.875rem;
+  color: hsl(var(--bloom-muted-foreground));
+}
+
+.commentHeartButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: hsl(var(--bloom-primary));
+  transition: all 0.2s ease-in-out;
+}
+
+.commentHeartButton:hover {
+  color: hsl(var(--bloom-primary-glow));
+}
+
+.commentHeartIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+.commentHeartButton:hover .commentHeartIcon {
+  transform: scale(1.1);
+}
+
+.commentHeartCount {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.commentMessage {
+  color: hsl(var(--bloom-foreground));
+  line-height: 1.625;
+}
+
+.thankYouCard {
+  background: linear-gradient(
+    to right,
+    hsl(var(--bloom-primary) / 0.1) 0%,
+    hsl(var(--bloom-accent) / 0.1) 100%
+  );
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.thankYouIcon {
+  width: 3rem;
+  height: 3rem;
+  color: hsl(var(--bloom-primary));
+  margin: 0 auto 1rem;
+}
+
+.thankYouMessage {
+  color: hsl(var(--bloom-muted-foreground));
+  line-height: 1.625;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.thankYouSignature {
+  color: hsl(var(--bloom-primary));
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+/* Missing Gallery Modal Styles */
+.galleryTypeIcon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+.galleryTypeIcon:hover {
+  opacity: 1;
+}
+
+.galleryModal {
+  position: fixed;
+  inset: 0;
+  background-color: hsl(0 0% 0% / 0.9);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.galleryModalContent {
+  position: relative;
+  max-width: 64rem;
+  max-height: 100%;
+}
+
+.galleryModalClose {
+  position: absolute;
+  top: -3rem;
+  right: 0;
+  color: white;
+  transition: all 0.2s ease-in-out;
+}
+
+.galleryModalClose:hover {
+  color: hsl(var(--bloom-primary));
+}
+
+.galleryModalImage {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+.galleryModalVideo {
+  background-color: hsl(var(--bloom-primary) / 0.2);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  color: white;
+}
+
+.galleryModalVideoIcon {
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem;
+  opacity: 0.6;
+}
+
+.galleryModalVideoText {
+  font-size: 1.125rem;
+}
+
+.galleryModalVideoSubtext {
+  font-size: 0.875rem;
+  opacity: 0.6;
+  margin-top: 0.5rem;
+}
+
+/* Missing Layout Classes */
+.relative {
+  position: relative;
+}
+
+.overflowHidden {
+  overflow: hidden;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.spaceY8 > * + * {
+  margin-top: 2rem;
+}
+
+/* Missing Animation Classes */
+.animateFadeInUp {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Missing Icon Classes */
+.galleryTypeIconPlay {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: hsl(var(--bloom-primary-foreground));
+}
+
+.galleryTypeIconImage {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: hsl(var(--bloom-primary-foreground));
+}
+
+.galleryModalCloseIcon {
+  width: 2rem;
+  height: 2rem;
+}

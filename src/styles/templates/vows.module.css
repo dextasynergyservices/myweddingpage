@@ -1,0 +1,346 @@
+/* Elegant Wedding Design System - Minimalistic Black, White & Grey */
+
+/* CSS Variables for this template only - scoped to template root */
+.templateRoot {
+  /* Base Colors */
+  --vows-background: 0 0% 100%;
+  --vows-foreground: 0 0% 8%;
+
+  /* Card & Surface Colors */
+  --vows-card: 0 0% 100%;
+  --vows-card-foreground: 0 0% 8%;
+  --vows-card-elevated: 0 0% 98%;
+
+  /* Interactive Elements */
+  --vows-popover: 0 0% 100%;
+  --vows-popover-foreground: 0 0% 8%;
+
+  /* Primary Palette - Deep Charcoal */
+  --vows-primary: 0 0% 8%;
+  --vows-primary-foreground: 0 0% 98%;
+  --vows-primary-light: 0 0% 15%;
+
+  /* Secondary Palette - Light Grey */
+  --vows-secondary: 0 0% 96%;
+  --vows-secondary-foreground: 0 0% 20%;
+  --vows-secondary-dark: 0 0% 90%;
+
+  /* Neutral Palette */
+  --vows-muted: 0 0% 94%;
+  --vows-muted-foreground: 0 0% 45%;
+  --vows-muted-dark: 0 0% 85%;
+
+  /* Accent - Medium Grey */
+  --vows-accent: 0 0% 88%;
+  --vows-accent-foreground: 0 0% 15%;
+  --vows-accent-hover: 0 0% 82%;
+
+  /* Status Colors */
+  --vows-destructive: 0 65% 51%;
+  --vows-destructive-foreground: 0 0% 98%;
+
+  /* Borders & Inputs */
+  --vows-border: 0 0% 89%;
+  --vows-border-light: 0 0% 93%;
+  --vows-input: 0 0% 89%;
+  --vows-ring: 0 0% 8%;
+
+  /* Design Tokens */
+  --vows-radius: 0.75rem;
+  --vows-radius-sm: 0.5rem;
+  --vows-radius-lg: 1rem;
+
+  /* Elegant Gradients */
+  --vows-gradient-elegant: linear-gradient(
+    135deg,
+    hsl(var(--vows-background)) 0%,
+    hsl(var(--vows-muted)) 100%
+  );
+  --vows-gradient-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
+  --vows-gradient-fade: linear-gradient(180deg, transparent 0%, hsl(var(--vows-background)) 100%);
+
+  /* Shadows */
+  --vows-shadow-elegant: 0 8px 32px -8px hsl(var(--vows-foreground) / 0.1);
+  --vows-shadow-soft: 0 4px 16px -4px hsl(var(--vows-foreground) / 0.08);
+  --vows-shadow-subtle: 0 2px 8px -2px hsl(var(--vows-foreground) / 0.05);
+
+  /* Typography Scale */
+  --vows-font-heading: "Playfair Display", Georgia, serif;
+  --vows-font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --vows-font-script: "Dancing Script", cursive;
+
+  /* Spacing Scale */
+  --vows-space-section: 8rem;
+  --vows-space-section-sm: 4rem;
+}
+
+/* Google Fonts Import */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap");
+
+/* Custom Animation Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes gentlePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Template Root Styles */
+.templateRoot {
+  background: hsl(var(--vows-background));
+  color: hsl(var(--vows-foreground));
+  font-family: var(--vows-font-body);
+  min-height: 100vh;
+}
+
+.templateRoot * {
+  box-sizing: border-box;
+}
+
+/* Custom Components */
+.weddingHero {
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.scrollReveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.17, 0.55, 0.55, 1);
+}
+
+.scrollReveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scaleOnScroll {
+  transition: transform 0.3s ease-out;
+}
+
+.scaleOnScroll:hover {
+  transform: scale(1.05);
+}
+
+.elegantCard {
+  background: hsl(var(--vows-card));
+  border-radius: var(--vows-radius);
+  box-shadow: var(--vows-shadow-elegant);
+  border: 1px solid hsl(var(--vows-border-light));
+  backdrop-filter: blur(10px);
+}
+
+.sectionPadding {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .sectionPadding {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sectionPadding {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.containerWedding {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 80rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .containerWedding {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .containerWedding {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Typography Utilities */
+.fontHeading {
+  font-family: var(--vows-font-heading);
+}
+
+.fontBody {
+  font-family: var(--vows-font-body);
+}
+
+.fontScript {
+  font-family: var(--vows-font-script);
+}
+
+/* Animation Utilities */
+.animateFadeUp {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.animateScaleIn {
+  animation: scaleIn 0.6s ease-out;
+}
+
+.animateSlideLeft {
+  animation: slideInFromLeft 0.8s ease-out;
+}
+
+.animateSlideRight {
+  animation: slideInFromRight 0.8s ease-out;
+}
+
+.animatePulseGentle {
+  animation: gentlePulse 3s ease-in-out infinite;
+}
+
+/* Background Utilities */
+.gradientElegant {
+  background: var(--vows-gradient-elegant);
+}
+
+.gradientOverlay {
+  background: var(--vows-gradient-overlay);
+}
+
+/* Shadow Utilities */
+.shadowElegant {
+  box-shadow: var(--vows-shadow-elegant);
+}
+
+.shadowSoft {
+  box-shadow: var(--vows-shadow-soft);
+}
+
+.shadowSubtle {
+  box-shadow: var(--vows-shadow-subtle);
+}
+
+/* Color Utilities */
+.textForeground {
+  color: hsl(var(--vows-foreground));
+}
+
+.bgBackground {
+  background: hsl(var(--vows-background));
+}
+
+.bgCard {
+  background: hsl(var(--vows-card));
+}
+
+.bgCardElevated {
+  background: hsl(var(--vows-card-elevated));
+}
+
+.bgPrimary {
+  background: hsl(var(--vows-primary));
+}
+
+.textPrimary {
+  color: hsl(var(--vows-primary));
+}
+
+.bgSecondary {
+  background: hsl(var(--vows-secondary));
+}
+
+.textSecondary {
+  color: hsl(var(--vows-secondary-foreground));
+}
+
+.bgMuted {
+  background: hsl(var(--vows-muted));
+}
+
+.textMuted {
+  color: hsl(var(--vows-muted-foreground));
+}
+
+.bgAccent {
+  background: hsl(var(--vows-accent));
+}
+
+.textAccent {
+  color: hsl(var(--vows-accent-foreground));
+}
+
+.borderBorder {
+  border-color: hsl(var(--vows-border));
+}
+
+.borderBorderLight {
+  border-color: hsl(var(--vows-border-light));
+}
+
+/* Border Radius Utilities */
+.roundedLg {
+  border-radius: var(--vows-radius);
+}
+
+.roundedMd {
+  border-radius: var(--vows-radius-sm);
+}
+
+.roundedSm {
+  border-radius: calc(var(--vows-radius) - 2px);
+}
