@@ -6,8 +6,20 @@ import { RusticTemplate } from "@/lib/sample-templates/rustic";
 import { modernTemplate } from "@/lib/sample-templates/modern";
 import { vintageTemplate } from "@/lib/sample-templates/vintage";
 import { luxuryTemplate } from "@/lib/sample-templates/luxury";
+import { vowsTemplate } from "@/lib/sample-templates/vows";
+import { bloomTemplate } from "@/lib/sample-templates/bloom";
+import { eleganceTemplate } from "@/lib/sample-templates/elegance";
+import { luxeTemplate } from "@/lib/sample-templates/luxe";
 
-type TemplateName = "rustic" | "modern" | "vintage" | "luxury";
+type TemplateName =
+  | "rustic"
+  | "modern"
+  | "vintage"
+  | "luxury"
+  | "vows"
+  | "bloom"
+  | "elegance"
+  | "luxe";
 
 type TemplateMeta = {
   name: string;
@@ -21,6 +33,10 @@ const templateRegistry: Record<string, TemplateMeta> = {
   modern: modernTemplate as TemplateMeta,
   vintage: vintageTemplate as TemplateMeta,
   luxury: luxuryTemplate as TemplateMeta,
+  vows: vowsTemplate as TemplateMeta,
+  bloom: bloomTemplate as TemplateMeta,
+  elegance: eleganceTemplate as TemplateMeta,
+  luxe: luxeTemplate as TemplateMeta,
 };
 import Link from "next/link";
 

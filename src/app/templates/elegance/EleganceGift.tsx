@@ -4,9 +4,86 @@ import React, { useEffect, useRef, useState } from "react";
 import { Gift, Check } from "lucide-react";
 import styles from "@/styles/templates/elegance.module.css";
 
-type GiftRegistryProps = Record<string, never>;
+interface GiftRegistryProps {
+  title?: string;
+  description?: string;
+  gifts?: Array<{
+    id: number;
+    name: string;
+    description: string;
+    price: string;
+    image: string;
+    purchased?: boolean;
+  }>;
+  bankDetails?: {
+    bankName?: string;
+    accountNumber?: string;
+    accountName?: string;
+  };
+}
 
-const GiftRegistry: React.FC<GiftRegistryProps> = () => {
+const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
+  // Extract data from props with fallbacks
+  const title = props.title || "Gift Registry";
+  const description =
+    props.description || "Help us build our home together with these thoughtfully chosen items";
+
+  const gifts = props.gifts || [
+    {
+      id: 1,
+      name: "Fine China Dinner Set",
+      description: "Elegant 12-piece porcelain dinner set for special occasions",
+      price: "₦299,000",
+      image: "🍽️",
+      purchased: false,
+    },
+    {
+      id: 2,
+      name: "Coffee Machine",
+      description: "Premium espresso machine for our morning coffee ritual",
+      price: "₦450,000",
+      image: "☕",
+      purchased: false,
+    },
+    {
+      id: 3,
+      name: "Egyptian Cotton Bedding",
+      description: "Luxurious 400-thread count sheet set in sage green",
+      price: "₦180,000",
+      image: "🛏️",
+      purchased: false,
+    },
+    {
+      id: 4,
+      name: "Cast Iron Cookware Set",
+      description: "Professional-grade cookware for our culinary adventures",
+      price: "₦320,000",
+      image: "🍳",
+      purchased: false,
+    },
+    {
+      id: 5,
+      name: "Garden Herb Kit",
+      description: "Everything needed to start our herb garden",
+      price: "₦85,000",
+      image: "🌿",
+      purchased: false,
+    },
+    {
+      id: 6,
+      name: "Photo Album",
+      description: "Beautiful leather-bound album for our wedding memories",
+      price: "₦120,000",
+      image: "📸",
+      purchased: false,
+    },
+  ];
+
+  const bankDetails = props.bankDetails || {
+    bankName: "Access Bank",
+    accountNumber: "1234567890",
+    accountName: "John & Jane Doe",
+  };
   const [isVisible, setIsVisible] = useState(false);
   const [purchasedItems] = useState<Set<number>>(new Set());
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -28,51 +105,6 @@ const GiftRegistry: React.FC<GiftRegistryProps> = () => {
     return () => observer.disconnect();
   }, []);
 
-  const giftItems = [
-    {
-      id: 1,
-      name: "Fine China Dinner Set",
-      description: "Elegant 12-piece porcelain dinner set for special occasions",
-      price: "₦299,000",
-      image: "🍽️",
-    },
-    {
-      id: 2,
-      name: "Coffee Machine",
-      description: "Premium espresso machine for our morning coffee ritual",
-      price: "₦450,000",
-      image: "☕",
-    },
-    {
-      id: 3,
-      name: "Egyptian Cotton Bedding",
-      description: "Luxurious 400-thread count sheet set in sage green",
-      price: "₦180,000",
-      image: "🛏️",
-    },
-    {
-      id: 4,
-      name: "Cast Iron Cookware Set",
-      description: "Professional-grade cookware for our culinary adventures",
-      price: "₦320,000",
-      image: "🍳",
-    },
-    {
-      id: 5,
-      name: "Garden Herb Kit",
-      description: "Everything needed to start our herb garden",
-      price: "₦85,000",
-      image: "🌿",
-    },
-    {
-      id: 6,
-      name: "Photo Album",
-      description: "Beautiful leather-bound album for our wedding memories",
-      price: "₦120,000",
-      image: "📸",
-    },
-  ];
-
   return (
     <section id="registry" className={`${styles.py24} ${styles.bgGradientSection}`}>
       <div className={`${styles.container} ${styles.mxAuto} ${styles.px4}`}>
@@ -88,12 +120,12 @@ const GiftRegistry: React.FC<GiftRegistryProps> = () => {
           <h2
             className={`${styles.fontDisplay} md:text-5xl text-2xl ${styles.fontBold} ${styles.textForeground} ${styles.mb6}`}
           >
-            Gift Registry
+            {title}
           </h2>
           <p
             className={`${styles.fontBody} ${styles.textXl} ${styles.textMutedForeground} ${styles.maxW3xl} ${styles.mxAuto}`}
           >
-            Help us build our home together with these thoughtfully chosen items
+            {description}
           </p>
         </div>
 
@@ -113,7 +145,7 @@ const GiftRegistry: React.FC<GiftRegistryProps> = () => {
         </div> */}
 
         <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto`}>
-          {giftItems.map((item, index) => {
+          {gifts.map((item, index) => {
             const isPurchased = purchasedItems.has(item.id);
 
             return (

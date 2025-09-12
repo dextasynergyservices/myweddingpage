@@ -3,7 +3,23 @@ import { Button } from "./components/ui/button";
 // Hero background image - using public path
 import styles from "@/styles/templates/bloom.module.css";
 
-const WeddingHero = () => {
+interface WeddingHeroProps {
+  brideName?: string;
+  groomName?: string;
+  weddingDate?: string;
+  venue?: string;
+  description?: string;
+  heroImage?: string;
+}
+
+const WeddingHero = ({
+  brideName = "Bride",
+  groomName = "Groom",
+  weddingDate = "Date",
+  venue = "Venue",
+  description = "Two hearts, one beautiful journey. Join us as we celebrate our love and begin our forever together.",
+  heroImage = "/templates/bloom/assets/wedding-hero.jpg",
+}: WeddingHeroProps) => {
   return (
     <section
       className={`${styles.heroSection} relative min-h-screen flex items-center justify-center overflow-hidden`}
@@ -11,7 +27,7 @@ const WeddingHero = () => {
       {/* Background Image */}
       <div
         className={`${styles.heroBackground} absolute inset-0 bg-cover bg-center bg-no-repeat`}
-        style={{ backgroundImage: `url('/templates/bloom/assets/wedding-hero.jpg')` }}
+        style={{ backgroundImage: `url('${heroImage}')` }}
       >
         <div className={`${styles.gradientHero} absolute inset-0`}></div>
       </div>
@@ -28,7 +44,7 @@ const WeddingHero = () => {
           <h1
             className={`${styles.heroTitle} font-heading text-6xl md:text-8xl lg:text-9xl font-bold text-primary-foreground mb-6 leading-tight`}
           >
-            Sarah & James
+            {brideName} & {groomName}
           </h1>
 
           <div
@@ -38,7 +54,7 @@ const WeddingHero = () => {
             <p
               className={`${styles.heroDate} font-heading text-2xl md:text-3xl text-primary-foreground/90 font-medium`}
             >
-              June 15, 2024
+              {weddingDate}
             </p>
             <div className={`${styles.heroDateLine} h-px bg-primary-foreground/50 w-16`}></div>
           </div>
@@ -46,8 +62,7 @@ const WeddingHero = () => {
           <p
             className={`${styles.heroDescription} text-xl md:text-2xl text-primary-foreground/80 mb-12 max-w-2xl mx-auto leading-relaxed`}
           >
-            Two hearts, one beautiful journey. Join us as we celebrate our love and begin our
-            forever together.
+            {description}
           </p>
 
           <div

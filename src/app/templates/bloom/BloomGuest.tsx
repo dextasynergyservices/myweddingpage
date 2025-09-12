@@ -4,15 +4,31 @@ import { Button } from "./components/ui/button";
 import { MessageCircle, Heart, Send } from "lucide-react";
 import styles from "@/styles/templates/bloom.module.css";
 
-const Comments = () => {
-  const { elementRef, isVisible } = useScrollAnimation(0.2);
-  const [newComment, setNewComment] = useState({ name: "", message: "" });
-  const [comments, setComments] = useState([
+interface CommentsProps {
+  title?: string;
+  description?: string;
+  existingComments?: Array<{
+    id: number;
+    name: string;
+    message: string;
+    timestamp: string;
+    hearts: number;
+  }>;
+  placeholder?: {
+    name?: string;
+    message?: string;
+  };
+}
+
+const Comments = ({
+  title = "Well Wishes",
+  description = "Share your love, memories, and well wishes for our special day. Your kind words mean the world to us!",
+  existingComments = [
     {
       id: 1,
       name: "Emily Johnson",
       message:
-        "Sarah and James, your love story is absolutely beautiful! Can't wait to celebrate with you both. Wishing you a lifetime of happiness! 💕",
+        "Your love story is absolutely beautiful! Can't wait to celebrate with you both. Wishing you a lifetime of happiness! 💕",
       timestamp: "2 days ago",
       hearts: 12,
     },
@@ -28,7 +44,7 @@ const Comments = () => {
       id: 3,
       name: "Lisa Rodriguez",
       message:
-        "Watching your love grow has been such a joy. Can't wait to see you walk down the aisle, Sarah! You're going to be the most beautiful bride. ✨",
+        "Watching your love grow has been such a joy. Can't wait to see you walk down the aisle! You're going to be the most beautiful bride. ✨",
       timestamp: "5 days ago",
       hearts: 15,
     },
@@ -36,11 +52,19 @@ const Comments = () => {
       id: 4,
       name: "David Thompson",
       message:
-        "James, you found yourself a keeper! Sarah, you're getting an amazing man. Cheers to your new adventure together! 🎉",
+        "You found yourself a keeper! You're getting an amazing partner. Cheers to your new adventure together! 🎉",
       timestamp: "1 week ago",
       hearts: 6,
     },
-  ]);
+  ],
+  placeholder = {
+    name: "Your Name",
+    message: "Share your well wishes...",
+  },
+}: CommentsProps) => {
+  const { elementRef, isVisible } = useScrollAnimation(0.2);
+  const [newComment, setNewComment] = useState({ name: "", message: "" });
+  const [comments, setComments] = useState(existingComments);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,13 +104,10 @@ const Comments = () => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <h2 className={`${styles.fontHeading} text-2xl md:text-6xl font-bold mb-6`}>
-            Wedding Wishes
-          </h2>
+          <h2 className={`${styles.fontHeading} text-2xl md:text-6xl font-bold mb-6`}>{title}</h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
           <p className={`text-lg ${styles.textMuted} max-w-2xl mx-auto leading-relaxed`}>
-            Share your love, well wishes, and excitement for our special day. Your words mean the
-            world to us!
+            {description}
           </p>
         </div>
 

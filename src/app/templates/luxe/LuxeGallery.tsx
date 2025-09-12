@@ -6,7 +6,33 @@ import Image from "next/image";
 
 type GalleryCategory = "all" | "before" | "during" | "after";
 
-export default function Gallery() {
+interface GalleryProps {
+  gallery?: Array<{
+    id: string;
+    url: string;
+    type: "PHOTO" | "VIDEO";
+    category: "before" | "during" | "after";
+    createdAt?: string;
+  }>;
+  images?: string[];
+  videos?: Array<{
+    id: string;
+    title: string;
+    thumbnail: string;
+    duration: string;
+    category: "before" | "during" | "after";
+  }>;
+  title?: string;
+  description?: string;
+}
+
+export default function Gallery({
+  gallery = [],
+  images = [],
+  videos = [],
+  title = "Our Gallery",
+  description = "Capturing the beautiful moments of our journey together",
+}: GalleryProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState<{
     type: "image" | "video";
@@ -33,67 +59,52 @@ export default function Gallery() {
     return () => observer.disconnect();
   }, []);
 
+  // Create gallery items from props
   const mediaItems = [
+    // Add images from gallery prop
+    ...gallery.map((item) => ({
+      id: item.id,
+      type: item.type === "PHOTO" ? "image" : "video",
+      src: item.url,
+      alt: `Gallery ${item.id}`,
+      category: item.category,
+    })),
+    // Add images from images prop (fallback)
+    ...images.map((image, index) => ({
+      id: `image-${index}`,
+      type: "image",
+      src: image,
+      alt: `Gallery Image ${index + 1}`,
+      category: "during" as const,
+    })),
+    // Add videos from videos prop (fallback)
+    ...videos.map((video) => ({
+      id: video.id,
+      type: "video",
+      src: video.thumbnail,
+      alt: video.title,
+      category: video.category,
+    })),
+  ];
+
+  // If no gallery data provided, use default fallback
+  const defaultMediaItems = [
     {
-      id: 1,
+      id: "default-1",
       type: "image",
       src: "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=800",
       alt: "Engagement photo 1",
       category: "before" as const,
     },
-    {
-      id: 2,
-      type: "video",
-      src: "https://videos.pexels.com/video-files/3571264/3571264-uhd_2560_1440_30fps.mp4",
-      alt: "Engagement video",
-      thumbnail:
-        "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=800",
-      category: "before" as const,
-    },
-    {
-      id: 3,
-      type: "image",
-      src: "https://images.pexels.com/photos/265722/pexels-photo-265722.jpeg?auto=compress&cs=tinysrgb&w=800",
-      alt: "Pre-wedding photoshoot",
-      category: "before" as const,
-    },
-    {
-      id: 4,
-      type: "image",
-      src: "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=800",
-      alt: "Wedding ceremony moment",
-      category: "during" as const,
-    },
-    {
-      id: 5,
-      type: "video",
-      src: "https://videos.pexels.com/video-files/3045163/3045163-uhd_2560_1440_25fps.mp4",
-      alt: "Wedding highlights video",
-      thumbnail:
-        "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=800",
-      category: "during" as const,
-    },
-    {
-      id: 6,
-      type: "image",
-      src: "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=800",
-      alt: "Reception celebration",
-      category: "during" as const,
-    },
-    {
-      id: 7,
-      type: "image",
-      src: "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=800",
-      alt: "Honeymoon memories",
-      category: "after" as const,
-    },
   ];
+
+  const finalMediaItems = mediaItems.length > 0 ? mediaItems : defaultMediaItems;
 
   // Filter items based on active category
   const filteredItems =
     activeCategory === "all"
-      ? mediaItems
-      : mediaItems.filter((item) => item.category === activeCategory);
+      ? finalMediaItems
+      : finalMediaItems.filter((item) => item.category === activeCategory);
 
   const categories = [
     { id: "all", label: "All" },
@@ -122,11 +133,9 @@ export default function Gallery() {
           className={`text-center mb-16 transition-all duration-1000 transform ${isVisible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"}`}
         >
           <h2 className="text-2xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent mb-6">
-            Our Gallery
+            {title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Capturing moments of joy, laughter, and love
-          </p>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">{description}</p>
         </div>
 
         {/* Tab Navigation */}

@@ -12,11 +12,29 @@ interface Comment {
   date: string;
 }
 
-type CommentsProps = Record<string, never>;
+interface CommentsProps {
+  title?: string;
+  description?: string;
+  existingComments?: Array<{
+    id: number;
+    name: string;
+    message: string;
+    date: string;
+  }>;
+  placeholder?: {
+    name?: string;
+    message?: string;
+  };
+}
 
-const Comments: React.FC<CommentsProps> = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([
+const Comments: React.FC<CommentsProps> = (props) => {
+  // Extract data from props with fallbacks
+  const title = props.title || "Well Wishes";
+  const description =
+    props.description ||
+    "Share your love, memories, and well wishes for our special day. Your kind words mean the world to us!";
+
+  const existingComments = props.existingComments || [
     {
       id: 1,
       name: "Sarah & Mike Johnson",
@@ -28,7 +46,7 @@ const Comments: React.FC<CommentsProps> = () => {
       id: 2,
       name: "The Williams Family",
       message:
-        "Emma and James, watching your love grow has been such a joy. We're so excited to celebrate with you and can't wait to see what beautiful memories you'll create as husband and wife!",
+        "Watching your love grow has been such a joy. We're so excited to celebrate with you and can't wait to see what beautiful memories you'll create as husband and wife!",
       date: "March 12, 2024",
     },
     {
@@ -38,7 +56,14 @@ const Comments: React.FC<CommentsProps> = () => {
         "From college buddies to wedding celebrations - it's been amazing watching this love story unfold. You two are perfect for each other! 🥂",
       date: "March 10, 2024",
     },
-  ]);
+  ];
+
+  const placeholder = props.placeholder || {
+    name: "Your Name",
+    message: "Share your well wishes...",
+  };
+  const [isVisible, setIsVisible] = useState(false);
+  const [comments, setComments] = useState<Comment[]>(existingComments);
 
   const [newComment, setNewComment] = useState({ name: "", message: "" });
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -108,12 +133,12 @@ const Comments: React.FC<CommentsProps> = () => {
           <h2
             className={`${styles.fontDisplay} md:text-5xl text-2xl ${styles.fontBold} ${styles.textForeground} ${styles.mb6}`}
           >
-            Wedding Wishes
+            {title}
           </h2>
           <p
             className={`${styles.fontBody} ${styles.textXl} ${styles.textMutedForeground} ${styles.maxW3xl} ${styles.mxAuto}`}
           >
-            Share your love, blessings, and well wishes for our new journey together
+            {description}
           </p>
         </div>
 

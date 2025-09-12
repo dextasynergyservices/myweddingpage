@@ -8,9 +8,29 @@ import Image from "next/image";
 
 type GalleryCategory = "all" | "before" | "during" | "after";
 
-type GalleryProps = Record<string, never>;
+interface GalleryProps {
+  gallery?: Array<{
+    id: string;
+    url: string;
+    type: "PHOTO" | "VIDEO";
+    category: "before" | "during" | "after";
+    createdAt?: string;
+  }>;
+  images?: string[];
+  videos?: Array<{
+    id: string;
+    title: string;
+    thumbnail: string;
+    duration: string;
+    category: "before" | "during" | "after";
+  }>;
+}
 
-const Gallery: React.FC<GalleryProps> = () => {
+const Gallery: React.FC<GalleryProps> = (props) => {
+  // Extract data from props with fallbacks
+  const gallery = props.gallery || [];
+  const images = props.images || [];
+  const videos = props.videos || [];
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [selectedMedia, setSelectedMedia] = useState<{
@@ -44,78 +64,56 @@ const Gallery: React.FC<GalleryProps> = () => {
     };
   }, []);
 
+  // Create gallery items from props
   const galleryItems = [
+    // Add images from gallery prop
+    ...gallery.map((item) => ({
+      id: item.id,
+      type: item.type.toLowerCase() as "image" | "video",
+      src: item.url,
+      title: `Gallery ${item.id}`,
+      description: `Beautiful moment from our ${item.category} phase`,
+      category: item.category,
+    })),
+    // Add images from images prop (fallback)
+    ...images.map((image, index) => ({
+      id: `image-${index}`,
+      type: "image" as const,
+      src: image,
+      title: `Gallery Image ${index + 1}`,
+      description: "Beautiful moment from our journey",
+      category: "during" as const,
+    })),
+    // Add videos from videos prop (fallback)
+    ...videos.map((video) => ({
+      id: video.id,
+      type: "video" as const,
+      src: video.thumbnail,
+      title: video.title,
+      description: `Video: ${video.title}`,
+      category: video.category,
+    })),
+  ];
+
+  // If no gallery data provided, use default fallback
+  const defaultGalleryItems = [
     {
-      id: 1,
+      id: "default-1",
       type: "image" as const,
       src: galleryPreview.src,
       title: "Engagement Photos",
       description: "Our romantic engagement session",
       category: "before" as const,
     },
-    {
-      id: 2,
-      type: "video" as const,
-      src: "#",
-      title: "Proposal Video",
-      description: "The moment he asked forever",
-      category: "before" as const,
-    },
-    {
-      id: 3,
-      type: "image" as const,
-      src: galleryPreview.src,
-      title: "Pre-Wedding",
-      description: "Getting ready for our big day",
-      category: "before" as const,
-    },
-    {
-      id: 4,
-      type: "video" as const,
-      src: "#",
-      title: "Wedding Ceremony",
-      description: "Our beautiful ceremony",
-      category: "during" as const,
-    },
-    {
-      id: 5,
-      type: "image" as const,
-      src: galleryPreview.src,
-      title: "Wedding Highlights",
-      description: "Our ceremony and celebration",
-      category: "during" as const,
-    },
-    {
-      id: 6,
-      type: "image" as const,
-      src: galleryPreview.src,
-      title: "Reception",
-      description: "Dancing the night away",
-      category: "during" as const,
-    },
-    {
-      id: 7,
-      type: "image" as const,
-      src: galleryPreview.src,
-      title: "Family & Friends",
-      description: "Surrounded by love",
-      category: "during" as const,
-    },
-    {
-      id: 8,
-      type: "image" as const,
-      src: galleryPreview.src,
-      title: "Honeymoon",
-      description: "Our first adventure together",
-      category: "after" as const,
-    },
   ];
+
+  const finalGalleryItems = galleryItems.length > 0 ? galleryItems : defaultGalleryItems;
 
   // Filter items based on active category
   const filteredItems =
     activeCategory === "all"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === activeCategory);
+      ? finalGalleryItems
+      : finalGalleryItems.filter((item) => item.category === activeCategory);
 
   const categories = [
     { id: "all", label: "All" },

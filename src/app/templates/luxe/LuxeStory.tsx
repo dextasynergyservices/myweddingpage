@@ -3,7 +3,40 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 
-export default function OurStory() {
+interface OurStoryProps {
+  title?: string;
+  description?: string;
+  storyItems?: Array<{
+    title: string;
+    text: string;
+    image: string;
+  }>;
+}
+
+export default function OurStory({
+  title = "Our Love Story",
+  description = "Every love story is beautiful, but ours is our favorite",
+  storyItems = [
+    {
+      title: "How We Met",
+      text: "It was a rainy Tuesday at the local coffee shop. Sarah was reading her favorite book while Michael was working on his laptop. When Michael spilled his coffee, Sarah offered her napkins, and the rest is history.",
+      image:
+        "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=800",
+    },
+    {
+      title: "First Date",
+      text: "Our first official date was at the art museum downtown. We spent hours talking about our favorite pieces and discovered we both love impressionist paintings. The day ended with a sunset walk in the park.",
+      image:
+        "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=800",
+    },
+    {
+      title: "The Proposal",
+      text: "Michael proposed during a weekend getaway to the mountains. As we watched the sunrise from our cabin's deck, he got down on one knee and asked Sarah to be his adventure partner for life.",
+      image:
+        "https://images.pexels.com/photos/265722/pexels-photo-265722.jpeg?auto=compress&cs=tinysrgb&w=800",
+    },
+  ],
+}: OurStoryProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [imageScales, setImageScales] = useState<{ [key: number]: number }>({});
   const sectionRef = useRef<HTMLElement>(null);
@@ -47,27 +80,6 @@ export default function OurStory() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  const storyItems = [
-    {
-      title: "How We Met",
-      text: "It was a rainy Tuesday at the local coffee shop. Sarah was reading her favorite book while Michael was working on his laptop. When Michael spilled his coffee, Sarah offered her napkins, and the rest is history.",
-      image:
-        "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
-    {
-      title: "First Date",
-      text: "Our first official date was at the art museum downtown. We spent hours talking about our favorite pieces and discovered we both love impressionist paintings. The day ended with a sunset walk in the park.",
-      image:
-        "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
-    {
-      title: "The Proposal",
-      text: "Michael proposed during a weekend getaway to the mountains. As we watched the sunrise from our cabin's deck, he got down on one knee and asked Sarah to be his adventure partner for life.",
-      image:
-        "https://images.pexels.com/photos/265722/pexels-photo-265722.jpeg?auto=compress&cs=tinysrgb&w=800",
-    },
-  ];
-
   return (
     <section
       ref={sectionRef}
@@ -84,11 +96,9 @@ export default function OurStory() {
           className={`text-center mb-20 transition-all duration-1000 transform ${isVisible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"}`}
         >
           <h2 className="text-2xl md:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-6">
-            Our Love Story
+            {title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Every love story is beautiful, but ours is our favorite
-          </p>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">{description}</p>
         </div>
 
         <div className="space-y-24">

@@ -4,10 +4,28 @@ import { Gift, Heart, ExternalLink, Check } from "lucide-react";
 import Image from "next/image";
 import styles from "@/styles/templates/bloom.module.css";
 
-const GiftRegistry = () => {
-  const { elementRef, isVisible } = useScrollAnimation(0.2);
+interface GiftRegistryProps {
+  title?: string;
+  description?: string;
+  gifts?: Array<{
+    id: number;
+    name: string;
+    description: string;
+    price: string;
+    image: string;
+    purchased?: boolean;
+  }>;
+  bankDetails?: {
+    bankName?: string;
+    accountNumber?: string;
+    accountName?: string;
+  };
+}
 
-  const gifts = [
+const GiftRegistry = ({
+  title = "Gift Registry",
+  description = "Help us build our home together with these thoughtfully chosen items",
+  gifts = [
     {
       id: 1,
       name: "Kitchen Stand Mixer",
@@ -56,7 +74,14 @@ const GiftRegistry = () => {
       image: "https://images.unsplash.com/photo-1510074377623-8cf13fb86c08?w=400&h=300&fit=crop",
       purchased: false,
     },
-  ];
+  ],
+  bankDetails = {
+    bankName: "Access Bank",
+    accountNumber: "1234567890",
+    accountName: "John & Jane Doe",
+  },
+}: GiftRegistryProps) => {
+  const { elementRef, isVisible } = useScrollAnimation(0.2);
 
   return (
     <section
@@ -84,13 +109,11 @@ const GiftRegistry = () => {
           <h2
             className={`${styles.fontHeading} text-2xl md:text-5xl font-bold ${styles.textForeground} mb-6`}
           >
-            Gift Registry
+            {title}
           </h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
           <p className={`text-xl ${styles.textMuted} max-w-3xl mx-auto leading-relaxed`}>
-            Your presence at our wedding is the greatest gift of all. If you&apos;d like to
-            contribute to our new life together, here are some items that would help us build our
-            home with love.
+            {description}
           </p>
         </div>
 

@@ -9,63 +9,90 @@ import styles from "@/styles/templates/vows.module.css";
 
 type GalleryCategory = "all" | "before" | "during" | "after";
 
-export const GallerySection = () => {
+interface GalleryProps {
+  gallery?: Array<{
+    id: string;
+    url: string;
+    type: "PHOTO" | "VIDEO";
+    category: "before" | "during" | "after";
+    createdAt?: string;
+  }>;
+  images?: string[];
+  videos?: Array<{
+    id: string;
+    title: string;
+    thumbnail: string;
+    duration: string;
+    category: "before" | "during" | "after";
+  }>;
+}
+
+interface GallerySectionProps extends GalleryProps {
+  title?: string;
+  description?: string;
+  fallbackImages?: string[];
+}
+
+export const GallerySection = (props: GallerySectionProps) => {
+  // Extract data from props with fallbacks
+  const gallery = props.gallery || [];
+  const images = props.images || [];
+  const videos = props.videos || [];
+  const title = props.title || "Our Gallery";
+  const description =
+    props.description || "Capturing the beautiful moments of our journey together";
+  const fallbackImages = props.fallbackImages || [galleryImage1, galleryImage2];
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.2);
   const { scale: gallery1Scale } = useScrollScale();
   const { scale: gallery2Scale } = useScrollScale();
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
 
-  // Gallery items with categories
+  // Create gallery items from props
   const galleryItems = [
+    // Add images from gallery prop
+    ...gallery.map((item) => ({
+      id: item.id,
+      src: item.url,
+      alt: `Gallery ${item.id}`,
+      category: item.category,
+      aspectRatio: "aspect-square" as const,
+    })),
+    // Add images from images prop (fallback)
+    ...images.map((image, index) => ({
+      id: `image-${index}`,
+      src: image,
+      alt: `Gallery Image ${index + 1}`,
+      category: "during" as const,
+      aspectRatio: "aspect-square" as const,
+    })),
+    // Add videos from videos prop (fallback)
+    ...videos.map((video) => ({
+      id: video.id,
+      src: video.thumbnail,
+      alt: video.title,
+      category: video.category,
+      aspectRatio: "aspect-square" as const,
+    })),
+  ];
+
+  // If no gallery data provided, use default fallback
+  const defaultGalleryItems = [
     {
-      id: 1,
+      id: "default-1",
       src: galleryImage1,
       alt: "Engagement ring ceremony",
       category: "before" as const,
-      aspectRatio: "aspect-[3/4]",
-    },
-    {
-      id: 2,
-      src: galleryImage2,
-      alt: "Wedding bouquet preparation",
-      category: "before" as const,
-      aspectRatio: "aspect-square",
-    },
-    {
-      id: 3,
-      src: galleryImage1,
-      alt: "Wedding ceremony moment",
-      category: "during" as const,
-      aspectRatio: "aspect-[4/3]",
-    },
-    {
-      id: 4,
-      src: galleryImage2,
-      alt: "First dance celebration",
-      category: "during" as const,
-      aspectRatio: "aspect-[3/4]",
-    },
-    {
-      id: 5,
-      src: galleryImage1,
-      alt: "Reception party",
-      category: "during" as const,
-      aspectRatio: "aspect-square",
-    },
-    {
-      id: 6,
-      src: galleryImage2,
-      alt: "Honeymoon memories",
-      category: "after" as const,
-      aspectRatio: "aspect-[4/3]",
+      aspectRatio: "aspect-[3/4]" as const,
     },
   ];
+
+  const finalGalleryItems = galleryItems.length > 0 ? galleryItems : defaultGalleryItems;
 
   // Filter items based on active category
   const filteredItems =
     activeCategory === "all"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === activeCategory);
+      ? finalGalleryItems
+      : finalGalleryItems.filter((item) => item.category === activeCategory);
 
   const categories = [
     { id: "all", label: "All" },
@@ -86,14 +113,13 @@ export const GallerySection = () => {
           <h2
             className={`${styles.fontHeading} text-5xl md:text-6xl lg:text-7xl ${styles.textForeground} mb-6`}
           >
-            Gallery
+            {title}
           </h2>
           <div className={`w-24 h-px ${styles.bgAccent} mx-auto mb-8`} />
           <p
             className={`${styles.fontBody} text-lg md:text-xl ${styles.textMuted} max-w-3xl mx-auto leading-relaxed`}
           >
-            Capturing the beautiful moments of our journey together. Each photo tells a story of
-            love, laughter, and the memories we&apos;ve created.
+            {description}
           </p>
         </div>
 

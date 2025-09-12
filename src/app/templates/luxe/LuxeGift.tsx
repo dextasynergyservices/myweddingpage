@@ -4,7 +4,83 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Gift, Check } from "lucide-react";
 import Image from "next/image";
 
-export default function GiftRegistry() {
+interface GiftRegistryProps {
+  title?: string;
+  description?: string;
+  gifts?: Array<{
+    id: number;
+    name: string;
+    description: string;
+    price: string;
+    image: string;
+    purchased?: boolean;
+  }>;
+  bankDetails?: {
+    bankName?: string;
+    accountNumber?: string;
+    accountName?: string;
+  };
+}
+
+export default function GiftRegistry({
+  title = "Gift Registry",
+  description = "Your presence at our wedding is the greatest gift of all. If you'd like to help us start our new life together, here are some items we'd love to have in our home.",
+  gifts = [
+    {
+      id: 1,
+      name: "Kitchen Stand Mixer",
+      description: "Professional-grade mixer for our baking adventures together",
+      price: "$350",
+      image: "https://images.unsplash.com/photo-1586909194449-5a4b03a1c5d8?w=400&h=300&fit=crop",
+      purchased: false,
+    },
+    {
+      id: 2,
+      name: "Fine China Dinner Set",
+      description: "Elegant dinnerware for hosting family and friends",
+      price: "$280",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
+      purchased: true,
+    },
+    {
+      id: 3,
+      name: "Cozy Throw Blankets",
+      description: "Soft blankets for movie nights and lazy Sundays",
+      price: "$120",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      purchased: false,
+    },
+    {
+      id: 4,
+      name: "Coffee Table Books",
+      description: "Beautiful photography books for our living room",
+      price: "$120",
+      image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop",
+      purchased: false,
+    },
+    {
+      id: 5,
+      name: "Garden Tool Set",
+      description: "Premium tools for our future garden together",
+      price: "$150",
+      image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop",
+      purchased: false,
+    },
+    {
+      id: 6,
+      name: "Wine Glass Collection",
+      description: "Crystal glasses for celebrating special moments",
+      price: "$200",
+      image: "https://images.unsplash.com/photo-1510074377623-8cf13fb86c08?w=400&h=300&fit=crop",
+      purchased: false,
+    },
+  ],
+  bankDetails = {
+    bankName: "Access Bank",
+    accountNumber: "1234567890",
+    accountName: "John & Jane Doe",
+  },
+}: GiftRegistryProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [purchasedItems] = useState<number[]>([]);
   const [imageScales, setImageScales] = useState<{ [key: number]: number }>({});
@@ -49,51 +125,6 @@ export default function GiftRegistry() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  const gifts = [
-    {
-      name: "Stand Mixer",
-      description: "Professional-grade kitchen mixer for baking adventures",
-      price: "₦299,000",
-      image:
-        "https://images.pexels.com/photos/4226876/pexels-photo-4226876.jpeg?auto=compress&cs=tinysrgb&w=400",
-    },
-    {
-      name: "Dining Table Set",
-      description: "Beautiful oak dining table with 6 chairs",
-      price: "₦899,000",
-      image:
-        "https://images.pexels.com/photos/1080721/pexels-photo-1080721.jpeg?auto=compress&cs=tinysrgb&w=400",
-    },
-    {
-      name: "Coffee Machine",
-      description: "Espresso machine for perfect morning coffee",
-      price: "₦449,000",
-      image:
-        "https://images.pexels.com/photos/324028/pexels-photo-324028.jpeg?auto=compress&cs=tinysrgb&w=400",
-    },
-    {
-      name: "Bedding Set",
-      description: "Luxury Egyptian cotton sheets and comforter",
-      price: "₦199,000",
-      image:
-        "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=400",
-    },
-    {
-      name: "Garden Tool Set",
-      description: "Complete set for our new garden",
-      price: "₦129,000",
-      image:
-        "https://images.pexels.com/photos/416978/pexels-photo-416978.jpeg?auto=compress&cs=tinysrgb&w=400",
-    },
-    {
-      name: "Wine Glasses",
-      description: "Crystal wine glasses set of 8",
-      price: "₦89,000",
-      image:
-        "https://images.pexels.com/photos/1407309/pexels-photo-1407309.jpeg?auto=compress&cs=tinysrgb&w=400",
-    },
-  ];
-
   return (
     <section
       ref={sectionRef}
@@ -110,11 +141,9 @@ export default function GiftRegistry() {
           className={`text-center mb-16 transition-all duration-1000 transform ${isVisible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"}`}
         >
           <h2 className="text-2xl md:text-5xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent mb-6">
-            Gift Registry
+            {title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-            Help us start our new journey together with these thoughtful gifts
-          </p>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">{description}</p>
           <div className="flex items-center justify-center gap-2 text-gray-500">
             <Gift className="w-5 h-5" />
             <span>

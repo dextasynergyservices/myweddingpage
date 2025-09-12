@@ -4,52 +4,87 @@ import { useScrollAnimation } from "@/app/templates/vows/hooks/useScrollAnimatio
 import { Card, CardContent } from "@/app/templates/vows/components/ui/card";
 import { Button } from "@/app/templates/vows/components/ui/button";
 
-const giftItems = [
-  {
-    id: 1,
-    name: "Dining Table Set",
-    description: "Beautiful oak dining table for our new home",
-    price: "₦1,200,000",
-    image: "🪑",
-  },
-  {
-    id: 2,
-    name: "Kitchen Mixer",
-    description: "Professional stand mixer for baking together",
-    price: "₦350,000",
-    image: "🥄",
-  },
-  {
-    id: 3,
-    name: "Bedding Set",
-    description: "Luxury cotton bedding set, king size",
-    price: "₦200,000",
-    image: "🛏️",
-  },
-  {
-    id: 4,
-    name: "Coffee Machine",
-    description: "Espresso machine for our morning coffee ritual",
-    price: "₦450,000",
-    image: "☕",
-  },
-  {
-    id: 5,
-    name: "Outdoor Grill",
-    description: "Gas grill for backyard entertaining",
-    price: "₦800,000",
-    image: "🔥",
-  },
-  {
-    id: 6,
-    name: "Vacuum Cleaner",
-    description: "Robot vacuum for easy home maintenance",
-    price: "₦300,000",
-    image: "🏠",
-  },
-];
+interface GiftRegistryProps {
+  title?: string;
+  description?: string;
+  gifts?: Array<{
+    id: number;
+    name: string;
+    description: string;
+    price: string;
+    image: string;
+    purchased?: boolean;
+  }>;
+  bankDetails?: {
+    bankName?: string;
+    accountNumber?: string;
+    accountName?: string;
+  };
+}
 
-export const GiftRegistrySection = () => {
+const GiftRegistry = (props: GiftRegistryProps) => {
+  // Extract data from props with fallbacks
+  const title = props.title || "Gift Registry";
+  const description =
+    props.description ||
+    "Your presence at our wedding is the greatest gift of all. If you'd like to help us start our new life together, here are some items we'd love to have in our home.";
+
+  const gifts = props.gifts || [
+    {
+      id: 1,
+      name: "Dining Table Set",
+      description: "Beautiful oak dining table for our new home",
+      price: "₦1,200,000",
+      image: "🪑",
+      purchased: false,
+    },
+    {
+      id: 2,
+      name: "Kitchen Mixer",
+      description: "Professional stand mixer for baking together",
+      price: "₦350,000",
+      image: "🥄",
+      purchased: false,
+    },
+    {
+      id: 3,
+      name: "Bedding Set",
+      description: "Luxury cotton bedding set, king size",
+      price: "₦200,000",
+      image: "🛏️",
+      purchased: false,
+    },
+    {
+      id: 4,
+      name: "Coffee Machine",
+      description: "Espresso machine for our morning coffee ritual",
+      price: "₦450,000",
+      image: "☕",
+      purchased: false,
+    },
+    {
+      id: 5,
+      name: "Outdoor Grill",
+      description: "Gas grill for backyard entertaining",
+      price: "₦800,000",
+      image: "🔥",
+      purchased: false,
+    },
+    {
+      id: 6,
+      name: "Vacuum Cleaner",
+      description: "Robot vacuum for easy home maintenance",
+      price: "₦300,000",
+      image: "🏠",
+      purchased: false,
+    },
+  ];
+
+  const bankDetails = props.bankDetails || {
+    bankName: "Access Bank",
+    accountNumber: "1234567890",
+    accountName: "John & Jane Doe",
+  };
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.2);
 
   return (
@@ -61,18 +96,15 @@ export const GiftRegistrySection = () => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl text-black mb-6">
-            Gift Registry
-          </h2>
+          <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl text-black mb-6">{title}</h2>
           <div className="w-24 h-px bg-accent mx-auto mb-8" />
           <p className="font-body text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Your presence at our wedding is the greatest gift of all. However, if you wish to honor
-            us with a gift, we&apos;ve created this registry to help us start our new life together.
+            {description}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 lg:px-16 py-4 md:gap-8">
-          {giftItems.map((item, index) => (
+          {gifts.map((item, index) => (
             <div
               key={item.id}
               className={`transition-all duration-1000 ${
@@ -130,3 +162,5 @@ export const GiftRegistrySection = () => {
     </section>
   );
 };
+
+export const GiftRegistrySection = GiftRegistry;

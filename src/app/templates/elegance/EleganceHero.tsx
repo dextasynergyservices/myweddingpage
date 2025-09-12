@@ -6,9 +6,33 @@ import weddingHero from "./assets/wedding-hero.jpg";
 import styles from "@/styles/templates/elegance.module.css";
 import Image from "next/image";
 
-type HeroProps = Record<string, never>;
+interface HeroProps {
+  brideName?: string;
+  groomName?: string;
+  weddingDate?: string;
+  venue?: string;
+  description?: string;
+  heroImage?: string;
+}
 
-const Hero: React.FC<HeroProps> = () => {
+const Hero: React.FC<HeroProps> = (props) => {
+  // Extract data from props with fallbacks
+  const brideName = props.brideName || "Bride";
+  const groomName = props.groomName || "Groom";
+  const venue = props.venue || "Wedding Venue";
+  const description =
+    props.description ||
+    "Join us as we celebrate our love story and begin our journey together as one.";
+  const dateValue = props.weddingDate;
+
+  const weddingDate = dateValue ? new Date(dateValue) : new Date();
+  const formattedDate = weddingDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const heroImage = props.heroImage || weddingHero.src;
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -36,8 +60,8 @@ const Hero: React.FC<HeroProps> = () => {
               className={`${styles.relative} ${styles.overflowHidden} ${styles.rounded3xl} ${styles.shadowElevated}`}
             >
               <Image
-                src={weddingHero.src}
-                alt="Emma and James wedding photo"
+                src={heroImage}
+                alt={`${brideName} and ${groomName} wedding photo`}
                 width={800}
                 height={600}
                 className={`${styles.wFull} ${styles.h300px} ${styles.smH400px} ${styles.lgH600px} ${styles.objectCover} ${styles.transitionTransform} ${styles.duration300} ${styles.easeOut}`}
@@ -64,7 +88,7 @@ const Hero: React.FC<HeroProps> = () => {
               <h1
                 className={`${styles.fontDisplay} text-2xl md:text-6xl lg:text-7xl font-bold mb-4 leading-none`}
               >
-                Tamunomiebaka <span className={styles.textAccent}>&</span> Precious
+                {brideName} <span className={styles.textAccent}>&</span> {groomName}
               </h1>
 
               <div
@@ -74,14 +98,14 @@ const Hero: React.FC<HeroProps> = () => {
                 <p
                   className={`${styles.textSm} ${styles.smTextBase} ${styles.lgTextXl} ${styles.fontLight} ${styles.trackingWider}`}
                 >
-                  December 14, 2024
+                  {formattedDate}
                 </p>
               </div>
 
               <p
                 className={`${styles.textLg} ${styles.mdTextXl} ${styles.mb12} ${styles.maxW2xl} ${styles.mxAuto} ${styles.lgMx0} ${styles.leadingRelaxed} ${styles.textMutedForeground}`}
               >
-                Join us as we celebrate our love story and begin our journey together as one.
+                {description}
               </p>
 
               <div
@@ -90,7 +114,7 @@ const Hero: React.FC<HeroProps> = () => {
                 <button
                   className={`${styles.bgPrimary} ${styles.textPrimaryForeground} ${styles.px6} ${styles.py2} ${styles.lgPx8} ${styles.lgPy3} ${styles.textSm} ${styles.lgTextBase} ${styles.roundedLg} ${styles.fontSemibold} ${styles.transitionAll} ${styles.hoverBgPrimary80} ${styles.focusRingPrimary}`}
                 >
-                  RSVP Now
+                  View Gallery
                 </button>
                 <button
                   className={`${styles.border2} ${styles.borderPrimary} ${styles.textPrimary} ${styles.px6} ${styles.py2} ${styles.lgPx8} ${styles.lgPy3} ${styles.textSm} ${styles.lgTextBase} ${styles.roundedLg} ${styles.fontSemibold} ${styles.transitionAll} ${styles.hoverBgPrimary10} ${styles.hoverTextPrimary} ${styles.focusRingPrimary}`}

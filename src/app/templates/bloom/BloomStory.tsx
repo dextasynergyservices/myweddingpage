@@ -4,12 +4,34 @@ import { Heart, Calendar, MapPin, Sparkles } from "lucide-react";
 import Image from "next/image";
 import styles from "@/styles/templates/bloom.module.css";
 
-const OurStory = () => {
-  const { elementRef: storyRef, isVisible: storyVisible } = useScrollAnimation(0.2);
-  const { elementRef: timelineRef, isVisible: timelineVisible } = useScrollAnimation(0.1);
-  const { elementRef: imageRef, isVisible: imageVisible } = useScrollScale(0.2);
+interface OurStoryProps {
+  title?: string;
+  description?: string;
+  storyContent?: {
+    mainTitle?: string;
+    mainDescription?: string;
+    storyText?: string;
+  };
+  milestones?: Array<{
+    date: string;
+    title: string;
+    description: string;
+    icon: any;
+  }>;
+  storyImage?: string;
+}
 
-  const milestones = [
+const OurStory = ({
+  title = "Our Love Story",
+  description = "Every love story is beautiful, but ours is our favorite. Here's how two hearts found their way to each other and decided to walk together forever.",
+  storyContent = {
+    mainTitle: "A Love That Bloomed",
+    mainDescription:
+      "What started as a chance encounter at our favorite coffee shop has blossomed into a love that fills our hearts with joy every single day. We've laughed together, dreamed together, and supported each other through all of life's beautiful moments.",
+    storyText:
+      "From quiet Sunday mornings to adventurous weekend getaways, we've built a foundation of friendship, trust, and unconditional love that we can't wait to celebrate with all of you.",
+  },
+  milestones = [
     {
       date: "March 2018",
       title: "First Meeting",
@@ -38,7 +60,12 @@ const OurStory = () => {
         'Today, we say "I do" and begin our greatest adventure yet - a lifetime of love together.',
       icon: Calendar,
     },
-  ];
+  ],
+  storyImage = "/templates/bloom/assets/couple-portrait.jpg",
+}: OurStoryProps) => {
+  const { elementRef: storyRef, isVisible: storyVisible } = useScrollAnimation(0.2);
+  const { elementRef: timelineRef, isVisible: timelineVisible } = useScrollAnimation(0.1);
+  const { elementRef: imageRef, isVisible: imageVisible } = useScrollScale(0.2);
 
   return (
     <section
@@ -66,12 +93,11 @@ const OurStory = () => {
           <h2
             className={`${styles.fontHeading} text-2xl md:text-5xl font-bold ${styles.textForeground} mb-6`}
           >
-            Our Love Story
+            {title}
           </h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
           <p className={`text-xl ${styles.textMuted} max-w-3xl mx-auto leading-relaxed`}>
-            Every love story is beautiful, but ours is our favorite. Here&apos;s how two hearts
-            found their way to each other and decided to walk together forever.
+            {description}
           </p>
         </div>
 
@@ -89,8 +115,8 @@ const OurStory = () => {
           >
             <div className={`${styles.storyImageContainer} relative group`}>
               <Image
-                src="/templates/bloom/assets/couple-portrait.jpg"
-                alt="Sarah and James"
+                src={storyImage}
+                alt="Our couple portrait"
                 className={`w-full ${styles.roundedLg} ${styles.shadowElegant} transition-romantic group-hover:shadow-glow`}
                 width={600}
                 height={800}
@@ -112,18 +138,13 @@ const OurStory = () => {
               <h3
                 className={`${styles.fontHeading} md:text-4xl text-xl font-semibold ${styles.textForeground}`}
               >
-                A Love That Bloomed
+                {storyContent.mainTitle}
               </h3>
               <p className={`text-lg ${styles.textMuted} leading-relaxed`}>
-                What started as a chance encounter at our favorite coffee shop has blossomed into a
-                love that fills our hearts with joy every single day. We&apos;ve laughed together,
-                dreamed together, and supported each other through all of life&apos;s beautiful
-                moments.
+                {storyContent.mainDescription}
               </p>
               <p className={`text-lg ${styles.textMuted} leading-relaxed`}>
-                From quiet Sunday mornings to adventurous weekend getaways, we&apos;ve built a
-                foundation of friendship, trust, and unconditional love that we can&apos;t wait to
-                celebrate with all of you.
+                {storyContent.storyText}
               </p>
             </div>
           </div>

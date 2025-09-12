@@ -3,7 +3,43 @@
 import { useScrollAnimation } from "@/app/templates/vows/hooks/useScrollAnimation";
 import styles from "@/styles/templates/vows.module.css";
 
-export const HeroSection = () => {
+interface HeroSectionProps {
+  brideName?: string;
+  groomName?: string;
+  weddingDate?: string;
+  venue?: string;
+  subtitle?: string;
+  description?: string;
+  heroImage?: string;
+  // Legacy support for weddingData prop
+  weddingData?: {
+    brideName?: string;
+    groomName?: string;
+    weddingDate?: string;
+    venue?: string;
+    welcomeMessage?: string;
+  };
+}
+
+export const HeroSection = (props: HeroSectionProps) => {
+  // Extract data from props (prioritize direct props over weddingData object)
+  const brideName = props.brideName || props.weddingData?.brideName || "Bride";
+  const groomName = props.groomName || props.weddingData?.groomName || "Groom";
+  const venue = props.venue || props.weddingData?.venue || "Wedding Venue";
+  const description =
+    props.description ||
+    props.weddingData?.welcomeMessage ||
+    "Join us as we celebrate our love story";
+  const dateValue = props.weddingDate || props.weddingData?.weddingDate;
+
+  const weddingDate = dateValue ? new Date(dateValue) : new Date();
+  const formattedDate = weddingDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const heroImage = props.heroImage || "/templates/vows/assets/hero-wedding.jpg";
   const { ref, isVisible } = useScrollAnimation(0.3);
 
   return (
@@ -12,7 +48,7 @@ export const HeroSection = () => {
       <div
         className={`absolute inset-0 bg-cover bg-center bg-fixed ${styles.weddingHero}`}
         style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('/templates/vows/assets/hero-wedding.jpg')`,
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('${heroImage}')`,
         }}
       />
 
@@ -27,14 +63,14 @@ export const HeroSection = () => {
           <h1
             className={`${styles.fontScript} text-6xl md:text-8xl lg:text-9xl mb-4 ${styles.animateFadeUp}`}
           >
-            Sarah & Michael
+            {brideName} & {groomName}
           </h1>
           <div className="h-px w-32 bg-white mx-auto mb-6 opacity-80" />
           <p className={`${styles.fontHeading} text-xl md:text-2xl lg:text-3xl mb-4 tracking-wide`}>
-            Together Forever
+            {props.subtitle || "Together Forever"}
           </p>
           <p className={`${styles.fontBody} text-lg md:text-xl text-gray-200 mb-8`}>
-            October 15, 2024 • Napa Valley, California
+            {formattedDate} • {venue}
           </p>
           <div className={styles.animatePulseGentle}>
             <button

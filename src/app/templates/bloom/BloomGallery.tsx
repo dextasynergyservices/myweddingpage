@@ -7,7 +7,33 @@ import styles from "@/styles/templates/bloom.module.css";
 
 type GalleryCategory = "all" | "before" | "during" | "after";
 
-const Gallery = () => {
+interface GalleryProps {
+  gallery?: Array<{
+    id: string;
+    url: string;
+    type: "PHOTO" | "VIDEO";
+    category: "before" | "during" | "after";
+    createdAt?: string;
+  }>;
+  images?: string[];
+  videos?: Array<{
+    id: string;
+    title: string;
+    thumbnail: string;
+    duration: string;
+    category: "before" | "during" | "after";
+  }>;
+  title?: string;
+  description?: string;
+}
+
+const Gallery = ({
+  gallery = [],
+  images = [],
+  videos = [],
+  title = "Our Gallery",
+  description = "Capturing the beautiful moments of our journey together",
+}: GalleryProps) => {
   const { elementRef, isVisible } = useScrollAnimation(0.1);
   const [selectedMedia, setSelectedMedia] = useState<{
     type: "image" | "video";
@@ -16,86 +42,56 @@ const Gallery = () => {
   } | null>(null);
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
 
+  // Create gallery items from props
   const galleryItems = [
+    // Add images from gallery prop
+    ...gallery.map((item) => ({
+      id: item.id,
+      type: item.type === "PHOTO" ? ("image" as const) : ("video" as const),
+      src: item.url,
+      alt: `Gallery ${item.id}`,
+      aspectRatio: "aspect-[3/4]" as const,
+      category: item.category,
+    })),
+    // Add images from images prop (fallback)
+    ...images.map((image, index) => ({
+      id: `image-${index}`,
+      type: "image" as const,
+      src: image,
+      alt: `Gallery Image ${index + 1}`,
+      aspectRatio: "aspect-[3/4]" as const,
+      category: "during" as const,
+    })),
+    // Add videos from videos prop (fallback)
+    ...videos.map((video) => ({
+      id: video.id,
+      type: "video" as const,
+      src: video.thumbnail,
+      alt: video.title,
+      aspectRatio: "aspect-[3/4]" as const,
+      category: video.category,
+    })),
+  ];
+
+  // If no gallery data provided, use default fallback
+  const defaultGalleryItems = [
     {
-      id: 1,
+      id: "default-1",
       type: "image" as const,
       src: "/templates/bloom/assets/wedding-details-1.jpg",
       alt: "Engagement ring selection",
-      aspectRatio: "aspect-[3/4]",
+      aspectRatio: "aspect-[3/4]" as const,
       category: "before" as const,
-    },
-    {
-      id: 2,
-      type: "image" as const,
-      src: "/templates/bloom/assets/couple-portrait.jpg",
-      alt: "Pre-wedding photoshoot",
-      aspectRatio: "aspect-[2/3]",
-      category: "before" as const,
-    },
-    {
-      id: 3,
-      type: "image" as const,
-      src: "/templates/bloom/assets/wedding-bouquet.jpg",
-      alt: "Bouquet preparation",
-      aspectRatio: "aspect-[3/4]",
-      category: "before" as const,
-    },
-    {
-      id: 4,
-      type: "image" as const,
-      src: "/templates/bloom/assets/wedding-celebration.jpg",
-      alt: "Wedding ceremony moment",
-      aspectRatio: "aspect-[4/3]",
-      category: "during" as const,
-    },
-    {
-      id: 5,
-      type: "video" as const,
-      src: "#",
-      alt: "Wedding ceremony highlights",
-      aspectRatio: "aspect-video",
-      category: "during" as const,
-    },
-    {
-      id: 6,
-      type: "image" as const,
-      src: "/templates/bloom/assets/wedding-details-1.jpg",
-      alt: "Wedding cake cutting",
-      aspectRatio: "aspect-square",
-      category: "during" as const,
-    },
-    {
-      id: 7,
-      type: "video" as const,
-      src: "#",
-      alt: "First dance moment",
-      aspectRatio: "aspect-[9/16]",
-      category: "during" as const,
-    },
-    {
-      id: 8,
-      type: "image" as const,
-      src: "/templates/bloom/assets/wedding-bouquet.jpg",
-      alt: "Rings exchange ceremony",
-      aspectRatio: "aspect-square",
-      category: "during" as const,
-    },
-    {
-      id: 9,
-      type: "image" as const,
-      src: "/templates/bloom/assets/wedding-celebration.jpg",
-      alt: "Honeymoon memories",
-      aspectRatio: "aspect-[4/3]",
-      category: "after" as const,
     },
   ];
+
+  const finalGalleryItems = galleryItems.length > 0 ? galleryItems : defaultGalleryItems;
 
   // Filter items based on active category
   const filteredItems =
     activeCategory === "all"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === activeCategory);
+      ? finalGalleryItems
+      : finalGalleryItems.filter((item) => item.category === activeCategory);
 
   // Individual scroll hooks for each gallery item
   const scrollHook1 = useScrollScale(0.1);
@@ -151,12 +147,11 @@ const Gallery = () => {
           <h2
             className={`${styles.fontHeading} text-2xl md:text-5xl font-bold ${styles.textForeground} mb-6`}
           >
-            Wedding Gallery
+            {title}
           </h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
           <p className={`text-xl ${styles.textMuted} max-w-2xl mx-auto leading-relaxed`}>
-            Capturing the beautiful moments, precious memories, and joyful celebrations of our
-            special day.
+            {description}
           </p>
         </div>
 

@@ -8,38 +8,63 @@ import { Textarea } from "@/app/templates/vows/components/ui/textarea";
 import { Input } from "@/app/templates/vows/components/ui/input";
 import { toast } from "sonner";
 
-const existingComments = [
-  {
-    id: 1,
-    name: "Emily Rodriguez",
-    message:
-      "So excited to celebrate with you both! Your love story is truly inspiring and I cannot wait to see you walk down the aisle. Wishing you a lifetime of happiness! 💕",
-    timestamp: "2 days ago",
-  },
-  {
-    id: 2,
-    name: "David Chen",
-    message:
-      "Congratulations to the beautiful couple! I have had the pleasure of watching your relationship grow over the years. Here's to your new adventure together!",
-    timestamp: "3 days ago",
-  },
-  {
-    id: 3,
-    name: "Jennifer Smith",
-    message:
-      "Sarah and Michael, you two are perfect for each other! Can't wait to dance the night away at your wedding. Love you both! 💃✨",
-    timestamp: "1 week ago",
-  },
-  {
-    id: 4,
-    name: "Robert Johnson",
-    message:
-      "From the moment I met you both, I knew you were meant to be together. Your wedding is going to be absolutely magical! Congratulations! 🎉",
-    timestamp: "1 week ago",
-  },
-];
+interface CommentsSectionProps {
+  title?: string;
+  description?: string;
+  existingComments?: Array<{
+    id: number;
+    name: string;
+    message: string;
+    timestamp: string;
+  }>;
+  placeholder?: {
+    name?: string;
+    message?: string;
+  };
+}
 
-export const CommentsSection = () => {
+export const CommentsSection = (props: CommentsSectionProps) => {
+  // Extract data from props with fallbacks
+  const title = props.title || "Well Wishes";
+  const description =
+    props.description ||
+    "Share your love, memories, and well wishes for our special day. Your kind words mean the world to us!";
+
+  const existingComments = props.existingComments || [
+    {
+      id: 1,
+      name: "Emily Rodriguez",
+      message:
+        "So excited to celebrate with you both! Your love story is truly inspiring and I cannot wait to see you walk down the aisle. Wishing you a lifetime of happiness! 💕",
+      timestamp: "2 days ago",
+    },
+    {
+      id: 2,
+      name: "David Chen",
+      message:
+        "Congratulations to the beautiful couple! I have had the pleasure of watching your relationship grow over the years. Here's to your new adventure together!",
+      timestamp: "3 days ago",
+    },
+    {
+      id: 3,
+      name: "Jennifer Smith",
+      message:
+        "You two are perfect for each other! Can't wait to dance the night away at your wedding. Love you both! 💃✨",
+      timestamp: "1 week ago",
+    },
+    {
+      id: 4,
+      name: "Robert Johnson",
+      message:
+        "From the moment I met you both, I knew you were meant to be together. Your wedding is going to be absolutely magical! Congratulations! 🎉",
+      timestamp: "1 week ago",
+    },
+  ];
+
+  const placeholder = props.placeholder || {
+    name: "Your Name",
+    message: "Share your well wishes...",
+  };
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.2);
   const [newComment, setNewComment] = useState({ name: "", message: "" });
   const [comments, setComments] = useState(existingComments);
@@ -74,12 +99,11 @@ export const CommentsSection = () => {
           }`}
         >
           <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl text-black/80 mb-6">
-            Well Wishes
+            {title}
           </h2>
           <div className="w-24 h-px bg-accent mx-auto mb-8" />
           <p className="font-body text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Share your love, memories, and well wishes for our special day. Your words mean the
-            world to us as we begin this beautiful journey together.
+            {description}
           </p>
         </div>
 

@@ -12,14 +12,31 @@ interface Comment {
   avatar?: string;
 }
 
-export default function Comments() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([
+interface CommentsProps {
+  title?: string;
+  description?: string;
+  existingComments?: Array<{
+    id: number;
+    name: string;
+    message: string;
+    date: string;
+    avatar?: string;
+  }>;
+  placeholder?: {
+    name?: string;
+    message?: string;
+  };
+}
+
+export default function Comments({
+  title = "Well Wishes",
+  description = "Share your love, memories, and well wishes for our special day. Your kind words mean the world to us!",
+  existingComments = [
     {
       id: 1,
       name: "Emma Johnson",
       message:
-        "So excited to celebrate with you both! You&apos;re perfect for each other. Can&apos;t wait for the big day! 💕",
+        "So excited to celebrate with you both! You're perfect for each other. Can't wait for the big day! 💕",
       date: "2 days ago",
       avatar:
         "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100",
@@ -42,7 +59,14 @@ export default function Comments() {
       avatar:
         "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=100",
     },
-  ]);
+  ],
+  placeholder = {
+    name: "Your Name",
+    message: "Share your well wishes...",
+  },
+}: CommentsProps) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [comments, setComments] = useState<Comment[]>(existingComments);
 
   const [newComment, setNewComment] = useState({ name: "", message: "" });
   const sectionRef = useRef<HTMLElement>(null);
@@ -97,11 +121,9 @@ export default function Comments() {
             className="text-2xl md:text-5xl
            font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-6"
           >
-            Wedding Wishes
+            {title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Share your love, blessings, and excitement for our special day
-          </p>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">{description}</p>
         </div>
 
         <div className="max-w-4xl mx-auto">

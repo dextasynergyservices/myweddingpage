@@ -5,7 +5,23 @@ import { Heart } from "lucide-react";
 import styles from "@/styles/templates/luxe.module.css";
 import Image from "next/image";
 
-export default function Hero() {
+interface HeroProps {
+  brideName?: string;
+  groomName?: string;
+  weddingDate?: string;
+  venue?: string;
+  description?: string;
+  heroImage?: string;
+}
+
+export default function Hero({
+  brideName = "Bride",
+  groomName = "Groom",
+  weddingDate = "Date",
+  venue = "Venue",
+  description = "Join us as we celebrate our love story and begin our journey together as one.",
+  heroImage = "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=800",
+}: HeroProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [imageScale, setImageScale] = useState(1);
   const heroRef = useRef<HTMLElement>(null);
@@ -73,8 +89,8 @@ export default function Hero() {
             <div ref={imageRef} className="relative inline-block">
               <div className="w-72 h-72 mx-auto rounded-lg overflow-hidden shadow-2xl ring-8 ring-rose-200/60 relative group">
                 <Image
-                  src="https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=800"
-                  alt="Sarah & Michael"
+                  src={heroImage}
+                  alt={`${brideName} & ${groomName}`}
                   width={288}
                   height={288}
                   className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
@@ -94,14 +110,14 @@ export default function Hero() {
           <h1
             className={`font-['Dancing_Script'] text-6xl md:text-7xl lg:text-8xl mb-4 text-rose-800 ${styles.animateFadeIn}`}
           >
-            Sarah & Michael
+            {brideName} & {groomName}
           </h1>
           <div className="h-px w-32 bg-gradient-to-r from-rose-300 to-sage-300 mx-auto mb-6 opacity-80" />
           <p className="font-['Playfair_Display'] text-xl md:text-2xl lg:text-5xl mb-4 tracking-wide text-rose-700">
             Together Forever
           </p>
           <p className="font-['Inter'] text-lg md:text-xl text-rose-600 mb-8">
-            October 15, 2024 • Napa Valley, California
+            {weddingDate} • {venue}
           </p>
           <div className="animate-pulse">
             <button className="font-['Inter'] text-sm md:text-lg tracking-widest uppercase bg-white/20 backdrop-blur-sm border border-rose-200/30 px-8 py-3 rounded-lg hover:bg-white/30 transition-all duration-1000 text-rose-700">

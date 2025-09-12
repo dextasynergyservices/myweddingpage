@@ -6,9 +6,40 @@ import coupleStory2 from "./assets/couple-story2.jpg";
 import Image from "next/image";
 import styles from "@/styles/templates/elegance.module.css";
 
-type OurStoryProps = Record<string, never>;
+interface OurStoryProps {
+  title?: string;
+  description?: string;
+  stories?: Array<{
+    title: string;
+    date: string;
+    story: string;
+    image: any;
+  }>;
+}
 
-const OurStory: React.FC<OurStoryProps> = () => {
+const OurStory: React.FC<OurStoryProps> = (props) => {
+  // Extract data from props with fallbacks
+  const title = props.title || "Our Love Story";
+  const description =
+    props.description ||
+    "Every love story is beautiful, but ours is our favorite. Here's how it all began...";
+
+  const stories = props.stories || [
+    {
+      title: "How We Met",
+      date: "September 2019",
+      story:
+        "It was a beautiful autumn day when our paths first crossed at a local coffee shop. James was reading a book about photography, and Emma couldn't help but notice the stunning sunset photo on the cover. A simple 'That's a beautiful shot' sparked a conversation that lasted for hours.",
+      image: props.storyImage || coupleStory1,
+    },
+    {
+      title: "The Proposal",
+      date: "December 2023",
+      story:
+        "On a snowy winter evening, James recreated our first date at the same coffee shop where we met. As Emma sipped her favorite lavender latte, James got down on one knee among the twinkling fairy lights, asking her to be his forever adventure partner.",
+      image: coupleStory2,
+    },
+  ];
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -36,23 +67,6 @@ const OurStory: React.FC<OurStoryProps> = () => {
     };
   }, []);
 
-  const stories = [
-    {
-      title: "How We Met",
-      date: "September 2019",
-      story:
-        "It was a beautiful autumn day when our paths first crossed at a local coffee shop. James was reading a book about photography, and Emma couldn&apos;t help but notice the stunning sunset photo on the cover. A simple &apos;That&apos;s a beautiful shot&apos; sparked a conversation that lasted for hours.",
-      image: coupleStory1,
-    },
-    {
-      title: "The Proposal",
-      date: "December 2023",
-      story:
-        "On a snowy winter evening, James recreated our first date at the same coffee shop where we met. As Emma sipped her favorite lavender latte, James got down on one knee among the twinkling fairy lights, asking her to be his forever adventure partner.",
-      image: coupleStory2,
-    },
-  ];
-
   return (
     <section id="story" className={`${styles.py24} ${styles.bgGradientSection}`}>
       <div className={`${styles.container} ${styles.mxAuto} ${styles.px4}`}>
@@ -65,12 +79,12 @@ const OurStory: React.FC<OurStoryProps> = () => {
           <h2
             className={`${styles.fontDisplay} md:text-5xl text-2xl ${styles.fontBold} ${styles.textForeground} ${styles.mb6}`}
           >
-            Our Love Story
+            {title}
           </h2>
           <p
             className={`${styles.fontBody} ${styles.textXl} ${styles.textMutedForeground} ${styles.maxW3xl} ${styles.mxAuto}`}
           >
-            Every love story is beautiful, but ours is our favorite. Here&apos;s how it all began...
+            {description}
           </p>
         </div>
 

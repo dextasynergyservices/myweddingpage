@@ -22,30 +22,81 @@ import LuxuryGuest from "@/components/sample-templates/luxury/LuxuryGuest";
 import LuxuryHero from "@/components/sample-templates/luxury/LuxuryHero";
 import LuxuryOurStory from "@/components/sample-templates/luxury/LuxuryOurStory";
 
+// New template components
+import { HeroSection as VowsHero } from "@/app/templates/vows/VowsHero";
+import { OurStorySection as VowsStory } from "@/app/templates/vows/VowsStory";
+import { GallerySection as VowsGallery } from "@/app/templates/vows/VowsGallery";
+import { GiftRegistrySection as VowsGift } from "@/app/templates/vows/VowsGift";
+import { CommentsSection as VowsGuest } from "@/app/templates/vows/VowsGuest";
+
+import BloomHero from "@/app/templates/bloom/BloomHero";
+import BloomStory from "@/app/templates/bloom/BloomStory";
+import BloomGallery from "@/app/templates/bloom/BloomGallery";
+import BloomGift from "@/app/templates/bloom/BloomGift";
+import BloomGuest from "@/app/templates/bloom/BloomGuest";
+
+import EleganceHero from "@/app/templates/elegance/EleganceHero";
+import EleganceStory from "@/app/templates/elegance/EleganceStory";
+import EleganceGallery from "@/app/templates/elegance/EleganceGalley";
+import EleganceGift from "@/app/templates/elegance/EleganceGift";
+import EleganceGuest from "@/app/templates/elegance/EleganceGuest";
+
+import LuxeHero from "@/app/templates/luxe/LuxeHero";
+import LuxeStory from "@/app/templates/luxe/LuxeStory";
+import LuxeGallery from "@/app/templates/luxe/LuxeGallery";
+import LuxeGift from "@/app/templates/luxe/LuxeGift";
+import LuxeGuest from "@/app/templates/luxe/LuxeGuest";
+
 export const componentMap = {
-  rustic_hero: RusticHero,
-  rustic_story: RusticOurStory,
-  rustic_gift: RuticGift,
-  rustic_gallery: RuticGallery,
-  rustic_guest: RuticGuest,
+  // Map old template names to new components (temporary fix)
+  rustic_hero: VowsHero,
+  rustic_story: VowsStory,
+  rustic_gift: VowsGift,
+  rustic_gallery: VowsGallery,
+  rustic_guest: VowsGuest,
 
-  vintage_hero: VintageHero,
-  vintage_gallery: VintageGallery,
-  vintage_gift: VintageGift,
-  vintage_guest: VintageGuest,
-  vintage_story: VintageOurStory,
+  vintage_hero: BloomHero,
+  vintage_gallery: BloomGallery,
+  vintage_gift: BloomGift,
+  vintage_guest: BloomGuest,
+  vintage_story: BloomStory,
 
-  modern_hero: ModernHero,
-  modern_gallery: ModernGallery,
-  modern_gift: ModernGift,
-  modern_guest: ModernGuest,
-  modern_story: ModernOurStory,
+  modern_hero: EleganceHero,
+  modern_gallery: EleganceGallery,
+  modern_gift: EleganceGift,
+  modern_guest: EleganceGuest,
+  modern_story: EleganceStory,
 
-  luxury_hero: LuxuryHero,
-  luxury_gallery: LuxuryGallery,
-  luxury_gift: LuxuryGift,
-  luxury_guest: LuxuryGuest,
-  luxury_story: LuxuryOurStory,
+  luxury_hero: LuxeHero,
+  luxury_gallery: LuxeGallery,
+  luxury_gift: LuxeGift,
+  luxury_guest: LuxeGuest,
+  luxury_story: LuxeStory,
+
+  // New templates
+  vows_hero: VowsHero,
+  vows_story: VowsStory,
+  vows_gallery: VowsGallery,
+  vows_gift: VowsGift,
+  vows_guest: VowsGuest,
+
+  bloom_hero: BloomHero,
+  bloom_story: BloomStory,
+  bloom_gallery: BloomGallery,
+  bloom_gift: BloomGift,
+  bloom_guest: BloomGuest,
+
+  elegance_hero: EleganceHero,
+  elegance_story: EleganceStory,
+  elegance_gallery: EleganceGallery,
+  elegance_gift: EleganceGift,
+  elegance_guest: EleganceGuest,
+
+  luxe_hero: LuxeHero,
+  luxe_story: LuxeStory,
+  luxe_gallery: LuxeGallery,
+  luxe_gift: LuxeGift,
+  luxe_guest: LuxeGuest,
 } as const;
 
 export type ComponentType = keyof typeof componentMap;

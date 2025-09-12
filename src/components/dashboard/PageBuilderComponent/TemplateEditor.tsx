@@ -54,6 +54,7 @@ const TemplateEditor = ({
   const [selectedColorScheme] = useState<ColorScheme | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -242,7 +243,7 @@ const TemplateEditor = ({
   const handleDelete = async () => {
     if (!weddingPage) return;
 
-    setIsSaving(true);
+    setIsDeleting(true);
     try {
       const response = await fetch("/api/wedding-pages/delete", {
         method: "DELETE",
@@ -273,7 +274,7 @@ const TemplateEditor = ({
       console.error("Error deleting wedding page:", err);
       toast.error((err as Error)?.message || String(err) || "Failed to delete wedding page");
     } finally {
-      setIsSaving(false);
+      setIsDeleting(false);
     }
   };
 
@@ -477,8 +478,8 @@ const TemplateEditor = ({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowDeleteModal(true)}
-              disabled={isSaving}
-              className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-colors text-sm bg-red-600 hover:bg-red-700 text-white"
+              disabled={isDeleting}
+              className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-colors text-sm bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Trash2 className="h-3 w-3 md:h-4 md:w-4" />
               Delete
@@ -832,10 +833,10 @@ const TemplateEditor = ({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleDelete}
-                disabled={isSaving}
+                disabled={isDeleting}
                 className="flex-1 px-4 py-2 rounded-lg text-sm bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSaving ? "Deleting..." : "Delete Forever"}
+                {isDeleting ? "Deleting..." : "Delete Forever"}
               </motion.button>
             </div>
           </div>
