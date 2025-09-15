@@ -107,8 +107,10 @@ export async function GET(req: Request) {
       ) {
         const storiesArray = [];
         let index = 0;
-        while (converted.stories[index]) {
-          storiesArray.push(converted.stories[index]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        while ((converted.stories as any)[index]) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          storiesArray.push((converted.stories as any)[index]);
           index++;
         }
         converted.stories = storiesArray;
@@ -122,8 +124,10 @@ export async function GET(req: Request) {
       ) {
         const storyItemsArray = [];
         let index = 0;
-        while (converted.storyItems[index]) {
-          storyItemsArray.push(converted.storyItems[index]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        while ((converted.storyItems as any)[index]) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          storyItemsArray.push((converted.storyItems as any)[index]);
           index++;
         }
         converted.storyItems = storyItemsArray;
@@ -137,8 +141,10 @@ export async function GET(req: Request) {
       ) {
         const milestonesArray = [];
         let index = 0;
-        while (converted.milestones[index]) {
-          milestonesArray.push(converted.milestones[index]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        while ((converted.milestones as any)[index]) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          milestonesArray.push((converted.milestones as any)[index]);
           index++;
         }
         converted.milestones = milestonesArray;

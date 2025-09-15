@@ -133,8 +133,10 @@ const DynamicTemplateRendererComponent = ({
       ) {
         const storiesArray = [];
         let index = 0;
-        while (convertedUserContent.stories[index]) {
-          storiesArray.push(convertedUserContent.stories[index]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        while ((convertedUserContent.stories as any)[index]) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          storiesArray.push((convertedUserContent.stories as any)[index]);
           index++;
         }
         convertedUserContent.stories = storiesArray;
@@ -148,8 +150,10 @@ const DynamicTemplateRendererComponent = ({
       ) {
         const storyItemsArray = [];
         let index = 0;
-        while (convertedUserContent.storyItems[index]) {
-          storyItemsArray.push(convertedUserContent.storyItems[index]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        while ((convertedUserContent.storyItems as any)[index]) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          storyItemsArray.push((convertedUserContent.storyItems as any)[index]);
           index++;
         }
         convertedUserContent.storyItems = storyItemsArray;
@@ -163,8 +167,10 @@ const DynamicTemplateRendererComponent = ({
       ) {
         const milestonesArray = [];
         let index = 0;
-        while (convertedUserContent.milestones[index]) {
-          milestonesArray.push(convertedUserContent.milestones[index]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        while ((convertedUserContent.milestones as any)[index]) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          milestonesArray.push((convertedUserContent.milestones as any)[index]);
           index++;
         }
         convertedUserContent.milestones = milestonesArray;

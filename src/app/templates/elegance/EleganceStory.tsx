@@ -139,7 +139,8 @@ const OurStory: React.FC<OurStoryProps> = (props) => {
                 className={`${styles.relative} ${styles.h80} ${styles.overflowHidden} ${styles.group}`}
               >
                 <Image
-                  src={typeof story.image === "string" ? story.image : story.image.src}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  src={typeof story.image === "string" ? story.image : (story.image as any).src}
                   alt={story.title}
                   width={600}
                   height={400}

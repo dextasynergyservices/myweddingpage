@@ -66,10 +66,14 @@ export async function GET(req: Request) {
 
           // Check for Vows template structure (storyContent.howWeMet, storyContent.theProposal)
           const hasVowsContent = Boolean(
-            sectionContent.storyContent?.howWeMet?.content ||
-              sectionContent.storyContent?.theProposal?.content ||
-              sectionContent.storyContent?.mainDescription ||
-              sectionContent.storyContent?.mainTitle
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (sectionContent.storyContent as any)?.howWeMet?.content ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyContent as any)?.theProposal?.content ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyContent as any)?.mainDescription ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyContent as any)?.mainTitle
           );
 
           // Check for Elegance template structure (stories array)
@@ -108,10 +112,14 @@ export async function GET(req: Request) {
 
           const hasImages = Boolean(
             sectionContent.storyImage ||
-              sectionContent.storyImages?.image1 ||
-              sectionContent.storyImages?.image2 ||
-              sectionContent.stories?.image ||
-              sectionContent.storyItems?.image
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyImages as any)?.image1 ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyImages as any)?.image2 ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.stories as any)?.image ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyItems as any)?.image
           );
 
           // Story is complete if it has any meaningful content

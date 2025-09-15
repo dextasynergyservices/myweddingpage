@@ -131,7 +131,9 @@ export async function POST(req: Request) {
               } else if (typeof section.storyItems === "object") {
                 console.log(`Found storyItems object in section ${sectionId}:`, section.storyItems);
                 // Handle nested object structure (stored in UserTemplate)
-                const firstStoryItem = section.storyItems[0] || section.storyItems["0"];
+                const firstStoryItem =
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  (section.storyItems as any)[0] || (section.storyItems as any)["0"];
                 if (firstStoryItem && firstStoryItem.image) {
                   storyImage = firstStoryItem.image as string;
                   console.log(`Found story image in Luxe storyItems object: ${storyImage}`);
@@ -146,7 +148,8 @@ export async function POST(req: Request) {
             // Handle Elegance template stories (both array and nested object structures)
             if (section.stories) {
               if (Array.isArray(section.stories)) {
-                const firstStory = section.stories[0];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const firstStory = (section.stories as any)[0];
                 if (firstStory && firstStory.image) {
                   storyImage = firstStory.image as string;
                   console.log(`Found story image in Elegance stories array: ${storyImage}`);
@@ -154,7 +157,8 @@ export async function POST(req: Request) {
               } else if (typeof section.stories === "object") {
                 console.log(`Found stories object in section ${sectionId}:`, section.stories);
                 // Handle nested object structure (stored in UserTemplate)
-                const firstStory = section.stories[0] || section.stories["0"];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const firstStory = (section.stories as any)[0] || (section.stories as any)["0"];
                 if (firstStory && firstStory.image) {
                   storyImage = firstStory.image as string;
                   console.log(`Found story image in Elegance stories object: ${storyImage}`);
@@ -207,7 +211,8 @@ export async function POST(req: Request) {
           // Check for story images in stories (Elegance template) - both array and object structures
           if (!storyImage && section.stories) {
             if (Array.isArray(section.stories)) {
-              const firstStory = section.stories[0];
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const firstStory = (section.stories as any)[0];
               if (firstStory && firstStory.image) {
                 storyImage = firstStory.image as string;
                 console.log(
@@ -220,7 +225,8 @@ export async function POST(req: Request) {
                 `Fallback: Found stories object in section ${sectionId}:`,
                 section.stories
               );
-              const firstStory = section.stories[0] || section.stories["0"];
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const firstStory = (section.stories as any)[0] || (section.stories as any)["0"];
               if (firstStory && firstStory.image) {
                 storyImage = firstStory.image as string;
                 console.log(
@@ -318,7 +324,9 @@ export async function POST(req: Request) {
       Object.keys(userTemplate.content || {})
     );
 
-    const extractedFields = extractWeddingPageFields(userTemplate.content);
+    const extractedFields = extractWeddingPageFields(
+      userTemplate.content as Record<string, unknown>
+    );
 
     // If this is a new publication (no existing live page)
     if (!existingWeddingPage) {

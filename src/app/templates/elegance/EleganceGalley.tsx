@@ -85,10 +85,10 @@ const Gallery: React.FC<GalleryProps> = (props) => {
   const handleMediaClick = (item: Record<string, unknown>, index: number) => {
     // Convert gallery item to MediaModal format
     const mediaItem = {
-      id: item.id,
-      url: item.src || item.url,
-      type: item.type || "PHOTO",
-      category: item.category,
+      id: item.id as string,
+      url: (item.src || item.url) as string,
+      type: (item.type || "PHOTO") as "PHOTO" | "VIDEO",
+      category: item.category as "during" | "before" | "after",
     };
     setSelectedMedia(mediaItem);
     setSelectedMediaIndex(index);
@@ -98,10 +98,10 @@ const Gallery: React.FC<GalleryProps> = (props) => {
     setSelectedMediaIndex(index);
     const item = filteredItems[index];
     const mediaItem = {
-      id: item.id,
-      url: "url" in item ? item.url : ((item as Record<string, unknown>).src as string),
-      type: "type" in item ? item.type : "PHOTO",
-      category: item.category,
+      id: item.id as string,
+      url: "url" in item ? (item.url as string) : ((item as Record<string, unknown>).src as string),
+      type: ("type" in item ? item.type : "PHOTO") as "PHOTO" | "VIDEO",
+      category: item.category as "during" | "before" | "after",
     };
     setSelectedMedia(mediaItem);
   };
