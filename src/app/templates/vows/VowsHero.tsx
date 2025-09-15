@@ -11,6 +11,12 @@ interface HeroSectionProps {
   subtitle?: string;
   description?: string;
   heroImage?: string;
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  bankDetails?: Record<string, unknown>[];
   // Legacy support for weddingData prop
   weddingData?: {
     brideName?: string;
@@ -26,18 +32,49 @@ export const HeroSection = (props: HeroSectionProps) => {
   const brideName = props.brideName || props.weddingData?.brideName || "Bride";
   const groomName = props.groomName || props.weddingData?.groomName || "Groom";
   const venue = props.venue || props.weddingData?.venue || "Wedding Venue";
-  const description =
-    props.description ||
-    props.weddingData?.welcomeMessage ||
-    "Join us as we celebrate our love story";
+  // const _description =
+  //   props.description ||
+  //   props.weddingData?.welcomeMessage ||
+  //   "Join us as we celebrate our love story";
   const dateValue = props.weddingDate || props.weddingData?.weddingDate;
 
-  const weddingDate = dateValue ? new Date(dateValue) : new Date();
-  const formattedDate = weddingDate.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  console.log("VowsHero - Received dateValue:", dateValue);
+  console.log("VowsHero - Type of dateValue:", typeof dateValue);
+
+  // Check if the date is already formatted (contains month name like "October")
+  const isAlreadyFormatted =
+    typeof dateValue === "string" &&
+    (dateValue.includes("January") ||
+      dateValue.includes("February") ||
+      dateValue.includes("March") ||
+      dateValue.includes("April") ||
+      dateValue.includes("May") ||
+      dateValue.includes("June") ||
+      dateValue.includes("July") ||
+      dateValue.includes("August") ||
+      dateValue.includes("September") ||
+      dateValue.includes("October") ||
+      dateValue.includes("November") ||
+      dateValue.includes("December"));
+
+  let formattedDate;
+  if (isAlreadyFormatted) {
+    // Date is already formatted, use it directly
+    formattedDate = dateValue;
+    console.log("VowsHero - Using already formatted date:", formattedDate);
+  } else {
+    // Date needs to be formatted
+    const weddingDate = dateValue ? new Date(dateValue) : new Date();
+    console.log("VowsHero - Parsed weddingDate:", weddingDate);
+    console.log("VowsHero - Is valid date:", !isNaN(weddingDate.getTime()));
+
+    formattedDate = weddingDate.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    console.log("VowsHero - Final formattedDate:", formattedDate);
+  }
 
   const heroImage = props.heroImage || "/templates/vows/assets/hero-wedding.jpg";
   const { ref, isVisible } = useScrollAnimation(0.3);

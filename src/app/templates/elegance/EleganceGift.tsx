@@ -2,24 +2,42 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Gift, Check } from "lucide-react";
+import Image from "next/image";
+import PurchaseModal from "@/components/ui/PurchaseModal";
+import CashGiftModal from "@/components/ui/CashGiftModal";
+import { formatCurrency, parsePriceToNumber } from "@/lib/utils";
 import styles from "@/styles/templates/elegance.module.css";
+
+interface BankDetail {
+  id: string;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+}
+
+interface GiftItem {
+  id: string;
+  item: string;
+  name?: string;
+  description?: string;
+  link?: string;
+  price: string;
+  image: string;
+  purchased: boolean;
+}
 
 interface GiftRegistryProps {
   title?: string;
   description?: string;
-  gifts?: Array<{
-    id: number;
-    name: string;
-    description: string;
-    price: string;
-    image: string;
-    purchased?: boolean;
-  }>;
-  bankDetails?: {
-    bankName?: string;
-    accountNumber?: string;
-    accountName?: string;
-  };
+  gifts?: GiftItem[];
+  giftRegistry?: GiftItem[]; // Legacy support
+  userId?: string; // Wedding page owner's user ID
+  bankDetails?: BankDetail[]; // Bank details for the wedding page owner
+  // Additional user data props for full integration
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  storyImage?: string;
+  heroImage?: string;
 }
 
 const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
@@ -28,65 +46,149 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
   const description =
     props.description || "Help us build our home together with these thoughtfully chosen items";
 
-  const gifts = props.gifts || [
-    {
-      id: 1,
-      name: "Fine China Dinner Set",
-      description: "Elegant 12-piece porcelain dinner set for special occasions",
-      price: "₦299,000",
-      image: "🍽️",
-      purchased: false,
-    },
-    {
-      id: 2,
-      name: "Coffee Machine",
-      description: "Premium espresso machine for our morning coffee ritual",
-      price: "₦450,000",
-      image: "☕",
-      purchased: false,
-    },
-    {
-      id: 3,
-      name: "Egyptian Cotton Bedding",
-      description: "Luxurious 400-thread count sheet set in sage green",
-      price: "₦180,000",
-      image: "🛏️",
-      purchased: false,
-    },
-    {
-      id: 4,
-      name: "Cast Iron Cookware Set",
-      description: "Professional-grade cookware for our culinary adventures",
-      price: "₦320,000",
-      image: "🍳",
-      purchased: false,
-    },
-    {
-      id: 5,
-      name: "Garden Herb Kit",
-      description: "Everything needed to start our herb garden",
-      price: "₦85,000",
-      image: "🌿",
-      purchased: false,
-    },
-    {
-      id: 6,
-      name: "Photo Album",
-      description: "Beautiful leather-bound album for our wedding memories",
-      price: "₦120,000",
-      image: "📸",
-      purchased: false,
-    },
-  ];
+  // Extract gifts data from props (prioritize gifts over giftRegistry for consistency with API)
+  const gifts = props.gifts || props.giftRegistry || [];
 
-  const bankDetails = props.bankDetails || {
-    bankName: "Access Bank",
-    accountNumber: "1234567890",
-    accountName: "John & Jane Doe",
+  // Helper function to get safe image URL
+  const getSafeImageUrl = (imageUrl: string) => {
+    // Check if it's a valid URL (starts with http/https) or a valid path (starts with /)
+    if (imageUrl && (imageUrl.startsWith("http") || imageUrl.startsWith("/"))) {
+      return imageUrl;
+    }
+    // If it's an emoji or invalid URL, return a default gift image
+    return "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800";
   };
+
+  // const _bankDetails = props.bankDetails || {
+  //   bankName: "Access Bank",
+  //   accountNumber: "1234567890",
+  //   accountName: "John & Jane Doe",
+  // };
   const [isVisible, setIsVisible] = useState(false);
   const [purchasedItems] = useState<Set<number>>(new Set());
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<GiftItem | null>(null);
+  const [bankDetailsList, setBankDetailsList] = useState<BankDetail[]>([]);
+  const [loadingBanks, setLoadingBanks] = useState(false);
+
+  const [cashGiftOpen, setCashGiftOpen] = useState(false);
+
+  const openPurchase = (gift: GiftItem) => {
+    console.log("EleganceGift openPurchase called with gift:", gift);
+    console.log("Current props.userId:", props.userId);
+    setSelected(gift);
+    setOpen(true);
+  };
+
+  const handlePurchase = async (data: {
+    name: string;
+    email: string;
+    phone: string;
+    message?: string;
+  }) => {
+    console.log("EleganceGift handlePurchase called with:", {
+      selected,
+      userId: props.userId,
+      data,
+    });
+
+    if (!selected || !props.userId) {
+      console.error("Missing selected gift or userId");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/public/received-gifts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          contactEmail: data.email,
+          contactPhone: data.phone,
+          message: data.message,
+          giftId: selected.id,
+          amount: parsePriceToNumber(selected.price),
+          userId: props.userId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit purchase");
+      }
+
+      const result = await response.json();
+      console.log("Purchase submitted successfully:", result);
+
+      // Mark gift as purchased locally
+      setSelected({ ...selected, purchased: true });
+    } catch (error) {
+      console.error("Purchase submission error:", error);
+      throw error;
+    }
+  };
+
+  const handleCashGift = async (data: {
+    name: string;
+    email: string;
+    phone: string;
+    message?: string;
+  }) => {
+    console.log("EleganceGift handleCashGift called with:", {
+      userId: props.userId,
+      data,
+    });
+
+    if (!props.userId) {
+      console.error("Missing userId");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/public/received-gifts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          contactEmail: data.email,
+          contactPhone: data.phone,
+          message: data.message,
+          giftId: null, // No specific gift for cash
+          amount: 0, // No specific amount for cash
+          userId: props.userId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit cash gift");
+      }
+
+      const result = await response.json();
+      console.log("Cash gift submitted successfully:", result);
+    } catch (error) {
+      console.error("Cash gift submission error:", error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    // Use bank details passed from props instead of fetching from API
+    setBankDetailsList(props.bankDetails || []);
+    setLoadingBanks(false);
+  }, [open, props.bankDetails]);
+
+  useEffect(() => {
+    if (!cashGiftOpen) return;
+    // Use bank details passed from props instead of fetching from API
+    setBankDetailsList(props.bankDetails || []);
+    setLoadingBanks(false);
+  }, [cashGiftOpen, props.bankDetails]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -158,13 +260,19 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
               >
                 <div className={styles.p6}>
                   <div className={`${styles.textCenter} ${styles.mb4}`}>
-                    <div className={`${styles.text4xl} ${styles.mb3}`}>{item.image}</div>
+                    <Image
+                      src={getSafeImageUrl(item.image)}
+                      alt={item.item || `Gift item ${item.id}`}
+                      width={600}
+                      height={400}
+                      className="w-full h-48 object-cover rounded-2xl mb-4"
+                    />
                   </div>
 
                   <h3
                     className={`${styles.fontDisplay} ${styles.textXl} ${styles.fontSemibold} ${styles.textForeground} ${styles.mb2}`}
                   >
-                    {item.name}
+                    {item.item}
                   </h3>
 
                   <p
@@ -179,7 +287,7 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
                     <span
                       className={`${styles.fontDisplay} ${styles.text2xl} ${styles.fontBold} ${styles.textPrimary}`}
                     >
-                      {item.price}
+                      {formatCurrency(item.price)}
                     </span>
                   </div>
 
@@ -190,11 +298,12 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
                         className={`${styles.wFull} ${styles.bgSecondary} ${styles.textSecondaryForeground} ${styles.fontSemibold} ${styles.px4} ${styles.py2} ${styles.roundedLg} ${styles.transitionAll}`}
                       >
                         <Check className={`${styles.w4} ${styles.h4} ${styles.mr2}`} />
-                        Purchased
+                        Already Purchased
                       </button>
                     ) : (
                       <>
                         <button
+                          onClick={() => openPurchase(item)}
                           className={`${styles.wFull} ${styles.border2} ${styles.borderPrimary} ${styles.textPrimary} ${styles.hoverBgPrimary} ${styles.hoverTextPrimaryForeground} ${styles.fontSemibold} ${styles.px4} ${styles.py2} ${styles.roundedLg} ${styles.transitionAll}`}
                         >
                           Purchase Gift
@@ -216,6 +325,7 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
             className={`${styles.flex} ${styles.flexWrap} ${styles.justifyCenter} ${styles.gap4}`}
           >
             <button
+              onClick={() => setCashGiftOpen(true)}
               className={`${styles.border2} ${styles.borderPrimary} ${styles.textPrimary} ${styles.hoverBgPrimary} ${styles.hoverTextPrimaryForeground} ${styles.fontSemibold} ${styles.px4} ${styles.py2} ${styles.roundedLg} ${styles.transitionAll}`}
             >
               Gift Cash
@@ -223,6 +333,23 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
           </div>
         </div>
       </div>
+
+      <PurchaseModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        gift={selected}
+        bankDetails={bankDetailsList}
+        loadingBanks={loadingBanks}
+        onPurchase={handlePurchase}
+      />
+
+      <CashGiftModal
+        isOpen={cashGiftOpen}
+        onClose={() => setCashGiftOpen(false)}
+        bankDetails={bankDetailsList}
+        loadingBanks={loadingBanks}
+        onPurchase={handleCashGift}
+      />
     </section>
   );
 };

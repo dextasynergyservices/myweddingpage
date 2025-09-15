@@ -3,23 +3,42 @@
 import { useScrollAnimation } from "@/app/templates/vows/hooks/useScrollAnimation";
 import { Card, CardContent } from "@/app/templates/vows/components/ui/card";
 import { Button } from "@/app/templates/vows/components/ui/button";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import PurchaseModal from "@/components/ui/PurchaseModal";
+import CashGiftModal from "@/components/ui/CashGiftModal";
+import { formatCurrency, parsePriceToNumber } from "@/lib/utils";
+
+interface BankDetail {
+  id: string;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+}
+
+interface GiftItem {
+  id: string;
+  item: string;
+  name?: string;
+  description?: string;
+  link?: string;
+  price: string;
+  image: string;
+  purchased: boolean;
+}
 
 interface GiftRegistryProps {
   title?: string;
   description?: string;
-  gifts?: Array<{
-    id: number;
-    name: string;
-    description: string;
-    price: string;
-    image: string;
-    purchased?: boolean;
-  }>;
-  bankDetails?: {
-    bankName?: string;
-    accountNumber?: string;
-    accountName?: string;
-  };
+  gifts?: GiftItem[];
+  giftRegistry?: GiftItem[]; // Legacy support
+  userId?: string; // Wedding page owner's user ID
+  bankDetails?: BankDetail[]; // Bank details for the wedding page owner
+  // Additional user data props for full integration
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  storyImage?: string;
+  heroImage?: string;
 }
 
 const GiftRegistry = (props: GiftRegistryProps) => {
@@ -29,63 +48,147 @@ const GiftRegistry = (props: GiftRegistryProps) => {
     props.description ||
     "Your presence at our wedding is the greatest gift of all. If you'd like to help us start our new life together, here are some items we'd love to have in our home.";
 
-  const gifts = props.gifts || [
-    {
-      id: 1,
-      name: "Dining Table Set",
-      description: "Beautiful oak dining table for our new home",
-      price: "₦1,200,000",
-      image: "🪑",
-      purchased: false,
-    },
-    {
-      id: 2,
-      name: "Kitchen Mixer",
-      description: "Professional stand mixer for baking together",
-      price: "₦350,000",
-      image: "🥄",
-      purchased: false,
-    },
-    {
-      id: 3,
-      name: "Bedding Set",
-      description: "Luxury cotton bedding set, king size",
-      price: "₦200,000",
-      image: "🛏️",
-      purchased: false,
-    },
-    {
-      id: 4,
-      name: "Coffee Machine",
-      description: "Espresso machine for our morning coffee ritual",
-      price: "₦450,000",
-      image: "☕",
-      purchased: false,
-    },
-    {
-      id: 5,
-      name: "Outdoor Grill",
-      description: "Gas grill for backyard entertaining",
-      price: "₦800,000",
-      image: "🔥",
-      purchased: false,
-    },
-    {
-      id: 6,
-      name: "Vacuum Cleaner",
-      description: "Robot vacuum for easy home maintenance",
-      price: "₦300,000",
-      image: "🏠",
-      purchased: false,
-    },
-  ];
+  // Extract gifts data from props (prioritize gifts over giftRegistry for consistency with API)
+  const gifts = props.gifts || props.giftRegistry || [];
 
-  const bankDetails = props.bankDetails || {
-    bankName: "Access Bank",
-    accountNumber: "1234567890",
-    accountName: "John & Jane Doe",
+  // Helper function to get safe image URL
+  const getSafeImageUrl = (imageUrl: string) => {
+    // Check if it's a valid URL (starts with http/https) or a valid path (starts with /)
+    if (imageUrl && (imageUrl.startsWith("http") || imageUrl.startsWith("/"))) {
+      return imageUrl;
+    }
+    // If it's an emoji or invalid URL, return a default gift image
+    return "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800";
   };
+
+  // const _bankDetails = props.bankDetails || {
+  //   bankName: "Access Bank",
+  //   accountNumber: "1234567890",
+  //   accountName: "John & Jane Doe",
+  // };
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.2);
+
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<GiftItem | null>(null);
+  const [bankDetailsList, setBankDetailsList] = useState<BankDetail[]>([]);
+  const [loadingBanks, setLoadingBanks] = useState(false);
+
+  const [cashGiftOpen, setCashGiftOpen] = useState(false);
+
+  const openPurchase = (gift: GiftItem) => {
+    console.log("VowsGift openPurchase called with gift:", gift);
+    console.log("Current props.userId:", props.userId);
+    setSelected(gift);
+    setOpen(true);
+  };
+
+  const handlePurchase = async (data: {
+    name: string;
+    email: string;
+    phone: string;
+    message?: string;
+  }) => {
+    console.log("VowsGift handlePurchase called with:", {
+      selected,
+      userId: props.userId,
+      data,
+    });
+
+    if (!selected || !props.userId) {
+      console.error("Missing selected gift or userId");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/public/received-gifts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          contactEmail: data.email,
+          contactPhone: data.phone,
+          message: data.message,
+          giftId: selected.id,
+          amount: parsePriceToNumber(selected.price),
+          userId: props.userId, // Use the wedding page owner's user ID
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit purchase");
+      }
+
+      const result = await response.json();
+      console.log("Purchase submitted successfully:", result);
+
+      // Mark gift as purchased locally
+      setSelected({ ...selected, purchased: true });
+    } catch (error) {
+      console.error("Purchase submission error:", error);
+      throw error;
+    }
+  };
+
+  const handleCashGift = async (data: {
+    name: string;
+    email: string;
+    phone: string;
+    message?: string;
+  }) => {
+    console.log("VowsGift handleCashGift called with:", {
+      userId: props.userId,
+      data,
+    });
+
+    if (!props.userId) {
+      console.error("Missing userId");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/public/received-gifts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          contactEmail: data.email,
+          contactPhone: data.phone,
+          message: data.message,
+          giftId: null, // No specific gift for cash
+          amount: 0, // No specific amount for cash
+          userId: props.userId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit cash gift");
+      }
+
+      const result = await response.json();
+      console.log("Cash gift submitted successfully:", result);
+    } catch (error) {
+      console.error("Cash gift submission error:", error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    // Use bank details passed from props instead of fetching from API
+    setBankDetailsList(props.bankDetails || []);
+    setLoadingBanks(false);
+  }, [open, props.bankDetails]);
+
+  useEffect(() => {
+    if (!cashGiftOpen) return;
+    // Use bank details passed from props instead of fetching from API
+    setBankDetailsList(props.bankDetails || []);
+    setLoadingBanks(false);
+  }, [cashGiftOpen, props.bankDetails]);
 
   return (
     <section className="py-32 bg-background">
@@ -116,16 +219,22 @@ const GiftRegistry = (props: GiftRegistryProps) => {
                 className={`h-full border-l-4 hover:shadow-soft transition-all duration-300 group`}
               >
                 <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                      {item.image}
+                  <div className="mb-4">
+                    <Image
+                      src={getSafeImageUrl(item.image)}
+                      alt={item.item || `Gift item ${item.id}`}
+                      width={600}
+                      height={400}
+                      className="w-full h-48 object-cover rounded-2xl mb-4"
+                    />
+                    <div className="flex items-center justify-between">
+                      <span className="font-heading text-lg font-semibold text-black/80">
+                        {formatCurrency(item.price)}
+                      </span>
                     </div>
-                    <span className="font-heading text-lg font-semibold text-black/80">
-                      {item.price}
-                    </span>
                   </div>
 
-                  <h3 className="font-heading text-xl text-black/80 mb-2">{item.name}</h3>
+                  <h3 className="font-heading text-xl text-black/80 mb-2">{item.item}</h3>
 
                   <p className="font-body text-muted-foreground mb-6 leading-relaxed">
                     {item.description}
@@ -135,9 +244,11 @@ const GiftRegistry = (props: GiftRegistryProps) => {
                     <Button
                       variant="outline"
                       size="sm"
+                      disabled={item.purchased}
+                      onClick={() => openPurchase(item)}
                       className="hover:bg-primary hover:text-primary-foreground transition-colors duration-300"
                     >
-                      Select Gift
+                      {item.purchased ? "Already Purchased" : "Purchase"}
                     </Button>
                   </div>
                 </CardContent>
@@ -153,12 +264,32 @@ const GiftRegistry = (props: GiftRegistryProps) => {
               If you prefer to give a cash gift, we&apos;ve set up a secure online fund to help us
               with our honeymoon and future home expenses.
             </p>
-            <Button className="bg-white text-black transition-colors duration-300 rounded-full px-8 py-4 font-xl lg:font-2xl">
+            <Button
+              onClick={() => setCashGiftOpen(true)}
+              className="bg-white text-black transition-colors duration-300 rounded-full px-8 py-4 font-xl lg:font-2xl"
+            >
               Gift Cash
             </Button>
           </div>
         </div>
       </div>
+
+      <PurchaseModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        gift={selected}
+        bankDetails={bankDetailsList}
+        loadingBanks={loadingBanks}
+        onPurchase={handlePurchase}
+      />
+
+      <CashGiftModal
+        isOpen={cashGiftOpen}
+        onClose={() => setCashGiftOpen(false)}
+        bankDetails={bankDetailsList}
+        loadingBanks={loadingBanks}
+        onPurchase={handleCashGift}
+      />
     </section>
   );
 };

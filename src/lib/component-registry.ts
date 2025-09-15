@@ -1,26 +1,26 @@
-import RusticHero from "@/components/sample-templates/rustic/RusticHero";
-import RusticOurStory from "@/components/sample-templates/rustic/RusticOurStory";
-import RuticGallery from "@/components/sample-templates/rustic/RusticGallery";
-import RuticGuest from "@/components/sample-templates/rustic/RusticGuest";
-import RuticGift from "@/components/sample-templates/rustic/RusticGift";
+// import RusticHero from "@/components/sample-templates/rustic/RusticHero";
+// import RusticOurStory from "@/components/sample-templates/rustic/RusticOurStory";
+// import RuticGallery from "@/components/sample-templates/rustic/RusticGallery";
+// import RuticGuest from "@/components/sample-templates/rustic/RusticGuest";
+// import RuticGift from "@/components/sample-templates/rustic/RusticGift";
 
-import VintageGallery from "@/components/sample-templates/vintage/VintageGallery";
-import VintageGift from "@/components/sample-templates/vintage/VintageGift";
-import VintageGuest from "@/components/sample-templates/vintage/VintageGuest";
-import VintageOurStory from "@/components/sample-templates/vintage/VintageOurStory";
-import VintageHero from "@/components/sample-templates/vintage/VintageHero";
+// import VintageGallery from "@/components/sample-templates/vintage/VintageGallery";
+// import VintageGift from "@/components/sample-templates/vintage/VintageGift";
+// import VintageGuest from "@/components/sample-templates/vintage/VintageGuest";
+// import VintageOurStory from "@/components/sample-templates/vintage/VintageOurStory";
+// import VintageHero from "@/components/sample-templates/vintage/VintageHero";
 
-import ModernGallery from "@/components/sample-templates/modern/ModernGallery";
-import ModernGift from "@/components/sample-templates/modern/ModernGift";
-import ModernGuest from "@/components/sample-templates/modern/ModernGuest";
-import ModernHero from "@/components/sample-templates/modern/ModernHero";
-import ModernOurStory from "@/components/sample-templates/modern/ModernOurStory";
+// import ModernGallery from "@/components/sample-templates/modern/ModernGallery";
+// import ModernGift from "@/components/sample-templates/modern/ModernGift";
+// import ModernGuest from "@/components/sample-templates/modern/ModernGuest";
+// import ModernHero from "@/components/sample-templates/modern/ModernHero";
+// import ModernOurStory from "@/components/sample-templates/modern/ModernOurStory";
 
-import LuxuryGallery from "@/components/sample-templates/luxury/LuxuryGallery";
-import LuxuryGift from "@/components/sample-templates/luxury/LuxuryGift";
-import LuxuryGuest from "@/components/sample-templates/luxury/LuxuryGuest";
-import LuxuryHero from "@/components/sample-templates/luxury/LuxuryHero";
-import LuxuryOurStory from "@/components/sample-templates/luxury/LuxuryOurStory";
+// import LuxuryGallery from "@/components/sample-templates/luxury/LuxuryGallery";
+// import LuxuryGift from "@/components/sample-templates/luxury/LuxuryGift";
+// import LuxuryGuest from "@/components/sample-templates/luxury/LuxuryGuest";
+// import LuxuryHero from "@/components/sample-templates/luxury/LuxuryHero";
+// import LuxuryOurStory from "@/components/sample-templates/luxury/LuxuryOurStory";
 
 // New template components
 import { HeroSection as VowsHero } from "@/app/templates/vows/VowsHero";

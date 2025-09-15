@@ -13,24 +13,62 @@ interface HeroProps {
   venue?: string;
   description?: string;
   heroImage?: string;
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  bankDetails?: Record<string, unknown>[];
+  // Legacy support for weddingData prop
+  weddingData?: {
+    brideName?: string;
+    groomName?: string;
+    weddingDate?: string;
+    venue?: string;
+    welcomeMessage?: string;
+  };
 }
 
 const Hero: React.FC<HeroProps> = (props) => {
-  // Extract data from props with fallbacks
-  const brideName = props.brideName || "Bride";
-  const groomName = props.groomName || "Groom";
-  const venue = props.venue || "Wedding Venue";
-  const description =
-    props.description ||
-    "Join us as we celebrate our love story and begin our journey together as one.";
-  const dateValue = props.weddingDate;
+  // Extract data from props (prioritize direct props over weddingData object)
+  const brideName = props.brideName || props.weddingData?.brideName || "Bride";
+  const groomName = props.groomName || props.weddingData?.groomName || "Groom";
+  // const _venue = props.venue || props.weddingData?.venue || "Wedding Venue";
+  // const _description =
+  //   props.description ||
+  //   props.weddingData?.welcomeMessage ||
+  //   "Join us as we celebrate our love story and begin our journey together as one.";
+  const dateValue = props.weddingDate || props.weddingData?.weddingDate;
 
-  const weddingDate = dateValue ? new Date(dateValue) : new Date();
-  const formattedDate = weddingDate.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  // Check if the date is already formatted (contains month name like "October")
+  const isAlreadyFormatted =
+    typeof dateValue === "string" &&
+    (dateValue.includes("January") ||
+      dateValue.includes("February") ||
+      dateValue.includes("March") ||
+      dateValue.includes("April") ||
+      dateValue.includes("May") ||
+      dateValue.includes("June") ||
+      dateValue.includes("July") ||
+      dateValue.includes("August") ||
+      dateValue.includes("September") ||
+      dateValue.includes("October") ||
+      dateValue.includes("November") ||
+      dateValue.includes("December"));
+
+  let formattedDate;
+  if (isAlreadyFormatted) {
+    // Date is already formatted, use it directly
+    formattedDate = dateValue;
+  } else {
+    // Date needs to be formatted
+    const weddingDate = dateValue ? new Date(dateValue) : new Date();
+    formattedDate = weddingDate.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
 
   const heroImage = props.heroImage || weddingHero.src;
   const [scrollY, setScrollY] = useState(0);
@@ -102,11 +140,11 @@ const Hero: React.FC<HeroProps> = (props) => {
                 </p>
               </div>
 
-              <p
+              {/* <p
                 className={`${styles.textLg} ${styles.mdTextXl} ${styles.mb12} ${styles.maxW2xl} ${styles.mxAuto} ${styles.lgMx0} ${styles.leadingRelaxed} ${styles.textMutedForeground}`}
               >
                 {description}
-              </p>
+              </p> */}
 
               <div
                 className={`${styles.flex} ${styles.flexRow} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.lgJustifyStart} ${styles.gap4} ${styles.lgGap6}`}

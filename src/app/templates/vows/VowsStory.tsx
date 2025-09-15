@@ -1,10 +1,14 @@
 "use client";
 
 import { useScrollAnimation, useScrollScale } from "@/app/templates/vows/hooks/useScrollAnimation";
-import storyImage1 from "@/app/templates/vows/assets/story-image-1.jpg";
-import storyImage2 from "@/app/templates/vows/assets/story-image-2.jpg";
 import Image from "next/image";
 import styles from "@/styles/templates/vows.module.css";
+
+// Default story images using Cloudinary URLs
+const defaultStoryImage1 =
+  "https://images.pexels.com/photos/265722/pexels-photo-265722.jpeg?auto=compress&cs=tinysrgb&w=800";
+const defaultStoryImage2 =
+  "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=800";
 
 interface OurStorySectionProps {
   title?: string;
@@ -23,6 +27,18 @@ interface OurStorySectionProps {
     image1?: string;
     image2?: string;
   };
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  bankDetails?: Record<string, unknown>[];
+  storyImage?: string;
+  // Legacy support for ourStory prop
+  ourStory?: {
+    content?: string;
+    imageUrl?: string;
+  };
 }
 
 export const OurStorySection = (props: OurStorySectionProps) => {
@@ -32,10 +48,12 @@ export const OurStorySection = (props: OurStorySectionProps) => {
     props.description ||
     "Every love story is beautiful, but ours is our favorite. From our first meeting to this magical moment, here's how our journey began.";
 
+  // Extract story content from props (prioritize storyContent > ourStory.content)
   const storyContent = props.storyContent || {
     howWeMet: {
       title: "How We Met",
       content:
+        props.ourStory?.content ||
         "It was a beautiful spring afternoon at the local coffee shop. Sarah was reading her favorite book when Michael accidentally spilled his coffee. What started as an embarrassing moment turned into the most wonderful conversation that lasted for hours.",
     },
     theProposal: {
@@ -45,9 +63,22 @@ export const OurStorySection = (props: OurStorySectionProps) => {
     },
   };
 
+  // Extract story images from props (prioritize storyImages > storyImage > ourStory.imageUrl)
   const storyImages = props.storyImages || {
-    image1: props.storyImage || storyImage1,
-    image2: storyImage2,
+    image1: props.storyImage || props.ourStory?.imageUrl || defaultStoryImage1,
+    image2: defaultStoryImage2,
+  };
+
+  // Ensure we have valid image sources (fallback to default images if empty)
+  const safeStoryImages = {
+    image1:
+      storyImages.image1 && storyImages.image1.trim() !== ""
+        ? storyImages.image1
+        : defaultStoryImage1,
+    image2:
+      storyImages.image2 && storyImages.image2.trim() !== ""
+        ? storyImages.image2
+        : defaultStoryImage2,
   };
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.2);
   const { ref: image1Ref, scale: image1Scale } = useScrollScale();
@@ -103,7 +134,7 @@ export const OurStorySection = (props: OurStorySectionProps) => {
           >
             <div className={`relative overflow-hidden ${styles.roundedLg} ${styles.shadowElegant}`}>
               <Image
-                src={storyImages.image1}
+                src={safeStoryImages.image1}
                 alt="Our first photo together"
                 className="w-full h-auto object-cover"
                 width={600}
@@ -123,7 +154,7 @@ export const OurStorySection = (props: OurStorySectionProps) => {
           >
             <div className={`relative overflow-hidden ${styles.roundedLg} ${styles.shadowElegant}`}>
               <Image
-                src={storyImages.image2}
+                src={safeStoryImages.image2}
                 alt="During our engagement"
                 className="w-full h-auto object-cover"
                 width={600}

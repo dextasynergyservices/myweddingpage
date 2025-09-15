@@ -122,10 +122,58 @@ const DynamicTemplateRendererComponent = ({
       const sectionsObj = (userData?.sections ?? {}) as Record<string, Record<string, unknown>>;
       const userSectionContent = sectionsObj[section.id] || {};
 
+      // Convert nested object structures back to arrays for story components
+      const convertedUserContent = { ...userSectionContent };
+
+      // Convert stories object to array for Elegance template
+      if (
+        convertedUserContent.stories &&
+        typeof convertedUserContent.stories === "object" &&
+        !Array.isArray(convertedUserContent.stories)
+      ) {
+        const storiesArray = [];
+        let index = 0;
+        while (convertedUserContent.stories[index]) {
+          storiesArray.push(convertedUserContent.stories[index]);
+          index++;
+        }
+        convertedUserContent.stories = storiesArray;
+      }
+
+      // Convert storyItems object to array for Luxe template
+      if (
+        convertedUserContent.storyItems &&
+        typeof convertedUserContent.storyItems === "object" &&
+        !Array.isArray(convertedUserContent.storyItems)
+      ) {
+        const storyItemsArray = [];
+        let index = 0;
+        while (convertedUserContent.storyItems[index]) {
+          storyItemsArray.push(convertedUserContent.storyItems[index]);
+          index++;
+        }
+        convertedUserContent.storyItems = storyItemsArray;
+      }
+
+      // Convert milestones object to array for Bloom template
+      if (
+        convertedUserContent.milestones &&
+        typeof convertedUserContent.milestones === "object" &&
+        !Array.isArray(convertedUserContent.milestones)
+      ) {
+        const milestonesArray = [];
+        let index = 0;
+        while (convertedUserContent.milestones[index]) {
+          milestonesArray.push(convertedUserContent.milestones[index]);
+          index++;
+        }
+        convertedUserContent.milestones = milestonesArray;
+      }
+
       // Merge template components with user's edited content
       const mergedComponents = {
         ...section.components,
-        ...userSectionContent,
+        ...convertedUserContent,
       };
 
       return {
@@ -197,12 +245,17 @@ const DynamicTemplateRendererComponent = ({
           section.layout === "modern_story" ||
           section.layout === "rustic_story" ||
           section.layout === "luxury_story" ||
-          section.layout === "vintage_story"
+          section.layout === "vintage_story" ||
+          section.layout === "elegance_story" ||
+          section.layout === "luxe_story"
         ) {
           console.log(`Debug for ${section.layout}:`, {
             userData,
             storyImage: userData?.storyImage,
             section: section.layout,
+            sectionComponents: section.components,
+            sectionId: section.id,
+            sectionsData: userData?.sections,
           });
         }
 
@@ -232,6 +285,8 @@ const DynamicTemplateRendererComponent = ({
                 userId: userData?.id,
                 heroImage: userData?.heroImage,
                 storyImage: userData?.storyImage,
+                logoUrl: userData?.logoUrl,
+                logoAlt: userData?.logoAlt,
               };
 
               return <RenderComponent {...componentProps} />;

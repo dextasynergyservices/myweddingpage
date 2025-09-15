@@ -28,6 +28,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [planName, setPlanName] = useState<string | null>(null);
+  const [, setHasTemplate] = useState<boolean>(false);
   const { isDarkMode } = useTheme();
   const { user, logout } = useAuth();
   const router = useRouter();
@@ -166,6 +167,9 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
             : "";
 
         const status = wp?.is_live ? "published" : data?.userTemplate ? "customizing" : "draft";
+
+        // Set template status for navigation
+        setHasTemplate(!!data?.userTemplate);
 
         const weddingObj: Wedding = {
           id: wp?.id ?? u.id ?? "",

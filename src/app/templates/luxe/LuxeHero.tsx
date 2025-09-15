@@ -12,16 +12,61 @@ interface HeroProps {
   venue?: string;
   description?: string;
   heroImage?: string;
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  bankDetails?: Record<string, unknown>[];
+  // Legacy support for weddingData prop
+  weddingData?: {
+    brideName?: string;
+    groomName?: string;
+    weddingDate?: string;
+    venue?: string;
+    welcomeMessage?: string;
+  };
 }
 
-export default function Hero({
-  brideName = "Bride",
-  groomName = "Groom",
-  weddingDate = "Date",
-  venue = "Venue",
-  description = "Join us as we celebrate our love story and begin our journey together as one.",
-  heroImage = "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=800",
-}: HeroProps) {
+export default function Hero(props: HeroProps) {
+  // Extract data from props (prioritize direct props over weddingData object)
+  const brideName = props.brideName || props.weddingData?.brideName || "Bride";
+  const groomName = props.groomName || props.weddingData?.groomName || "Groom";
+  const venue = props.venue || props.weddingData?.venue || "Venue";
+  // const _description =
+  //   props.description ||
+  //   props.weddingData?.welcomeMessage ||
+  //   "Join us as we celebrate our love story and begin our journey together as one.";
+  const dateValue = props.weddingDate || props.weddingData?.weddingDate || "Date";
+
+  // Check if the date is already formatted (contains month name like "October")
+  const isAlreadyFormatted =
+    typeof dateValue === "string" &&
+    (dateValue.includes("January") ||
+      dateValue.includes("February") ||
+      dateValue.includes("March") ||
+      dateValue.includes("April") ||
+      dateValue.includes("May") ||
+      dateValue.includes("June") ||
+      dateValue.includes("July") ||
+      dateValue.includes("August") ||
+      dateValue.includes("September") ||
+      dateValue.includes("October") ||
+      dateValue.includes("November") ||
+      dateValue.includes("December"));
+
+  const weddingDate = isAlreadyFormatted
+    ? dateValue
+    : dateValue && dateValue !== "Date"
+      ? new Date(dateValue).toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "Date";
+  const heroImage =
+    props.heroImage ||
+    "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=800";
   const [isVisible, setIsVisible] = useState(false);
   const [imageScale, setImageScale] = useState(1);
   const heroRef = useRef<HTMLElement>(null);

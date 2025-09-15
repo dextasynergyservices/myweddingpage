@@ -1,10 +1,14 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import coupleStory1 from "./assets/couple-story1.jpg";
-import coupleStory2 from "./assets/couple-story2.jpg";
 import Image from "next/image";
 import styles from "@/styles/templates/elegance.module.css";
+
+// Default story images using Cloudinary URLs
+const defaultCoupleStory1 =
+  "https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=800";
+const defaultCoupleStory2 =
+  "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=800";
 
 interface OurStoryProps {
   title?: string;
@@ -13,33 +17,67 @@ interface OurStoryProps {
     title: string;
     date: string;
     story: string;
-    image: any;
+    image: string;
   }>;
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  bankDetails?: Record<string, unknown>[];
+  storyImage?: string;
+  heroImage?: string;
+  // Legacy support for ourStory prop
+  ourStory?: {
+    content?: string;
+    imageUrl?: string;
+  };
 }
 
 const OurStory: React.FC<OurStoryProps> = (props) => {
+  // Debug logging to see what props are being received
+  console.log("EleganceStory - Received props:", props);
+  console.log("EleganceStory - stories prop:", props.stories);
+  console.log("EleganceStory - storyImage prop:", props.storyImage);
+
   // Extract data from props with fallbacks
   const title = props.title || "Our Love Story";
   const description =
     props.description ||
     "Every love story is beautiful, but ours is our favorite. Here's how it all began...";
 
-  const stories = props.stories || [
-    {
-      title: "How We Met",
-      date: "September 2019",
-      story:
-        "It was a beautiful autumn day when our paths first crossed at a local coffee shop. James was reading a book about photography, and Emma couldn't help but notice the stunning sunset photo on the cover. A simple 'That's a beautiful shot' sparked a conversation that lasted for hours.",
-      image: props.storyImage || coupleStory1,
-    },
-    {
-      title: "The Proposal",
-      date: "December 2023",
-      story:
-        "On a snowy winter evening, James recreated our first date at the same coffee shop where we met. As Emma sipped her favorite lavender latte, James got down on one knee among the twinkling fairy lights, asking her to be his forever adventure partner.",
-      image: coupleStory2,
-    },
-  ];
+  // Ensure stories is always an array
+  let stories = props.stories;
+  if (!Array.isArray(stories)) {
+    stories = [
+      {
+        title: "How We Met",
+        date: "September 2019",
+        story:
+          props.ourStory?.content ||
+          "It was a beautiful autumn day when our paths first crossed at a local coffee shop. James was reading a book about photography, and Emma couldn't help but notice the stunning sunset photo on the cover. A simple 'That's a beautiful shot' sparked a conversation that lasted for hours.",
+        image: props.storyImage || props.ourStory?.imageUrl || defaultCoupleStory1,
+      },
+      {
+        title: "The Proposal",
+        date: "December 2023",
+        story:
+          "On a snowy winter evening, James recreated our first date at the same coffee shop where we met. As Emma sipped her favorite lavender latte, James got down on one knee among the twinkling fairy lights, asking her to be his forever adventure partner.",
+        image: defaultCoupleStory2,
+      },
+    ];
+  }
+
+  // Ensure we have safe image sources
+  const safeStories = stories.map((story) => ({
+    ...story,
+    image:
+      typeof story.image === "string"
+        ? story.image && story.image.trim() !== ""
+          ? story.image
+          : defaultCoupleStory1
+        : story.image,
+  }));
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -89,7 +127,7 @@ const OurStory: React.FC<OurStoryProps> = (props) => {
         </div>
 
         <div className={`grid md:grid-cols-2 gap-12 max-w-6xl mx-auto`}>
-          {stories.map((story, index) => (
+          {safeStories.map((story, index) => (
             <div
               key={index}
               className={`${styles.overflowHidden} ${styles.bgGradientCard} ${styles.shadowElevated} ${styles.hoverShadowGlow} ${styles.transitionAll} ${styles.duration500} ${
@@ -101,7 +139,7 @@ const OurStory: React.FC<OurStoryProps> = (props) => {
                 className={`${styles.relative} ${styles.h80} ${styles.overflowHidden} ${styles.group}`}
               >
                 <Image
-                  src={story.image.src}
+                  src={typeof story.image === "string" ? story.image : story.image.src}
                   alt={story.title}
                   width={600}
                   height={400}

@@ -16,22 +16,44 @@ interface OurStoryProps {
     date: string;
     title: string;
     description: string;
-    icon: any;
+    icon: string;
+  }>;
+  storyMilestones?: Array<{
+    date: string;
+    title: string;
+    description: string;
+    icon?: string;
   }>;
   storyImage?: string;
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  bankDetails?: Record<string, unknown>[];
+  heroImage?: string;
+  // Legacy support for ourStory prop
+  ourStory?: {
+    content?: string;
+    imageUrl?: string;
+  };
 }
 
-const OurStory = ({
-  title = "Our Love Story",
-  description = "Every love story is beautiful, but ours is our favorite. Here's how two hearts found their way to each other and decided to walk together forever.",
-  storyContent = {
+const OurStory = (props: OurStoryProps) => {
+  // Extract data from props with fallbacks
+  const title = props.title || "Our Love Story";
+  const description =
+    props.description ||
+    "Every love story is beautiful, but ours is our favorite. Here's how two hearts found their way to each other and decided to walk together forever.";
+  const storyContent = props.storyContent || {
     mainTitle: "A Love That Bloomed",
     mainDescription:
+      props.ourStory?.content ||
       "What started as a chance encounter at our favorite coffee shop has blossomed into a love that fills our hearts with joy every single day. We've laughed together, dreamed together, and supported each other through all of life's beautiful moments.",
     storyText:
       "From quiet Sunday mornings to adventurous weekend getaways, we've built a foundation of friendship, trust, and unconditional love that we can't wait to celebrate with all of you.",
-  },
-  milestones = [
+  };
+  const defaultMilestones = [
     {
       date: "March 2018",
       title: "First Meeting",
@@ -60,9 +82,29 @@ const OurStory = ({
         'Today, we say "I do" and begin our greatest adventure yet - a lifetime of love together.',
       icon: Calendar,
     },
-  ],
-  storyImage = "/templates/bloom/assets/couple-portrait.jpg",
-}: OurStoryProps) => {
+  ];
+
+  // Ensure milestones have proper icon components
+  // Use storyMilestones if available (from template preview data), otherwise use milestones
+  let rawMilestones = props.storyMilestones || props.milestones || defaultMilestones;
+
+  // Ensure rawMilestones is always an array
+  if (!Array.isArray(rawMilestones)) {
+    rawMilestones = defaultMilestones;
+  }
+
+  const milestones = rawMilestones.map((milestone, index) => ({
+    ...milestone,
+    icon: milestone.icon || defaultMilestones[index % defaultMilestones.length]?.icon || Heart,
+  }));
+  const storyImage =
+    props.storyImage || props.ourStory?.imageUrl || "/templates/bloom/assets/couple-portrait.jpg";
+
+  // Ensure we have a valid image source (fallback to default if empty)
+  const safeStoryImage =
+    storyImage && storyImage.trim() !== ""
+      ? storyImage
+      : "/templates/bloom/assets/couple-portrait.jpg";
   const { elementRef: storyRef, isVisible: storyVisible } = useScrollAnimation(0.2);
   const { elementRef: timelineRef, isVisible: timelineVisible } = useScrollAnimation(0.1);
   const { elementRef: imageRef, isVisible: imageVisible } = useScrollScale(0.2);
@@ -115,7 +157,7 @@ const OurStory = ({
           >
             <div className={`${styles.storyImageContainer} relative group`}>
               <Image
-                src={storyImage}
+                src={safeStoryImage}
                 alt="Our couple portrait"
                 className={`w-full ${styles.roundedLg} ${styles.shadowElegant} transition-romantic group-hover:shadow-glow`}
                 width={600}

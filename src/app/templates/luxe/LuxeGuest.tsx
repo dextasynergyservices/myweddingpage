@@ -1,74 +1,76 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { Heart, MessageSquare, Send } from "lucide-react";
 import Image from "next/image";
+import { toast } from "react-hot-toast";
+import { useParams } from "next/navigation";
 
 interface Comment {
-  id: number;
+  id: string;
   name: string;
   message: string;
-  date: string;
+  created_at: string;
   avatar?: string;
 }
 
 interface CommentsProps {
   title?: string;
   description?: string;
-  existingComments?: Array<{
-    id: number;
-    name: string;
-    message: string;
-    date: string;
-    avatar?: string;
-  }>;
+  existingComments?: Comment[];
   placeholder?: {
     name?: string;
     message?: string;
   };
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  gallery?: string[];
+  bankDetails?: Record<string, unknown>[];
+  storyImage?: string;
+  heroImage?: string;
+  // Legacy support for guests/guestMessages/initialComments props
+  guests?: Comment[];
+  guestMessages?: Comment[];
+  initialComments?: Comment[];
 }
 
-export default function Comments({
-  title = "Well Wishes",
-  description = "Share your love, memories, and well wishes for our special day. Your kind words mean the world to us!",
-  existingComments = [
-    {
-      id: 1,
-      name: "Emma Johnson",
-      message:
-        "So excited to celebrate with you both! You're perfect for each other. Can't wait for the big day! 💕",
-      date: "2 days ago",
-      avatar:
-        "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=100",
-    },
-    {
-      id: 2,
-      name: "David Smith",
-      message:
-        "Congratulations! Been waiting for this moment since you two started dating. Wishing you both a lifetime of happiness! 🎉",
-      date: "1 week ago",
-      avatar:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100",
-    },
-    {
-      id: 3,
-      name: "Lisa Chen",
-      message:
-        "Your love story is so beautiful! Thank you for sharing your journey with us. See you at the altar! ✨",
-      date: "2 weeks ago",
-      avatar:
-        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=100",
-    },
-  ],
-  placeholder = {
-    name: "Your Name",
-    message: "Share your well wishes...",
-  },
-}: CommentsProps) {
-  const [isVisible, setIsVisible] = useState(false);
-  const [comments, setComments] = useState<Comment[]>(existingComments);
+export default function Comments(props: CommentsProps) {
+  const params = useParams();
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newMessage, setNewMessage] = useState("");
+  const [guestName, setGuestName] = useState("");
+  const [sending, setSending] = useState(false);
+  const [loadingComments, setLoadingComments] = useState(false);
 
-  const [newComment, setNewComment] = useState({ name: "", message: "" });
+  // Get slug from URL params (e.g., /alison-favour)
+  const slug = params.slug as string;
+
+  // Extract data from props with fallbacks
+  const title = props.title || "Well Wishes";
+  const description =
+    props.description ||
+    "Share your love, memories, and well wishes for our special day. Your kind words mean the world to us!";
+
+  // Extract guest messages from props (prioritize initialComments > guestMessages)
+  // Only use guests prop for preview mode (when no slug)
+  const initialComments = useMemo(() => {
+    if (slug) {
+      // When we have a slug (real wedding page), don't use guests prop - only use API data
+      return props.initialComments || props.guestMessages || props.existingComments || [];
+    } else {
+      // When no slug (preview mode), use all available props
+      return (
+        props.initialComments || props.guests || props.guestMessages || props.existingComments || []
+      );
+    }
+  }, [props.initialComments, props.guests, props.guestMessages, props.existingComments, slug]);
+
+  // const _placeholder = props.placeholder || {
+  //   name: "Your Name",
+  //   message: "Share your well wishes...",
+  // };
+  const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -88,17 +90,98 @@ export default function Comments({
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newComment.name && newComment.message) {
-      const comment: Comment = {
-        id: comments.length + 1,
-        name: newComment.name,
-        message: newComment.message,
-        date: "Just now",
-      };
-      setComments([comment, ...comments]);
-      setNewComment({ name: "", message: "" });
+  // Fetch approved comments
+  const fetchComments = useCallback(async () => {
+    if (!slug) return;
+
+    setLoadingComments(true);
+    try {
+      const response = await fetch(`/api/guests/comments?slug=${encodeURIComponent(slug)}`);
+
+      if (response.ok) {
+        const commentsData = await response.json();
+        setComments(commentsData);
+      } else {
+        console.error("Failed to fetch comments");
+        // Don't fall back to initial comments when we have a slug - just show empty state
+        setComments([]);
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      // Don't fall back to initial comments when we have a slug - just show empty state
+      setComments([]);
+    } finally {
+      setLoadingComments(false);
+    }
+  }, [slug]);
+
+  // Initialize comments
+  useEffect(() => {
+    if (slug) {
+      // Always fetch from API when we have a slug
+      fetchComments();
+    } else if (initialComments && initialComments.length > 0) {
+      // Only use initial comments if no slug (fallback for preview mode)
+      setComments(initialComments);
+    }
+  }, [initialComments, slug, fetchComments]);
+
+  const handleSendMessage = async () => {
+    if (!guestName.trim() || !newMessage.trim()) {
+      toast.error("Please enter both your name and a message");
+      return;
+    }
+
+    if (!slug) {
+      toast.error("Unable to identify wedding page. Please refresh and try again.");
+      return;
+    }
+
+    setSending(true);
+    const loadingToast = toast.loading("Sending your message...");
+
+    try {
+      const response = await fetch("/api/guests/comments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: guestName.trim(),
+          message: newMessage.trim(),
+          slug: slug,
+        }),
+      });
+
+      const responseText = await response.text();
+
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+      } catch {
+        console.error("Non-JSON response:", responseText.substring(0, 200));
+        throw new Error("Server returned an error page");
+      }
+
+      if (response.ok) {
+        toast.dismiss(loadingToast);
+        toast.success("Thank you for your message! It will be visible after approval.");
+        setNewMessage("");
+        setGuestName("");
+
+        // Refresh comments after successful submission
+        // (Note: new comment won't appear until it's approved)
+        fetchComments();
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error(responseData.error || "Failed to send message");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.dismiss(loadingToast);
+      toast.error("An error occurred while sending your message");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -136,13 +219,19 @@ export default function Comments({
               Leave a Message
             </h3>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendMessage();
+              }}
+              className="space-y-6"
+            >
               <div>
                 <input
                   type="text"
                   placeholder="Your Name"
-                  value={newComment.name}
-                  onChange={(e) => setNewComment({ ...newComment, name: e.target.value })}
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-300 bg-white/50 backdrop-blur-sm"
                   required
                 />
@@ -150,8 +239,8 @@ export default function Comments({
               <div>
                 <textarea
                   placeholder="Share your wishes, memories, or excitement..."
-                  value={newComment.message}
-                  onChange={(e) => setNewComment({ ...newComment, message: e.target.value })}
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
                   rows={4}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-300 bg-white/50 backdrop-blur-sm resize-none"
                   required
@@ -159,55 +248,78 @@ export default function Comments({
               </div>
               <button
                 type="submit"
-                className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-8 py-3 rounded-xl font-medium hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg"
+                disabled={sending}
+                className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-8 py-3 rounded-xl font-medium hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 <Send className="w-5 h-5" />
-                Send Your Wishes
+                {sending ? "Sending..." : "Send Your Wishes"}
               </button>
             </form>
           </div>
 
           {/* Comments List */}
           <div className="space-y-6">
-            {comments.map((comment, index) => (
-              <div
-                key={comment.id}
-                className={`bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl p-6 transition-all duration-700 transform hover:scale-[1.02] ${
-                  isVisible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
-                }`}
-                style={{ transitionDelay: `${400 + index * 150}ms` }}
-              >
-                <div className="flex items-start gap-4">
-                  {comment.avatar ? (
-                    <Image
-                      src={comment.avatar}
-                      alt={comment.name}
-                      width={48}
-                      height={48}
-                      className="w-12 h-12 rounded-full object-cover ring-2 ring-purple-200"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
-                      {comment.name.charAt(0)}
-                    </div>
-                  )}
+            {loadingComments ? (
+              <div className="text-center py-12">
+                <p className="text-lg text-gray-600">Loading messages...</p>
+              </div>
+            ) : comments.length === 0 ? (
+              <div className="text-center py-12">
+                <MessageSquare className="w-16 h-16 mx-auto mb-4 text-gray-400 opacity-50" />
+                <p className="text-lg text-gray-600">
+                  No wishes yet. Be the first to leave a message!
+                </p>
+              </div>
+            ) : (
+              comments.map((comment, index) => {
+                const commentDate = new Date(comment.created_at);
+                const formattedDate = commentDate.toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                });
 
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-bold text-gray-800">{comment.name}</h4>
-                      <span className="text-sm text-gray-500">{comment.date}</span>
-                    </div>
-                    <p className="text-gray-600 leading-relaxed">{comment.message}</p>
-                    <div className="flex items-center gap-2 mt-3">
-                      <button className="flex items-center gap-2 text-pink-500 hover:text-pink-600 transition-colors duration-200">
-                        <Heart className="w-4 h-4" />
-                        <span className="text-sm">Love this</span>
-                      </button>
+                return (
+                  <div
+                    key={comment.id}
+                    className={`bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl p-6 transition-all duration-700 transform hover:scale-[1.02] ${
+                      isVisible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
+                    }`}
+                    style={{ transitionDelay: `${400 + index * 150}ms` }}
+                  >
+                    <div className="flex items-start gap-4">
+                      {comment.avatar ? (
+                        <Image
+                          src={comment.avatar}
+                          alt={comment.name}
+                          width={48}
+                          height={48}
+                          className="w-12 h-12 rounded-full object-cover ring-2 ring-purple-200"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
+                          {comment.name.charAt(0)}
+                        </div>
+                      )}
+
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-bold text-gray-800">{comment.name}</h4>
+                          <span className="text-sm text-gray-500">{formattedDate}</span>
+                        </div>
+                        <p className="text-gray-600 leading-relaxed">{comment.message}</p>
+                        <div className="flex items-center gap-2 mt-3">
+                          <button className="flex items-center gap-2 text-pink-500 hover:text-pink-600 transition-colors duration-200">
+                            <Heart className="w-4 h-4" />
+                            <span className="text-sm">Love this</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                );
+              })
+            )}
           </div>
         </div>
 

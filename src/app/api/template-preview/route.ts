@@ -2,6 +2,20 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// Helper function to format wedding date in a user-friendly way
+function formatWeddingDate(date: Date): string {
+  try {
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch (error) {
+    console.error("Error formatting wedding date:", error);
+    return date.toISOString().split("T")[0]; // Fallback to YYYY-MM-DD format
+  }
+}
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -46,7 +60,7 @@ export async function GET(req: Request) {
       previewData: {
         brideName: "Bride",
         groomName: "Groom",
-        weddingDate: new Date().toISOString(),
+        weddingDate: formatWeddingDate(new Date()),
         venue: "Wedding Venue",
         welcomeMessage: "Welcome to our wedding celebration",
       },

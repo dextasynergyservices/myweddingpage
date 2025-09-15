@@ -353,7 +353,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Dining Table Set",
         description: "Beautiful oak dining table for our new home - perfect for family dinners",
         price: "₦1,200,000",
-        image: "🪑",
+        image:
+          "https://images.pexels.com/photos/271897/pexels-photo-271897.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Home & Living",
       },
       {
@@ -361,7 +362,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Kitchen Mixer",
         description: "Professional stand mixer for baking together on Sunday mornings",
         price: "₦350,000",
-        image: "🥄",
+        image:
+          "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Kitchen",
       },
       {
@@ -369,7 +371,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Bedding Set",
         description: "Luxury cotton bedding set, king size for our master bedroom",
         price: "₦200,000",
-        image: "🛏️",
+        image:
+          "https://images.pexels.com/photos/1743227/pexels-photo-1743227.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Bedroom",
       },
     ],
@@ -464,7 +467,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Luxury Bedding Set",
         description: "Silk bedding set for our romantic nights together",
         price: "₦500,000",
-        image: "🛏️",
+        image:
+          "https://images.pexels.com/photos/1743227/pexels-photo-1743227.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Bedroom",
       },
       {
@@ -472,7 +476,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Garden Furniture",
         description: "Outdoor furniture for our garden where we'll have morning coffee",
         price: "₦800,000",
-        image: "🪑",
+        image:
+          "https://images.pexels.com/photos/271897/pexels-photo-271897.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Outdoor",
       },
       {
@@ -480,7 +485,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Coffee Machine",
         description: "Espresso machine for our morning coffee ritual together",
         price: "₦450,000",
-        image: "☕",
+        image:
+          "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Kitchen",
       },
       {
@@ -488,7 +494,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Flower Garden Kit",
         description: "Complete flower garden kit for our backyard",
         price: "₦300,000",
-        image: "🌸",
+        image:
+          "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Garden",
       },
     ],
@@ -574,7 +581,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Modern Art Piece",
         description: "Contemporary artwork for our home - something that speaks to our souls",
         price: "₦750,000",
-        image: "🎨",
+        image:
+          "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Art & Decor",
       },
       {
@@ -582,7 +590,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Designer Furniture",
         description: "Minimalist furniture set for our living room",
         price: "₦1,500,000",
-        image: "🪑",
+        image:
+          "https://images.pexels.com/photos/271897/pexels-photo-271897.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Furniture",
       },
       {
@@ -590,7 +599,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Smart Home System",
         description: "Complete smart home automation system",
         price: "₦2,000,000",
-        image: "🏠",
+        image:
+          "https://images.pexels.com/photos/1743227/pexels-photo-1743227.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Technology",
       },
     ],
@@ -686,7 +696,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Luxury Watch Set",
         description: "Matching luxury watches for the couple - timepieces that will last forever",
         price: "₦2,500,000",
-        image: "⌚",
+        image:
+          "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Luxury Accessories",
       },
       {
@@ -694,7 +705,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Designer Home Decor",
         description: "High-end home decoration pieces from world-renowned designers",
         price: "₦3,000,000",
-        image: "🏠",
+        image:
+          "https://images.pexels.com/photos/1743227/pexels-photo-1743227.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Home & Decor",
       },
       {
@@ -702,7 +714,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Luxury Car Accessories",
         description: "Premium car accessories and upgrades for our luxury vehicles",
         price: "₦5,000,000",
-        image: "🚗",
+        image:
+          "https://images.pexels.com/photos/271897/pexels-photo-271897.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Automotive",
       },
       {
@@ -710,7 +723,8 @@ const TEMPLATE_SAMPLE_DATA = {
         name: "Private Jet Experience",
         description: "Private jet charter for our honeymoon getaway",
         price: "₦15,000,000",
-        image: "✈️",
+        image:
+          "https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Travel",
       },
     ],

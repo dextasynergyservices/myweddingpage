@@ -10,7 +10,7 @@ export const eleganceTemplate = {
         title: "{brideName} & {groomName}",
         subtitle: "{weddingDate}",
         venue: "{venue}",
-        description: "{welcomeMessage}",
+        // description: "{welcomeMessage}",
       },
     },
     {

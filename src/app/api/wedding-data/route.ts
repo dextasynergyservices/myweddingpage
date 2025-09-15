@@ -3,6 +3,20 @@ import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+// Helper function to format wedding date in a user-friendly way
+function formatWeddingDate(date: Date): string {
+  try {
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch (error) {
+    console.error("Error formatting wedding date:", error);
+    return date.toISOString().split("T")[0]; // Fallback to YYYY-MM-DD format
+  }
+}
+
 export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -81,6 +95,69 @@ export async function GET(req: Request) {
       {};
     const utContent = (selectedUserTemplate?.content as Record<string, unknown> | undefined) ?? {};
 
+    // Convert form data structure to component structure for story sections
+    const convertStoryDataForComponent = (content: Record<string, unknown>) => {
+      const converted = { ...content };
+
+      // Convert stories object to array for Elegance template
+      if (
+        converted.stories &&
+        typeof converted.stories === "object" &&
+        !Array.isArray(converted.stories)
+      ) {
+        const storiesArray = [];
+        let index = 0;
+        while (converted.stories[index]) {
+          storiesArray.push(converted.stories[index]);
+          index++;
+        }
+        converted.stories = storiesArray;
+      }
+
+      // Convert storyItems object to array for Luxe template
+      if (
+        converted.storyItems &&
+        typeof converted.storyItems === "object" &&
+        !Array.isArray(converted.storyItems)
+      ) {
+        const storyItemsArray = [];
+        let index = 0;
+        while (converted.storyItems[index]) {
+          storyItemsArray.push(converted.storyItems[index]);
+          index++;
+        }
+        converted.storyItems = storyItemsArray;
+      }
+
+      // Convert milestones object to array for Bloom template
+      if (
+        converted.milestones &&
+        typeof converted.milestones === "object" &&
+        !Array.isArray(converted.milestones)
+      ) {
+        const milestonesArray = [];
+        let index = 0;
+        while (converted.milestones[index]) {
+          milestonesArray.push(converted.milestones[index]);
+          index++;
+        }
+        converted.milestones = milestonesArray;
+      }
+
+      return converted;
+    };
+
+    // Convert story data for all sections
+    const convertedUtContent = Object.keys(utContent).reduce(
+      (acc, sectionId) => {
+        acc[sectionId] = convertStoryDataForComponent(
+          utContent[sectionId] as Record<string, unknown>
+        );
+        return acc;
+      },
+      {} as Record<string, unknown>
+    );
+
     const userData = {
       id: user.id, // Add user ID for gift components
       brideName:
@@ -98,10 +175,10 @@ export async function GET(req: Request) {
         utContent?.groom_name ||
         "Groom",
       weddingDate:
-        (user.weddingDate && user.weddingDate.toISOString()) ||
-        wpAi?.weddingDate ||
-        wpAi?.wedding_date ||
-        utContent?.weddingDate ||
+        (user.weddingDate && formatWeddingDate(user.weddingDate)) ||
+        (wpAi?.weddingDate && formatWeddingDate(new Date(wpAi.weddingDate as string))) ||
+        (wpAi?.wedding_date && formatWeddingDate(new Date(wpAi.wedding_date as string))) ||
+        (utContent?.weddingDate && formatWeddingDate(new Date(utContent.weddingDate as string))) ||
         null,
       venue: weddingPage?.venue || wpAi?.venue || utContent?.venue || null,
       welcomeMessage:
@@ -115,14 +192,24 @@ export async function GET(req: Request) {
       logoAlt: weddingPage?.logo_alt || null,
       // Include gallery data for gallery components
       gallery: user.galleryMedias ?? [],
-      // Include gifts data for gift components
-      gifts: user.gifts ?? [],
+      // Include gifts data for gift components (transform to expected format)
+      gifts: (user.gifts ?? []).map((gift) => ({
+        id: gift.id,
+        item: gift.name, // Map name to item for component compatibility
+        name: gift.name,
+        description: gift.description,
+        price: gift.price.toString(), // Convert Float to String
+        image: gift.image || "",
+        link: gift.link || "",
+        purchased: gift.purchased,
+        purchasedBy: gift.purchasedBy,
+      })),
       // Include guests data for guest components
       guests: user.guests ?? [],
       // Include bank details for gift components
       bankDetails: user.bankDetails ?? [],
-      // Include full section content for dynamic rendering
-      sections: utContent,
+      // Include full section content for dynamic rendering (converted to component structure)
+      sections: convertedUtContent,
       userTemplate: selectedUserTemplate,
       // expose raw objects for templates that expect different shapes
       _raw: {
@@ -163,8 +250,8 @@ export async function GET(req: Request) {
       template: selectedTemplate,
       userData: {
         ...userData,
-        // Include full section content for dynamic rendering
-        sections: utContent,
+        // Include full section content for dynamic rendering (converted to component structure)
+        sections: convertedUtContent,
         userTemplate: selectedUserTemplate,
       },
       ourStory,
@@ -173,7 +260,17 @@ export async function GET(req: Request) {
       views: (weddingPageWithViews as { views?: number } | null)?.views ?? 0,
       gallery: user.galleryMedias ?? [],
       guests: user.guests ?? [],
-      gifts: user.gifts ?? [],
+      gifts: (user.gifts ?? []).map((gift) => ({
+        id: gift.id,
+        item: gift.name, // Map name to item for component compatibility
+        name: gift.name,
+        description: gift.description,
+        price: gift.price.toString(), // Convert Float to String
+        image: gift.image || "",
+        link: gift.link || "",
+        purchased: gift.purchased,
+        purchasedBy: gift.purchasedBy,
+      })),
       bankDetails: user.bankDetails ?? [],
       userTemplate: selectedUserTemplate ?? null,
       plan: user.plan ?? null,
