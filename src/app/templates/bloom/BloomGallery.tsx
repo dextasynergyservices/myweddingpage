@@ -3,6 +3,7 @@ import { Play, Image as ImageIcon } from "lucide-react";
 // Gallery images - using public paths
 import Image from "next/image";
 import MediaModal from "@/components/ui/MediaModal";
+import { useScrollAnimation } from "./hooks/useScrollAnimation";
 import styles from "@/styles/templates/bloom.module.css";
 
 type GalleryCategory = "all" | "before" | "during" | "after";
