@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useScrollAnimation, useScrollScale } from "./hooks/useScrollAnimation";
 import { Play, Image as ImageIcon } from "lucide-react";
 // Gallery images - using public paths
 import Image from "next/image";
@@ -44,6 +43,10 @@ const Gallery = ({
 }: GalleryProps) => {
   const { elementRef, isVisible } = useScrollAnimation(0.1);
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // 3 rows of 2 items each
 
   // Modal state
   const [selectedMedia, setSelectedMedia] = useState<{
@@ -148,34 +151,52 @@ const Gallery = ({
       ? finalGalleryItems
       : finalGalleryItems.filter((item) => item.category === activeCategory);
 
-  // Individual scroll hooks for each gallery item
-  const scrollHook1 = useScrollScale(0.1);
-  const scrollHook2 = useScrollScale(0.1);
-  const scrollHook3 = useScrollScale(0.1);
-  const scrollHook4 = useScrollScale(0.1);
-  const scrollHook5 = useScrollScale(0.1);
-  const scrollHook6 = useScrollScale(0.1);
-  const scrollHook7 = useScrollScale(0.1);
-  const scrollHook8 = useScrollScale(0.1);
-  const scrollHook9 = useScrollScale(0.1);
-  const scrollHook10 = useScrollScale(0.1);
-  const scrollHook11 = useScrollScale(0.1);
-  const scrollHook12 = useScrollScale(0.1);
+  // Pagination logic
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedItems = filteredItems.slice(startIndex, endIndex);
 
-  const scrollHooks = [
-    scrollHook1,
-    scrollHook2,
-    scrollHook3,
-    scrollHook4,
-    scrollHook5,
-    scrollHook6,
-    scrollHook7,
-    scrollHook8,
-    scrollHook9,
-    scrollHook10,
-    scrollHook11,
-    scrollHook12,
-  ];
+  console.log("Pagination debug:", {
+    currentPage,
+    totalPages,
+    filteredItemsLength: filteredItems.length,
+    startIndex,
+    endIndex,
+    paginatedItemsLength: paginatedItems.length,
+  });
+
+  // Reset to first page when category changes
+  const handleCategoryChange = (category: GalleryCategory) => {
+    setActiveCategory(category);
+    setCurrentPage(1);
+  };
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      elementRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      elementRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  const handlePageClick = (page: number) => {
+    console.log("Clicking page:", page, "Current page:", currentPage);
+    setCurrentPage(page);
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      elementRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
 
   const categories = [
     { id: "all", label: "All" },
@@ -185,7 +206,10 @@ const Gallery = ({
   ];
 
   return (
-    <section className={`${styles.sectionPadding} ${styles.bgBackground} relative overflow-hidden`}>
+    <section
+      id="bloom-gallery"
+      className={`${styles.sectionPadding} ${styles.bgBackground} relative overflow-hidden`}
+    >
       {/* Background Elements */}
       <div className={`${styles.floatingElement} absolute top-40 right-10 opacity-5`}>
         <ImageIcon className={`w-40 h-40 text-primary ${styles.animateRomanticFloat}`} />
@@ -199,27 +223,23 @@ const Gallery = ({
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <h2
-            className={`${styles.fontHeading} text-2xl md:text-5xl font-bold ${styles.textForeground} mb-6`}
-          >
+          <h2 className={`${styles.fontHeading} text-2xl md:text-5xl font-bold text-black mb-6`}>
             {title}
           </h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
-          <p className={`text-xl ${styles.textMuted} max-w-2xl mx-auto leading-relaxed`}>
-            {description}
-          </p>
+          <p className={`text-xl text-black/80 max-w-2xl mx-auto leading-relaxed`}>{description}</p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className="flex flex-wrap justify-center gap-2 mb-12 text-black/80">
           {categories.map((category) => (
             <button
               key={category.id}
-              onClick={() => setActiveCategory(category.id as GalleryCategory)}
+              onClick={() => handleCategoryChange(category.id as GalleryCategory)}
               className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                 activeCategory === category.id
-                  ? `${styles.bgGradientRose} text-white shadow-lg`
-                  : `${styles.textMuted} hover:${styles.bgGradientRose} hover:text-white hover:shadow-md`
+                  ? `${styles.bgGradientRose} text-black/80 shadow-lg`
+                  : `text-black/80 hover:${styles.bgGradientRose} hover:text-white hover:shadow-md`
               }`}
             >
               {category.label}
@@ -228,24 +248,16 @@ const Gallery = ({
         </div>
 
         {/* Gallery Grid */}
-        <div className={styles.masonryGrid}>
-          {filteredItems.map((item, index) => {
-            // Find the original index of this item in the full galleryItems array
-            const originalIndex = galleryItems.findIndex(
-              (originalItem) => originalItem.id === item.id
-            );
-            const { elementRef: itemRef, isVisible: itemVisible } = scrollHooks[originalIndex];
-
+        <div className="grid grid-cols-3 gap-6 md:gap-8">
+          {paginatedItems.map((item, index) => {
             return (
               <div
                 key={item.id}
-                ref={itemRef}
-                className={`mb-6 break-inside-avoid transition-all duration-[2500ms] ease-out ${
-                  itemVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                className={`transition-all duration-1000 ${
+                  isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
                 }`}
                 style={{
-                  transitionDelay: `${index * 300}ms`,
-                  transformOrigin: "center",
+                  transitionDelay: `${index * 200}ms`,
                 }}
               >
                 <div
@@ -311,6 +323,59 @@ const Gallery = ({
             );
           })}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex flex-col items-center mt-16 space-y-4">
+            {/* Page Numbers */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : `bg-black text-white hover:opacity-80`
+                }`}
+              >
+                Previous
+              </button>
+
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageClick(page)}
+                    className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                      currentPage === page
+                        ? `bg-black text-white`
+                        : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  currentPage === totalPages
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : `bg-black text-white hover:opacity-80`
+                }`}
+              >
+                Next
+              </button>
+            </div>
+
+            {/* Page Info */}
+            <p className="text-sm text-gray-600">
+              Page {currentPage} of {totalPages} • {filteredItems.length} total items
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Media Modal */}

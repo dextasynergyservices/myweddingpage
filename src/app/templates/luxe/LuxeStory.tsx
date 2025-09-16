@@ -114,6 +114,7 @@ export default function OurStory(props: OurStoryProps) {
 
   return (
     <section
+      id="luxe-story"
       ref={sectionRef}
       className="py-24 bg-gradient-to-br from-sage-50 to-emerald-50 relative overflow-hidden"
     >

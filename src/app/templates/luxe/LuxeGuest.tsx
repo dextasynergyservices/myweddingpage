@@ -43,8 +43,31 @@ export default function Comments(props: CommentsProps) {
   const [sending, setSending] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Show 5 comments per page
+
   // Get slug from URL params (e.g., /alison-favour)
   const slug = params.slug as string;
+
+  // Pagination logic
+  const totalPages = Math.ceil(comments.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedComments = comments.slice(startIndex, endIndex);
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+  };
 
   // Extract data from props with fallbacks
   const title = props.title || "Well Wishes";
@@ -271,7 +294,7 @@ export default function Comments(props: CommentsProps) {
                 </p>
               </div>
             ) : (
-              comments.map((comment, index) => {
+              paginatedComments.map((comment, index) => {
                 const commentDate = new Date(comment.created_at);
                 const formattedDate = commentDate.toLocaleDateString("en-US", {
                   month: "short",
@@ -319,6 +342,59 @@ export default function Comments(props: CommentsProps) {
                   </div>
                 );
               })
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex flex-col items-center mt-12 space-y-4">
+                {/* Page Numbers */}
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      currentPage === 1
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:opacity-80"
+                    }`}
+                  >
+                    Previous
+                  </button>
+
+                  <div className="flex items-center space-x-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => handlePageClick(page)}
+                        className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                          currentPage === page
+                            ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white"
+                            : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      currentPage === totalPages
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:opacity-80"
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
+
+                {/* Page Info */}
+                <p className="text-sm text-gray-600">
+                  Page {currentPage} of {totalPages} • {comments.length} total comments
+                </p>
+              </div>
             )}
           </div>
         </div>
