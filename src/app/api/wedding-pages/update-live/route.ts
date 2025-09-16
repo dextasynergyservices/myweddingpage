@@ -201,7 +201,9 @@ export async function POST(req: Request) {
                 `update-live - Found storyItems object in section ${sectionId}:`,
                 section.storyItems
               );
-              const firstStoryItem = section.storyItems[0] || section.storyItems["0"];
+              const firstStoryItem =
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (section.storyItems as any)[0] || (section.storyItems as any)["0"];
               if (firstStoryItem && firstStoryItem.image) {
                 storyImage = firstStoryItem.image as string;
                 console.log(
