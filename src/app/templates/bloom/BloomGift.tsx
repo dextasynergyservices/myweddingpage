@@ -209,15 +209,11 @@ const GiftRegistry = (props: GiftRegistryProps) => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <h2
-            className={`${styles.fontHeading} text-2xl md:text-5xl font-bold ${styles.textForeground} mb-6`}
-          >
+          <h2 className={`${styles.fontHeading} text-2xl md:text-5xl font-bold text-black mb-6`}>
             {title}
           </h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
-          <p className={`text-xl ${styles.textMuted} max-w-3xl mx-auto leading-relaxed`}>
-            {description}
-          </p>
+          <p className={`text-xl text-black/80 max-w-3xl mx-auto leading-relaxed`}>{description}</p>
         </div>
 
         {/* Gift Cards */}
@@ -313,18 +309,16 @@ const GiftRegistry = (props: GiftRegistryProps) => {
           <div
             className={`${styles.bgCard} p-8 ${styles.roundedLg} ${styles.shadowSoft} max-w-2xl mx-auto`}
           >
-            <Gift className={`${styles.giftInfoIcon} w-12 h-12 text-primary mx-auto mb-4`} />
-            <h3
-              className={`${styles.fontHeading} text-2xl font-semibold ${styles.textForeground} mb-4`}
-            >
+            <Gift className={`text-[hsl(340,75%,55%)] w-12 h-12 text-primary mx-auto mb-4`} />
+            <h3 className={`${styles.fontHeading} text-2xl font-semibold text-black/80 mb-4`}>
               Other Ways to Give
             </h3>
-            <p className={`${styles.textMuted} mb-6 leading-relaxed`}>
+            <p className={`text-black/80 mb-6 leading-relaxed`}>
               We&apos;re also registered at Target and Williams Sonoma. You can find our registries
               online or contribute to our honeymoon fund if you prefer.
             </p>
             <div
-              className={`${styles.giftInfoButtons} flex flex-col sm:flex-row gap-4 justify-center`}
+              className={`text-[hsl(340,75%,55%)] flex flex-col sm:flex-row gap-4 justify-center`}
             >
               <Button
                 variant="outline"

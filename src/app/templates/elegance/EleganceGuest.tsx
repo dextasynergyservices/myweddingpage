@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Heart, MessageCircle, Send } from "lucide-react";
 // import { useToast } from "@/app/templates/elegance/hooks/use-toast";
-import styles from "@/styles/templates/elegance.module.css";
 import { toast } from "react-hot-toast";
 import { useParams } from "next/navigation";
 
@@ -43,8 +42,31 @@ const Comments: React.FC<CommentsProps> = (props) => {
   const [sending, setSending] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Show 5 comments per page
+
   // Get slug from URL params (e.g., /alison-favour)
   const slug = params.slug as string;
+
+  // Pagination logic
+  const totalPages = Math.ceil(comments.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedComments = comments.slice(startIndex, endIndex);
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+  };
 
   // Extract data from props with fallbacks
   const title = props.title || "Well Wishes";
@@ -187,34 +209,24 @@ const Comments: React.FC<CommentsProps> = (props) => {
   };
 
   return (
-    <section id="comments" className={`${styles.py24} ${styles.bgBackground}`}>
-      <div className={`${styles.container} ${styles.mxAuto} ${styles.px4}`}>
+    <section id="comments" className="py-24 bg-white">
+      <div className="container mx-auto px-4">
         <div
           ref={sectionRef}
-          className={`${styles.textCenter} ${styles.mb16} ${styles.transitionAll} ${styles.duration800} ${
-            isVisible ? styles.animateFadeInUp : `${styles.opacity0} ${styles.translateY8}`
+          className={`text-center mb-16 transition-all duration-800 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <MessageCircle
-            className={`${styles.w12} ${styles.h12} ${styles.mxAuto} ${styles.mb6} ${styles.textPrimary} ${styles.animateFloat}`}
-          />
-          <h2
-            className={`${styles.fontDisplay} md:text-5xl text-2xl ${styles.fontBold} ${styles.textForeground} ${styles.mb6}`}
-          >
-            {title}
-          </h2>
-          <p
-            className={`${styles.fontBody} ${styles.textXl} ${styles.textMutedForeground} ${styles.maxW3xl} ${styles.mxAuto}`}
-          >
-            {description}
-          </p>
+          <MessageCircle className="w-12 h-12 mx-auto mb-6 text-rose-600 animate-bounce" />
+          <h2 className="font-serif md:text-5xl text-2xl font-bold text-gray-900 mb-6">{title}</h2>
+          <p className="font-sans text-xl text-gray-600 max-w-3xl mx-auto">{description}</p>
         </div>
 
-        <div className={`${styles.maxW4xl} ${styles.mxAuto}`}>
+        <div className="max-w-4xl mx-auto">
           {/* Comment Form */}
           <div
-            className={`${styles.overflowHidden} ${styles.bgGradientCard} ${styles.shadowElevated} ${styles.p8} ${styles.transitionAll} ${styles.duration800} ${
-              isVisible ? styles.animateScaleIn : `${styles.opacity0} ${styles.scale95}`
+            className={`overflow-hidden bg-white shadow-lg p-8 transition-all duration-800 rounded-2xl ${
+              isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
             }`}
           >
             <form
@@ -222,12 +234,10 @@ const Comments: React.FC<CommentsProps> = (props) => {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className={styles.spaceY6}
+              className="space-y-6"
             >
               <div>
-                <label
-                  className={`${styles.block} ${styles.fontBody} ${styles.textSm} ${styles.fontMedium} ${styles.textForeground} ${styles.mb2}`}
-                >
+                <label className="block font-sans text-sm font-medium text-gray-900 mb-2">
                   Your Name(s)
                 </label>
                 <input
@@ -235,14 +245,12 @@ const Comments: React.FC<CommentsProps> = (props) => {
                   value={guestName}
                   onChange={(e) => setGuestName(e.target.value)}
                   placeholder="Enter your name or family name"
-                  className={`${styles.wFull} ${styles.px3} ${styles.py2} ${styles.border} ${styles.borderBorder} ${styles.roundedMd} ${styles.fontBody} ${styles.textSm} ${styles.textForeground} ${styles.bgBackground} ${styles.focusRingPrimary} ${styles.focusBorderPrimary}`}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md font-sans text-sm text-gray-900 bg-white focus:ring-2 focus:ring-rose-600 focus:border-transparent focus:outline-none"
                 />
               </div>
 
               <div>
-                <label
-                  className={`${styles.block} ${styles.fontBody} ${styles.textSm} ${styles.fontMedium} ${styles.textForeground} ${styles.mb2}`}
-                >
+                <label className="block font-sans text-sm font-medium text-gray-900 mb-2">
                   Your Message
                 </label>
                 <textarea
@@ -250,46 +258,40 @@ const Comments: React.FC<CommentsProps> = (props) => {
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Share your wishes, memories, or advice for the happy couple..."
                   rows={4}
-                  className={`${styles.wFull} ${styles.px3} ${styles.py2} ${styles.border} ${styles.borderBorder} ${styles.roundedMd} ${styles.fontBody} ${styles.textSm} ${styles.textForeground} ${styles.bgBackground} ${styles.resizeNone} ${styles.focusRingPrimary} ${styles.focusBorderPrimary}`}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md font-sans text-sm text-gray-900 bg-white resize-none focus:ring-2 focus:ring-rose-600 focus:border-transparent focus:outline-none"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={sending}
-                className={`${styles.wFull} ${styles.smWAuto} ${styles.bgPrimary} ${styles.hoverBgPrimary90} ${styles.textPrimaryForeground} ${styles.fontSemibold} ${styles.px8} ${styles.py3} ${styles.roundedLg} ${styles.transitionAll} ${styles.shadowGlow} font-lg flex items-center justify-center disabled:opacity-70`}
+                className="w-full sm:w-auto bg-rose-600 hover:bg-rose-700 text-white font-semibold px-8 py-3 rounded-lg transition-all shadow-lg flex items-center justify-center disabled:opacity-70"
               >
-                <Send className={`${styles.w4} ${styles.h4} ${styles.mr2}`} />
+                <Send className="w-4 h-4 mr-2" />
                 {sending ? "Sending..." : "Send Your Wishes"}
               </button>
             </form>
           </div>
 
           {/* Comments List */}
-          <div className={styles.spaceY6}>
-            <h3
-              className={`${styles.fontDisplay} md:text-2xl text-xl ${styles.fontSemibold} ${styles.textForeground} ${styles.mb8} ${styles.textCenter}`}
-            >
+          <div className="space-y-6">
+            <h3 className="font-serif md:text-2xl text-xl font-semibold text-gray-900 mb-8 text-center">
               Messages from Family & Friends ({comments.length})
             </h3>
 
             {loadingComments ? (
-              <div className={`${styles.textCenter} ${styles.py12}`}>
-                <p className={`${styles.fontBody} ${styles.textMutedForeground}`}>
-                  Loading messages...
-                </p>
+              <div className="text-center py-12">
+                <p className="font-sans text-gray-600">Loading messages...</p>
               </div>
             ) : comments.length === 0 ? (
-              <div className={`${styles.textCenter} ${styles.py12}`}>
-                <MessageCircle
-                  className={`${styles.w16} ${styles.h16} ${styles.mxAuto} ${styles.mb4} ${styles.textMutedForeground} ${styles.opacity50}`}
-                />
-                <p className={`${styles.fontBody} ${styles.textMutedForeground}`}>
+              <div className="text-center py-12">
+                <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-600 opacity-50" />
+                <p className="font-sans text-gray-600">
                   No wishes yet. Be the first to leave a message!
                 </p>
               </div>
             ) : (
-              comments.map((comment, index) => {
+              paginatedComments.map((comment, index) => {
                 const commentDate = new Date(comment.created_at);
                 const formattedDate = commentDate.toLocaleDateString("en-US", {
                   month: "short",
@@ -300,48 +302,85 @@ const Comments: React.FC<CommentsProps> = (props) => {
                 return (
                   <div
                     key={comment.id}
-                    className={`${styles.bgCard} ${styles.shadowElevated} ${styles.hoverShadowGlow} ${styles.transitionAll} ${styles.duration500} ${styles.p6} ${
-                      isVisible
-                        ? styles.animateFadeInUp
-                        : `${styles.opacity0} ${styles.translateY4}`
+                    className={`bg-white shadow-lg hover:shadow-xl transition-all duration-500 p-6 rounded-2xl ${
+                      isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                     }`}
                     style={{ animationDelay: `${(index + 1) * 100}ms` }}
                   >
-                    <div className={`${styles.flex} ${styles.itemsStart} ${styles.spaceX4}`}>
-                      <div className={styles.flexShrink0}>
-                        <div
-                          className={`${styles.w10} ${styles.h10} ${styles.roundedFull} ${styles.bgPrimary10} ${styles.flex} ${styles.itemsCenter} ${styles.justifyCenter}`}
-                        >
-                          <Heart className={`${styles.w5} ${styles.h5} ${styles.textPrimary}`} />
+                    <div className="flex items-start space-x-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
+                          <Heart className="w-5 h-5 text-rose-600" />
                         </div>
                       </div>
 
-                      <div className={styles.flex1}>
-                        <div
-                          className={`${styles.flex} ${styles.itemsCenter} ${styles.justifyBetween} ${styles.mb3}`}
-                        >
-                          <h4
-                            className={`${styles.fontDisplay} ${styles.textLg} ${styles.fontSemibold} ${styles.textForeground}`}
-                          >
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-serif text-lg font-semibold text-gray-900">
                             {comment.name}
                           </h4>
-                          <span
-                            className={`${styles.fontBody} ${styles.textSm} ${styles.textMutedForeground}`}
-                          >
-                            {formattedDate}
-                          </span>
+                          <span className="font-sans text-sm text-gray-600">{formattedDate}</span>
                         </div>
 
-                        <p
-                          className={`${styles.fontBody} ${styles.textMutedForeground} ${styles.leadingRelaxed}`}
-                        >
-                          {comment.message}
-                        </p>
+                        <p className="font-sans text-gray-600 leading-relaxed">{comment.message}</p>
                       </div>
                     </div>
                   </div>
                 );
               })
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex flex-col items-center mt-12 space-y-4">
+                {/* Page Numbers */}
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      currentPage === 1
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-rose-600 text-white hover:opacity-80"
+                    }`}
+                  >
+                    Previous
+                  </button>
+
+                  <div className="flex items-center space-x-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => handlePageClick(page)}
+                        className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                          currentPage === page
+                            ? "bg-rose-600 text-white"
+                            : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      currentPage === totalPages
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-rose-600 text-white hover:opacity-80"
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
+
+                {/* Page Info */}
+                <p className="text-sm text-gray-600">
+                  Page {currentPage} of {totalPages} • {comments.length} total comments
+                </p>
+              </div>
             )}
           </div>
         </div>

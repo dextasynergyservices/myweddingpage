@@ -47,6 +47,10 @@ export default function Gallery({
   // const [_isVisible, _setIsVisible] = useState(false);
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // 3 rows of 2 items each
+
   // Modal state
   const [selectedMedia, setSelectedMedia] = useState<{
     id: string;
@@ -150,6 +154,43 @@ export default function Gallery({
       ? finalGalleryItems
       : finalGalleryItems.filter((item) => item.category === activeCategory);
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedItems = filteredItems.slice(startIndex, endIndex);
+
+  // Reset to first page when category changes
+  const handleCategoryChange = (category: GalleryCategory) => {
+    setActiveCategory(category);
+    setCurrentPage(1);
+  };
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
+  };
+
   const categories = [
     { id: "all", label: "All" },
     { id: "before", label: "Before Wedding" },
@@ -178,7 +219,7 @@ export default function Gallery({
           {categories.map((category) => (
             <button
               key={category.id}
-              onClick={() => setActiveCategory(category.id as GalleryCategory)}
+              onClick={() => handleCategoryChange(category.id as GalleryCategory)}
               className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                 activeCategory === category.id
                   ? "bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white shadow-lg"
@@ -191,8 +232,8 @@ export default function Gallery({
         </div>
 
         {/* Dynamic Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredItems.map((item, index) => (
+        <div className="grid grid-cols-3 gap-8">
+          {paginatedItems.map((item, index) => (
             <div
               key={item.id}
               className="transition-all duration-1000 opacity-100 scale-100"
@@ -266,11 +307,58 @@ export default function Gallery({
           ))}
         </div>
 
-        <div className="text-center mt-16">
-          <button className="font-body text-sm uppercase tracking-widest bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white px-8 py-4 rounded-full hover:opacity-80 transition-opacity duration-300">
-            View Full Gallery
-          </button>
-        </div>
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex flex-col items-center mt-16 space-y-4">
+            {/* Page Numbers */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white hover:opacity-80"
+                }`}
+              >
+                Previous
+              </button>
+
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageClick(page)}
+                    className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                      currentPage === page
+                        ? "bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white"
+                        : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  currentPage === totalPages
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white hover:opacity-80"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+
+            {/* Page Info */}
+            <p className="text-sm text-gray-600">
+              Page {currentPage} of {totalPages} • {filteredItems.length} total items
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Media Modal */}

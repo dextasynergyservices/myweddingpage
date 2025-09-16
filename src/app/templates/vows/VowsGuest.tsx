@@ -45,8 +45,31 @@ export const CommentsSection = (props: CommentsSectionProps) => {
   const [sending, setSending] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Show 5 comments per page
+
   // Get slug from URL params (e.g., /alison-favour)
   const slug = params.slug as string;
+
+  // Pagination logic
+  const totalPages = Math.ceil(comments.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedComments = comments.slice(startIndex, endIndex);
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+  };
 
   // Extract data from props with fallbacks
   const title = props.title || "Well Wishes";
@@ -182,7 +205,7 @@ export const CommentsSection = (props: CommentsSectionProps) => {
             {title}
           </h2>
           <div className="w-24 h-px bg-accent mx-auto mb-8" />
-          <p className="font-body text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="font-body text-lg md:text-xl text-black/80 max-w-3xl mx-auto leading-relaxed">
             {description}
           </p>
         </div>
@@ -215,7 +238,7 @@ export const CommentsSection = (props: CommentsSectionProps) => {
                       value={guestName}
                       onChange={(e) => setGuestName(e.target.value)}
                       placeholder="Enter your name"
-                      className="font-body"
+                      className="font-body text-black/80"
                     />
                   </div>
 
@@ -228,7 +251,7 @@ export const CommentsSection = (props: CommentsSectionProps) => {
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Share your well wishes, memories, or advice for the happy couple..."
                       rows={4}
-                      className="font-body resize-none"
+                      className="font-body resize-none text-black/80"
                     />
                   </div>
 
@@ -256,11 +279,11 @@ export const CommentsSection = (props: CommentsSectionProps) => {
 
             {loadingComments ? (
               <div className="text-center py-12">
-                <p className="font-body text-lg text-muted-foreground">Loading messages...</p>
+                <p className="font-body text-lg text-black/80">Loading messages...</p>
               </div>
             ) : comments.length === 0 ? (
               <div className="text-center py-12">
-                <p className="font-body text-lg text-muted-foreground">
+                <p className="font-body text-lg text-black/80">
                   No wishes yet. Be the first to leave a message!
                 </p>
               </div>
@@ -272,7 +295,7 @@ export const CommentsSection = (props: CommentsSectionProps) => {
                   scrollbarColor: "hsl(var(--accent)) hsl(var(--muted))",
                 }}
               >
-                {comments.map((comment, index) => {
+                {paginatedComments.map((comment, index) => {
                   const commentDate = new Date(comment.created_at);
                   const formattedDate = commentDate.toLocaleDateString("en-US", {
                     month: "short",
@@ -290,17 +313,66 @@ export const CommentsSection = (props: CommentsSectionProps) => {
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between mb-3">
                           <h4 className="font-body font-semibold text-black/80">{comment.name}</h4>
-                          <span className="font-body text-xs text-muted-black/80">
-                            {formattedDate}
-                          </span>
+                          <span className="font-body text-xs text-black/80">{formattedDate}</span>
                         </div>
-                        <p className="font-body text-muted-foreground leading-relaxed">
-                          {comment.message}
-                        </p>
+                        <p className="font-body text-black/80 leading-relaxed">{comment.message}</p>
                       </CardContent>
                     </Card>
                   );
                 })}
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex flex-col items-center mt-12 space-y-4">
+                {/* Page Numbers */}
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      currentPage === 1
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-black text-white hover:opacity-80"
+                    }`}
+                  >
+                    Previous
+                  </button>
+
+                  <div className="flex items-center space-x-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => handlePageClick(page)}
+                        className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                          currentPage === page
+                            ? "bg-black text-white"
+                            : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      currentPage === totalPages
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-black text-white hover:opacity-80"
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
+
+                {/* Page Info */}
+                <p className="text-sm text-black/60">
+                  Page {currentPage} of {totalPages} • {comments.length} total comments
+                </p>
               </div>
             )}
           </div>

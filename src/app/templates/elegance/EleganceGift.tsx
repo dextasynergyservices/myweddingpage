@@ -6,7 +6,6 @@ import Image from "next/image";
 import PurchaseModal from "@/components/ui/PurchaseModal";
 import CashGiftModal from "@/components/ui/CashGiftModal";
 import { formatCurrency, parsePriceToNumber } from "@/lib/utils";
-import styles from "@/styles/templates/elegance.module.css";
 
 interface BankDetail {
   id: string;
@@ -208,27 +207,20 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
   }, []);
 
   return (
-    <section id="registry" className={`${styles.py24} ${styles.bgGradientSection}`}>
-      <div className={`${styles.container} ${styles.mxAuto} ${styles.px4}`}>
+    <section
+      id="registry"
+      className="py-24 bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100"
+    >
+      <div className="container mx-auto px-4">
         <div
           ref={sectionRef}
-          className={`${styles.textCenter} ${styles.mb16} ${styles.transitionAll} ${styles.duration800} ${
-            isVisible ? styles.animateFadeInUp : `${styles.opacity0} ${styles.translateY8}`
+          className={`text-center mb-16 transition-all duration-800 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <Gift
-            className={`${styles.w12} ${styles.h12} ${styles.mxAuto} ${styles.mb6} ${styles.textPrimary} ${styles.animateFloat}`}
-          />
-          <h2
-            className={`${styles.fontDisplay} md:text-5xl text-2xl ${styles.fontBold} ${styles.textForeground} ${styles.mb6}`}
-          >
-            {title}
-          </h2>
-          <p
-            className={`${styles.fontBody} ${styles.textXl} ${styles.textMutedForeground} ${styles.maxW3xl} ${styles.mxAuto}`}
-          >
-            {description}
-          </p>
+          <Gift className="w-12 h-12 mx-auto mb-6 text-rose-600 animate-bounce" />
+          <h2 className="font-serif md:text-5xl text-2xl font-bold text-gray-900 mb-6">{title}</h2>
+          <p className="font-sans text-xl text-gray-600 max-w-3xl mx-auto">{description}</p>
         </div>
 
         {/* Category Filter */}
@@ -253,13 +245,13 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
             return (
               <div
                 key={item.id}
-                className={`${styles.overflowHidden} ${styles.bgGradientCard} ${styles.shadowElevated} ${styles.hoverShadowGlow} ${styles.transitionAll} ${styles.duration500} ${
-                  isVisible ? styles.animateScaleIn : `${styles.opacity0} ${styles.scale75}`
-                } ${isPurchased ? styles.opacity60 : ""}`}
+                className={`overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-500 rounded-2xl ${
+                  isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
+                } ${isPurchased ? "opacity-60" : ""}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className={styles.p6}>
-                  <div className={`${styles.textCenter} ${styles.mb4}`}>
+                <div className="p-6">
+                  <div className="text-center mb-4">
                     <Image
                       src={getSafeImageUrl(item.image)}
                       alt={item.item || `Gift item ${item.id}`}
@@ -269,42 +261,34 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
                     />
                   </div>
 
-                  <h3
-                    className={`${styles.fontDisplay} ${styles.textXl} ${styles.fontSemibold} ${styles.textForeground} ${styles.mb2}`}
-                  >
+                  <h3 className="font-serif text-xl font-semibold text-gray-900 mb-2">
                     {item.item}
                   </h3>
 
-                  <p
-                    className={`${styles.fontBody} ${styles.textMutedForeground} ${styles.textSm} ${styles.mb4} ${styles.leadingRelaxed}`}
-                  >
+                  <p className="font-sans text-gray-600 text-sm mb-4 leading-relaxed">
                     {item.description}
                   </p>
 
-                  <div
-                    className={`${styles.flex} ${styles.itemsCenter} ${styles.justifyBetween} ${styles.mb6}`}
-                  >
-                    <span
-                      className={`${styles.fontDisplay} ${styles.text2xl} ${styles.fontBold} ${styles.textPrimary}`}
-                    >
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="font-serif text-2xl font-bold text-rose-600">
                       {formatCurrency(item.price)}
                     </span>
                   </div>
 
-                  <div className={styles.spaceY3}>
+                  <div className="space-y-3">
                     {isPurchased ? (
                       <button
                         disabled
-                        className={`${styles.wFull} ${styles.bgSecondary} ${styles.textSecondaryForeground} ${styles.fontSemibold} ${styles.px4} ${styles.py2} ${styles.roundedLg} ${styles.transitionAll}`}
+                        className="w-full bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-lg transition-all"
                       >
-                        <Check className={`${styles.w4} ${styles.h4} ${styles.mr2}`} />
+                        <Check className="w-4 h-4 mr-2 inline" />
                         Already Purchased
                       </button>
                     ) : (
                       <>
                         <button
                           onClick={() => openPurchase(item)}
-                          className={`${styles.wFull} ${styles.border2} ${styles.borderPrimary} ${styles.textPrimary} ${styles.hoverBgPrimary} ${styles.hoverTextPrimaryForeground} ${styles.fontSemibold} ${styles.px4} ${styles.py2} ${styles.roundedLg} ${styles.transitionAll}`}
+                          className="w-full border-2 border-rose-600 text-rose-600 hover:bg-rose-600 hover:text-white font-semibold px-4 py-2 rounded-lg transition-all"
                         >
                           Purchase Gift
                         </button>
@@ -317,16 +301,12 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
           })}
         </div>
 
-        <div className={`${styles.textCenter} ${styles.mt12}`}>
-          <p className={`${styles.fontBody} ${styles.textMutedForeground} ${styles.mb4}`}>
-            Can&apos;t find the perfect gift?
-          </p>
-          <div
-            className={`${styles.flex} ${styles.flexWrap} ${styles.justifyCenter} ${styles.gap4}`}
-          >
+        <div className="text-center mt-12">
+          <p className="font-sans text-gray-600 mb-4">Can&apos;t find the perfect gift?</p>
+          <div className="flex flex-wrap justify-center gap-4">
             <button
               onClick={() => setCashGiftOpen(true)}
-              className={`${styles.border2} ${styles.borderPrimary} ${styles.textPrimary} ${styles.hoverBgPrimary} ${styles.hoverTextPrimaryForeground} ${styles.fontSemibold} ${styles.px4} ${styles.py2} ${styles.roundedLg} ${styles.transitionAll}`}
+              className="border-2 border-rose-600 text-rose-600 hover:bg-rose-600 hover:text-white font-semibold px-4 py-2 rounded-lg transition-all"
             >
               Gift Cash
             </button>

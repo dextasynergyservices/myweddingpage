@@ -111,6 +111,7 @@ const OurStory = (props: OurStoryProps) => {
 
   return (
     <section
+      id="bloom-story"
       className={`${styles.sectionPadding} ${styles.bgGradientPrimary} relative overflow-hidden`}
     >
       {/* Background Elements */}
@@ -132,15 +133,11 @@ const OurStory = (props: OurStoryProps) => {
             storyVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <h2
-            className={`${styles.fontHeading} text-2xl md:text-5xl font-bold ${styles.textForeground} mb-6`}
-          >
+          <h2 className={`${styles.fontHeading} text-2xl md:text-5xl font-bold text-black mb-6`}>
             {title}
           </h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
-          <p className={`text-xl ${styles.textMuted} max-w-3xl mx-auto leading-relaxed`}>
-            {description}
-          </p>
+          <p className={`text-xl text-black/80 max-w-3xl mx-auto leading-relaxed`}>{description}</p>
         </div>
 
         {/* Story Content */}
@@ -178,16 +175,14 @@ const OurStory = (props: OurStoryProps) => {
           >
             <div className={`${styles.storyText} space-y-6`}>
               <h3
-                className={`${styles.fontHeading} md:text-4xl text-xl font-semibold ${styles.textForeground}`}
+                className={`${styles.fontHeading} md:text-4xl text-xl font-semibold text-black/80`}
               >
                 {storyContent.mainTitle}
               </h3>
-              <p className={`text-lg ${styles.textMuted} leading-relaxed`}>
+              <p className={`text-lg text-black/80 leading-relaxed`}>
                 {storyContent.mainDescription}
               </p>
-              <p className={`text-lg ${styles.textMuted} leading-relaxed`}>
-                {storyContent.storyText}
-              </p>
+              <p className={`text-lg text-black/80 leading-relaxed`}>{storyContent.storyText}</p>
             </div>
           </div>
         </div>
@@ -200,7 +195,7 @@ const OurStory = (props: OurStoryProps) => {
           }`}
         >
           <h3
-            className={`${styles.fontHeading} md:text-4xl text-xl font-semibold text-center ${styles.textForeground} mb-16`}
+            className={`${styles.fontHeading} md:text-4xl text-xl font-semibold text-center text-black/80 mb-16`}
           >
             Our Journey Together
           </h3>
@@ -227,26 +222,28 @@ const OurStory = (props: OurStoryProps) => {
                     <div
                       className={`${styles.bgCard} p-8 ${styles.roundedLg} ${styles.shadowSoft} hover:${styles.shadowRomantic} ${styles.transitionRomantic}`}
                     >
-                      <div className={`${styles.timelineItemHeader} flex items-center gap-3 mb-4`}>
+                      <div
+                        className={`${styles.timelineItemHeader} flex items-center gap-3 mb-4 text-black/80`}
+                      >
                         <milestone.icon className={`${styles.timelineIcon} w-6 h-6 text-primary`} />
-                        <span className={`${styles.timelineDate} font-medium text-primary`}>
+                        <span
+                          className={`${styles.timelineDate} font-medium text-primary text-black/80`}
+                        >
                           {milestone.date}
                         </span>
                       </div>
                       <h4
-                        className={`${styles.fontHeading} text-2xl font-semibold ${styles.textForeground} mb-3`}
+                        className={`${styles.fontHeading} text-2xl font-semibold text-black/80 mb-3`}
                       >
                         {milestone.title}
                       </h4>
-                      <p className={`${styles.textMuted} leading-relaxed`}>
-                        {milestone.description}
-                      </p>
+                      <p className={`text-black/80 leading-relaxed`}>{milestone.description}</p>
                     </div>
                   </div>
 
                   {/* Timeline Dot */}
                   <div
-                    className={`${styles.timelineDot} absolute left-1/2 transform -translate-x-1/2 w-4 h-4 ${styles.gradientRomantic} rounded-full border-4 border-background hidden md:block`}
+                    className={`${styles.timelineDot} absolute left-1/2 transform -translate-x-1/2 w-4 h-4 ${styles.gradientRomantic} rounded-full border-4 border-background hidden md:block text-black/80`}
                   ></div>
                 </div>
               ))}

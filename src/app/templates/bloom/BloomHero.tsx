@@ -63,6 +63,21 @@ const WeddingHero = (props: WeddingHeroProps) => {
         })
       : "Date";
   const heroImage = props.heroImage || "/templates/bloom/assets/wedding-hero.jpg";
+
+  const handleScrollToStory = () => {
+    const storySection = document.getElementById("bloom-story");
+    if (storySection) {
+      storySection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleScrollToGallery = () => {
+    const gallerySection = document.getElementById("bloom-gallery");
+    if (gallerySection) {
+      gallerySection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <section
       className={`${styles.heroSection} relative min-h-screen flex items-center justify-center overflow-hidden`}
@@ -115,13 +130,16 @@ const WeddingHero = (props: WeddingHeroProps) => {
               variant="elegant"
               size="lg"
               className={`${styles.heroButton} bg-white text-black hover:text-red-500 transition-colors duration-300 text-lg px-8 py-4 h-auto font-medium`}
+              onClick={handleScrollToStory}
             >
               View Our Story
             </Button>
+
             <Button
               variant="outline"
               size="lg"
               className={`${styles.heroButtonOutline} text-lg px-8 py-4 h-auto font-medium border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary`}
+              onClick={handleScrollToGallery}
             >
               Gallery
             </Button>

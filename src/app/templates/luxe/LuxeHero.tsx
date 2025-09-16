@@ -107,6 +107,13 @@ export default function Hero(props: HeroProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
+  const handleScrollToStory = () => {
+    const storySection = document.getElementById("luxe-story");
+    if (storySection) {
+      storySection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <section
       ref={heroRef}
@@ -165,8 +172,11 @@ export default function Hero(props: HeroProps) {
             {weddingDate} • {venue}
           </p>
           <div className="animate-pulse">
-            <button className="font-['Inter'] text-sm md:text-lg tracking-widest uppercase bg-white/20 backdrop-blur-sm border border-rose-200/30 px-8 py-3 rounded-lg hover:bg-white/30 transition-all duration-1000 text-rose-700">
-              Celebrate With Us
+            <button
+              className="font-['Inter'] text-sm md:text-lg tracking-widest uppercase bg-white/20 backdrop-blur-sm border border-rose-200/30 px-8 py-3 rounded-lg hover:bg-white/30 transition-all duration-1000 text-rose-700"
+              onClick={handleScrollToStory}
+            >
+              View Our Story
             </button>
           </div>
         </div>

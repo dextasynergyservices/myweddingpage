@@ -61,6 +61,10 @@ export const GallerySection = (props: GallerySectionProps) => {
   const { scale: gallery2Scale } = useScrollScale();
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // 3 rows of 2 items each
+
   // Modal state
   const [selectedMedia, setSelectedMedia] = useState<{
     id: string;
@@ -159,6 +163,43 @@ export const GallerySection = (props: GallerySectionProps) => {
       ? finalGalleryItems
       : finalGalleryItems.filter((item) => item.category === activeCategory);
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedItems = filteredItems.slice(startIndex, endIndex);
+
+  // Reset to first page when category changes
+  const handleCategoryChange = (category: GalleryCategory) => {
+    setActiveCategory(category);
+    setCurrentPage(1);
+  };
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
   const categories = [
     { id: "all", label: "All" },
     { id: "before", label: "Before Wedding" },
@@ -175,29 +216,27 @@ export const GallerySection = (props: GallerySectionProps) => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <h2
-            className={`${styles.fontHeading} text-5xl md:text-6xl lg:text-7xl ${styles.textForeground} mb-6`}
-          >
+          <h2 className={`${styles.fontHeading} text-5xl md:text-6xl lg:text-7xl text-black mb-6`}>
             {title}
           </h2>
           <div className={`w-24 h-px ${styles.bgAccent} mx-auto mb-8`} />
           <p
-            className={`${styles.fontBody} text-lg md:text-xl ${styles.textMuted} max-w-3xl mx-auto leading-relaxed`}
+            className={`${styles.fontBody} text-lg md:text-xl text-black/80 max-w-3xl mx-auto leading-relaxed`}
           >
             {description}
           </p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className="flex flex-wrap text-black/80 justify-center gap-2 mb-12">
           {categories.map((category) => (
             <button
               key={category.id}
-              onClick={() => setActiveCategory(category.id as GalleryCategory)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+              onClick={() => handleCategoryChange(category.id as GalleryCategory)}
+              className={`px-6 py-3 rounded-full text-black/80 font-medium transition-all duration-300 ${
                 activeCategory === category.id
-                  ? `${styles.bgAccent} text-white shadow-lg`
-                  : `${styles.textMuted} hover:${styles.bgAccent} hover:text-white hover:shadow-md`
+                  ? `${styles.bgAccent} text-black/80 shadow-lg`
+                  : `${styles.textMuted} hover:text-black/80 hover:shadow-md`
               }`}
             >
               {category.label}
@@ -206,8 +245,8 @@ export const GallerySection = (props: GallerySectionProps) => {
         </div>
 
         {/* Dynamic Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {filteredItems.map((item, index) => (
+        <div className="grid grid-cols-3 gap-6 md:gap-8">
+          {paginatedItems.map((item, index) => (
             <div
               key={item.id}
               className={`transition-all duration-1000 ${
@@ -291,11 +330,58 @@ export const GallerySection = (props: GallerySectionProps) => {
           ))}
         </div>
 
-        <div className="text-center mt-16">
-          <button className="font-body text-sm uppercase tracking-widest bg-black text-white px-8 py-4 rounded-full hover:bg-black/80 transition-colors duration-300">
-            View Full Gallery
-          </button>
-        </div>
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex flex-col items-center mt-16 space-y-4">
+            {/* Page Numbers */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-black text-white hover:bg-black/80"
+                }`}
+              >
+                Previous
+              </button>
+
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageClick(page)}
+                    className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                      currentPage === page
+                        ? "bg-black text-white"
+                        : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  currentPage === totalPages
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-black text-white hover:bg-black/80"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+
+            {/* Page Info */}
+            <p className="text-sm text-gray-600">
+              Page {currentPage} of {totalPages} • {filteredItems.length} total items
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Media Modal */}
