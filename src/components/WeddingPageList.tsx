@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "@/contexts/ThemeContext";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 interface Wedding {
   id: string;
@@ -15,6 +17,8 @@ interface Wedding {
   image: string;
   excerpt: string;
   tags: string[];
+  slug?: string;
+  views?: number;
 }
 
 const WeddingPageList = () => {
@@ -59,209 +63,28 @@ const WeddingPageList = () => {
     setCurrentPage(1);
   }, [searchTerm, selectedTag]);
 
-  // Sample data
+  // Fetch real wedding data
   useEffect(() => {
     const fetchWeddings = async () => {
       setIsLoading(true);
       try {
-        await new Promise((resolve) => setTimeout(resolve, 800)); // Simulated loading
+        const response = await fetch("/api/published-weddings");
+        const result = await response.json();
 
-        const sampleWeddings: Wedding[] = [
-          {
-            id: "1",
-            title: "Emma & James",
-            date: "2024-06-15",
-            location: "Santorini, Greece",
-            image: "https://images.pexels.com/photos/169191/pexels-photo-169191.jpeg",
-            excerpt: "Sunset beach wedding with golden accents",
-            tags: ["beach", "destination", "summer"],
-          },
-          {
-            id: "2",
-            title: "Olivia & Noah",
-            date: "2024-08-22",
-            location: "Tuscany, Italy",
-            image: "https://images.pexels.com/photos/2659475/pexels-photo-2659475.jpeg",
-            excerpt: "Vineyard ceremony with rustic charm",
-            tags: ["vineyard", "italy", "outdoor"],
-          },
-          {
-            id: "3",
-            title: "Ava & Liam",
-            date: "2024-09-18",
-            location: "Lagos, Nigeria",
-            image: "https://images.pexels.com/photos/1344697/pexels-photo-1344697.jpeg",
-            excerpt: "Traditional wedding with vibrant colors",
-            tags: ["nigeria", "african", "traditional"],
-          },
-          {
-            id: "4",
-            title: "Sophia & Ethan",
-            date: "2024-10-10",
-            location: "Kyoto, Japan",
-            image: "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg",
-            excerpt: "Cherry blossom garden wedding",
-            tags: ["garden", "japan", "spring"],
-          },
-          {
-            id: "5",
-            title: "Isabella & Mason",
-            date: "2024-11-05",
-            location: "Cape Town, South Africa",
-            image: "https://images.pexels.com/photos/1024994/pexels-photo-1024994.jpeg",
-            excerpt: "Mountain view ceremony with natural vibes",
-            tags: ["outdoor", "africa", "mountain"],
-          },
-          {
-            id: "6",
-            title: "Amelia & Logan",
-            date: "2024-12-01",
-            location: "Bali, Indonesia",
-            image: "https://images.pexels.com/photos/1400171/pexels-photo-1400171.jpeg",
-            excerpt: "Tropical island wedding with ocean breeze",
-            tags: ["beach", "island", "indonesia"],
-          },
-          {
-            id: "7",
-            title: "Mia & Elijah",
-            date: "2025-01-12",
-            location: "Paris, France",
-            image: "https://images.pexels.com/photos/428013/pexels-photo-428013.jpeg",
-            excerpt: "Elegant ceremony with Eiffel Tower backdrop",
-            tags: ["paris", "europe", "romantic"],
-          },
-          {
-            id: "8",
-            title: "Harper & Lucas",
-            date: "2025-02-20",
-            location: "New York, USA",
-            image: "https://images.pexels.com/photos/2659371/pexels-photo-2659371.jpeg",
-            excerpt: "Modern rooftop wedding in the city",
-            tags: ["urban", "usa", "modern"],
-          },
-          {
-            id: "9",
-            title: "Evelyn & Henry",
-            date: "2025-03-08",
-            location: "Accra, Ghana",
-            image: "https://images.pexels.com/photos/1619654/pexels-photo-1619654.jpeg",
-            excerpt: "Cultural fusion with West African traditions",
-            tags: ["african", "cultural", "ghana"],
-          },
-          {
-            id: "10",
-            title: "Abigail & William",
-            date: "2025-04-03",
-            location: "London, UK",
-            image: "https://images.pexels.com/photos/2959192/pexels-photo-2959192.jpeg",
-            excerpt: "Classic cathedral wedding with royal vibes",
-            tags: ["europe", "classic", "cathedral"],
-          },
-          {
-            id: "11",
-            title: "Ella & Benjamin",
-            date: "2025-05-16",
-            location: "Dubai, UAE",
-            image: "https://images.pexels.com/photos/3265451/pexels-photo-3265451.jpeg",
-            excerpt: "Luxury wedding in the desert city",
-            tags: ["luxury", "desert", "uae"],
-          },
-          {
-            id: "12",
-            title: "Grace & Daniel",
-            date: "2025-06-12",
-            location: "Ibadan, Nigeria",
-            image: "https://images.pexels.com/photos/1987301/pexels-photo-1987301.jpeg",
-            excerpt: "Elegant Yoruba traditional ceremony",
-            tags: ["yoruba", "nigeria", "traditional"],
-          },
-          {
-            id: "13",
-            title: "Chloe & Matthew",
-            date: "2025-07-20",
-            location: "Hawaii, USA",
-            image: "https://images.pexels.com/photos/2659474/pexels-photo-2659474.jpeg",
-            excerpt: "Seaside vows under palm trees",
-            tags: ["beach", "island", "usa"],
-          },
-          {
-            id: "14",
-            title: "Victoria & Jack",
-            date: "2025-08-18",
-            location: "Marrakech, Morocco",
-            image: "https://images.pexels.com/photos/3812762/pexels-photo-3812762.jpeg",
-            excerpt: "Moroccan palace-themed celebration",
-            tags: ["morocco", "cultural", "desert"],
-          },
-          {
-            id: "15",
-            title: "Zoe & Sebastian",
-            date: "2025-09-12",
-            location: "Barcelona, Spain",
-            image: "https://images.pexels.com/photos/1295038/pexels-photo-1295038.jpeg",
-            excerpt: "Mediterranean wedding by the sea",
-            tags: ["spain", "europe", "beach"],
-          },
-          {
-            id: "16",
-            title: "Aria & Nathan",
-            date: "2025-10-04",
-            location: "Kigali, Rwanda",
-            image: "https://images.pexels.com/photos/2698519/pexels-photo-2698519.jpeg",
-            excerpt: "Eco-themed hilltop celebration",
-            tags: ["eco", "rwanda", "nature"],
-          },
-          {
-            id: "17",
-            title: "Lily & Carter",
-            date: "2025-11-22",
-            location: "Queenstown, New Zealand",
-            image: "https://images.pexels.com/photos/270575/pexels-photo-270575.jpeg",
-            excerpt: "Lakefront wedding surrounded by mountains",
-            tags: ["lake", "mountain", "nature"],
-          },
-          {
-            id: "18",
-            title: "Hannah & Andrew",
-            date: "2025-12-15",
-            location: "Abuja, Nigeria",
-            image: "https://images.pexels.com/photos/1139541/pexels-photo-1139541.jpeg",
-            excerpt: "Northern Nigerian cultural wedding",
-            tags: ["nigeria", "culture", "northern"],
-          },
-          {
-            id: "19",
-            title: "Scarlett & Leo",
-            date: "2026-01-05",
-            location: "Cairo, Egypt",
-            image: "https://images.pexels.com/photos/1533720/pexels-photo-1533720.jpeg",
-            excerpt: "Timeless wedding near the pyramids",
-            tags: ["egypt", "history", "desert"],
-          },
-          {
-            id: "20",
-            title: "Layla & Isaac",
-            date: "2026-02-11",
-            location: "Enugu, Nigeria",
-            image: "https://images.pexels.com/photos/169193/pexels-photo-169193.jpeg",
-            excerpt: "Igbo traditional ceremony with elegance",
-            tags: ["igbo", "nigeria", "traditional"],
-          },
-          {
-            id: "21",
-            title: "Nora & Julian",
-            date: "2026-03-23",
-            location: "Istanbul, Turkey",
-            image: "https://images.pexels.com/photos/3310692/pexels-photo-3310692.jpeg",
-            excerpt: "Fusion wedding in a historic city",
-            tags: ["turkey", "fusion", "historic"],
-          },
-        ];
-
-        setWeddings(sampleWeddings);
-        setFilteredWeddings(sampleWeddings);
+        if (result.success) {
+          setWeddings(result.data);
+          setFilteredWeddings(result.data);
+        } else {
+          console.error("Failed to fetch weddings:", result.error);
+          // Keep empty arrays as fallback
+          setWeddings([]);
+          setFilteredWeddings([]);
+        }
       } catch (error) {
         console.error("Error fetching weddings:", error);
+        // Keep empty arrays as fallback
+        setWeddings([]);
+        setFilteredWeddings([]);
       } finally {
         setIsLoading(false);
       }
@@ -297,10 +120,11 @@ const WeddingPageList = () => {
   const tagBgClass = isDarkMode ? "bg-indigo-900 text-indigo-200" : "bg-indigo-100 text-indigo-800";
 
   return (
-    <div className={`min-h-screen `}>
+    <div className="min-h-screen">
+      <Navbar />
       {/* Hero */}
       <div
-        className={`relative ${isDarkMode ? "bg-indigo-950" : "bg-indigo-900"} text-white py-20 rounded-4xl`}
+        className={`relative top-8 ${isDarkMode ? "bg-indigo-950" : "bg-indigo-900"} text-white py-20 rounded-4xl mx-4 sm:mx-6 lg:mx-8`}
       >
         <div
           className={`absolute inset-0 ${isDarkMode ? "bg-black/40" : "bg-black/30"} rounded-4xl`}
@@ -380,7 +204,12 @@ const WeddingPageList = () => {
                   whileHover={{ y: -5 }}
                   className={`${cardBgClass} rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300`}
                 >
-                  <Link href={`/weddings/${wedding.id}`} className="block">
+                  <Link
+                    href={`/${wedding.slug}`}
+                    className="block"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <div className="relative h-48 w-full">
                       <Image
                         src={wedding.image}
@@ -496,6 +325,8 @@ const WeddingPageList = () => {
           </div>
         )}
       </div>
+
+      <Footer />
     </div>
   );
 };

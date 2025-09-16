@@ -7,49 +7,56 @@ import ParallaxBackground from "./ParallaxBackground";
 import AnimatedSection from "./AnimatedSection";
 import { useTheme } from "@/contexts/ThemeContext";
 import HomeWeddingCard from "./HomeWeddingCard";
+import { useState, useEffect } from "react";
 
-// Mock data
-const featuredWeddings = [
-  {
-    id: "1",
-    title: "Sarah & Michael",
-    date: "June 15, 2024",
-    location: "Bali, Indonesia",
-    image:
-      "https://images.pexels.com/photos/952437/pexels-photo-952437.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    excerpt: "A beautiful beachfront ceremony with sunset vows",
-  },
-  {
-    id: "2",
-    title: "James & Emma",
-    date: "August 22, 2024",
-    location: "Tuscany, Italy",
-    image:
-      "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    excerpt: "Rustic Italian vineyard wedding with local cuisine",
-  },
-  {
-    id: "3",
-    title: "David & Sophia",
-    date: "May 5, 2024",
-    location: "New York, USA",
-    image:
-      "https://images.pexels.com/photos/1408310/pexels-photo-1408310.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    excerpt: "Modern rooftop celebration with skyline views",
-  },
-  {
-    id: "4",
-    title: "Robert & Olivia",
-    date: "September 12, 2024",
-    location: "Paris, France",
-    image:
-      "https://images.pexels.com/photos/2567376/pexels-photo-2567376.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    excerpt: "Classic Parisian wedding at a historic chateau",
-  },
-];
+interface Wedding {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  image: string;
+  excerpt: string;
+  tags: string[];
+  slug: string;
+  views: number;
+}
 
 const HomeFindWedding = () => {
   const { isDarkMode } = useTheme();
+  const [featuredWeddings, setFeaturedWeddings] = useState<Wedding[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchWeddings = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/published-weddings");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch weddings");
+        }
+
+        const data = await response.json();
+
+        if (data.success && Array.isArray(data.data)) {
+          // Limit to 4 weddings for the homepage
+          setFeaturedWeddings(data.data.slice(0, 4));
+        } else {
+          throw new Error("Invalid response format");
+        }
+      } catch (error) {
+        console.error("Error fetching weddings:", error);
+        setError(error instanceof Error ? error.message : "Failed to load weddings");
+        // Fallback to empty array
+        setFeaturedWeddings([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWeddings();
+  }, []);
 
   return (
     <section
@@ -95,16 +102,46 @@ const HomeFindWedding = () => {
         </AnimatedSection>
 
         {/* Featured weddings grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {featuredWeddings.map((wedding, index) => (
-            <HomeWeddingCard
-              key={wedding.id}
-              wedding={wedding}
-              index={index}
-              isDarkMode={isDarkMode}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {[...Array(4)].map((_, index) => (
+              <div
+                key={index}
+                className={`rounded-3xl overflow-hidden shadow-xl animate-pulse ${
+                  isDarkMode ? "bg-slate-800" : "bg-gray-200"
+                }`}
+              >
+                <div className="h-64 bg-gradient-to-r from-gray-300 to-gray-400"></div>
+                <div className="p-6">
+                  <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                  <div className="h-3 bg-gray-300 rounded mb-2"></div>
+                  <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className={`text-lg ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}>{error}</p>
+          </div>
+        ) : featuredWeddings.length === 0 ? (
+          <div className="text-center py-12">
+            <p className={`text-lg ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}>
+              No wedding pages found yet. Be the first to create one!
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {featuredWeddings.map((wedding: Wedding, index: number) => (
+              <HomeWeddingCard
+                key={wedding.id}
+                wedding={wedding}
+                index={index}
+                isDarkMode={isDarkMode}
+              />
+            ))}
+          </div>
+        )}
 
         {/* View more button */}
         <motion.div
