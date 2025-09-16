@@ -43,8 +43,31 @@ const Comments = (props: CommentsProps) => {
   const [sending, setSending] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Show 5 comments per page
+
   // Get slug from URL params (e.g., /alison-favour)
   const slug = params.slug as string;
+
+  // Pagination logic
+  const totalPages = Math.ceil(comments.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedComments = comments.slice(startIndex, endIndex);
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+  };
 
   // Extract data from props with fallbacks
   const title = props.title || "Well Wishes";
@@ -190,11 +213,11 @@ const Comments = (props: CommentsProps) => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <h2 className={`${styles.fontHeading} text-2xl md:text-6xl font-bold mb-6`}>{title}</h2>
+          <h2 className={`${styles.fontHeading} text-black/80 text-2xl md:text-6xl font-bold mb-6`}>
+            {title}
+          </h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
-          <p className={`text-lg ${styles.textMuted} max-w-2xl mx-auto leading-relaxed`}>
-            {description}
-          </p>
+          <p className={`text-lg text-black/80 max-w-2xl mx-auto leading-relaxed`}>{description}</p>
         </div>
 
         <div className={`${styles.guestContainer} max-w-4xl mx-auto`}>
@@ -206,7 +229,7 @@ const Comments = (props: CommentsProps) => {
           >
             <div className={`${styles.bgCard} p-8 ${styles.roundedLg} ${styles.shadowSoft}`}>
               <h3
-                className={`${styles.fontHeading} text-2xl font-semibold ${styles.textForeground} mb-6 text-center`}
+                className={`${styles.fontHeading} text-2xl font-semibold text-black/80 mb-6 text-center`}
               >
                 Leave Your Wedding Wishes
               </h3>
@@ -219,39 +242,35 @@ const Comments = (props: CommentsProps) => {
                 className={`${styles.commentForm} space-y-6`}
               >
                 <div>
-                  <label
-                    className={`${styles.formLabel} block text-sm font-medium ${styles.textForeground} mb-2`}
-                  >
+                  <label className={`block text-sm font-medium text-black/80 mb-2`}>
                     Your Name
                   </label>
                   <input
                     type="text"
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
-                    className={`${styles.formInput} w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${styles.transitionSmooth} bg-background ${styles.textForeground}`}
+                    className="w-full px-4 py-3 border border-[hsl(340,20%,88%)] rounded-lg bg-[hsl(355,100%,98%)] text-[hsl(340,10%,20%)] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[hsl(340,75%,55%)] focus:border-transparent"
                     placeholder="Enter your name"
                     required
                   />
                 </div>
 
                 <div>
-                  <label
-                    className={`${styles.formLabel} block text-sm font-medium ${styles.textForeground} mb-2`}
-                  >
+                  <label className={`block text-sm font-medium text-black/80 mb-2`}>
                     Your Message
                   </label>
                   <textarea
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     rows={4}
-                    className={`${styles.formTextarea} w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${styles.transitionSmooth} bg-background ${styles.textForeground} resize-none`}
+                    className="w-full px-4 py-3 border border-[hsl(340,20%,88%)] rounded-lg bg-[hsl(355,100%,98%)] text-[hsl(340,10%,20%)] resize-none transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[hsl(340,75%,55%)] focus:border-transparent"
                     placeholder="Share your wishes, memories, or excitement for Sarah and James..."
                     required
                   />
                 </div>
 
                 <div
-                  className={`${styles.textCenter} bg-[hsl(340,75%,55%)] text-white hover:bg-[hsl(340,75%,55%)]/80 transition-colors duration-300 rounded-lg`}
+                  className={`text-center bg-[hsl(340,75%,55%)] text-white hover:bg-[hsl(340,75%,55%)]/80 transition-colors duration-300 rounded-lg`}
                 >
                   <Button
                     type="submit"
@@ -273,17 +292,17 @@ const Comments = (props: CommentsProps) => {
           {/* Comments List */}
           {loadingComments ? (
             <div className="text-center py-12">
-              <p className={`text-lg ${styles.textMuted}`}>Loading messages...</p>
+              <p className={`text-lg text-black/80`}>Loading messages...</p>
             </div>
           ) : comments.length === 0 ? (
             <div className="text-center py-12">
-              <p className={`text-lg ${styles.textMuted}`}>
+              <p className={`text-lg text-black/80`}>
                 No wishes yet. Be the first to leave a message!
               </p>
             </div>
           ) : (
             <div className={`${styles.spaceY8}`}>
-              {comments.map((comment, index) => {
+              {paginatedComments.map((comment, index) => {
                 const commentDate = new Date(comment.created_at);
                 const formattedDate = commentDate.toLocaleDateString("en-US", {
                   month: "short",
@@ -307,18 +326,18 @@ const Comments = (props: CommentsProps) => {
                       >
                         <div>
                           <h4
-                            className={`${styles.commentAuthor} font-semibold ${styles.textForeground} text-lg`}
+                            className={`${styles.commentAuthor} font-semibold text-black/80 text-lg`}
                           >
                             {comment.name}
                           </h4>
-                          <p className={`${styles.commentTimestamp} text-sm ${styles.textMuted}`}>
+                          <p className={`${styles.commentTimestamp} text-sm text-black/80`}>
                             {formattedDate}
                           </p>
                         </div>
 
                         <button
                           onClick={() => addHeart(comment.id)}
-                          className={`${styles.commentHeartButton} flex items-center gap-2 text-primary hover:text-primary-glow ${styles.transitionSmooth} group`}
+                          className={`${styles.commentHeartButton} flex items-center gap-2 text-primary hover:text-primary-glow ${styles.transitionSmooth} group text-black/80`}
                         >
                           <Heart
                             className={`${styles.commentHeartIcon} w-5 h-5 group-hover:scale-110 transition-transform`}
@@ -329,15 +348,66 @@ const Comments = (props: CommentsProps) => {
                         </button>
                       </div>
 
-                      <p
-                        className={`${styles.commentMessage} ${styles.textForeground} leading-relaxed`}
-                      >
+                      <p className={`${styles.commentMessage} text-black/80 leading-relaxed`}>
                         {comment.message}
                       </p>
                     </div>
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex flex-col items-center mt-12 space-y-4">
+              {/* Page Numbers */}
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    currentPage === 1
+                      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      : "bg-black text-white hover:opacity-80"
+                  }`}
+                >
+                  Previous
+                </button>
+
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => handlePageClick(page)}
+                      className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                        currentPage === page
+                          ? "bg-black text-white"
+                          : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    currentPage === totalPages
+                      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      : "bg-black text-white hover:opacity-80"
+                  }`}
+                >
+                  Next
+                </button>
+              </div>
+
+              {/* Page Info */}
+              <p className="text-sm text-black/60">
+                Page {currentPage} of {totalPages} • {comments.length} total comments
+              </p>
             </div>
           )}
 
@@ -348,22 +418,22 @@ const Comments = (props: CommentsProps) => {
             }`}
           >
             <div
-              className={`${styles.thankYouCard} bg-gradient-to-r from-primary/10 to-accent/10 p-8 ${styles.roundedLg}`}
+              className={`${styles.thankYouCard} bg-gradient-to-r from-primary/10 to-accent/10 p-8 ${styles.roundedLg} text-black/80`}
             >
               <Heart className={`${styles.thankYouIcon} w-12 h-12 text-primary mx-auto mb-4`} />
-              <h3
-                className={`${styles.fontHeading} text-2xl font-semibold ${styles.textForeground} mb-4`}
-              >
+              <h3 className={`${styles.fontHeading} text-2xl font-semibold text-black/80 mb-4`}>
                 Thank You for Your Love
               </h3>
               <p
-                className={`${styles.thankYouMessage} ${styles.textMuted} leading-relaxed max-w-2xl mx-auto`}
+                className={`${styles.thankYouMessage} text-black/80 leading-relaxed max-w-2xl mx-auto`}
               >
                 Every message fills our hearts with so much joy. Thank you for being part of our
                 journey and for sharing in our happiness. We can&apos;t wait to celebrate with all
                 of you!
               </p>
-              <p className={`${styles.thankYouSignature} text-primary font-medium mt-4`}>
+              <p
+                className={`${styles.thankYouSignature} text-primary font-medium mt-4 text-black/80`}
+              >
                 With love, Sarah & James 💕
               </p>
             </div>

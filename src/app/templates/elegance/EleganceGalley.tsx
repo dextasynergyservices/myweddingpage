@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Play } from "lucide-react";
 import galleryPreview from "./assets/gallery-preview.jpg";
-import styles from "@/styles/templates/elegance.module.css";
 import Image from "next/image";
 import MediaModal from "@/components/ui/MediaModal";
 
@@ -43,6 +42,10 @@ const Gallery: React.FC<GalleryProps> = (props) => {
   const [scrollY, setScrollY] = useState(0);
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // 3 rows of 2 items each
 
   // Modal state
   const [selectedMedia, setSelectedMedia] = useState<{
@@ -170,6 +173,43 @@ const Gallery: React.FC<GalleryProps> = (props) => {
       ? finalGalleryItems
       : finalGalleryItems.filter((item) => item.category === activeCategory);
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedItems = filteredItems.slice(startIndex, endIndex);
+
+  // Reset to first page when category changes
+  const handleCategoryChange = (category: GalleryCategory) => {
+    setActiveCategory(category);
+    setCurrentPage(1);
+  };
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of gallery section after state update
+    setTimeout(() => {
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
   const categories = [
     { id: "all", label: "All" },
     { id: "before", label: "Before Wedding" },
@@ -178,22 +218,18 @@ const Gallery: React.FC<GalleryProps> = (props) => {
   ];
 
   return (
-    <section id="gallery" className={`${styles.py24} ${styles.bgBackground}`}>
-      <div className={`${styles.container} ${styles.mxAuto} ${styles.px4}`}>
+    <section id="elegance-gallery" className="py-24 bg-white">
+      <div className="container mx-auto px-4">
         <div
           ref={sectionRef}
-          className={`${styles.textCenter} ${styles.mb16} ${styles.transitionAll} ${styles.duration800} ${
-            isVisible ? styles.animateFadeInUp : `${styles.opacity0} ${styles.translateY8}`
+          className={`text-center mb-16 transition-all duration-800 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <h2
-            className={`${styles.fontDisplay} md:text-5xl text-2xl ${styles.fontBold} ${styles.textForeground} ${styles.mb6}`}
-          >
+          <h2 className="font-serif md:text-5xl text-2xl font-bold text-gray-900 mb-6">
             Our Gallery
           </h2>
-          <p
-            className={`${styles.fontBody} ${styles.textXl} ${styles.textMutedForeground} ${styles.maxW3xl} ${styles.mxAuto}`}
-          >
+          <p className="font-sans text-xl text-gray-600 max-w-3xl mx-auto">
             Capturing the beautiful moments of our journey together
           </p>
         </div>
@@ -203,11 +239,11 @@ const Gallery: React.FC<GalleryProps> = (props) => {
           {categories.map((category) => (
             <button
               key={category.id}
-              onClick={() => setActiveCategory(category.id as GalleryCategory)}
+              onClick={() => handleCategoryChange(category.id as GalleryCategory)}
               className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                 activeCategory === category.id
-                  ? `${styles.bgPrimary} text-white shadow-lg`
-                  : `${styles.textMutedForeground} hover:${styles.bgPrimary} hover:text-white hover:shadow-md`
+                  ? "bg-rose-600 text-white shadow-lg"
+                  : "text-gray-600 hover:bg-rose-600 hover:text-white hover:shadow-md"
               }`}
             >
               {category.label}
@@ -215,17 +251,17 @@ const Gallery: React.FC<GalleryProps> = (props) => {
           ))}
         </div>
 
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto`}>
-          {filteredItems.map((item, index) => (
+        <div className="grid grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {paginatedItems.map((item, index) => (
             <div
               key={item.id}
-              className={`${styles.group} ${styles.cursorPointer} ${styles.overflowHidden} ${styles.bgCard} ${styles.shadowElevated} ${styles.hoverShadowGlow} ${styles.transitionAll} ${styles.duration500} ${
-                isVisible ? styles.animateScaleIn : `${styles.opacity0} ${styles.scale75}`
+              className={`group cursor-pointer overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-500 rounded-2xl ${
+                isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
               }`}
               style={{ animationDelay: `${index * 100}ms` }}
               onClick={() => handleMediaClick(item, index)}
             >
-              <div className={`${styles.relative} ${item.aspectRatio} ${styles.overflowHidden}`}>
+              <div className={`relative ${item.aspectRatio} overflow-hidden`}>
                 {"type" in item && item.type === "VIDEO" ? (
                   // For videos, check if we have a real video URL or just a thumbnail
                   item.url.includes(".mp4") ||
@@ -233,7 +269,7 @@ const Gallery: React.FC<GalleryProps> = (props) => {
                   item.url.includes(".webm") ? (
                     <video
                       src={item.url}
-                      className={`${styles.wFull} ${styles.hFull} ${styles.objectCover} ${styles.transitionTransform} ${styles.duration700} ${styles.groupHoverScale110}`}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       preload="metadata"
                       poster={item.src} // Use thumbnail as poster
                     />
@@ -244,7 +280,7 @@ const Gallery: React.FC<GalleryProps> = (props) => {
                       alt={item.alt}
                       width={400}
                       height={400}
-                      className={`${styles.wFull} ${styles.hFull} ${styles.objectCover} ${styles.transitionTransform} ${styles.duration700} ${styles.groupHoverScale110}`}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                   )
                 ) : (
@@ -253,7 +289,7 @@ const Gallery: React.FC<GalleryProps> = (props) => {
                     alt={item.alt}
                     width={400}
                     height={400}
-                    className={`${styles.wFull} ${styles.hFull} ${styles.objectCover} ${styles.transitionTransform} ${styles.duration700} ${styles.groupHoverScale110}`}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     style={{
                       transform: `scale(${1 + scrollY * 0.0001})`,
                     }}
@@ -261,10 +297,8 @@ const Gallery: React.FC<GalleryProps> = (props) => {
                 )}
 
                 {/* Category Badge */}
-                <div className={`${styles.absolute} ${styles.top3} ${styles.left3}`}>
-                  <div
-                    className={`${styles.bgBlack50} ${styles.textWhite} ${styles.px2} ${styles.py1} ${styles.roundedFull} ${styles.textXs} ${styles.fontMedium}`}
-                  >
+                <div className="absolute top-3 left-3">
+                  <div className="bg-black/50 text-white px-2 py-1 rounded-full text-xs font-medium">
                     {item.category === "before"
                       ? "Before Wedding"
                       : item.category === "during"
@@ -277,15 +311,9 @@ const Gallery: React.FC<GalleryProps> = (props) => {
 
                 {/* Video Play Icon */}
                 {"type" in item && item.type === "VIDEO" && (
-                  <div
-                    className={`${styles.absolute} ${styles.inset0} ${styles.flex} ${styles.itemsCenter} ${styles.justifyCenter}`}
-                  >
-                    <div
-                      className={`${styles.w16} ${styles.h16} ${styles.bgWhite80} ${styles.roundedFull} ${styles.flex} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.opacity0} ${styles.groupHoverOpacity100} ${styles.transitionOpacity} ${styles.duration300}`}
-                    >
-                      <Play
-                        className={`${styles.w8} ${styles.h8} ${styles.textPrimary} ${styles.ml1}`}
-                      />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-16 h-16 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Play className="w-8 h-8 text-rose-600 ml-1" />
                     </div>
                   </div>
                 )}
@@ -293,6 +321,59 @@ const Gallery: React.FC<GalleryProps> = (props) => {
             </div>
           ))}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex flex-col items-center mt-16 space-y-4">
+            {/* Page Numbers */}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  currentPage === 1
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-rose-600 text-white hover:opacity-80"
+                }`}
+              >
+                Previous
+              </button>
+
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageClick(page)}
+                    className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                      currentPage === page
+                        ? "bg-rose-600 text-white"
+                        : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  currentPage === totalPages
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-rose-600 text-white hover:opacity-80"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+
+            {/* Page Info */}
+            <p className="text-sm text-gray-600">
+              Page {currentPage} of {totalPages} • {filteredItems.length} total items
+            </p>
+          </div>
+        )}
 
         {/* Media Modal */}
         <MediaModal

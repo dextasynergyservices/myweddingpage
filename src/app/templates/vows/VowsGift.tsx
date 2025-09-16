@@ -201,7 +201,7 @@ const GiftRegistry = (props: GiftRegistryProps) => {
         >
           <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl text-black mb-6">{title}</h2>
           <div className="w-24 h-px bg-accent mx-auto mb-8" />
-          <p className="font-body text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="font-body text-lg md:text-xl text-black/80 max-w-3xl mx-auto leading-relaxed">
             {description}
           </p>
         </div>

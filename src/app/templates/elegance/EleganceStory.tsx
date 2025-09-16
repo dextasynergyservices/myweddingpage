@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import styles from "@/styles/templates/elegance.module.css";
 
 // Default story images using Cloudinary URLs
 const defaultCoupleStory1 =
@@ -106,75 +105,54 @@ const OurStory: React.FC<OurStoryProps> = (props) => {
   }, []);
 
   return (
-    <section id="story" className={`${styles.py24} ${styles.bgGradientSection}`}>
-      <div className={`${styles.container} ${styles.mxAuto} ${styles.px4}`}>
+    <section
+      id="elegance-story"
+      className="py-24 bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100"
+    >
+      <div className="container mx-auto px-4">
         <div
           ref={sectionRef}
-          className={`${styles.textCenter} ${styles.mb16} ${styles.transitionAll} ${styles.duration800} ${
-            isVisible ? styles.animateFadeInUp : `${styles.opacity0} ${styles.translateY8}`
+          className={`text-center mb-16 transition-all duration-800 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <h2
-            className={`${styles.fontDisplay} md:text-5xl text-2xl ${styles.fontBold} ${styles.textForeground} ${styles.mb6}`}
-          >
-            {title}
-          </h2>
-          <p
-            className={`${styles.fontBody} ${styles.textXl} ${styles.textMutedForeground} ${styles.maxW3xl} ${styles.mxAuto}`}
-          >
-            {description}
-          </p>
+          <h2 className="font-serif md:text-5xl text-2xl font-bold text-gray-900 mb-6">{title}</h2>
+          <p className="font-sans text-xl text-gray-600 max-w-3xl mx-auto">{description}</p>
         </div>
 
         <div className={`grid md:grid-cols-2 gap-12 max-w-6xl mx-auto`}>
           {safeStories.map((story, index) => (
             <div
               key={index}
-              className={`${styles.overflowHidden} ${styles.bgGradientCard} ${styles.shadowElevated} ${styles.hoverShadowGlow} ${styles.transitionAll} ${styles.duration500} ${
-                isVisible ? styles.animateScaleIn : `${styles.opacity0} ${styles.scale75}`
+              className={`overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-500 rounded-2xl ${
+                isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
               }`}
               style={{ animationDelay: `${index * 200}ms` }}
             >
-              <div
-                className={`${styles.relative} ${styles.h80} ${styles.overflowHidden} ${styles.group}`}
-              >
+              <div className="relative h-80 overflow-hidden group">
                 <Image
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   src={typeof story.image === "string" ? story.image : (story.image as any).src}
                   alt={story.title}
                   width={600}
                   height={400}
-                  className={`${styles.wFull} ${styles.hFull} ${styles.objectCover} ${styles.transitionTransform} ${styles.duration700} ${styles.groupHoverScale110}`}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   style={{
                     transform: `scale(${1 + scrollY * 0.0002})`,
                   }}
                 />
-                <div
-                  className={`${styles.absolute} ${styles.inset0} ${styles.bgGradientRomantic} ${styles.opacity20} ${styles.groupHoverOpacity30} ${styles.transitionOpacity} ${styles.duration300}`}
-                />
+                <div className="absolute inset-0 bg-gradient-to-br from-rose-600/20 to-pink-600/20 group-hover:opacity-30 transition-opacity duration-300" />
               </div>
 
-              <div className={styles.p8}>
-                <div
-                  className={`${styles.flex} ${styles.itemsCenter} ${styles.justifyBetween} ${styles.mb4}`}
-                >
-                  <h3
-                    className={`${styles.fontDisplay} ${styles.text2xl} ${styles.fontSemibold} ${styles.textPrimary}`}
-                  >
-                    {story.title}
-                  </h3>
-                  <span
-                    className={`${styles.fontBody} ${styles.textSm} ${styles.fontMedium} ${styles.textAccent} ${styles.bgAccent10} ${styles.px3} ${styles.py1} ${styles.roundedFull}`}
-                  >
+              <div className="p-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-serif text-2xl font-semibold text-rose-600">{story.title}</h3>
+                  <span className="font-sans text-sm font-medium text-rose-500 bg-rose-100 px-3 py-1 rounded-full">
                     {story.date}
                   </span>
                 </div>
 
-                <p
-                  className={`${styles.fontBody} ${styles.textMutedForeground} ${styles.leadingRelaxed}`}
-                >
-                  {story.story}
-                </p>
+                <p className="font-sans text-gray-600 leading-relaxed">{story.story}</p>
               </div>
             </div>
           ))}

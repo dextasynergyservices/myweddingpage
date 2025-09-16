@@ -79,6 +79,14 @@ export const HeroSection = (props: HeroSectionProps) => {
   const heroImage = props.heroImage || "/templates/vows/assets/hero-wedding.jpg";
   const { ref, isVisible } = useScrollAnimation(0.3);
 
+  // Handle scroll to story section
+  const handleScrollToStory = () => {
+    const storySection = document.getElementById("vows-story");
+    if (storySection) {
+      storySection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
@@ -111,9 +119,10 @@ export const HeroSection = (props: HeroSectionProps) => {
           </p>
           <div className={styles.animatePulseGentle}>
             <button
-              className={`${styles.fontBody} text-sm md:text-base tracking-widest uppercase bg-white/10 backdrop-blur-sm border border-white/20 px-8 py-3 rounded-full hover:bg-white/20 transition-all duration-300`}
+              onClick={handleScrollToStory}
+              className={`${styles.fontBody} text-sm md:text-base tracking-widest uppercase bg-white/10 backdrop-blur-sm border border-white/20 px-8 py-3 rounded-full hover:bg-white/20 transition-all duration-300 cursor-pointer`}
             >
-              Celebrate With Us
+              Our Story
             </button>
           </div>
         </div>

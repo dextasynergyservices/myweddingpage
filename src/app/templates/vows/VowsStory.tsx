@@ -85,7 +85,7 @@ export const OurStorySection = (props: OurStorySectionProps) => {
   const { ref: image2Ref, scale: image2Scale } = useScrollScale();
 
   return (
-    <section className={`py-32 ${styles.bgBackground}`}>
+    <section id="vows-story" className={`py-32 ${styles.bgBackground}`}>
       <div className={styles.containerWedding}>
         <div
           ref={sectionRef}
@@ -93,14 +93,12 @@ export const OurStorySection = (props: OurStorySectionProps) => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <h2
-            className={`${styles.fontHeading} text-5xl md:text-6xl lg:text-7xl ${styles.textForeground} mb-6`}
-          >
+          <h2 className={`${styles.fontHeading} text-5xl md:text-6xl lg:text-7xl text-black mb-6`}>
             {title}
           </h2>
           <div className={`w-24 h-px ${styles.bgAccent} mx-auto mb-8`} />
           <p
-            className={`${styles.fontBody} text-lg md:text-xl ${styles.textMuted} max-w-3xl mx-auto leading-relaxed`}
+            className={`${styles.fontBody} text-lg md:text-xl text-black/80 max-w-3xl mx-auto leading-relaxed`}
           >
             {description}
           </p>
@@ -114,12 +112,10 @@ export const OurStorySection = (props: OurStorySectionProps) => {
             }`}
           >
             <div className={`${styles.elegantCard} p-8 md:p-12`}>
-              <h3
-                className={`${styles.fontHeading} text-2xl md:text-3xl ${styles.textForeground} mb-4`}
-              >
+              <h3 className={`${styles.fontHeading} text-2xl md:text-3xl text-black/80 mb-4`}>
                 {storyContent.howWeMet?.title}
               </h3>
-              <p className={`${styles.fontBody} ${styles.textMuted} leading-relaxed mb-6`}>
+              <p className={`${styles.fontBody} text-black/80 leading-relaxed mb-6`}>
                 {storyContent.howWeMet?.content}
               </p>
             </div>
@@ -170,12 +166,10 @@ export const OurStorySection = (props: OurStorySectionProps) => {
             }`}
           >
             <div className={`${styles.elegantCard} p-8 md:p-12`}>
-              <h3
-                className={`${styles.fontHeading} text-2xl md:text-3xl ${styles.textForeground} mb-4`}
-              >
+              <h3 className={`${styles.fontHeading} text-2xl md:text-3xl text-black/80 mb-4`}>
                 {storyContent.theProposal?.title}
               </h3>
-              <p className={`${styles.fontBody} ${styles.textMuted} leading-relaxed mb-6`}>
+              <p className={`${styles.fontBody} text-black/80 leading-relaxed mb-6`}>
                 {storyContent.theProposal?.content}
               </p>
             </div>

@@ -82,6 +82,20 @@ const Hero: React.FC<HeroProps> = (props) => {
   const imageScale = 1 + scrollY * 0.0005;
   const imageOpacity = Math.max(0.3, 1 - scrollY * 0.001);
 
+  const handleScrollToGallery = () => {
+    const gallerySection = document.getElementById("elegance-gallery");
+    if (gallerySection) {
+      gallerySection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleScrollToStory = () => {
+    const storySection = document.getElementById("elegance-story");
+    if (storySection) {
+      storySection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <section
       className={`${styles.relative} ${styles.minHScreen} ${styles.bgGradientSection} ${styles.overflowHidden}`}
@@ -119,22 +133,20 @@ const Hero: React.FC<HeroProps> = (props) => {
             className={`${styles.textCenter} ${styles.lgTextLeft} ${styles.textForeground} ${styles.wFull} ${styles.order2} ${styles.lgOrder1} ${styles.pt16} ${styles.lgPt0}`}
           >
             <div className={styles.animateFadeInUp}>
-              <Heart
-                className={`w-12 h-12 mx-auto lg:mx-0 mb-6 animate-float ${styles.textAccent}`}
-              />
+              <Heart className="w-12 h-12 mx-auto lg:mx-0 mb-6 animate-float text-amber-500" />
 
               <h1
-                className={`${styles.fontDisplay} text-2xl md:text-6xl lg:text-7xl font-bold mb-4 leading-none`}
+                className={`${styles.fontDisplay} text-2xl md:text-6xl lg:text-7xl font-bold mb-4 leading-none text-gray-900`}
               >
-                {brideName} <span className={styles.textAccent}>&</span> {groomName}
+                {brideName} <span className="text-amber-500">&</span> {groomName}
               </h1>
 
               <div
-                className={`${styles.flex} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.lgJustifyStart} ${styles.mb4} ${styles.lgMb6} ${styles.textAccent}`}
+                className={`${styles.flex} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.lgJustifyStart} ${styles.mb4} ${styles.lgMb6} text-amber-500`}
               >
                 <Calendar className={`w-6 h-6 md:w4 md:h4 lg:w4 lg:h4 ${styles.mr2}`} />
                 <p
-                  className={`${styles.textSm} ${styles.smTextBase} ${styles.lgTextXl} ${styles.fontLight} ${styles.trackingWider}`}
+                  className={`${styles.textSm} ${styles.smTextBase} ${styles.lgTextXl} ${styles.fontLight} ${styles.trackingWider} text-amber-500`}
                 >
                   {formattedDate}
                 </p>
@@ -150,14 +162,16 @@ const Hero: React.FC<HeroProps> = (props) => {
                 className={`${styles.flex} ${styles.flexRow} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.lgJustifyStart} ${styles.gap4} ${styles.lgGap6}`}
               >
                 <button
-                  className={`${styles.bgPrimary} ${styles.textPrimaryForeground} ${styles.px6} ${styles.py2} ${styles.lgPx8} ${styles.lgPy3} ${styles.textSm} ${styles.lgTextBase} ${styles.roundedLg} ${styles.fontSemibold} ${styles.transitionAll} ${styles.hoverBgPrimary80} ${styles.focusRingPrimary}`}
+                  className="bg-rose-400 text-white px-6 py-2 lg:px-8 lg:py-3 text-sm lg:text-base rounded-lg font-semibold transition-all duration-300 hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2"
+                  onClick={handleScrollToGallery}
                 >
                   View Gallery
                 </button>
                 <button
-                  className={`${styles.border2} ${styles.borderPrimary} ${styles.textPrimary} ${styles.px6} ${styles.py2} ${styles.lgPx8} ${styles.lgPy3} ${styles.textSm} ${styles.lgTextBase} ${styles.roundedLg} ${styles.fontSemibold} ${styles.transitionAll} ${styles.hoverBgPrimary10} ${styles.hoverTextPrimary} ${styles.focusRingPrimary}`}
+                  className="border-2 border-rose-400 text-rose-400 px-6 py-2 lg:px-8 lg:py-3 text-sm lg:text-base rounded-lg font-semibold transition-all duration-300 hover:bg-rose-50 hover:text-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2"
+                  onClick={handleScrollToStory}
                 >
-                  View Details
+                  View Our Story
                 </button>
               </div>
             </div>
