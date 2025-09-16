@@ -65,7 +65,7 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
   //   accountName: "John & Jane Doe",
   // };
   const [isVisible, setIsVisible] = useState(false);
-  const [purchasedItems] = useState<Set<number>>(new Set());
+  const [purchasedItems] = useState<Set<string>>(new Set());
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const [open, setOpen] = useState(false);
