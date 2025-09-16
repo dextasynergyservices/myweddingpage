@@ -1,101 +1,152 @@
 import { useState } from "react";
 import { useScrollAnimation, useScrollScale } from "./hooks/useScrollAnimation";
-import { X, Play, Image as ImageIcon } from "lucide-react";
+import { Play, Image as ImageIcon } from "lucide-react";
 // Gallery images - using public paths
 import Image from "next/image";
+import MediaModal from "@/components/ui/MediaModal";
 import styles from "@/styles/templates/bloom.module.css";
 
 type GalleryCategory = "all" | "before" | "during" | "after";
 
-const Gallery = () => {
+interface GalleryProps {
+  gallery?: Array<{
+    id: string;
+    url: string;
+    type: "PHOTO" | "VIDEO";
+    category: "before" | "during" | "after";
+    createdAt?: string;
+  }>;
+  images?: string[];
+  videos?: Array<{
+    id: string;
+    title: string;
+    thumbnail: string;
+    duration: string;
+    category: "before" | "during" | "after";
+  }>;
+  title?: string;
+  description?: string;
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  guests?: Record<string, unknown>[];
+  bankDetails?: Record<string, unknown>[];
+  storyImage?: string;
+  heroImage?: string;
+}
+
+const Gallery = ({
+  gallery = [],
+  images = [],
+  videos = [],
+  title = "Our Gallery",
+  description = "Capturing the beautiful moments of our journey together",
+}: GalleryProps) => {
   const { elementRef, isVisible } = useScrollAnimation(0.1);
-  const [selectedMedia, setSelectedMedia] = useState<{
-    type: "image" | "video";
-    src: string;
-    alt: string;
-  } | null>(null);
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
 
+  // Modal state
+  const [selectedMedia, setSelectedMedia] = useState<{
+    id: string;
+    url: string;
+    type: "PHOTO" | "VIDEO";
+    category: "before" | "during" | "after";
+  } | null>(null);
+  const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
+
+  // If user has gallery data, use it instead of static images/videos
+  const hasUserGallery = gallery.length > 0;
+  // const _displayImages = hasUserGallery ? [] : images;
+  // const _displayVideos = hasUserGallery ? [] : videos;
+
+  // Modal handlers
+  const handleMediaClick = (item: Record<string, unknown>, index: number) => {
+    // Convert gallery item to MediaModal format
+    const mediaItem = {
+      id: item.id as string,
+      url: (item.src || item.url) as string,
+      type: (item.type || "PHOTO") as "PHOTO" | "VIDEO",
+      category: item.category as "during" | "before" | "after",
+    };
+    setSelectedMedia(mediaItem);
+    setSelectedMediaIndex(index);
+  };
+
+  const handleNavigate = (index: number) => {
+    setSelectedMediaIndex(index);
+    const item = filteredItems[index];
+    const mediaItem = {
+      id: item.id as string,
+      url: "url" in item ? (item.url as string) : ((item as Record<string, unknown>).src as string),
+      type: ("type" in item ? item.type : "PHOTO") as "PHOTO" | "VIDEO",
+      category: item.category as "during" | "before" | "after",
+    };
+    setSelectedMedia(mediaItem);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMedia(null);
+  };
+
+  // Create gallery items from props - prioritize user gallery data
   const galleryItems = [
+    // Add images from gallery prop (user data) - prioritize this
+    ...gallery.map((item) => ({
+      id: item.id,
+      src: item.url,
+      url: item.url, // For MediaModal compatibility
+      alt: `Gallery ${item.id}`,
+      aspectRatio: "aspect-[3/4]" as const,
+      category: item.category,
+      type: item.type,
+    })),
+    // Add images from images prop (fallback) - only if no user gallery
+    ...(hasUserGallery
+      ? []
+      : images.map((image, index) => ({
+          id: `image-${index}`,
+          src: image,
+          url: image, // For MediaModal compatibility
+          alt: `Gallery Image ${index + 1}`,
+          aspectRatio: "aspect-[3/4]" as const,
+          category: "during" as const,
+          type: "PHOTO" as const,
+        }))),
+    // Add videos from videos prop (fallback) - only if no user gallery
+    // Note: These are just placeholder videos with thumbnails, not real video URLs
+    ...(hasUserGallery
+      ? []
+      : videos.map((video) => ({
+          id: video.id,
+          src: video.thumbnail, // Thumbnail for display
+          url: video.thumbnail, // Using thumbnail as URL since no real video URL is provided
+          alt: video.title,
+          aspectRatio: "aspect-[3/4]" as const,
+          category: video.category,
+          type: "VIDEO" as const,
+        }))),
+  ];
+
+  // If no gallery data provided, use default fallback
+  const defaultGalleryItems = [
     {
-      id: 1,
-      type: "image" as const,
+      id: "default-1",
       src: "/templates/bloom/assets/wedding-details-1.jpg",
+      url: "/templates/bloom/assets/wedding-details-1.jpg", // For MediaModal compatibility
       alt: "Engagement ring selection",
-      aspectRatio: "aspect-[3/4]",
+      aspectRatio: "aspect-[3/4]" as const,
       category: "before" as const,
-    },
-    {
-      id: 2,
-      type: "image" as const,
-      src: "/templates/bloom/assets/couple-portrait.jpg",
-      alt: "Pre-wedding photoshoot",
-      aspectRatio: "aspect-[2/3]",
-      category: "before" as const,
-    },
-    {
-      id: 3,
-      type: "image" as const,
-      src: "/templates/bloom/assets/wedding-bouquet.jpg",
-      alt: "Bouquet preparation",
-      aspectRatio: "aspect-[3/4]",
-      category: "before" as const,
-    },
-    {
-      id: 4,
-      type: "image" as const,
-      src: "/templates/bloom/assets/wedding-celebration.jpg",
-      alt: "Wedding ceremony moment",
-      aspectRatio: "aspect-[4/3]",
-      category: "during" as const,
-    },
-    {
-      id: 5,
-      type: "video" as const,
-      src: "#",
-      alt: "Wedding ceremony highlights",
-      aspectRatio: "aspect-video",
-      category: "during" as const,
-    },
-    {
-      id: 6,
-      type: "image" as const,
-      src: "/templates/bloom/assets/wedding-details-1.jpg",
-      alt: "Wedding cake cutting",
-      aspectRatio: "aspect-square",
-      category: "during" as const,
-    },
-    {
-      id: 7,
-      type: "video" as const,
-      src: "#",
-      alt: "First dance moment",
-      aspectRatio: "aspect-[9/16]",
-      category: "during" as const,
-    },
-    {
-      id: 8,
-      type: "image" as const,
-      src: "/templates/bloom/assets/wedding-bouquet.jpg",
-      alt: "Rings exchange ceremony",
-      aspectRatio: "aspect-square",
-      category: "during" as const,
-    },
-    {
-      id: 9,
-      type: "image" as const,
-      src: "/templates/bloom/assets/wedding-celebration.jpg",
-      alt: "Honeymoon memories",
-      aspectRatio: "aspect-[4/3]",
-      category: "after" as const,
+      type: "PHOTO" as const,
     },
   ];
+
+  const finalGalleryItems = galleryItems.length > 0 ? galleryItems : defaultGalleryItems;
 
   // Filter items based on active category
   const filteredItems =
     activeCategory === "all"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === activeCategory);
+      ? finalGalleryItems
+      : finalGalleryItems.filter((item) => item.category === activeCategory);
 
   // Individual scroll hooks for each gallery item
   const scrollHook1 = useScrollScale(0.1);
@@ -151,12 +202,11 @@ const Gallery = () => {
           <h2
             className={`${styles.fontHeading} text-2xl md:text-5xl font-bold ${styles.textForeground} mb-6`}
           >
-            Wedding Gallery
+            {title}
           </h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
           <p className={`text-xl ${styles.textMuted} max-w-2xl mx-auto leading-relaxed`}>
-            Capturing the beautiful moments, precious memories, and joyful celebrations of our
-            special day.
+            {description}
           </p>
         </div>
 
@@ -200,31 +250,42 @@ const Gallery = () => {
               >
                 <div
                   className={`${styles.galleryItem} relative group cursor-pointer ${styles.roundedLg} overflow-hidden ${styles.shadowSoft} hover:${styles.shadowRomantic} ${styles.transitionRomantic}`}
-                  onClick={() =>
-                    setSelectedMedia({ type: item.type, src: item.src.toString(), alt: item.alt })
-                  }
+                  onClick={() => handleMediaClick(item, index)}
                 >
-                  {item.type === "image" ? (
-                    <Image
-                      src={item.src}
-                      alt={item.alt}
-                      className={`w-full h-auto object-cover ${styles.transitionRomantic} group-hover:scale-105`}
-                      width={400}
-                      height={600}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div
-                      className={`${item.aspectRatio} ${styles.videoPlaceholder} bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center relative`}
-                    >
-                      <Play
-                        className={`${styles.videoPlayIcon} w-16 h-16 text-primary-foreground opacity-80 group-hover:opacity-100 ${styles.transitionSmooth}`}
+                  <div className={`${item.aspectRatio} overflow-hidden`}>
+                    {"type" in item && item.type === "VIDEO" ? (
+                      // For videos, check if we have a real video URL or just a thumbnail
+                      item.url.includes(".mp4") ||
+                      item.url.includes(".mov") ||
+                      item.url.includes(".webm") ? (
+                        <video
+                          src={item.url}
+                          className={`w-full h-full object-cover ${styles.transitionRomantic} group-hover:scale-105`}
+                          preload="metadata"
+                          poster={item.src} // Use thumbnail as poster
+                        />
+                      ) : (
+                        // If no real video URL, display thumbnail as image with play button
+                        <Image
+                          src={item.src}
+                          alt={item.alt}
+                          className={`w-full h-full object-cover ${styles.transitionRomantic} group-hover:scale-105`}
+                          width={400}
+                          height={600}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      )
+                    ) : (
+                      <Image
+                        src={item.src}
+                        alt={item.alt}
+                        className={`w-full h-full object-cover ${styles.transitionRomantic} group-hover:scale-105`}
+                        width={400}
+                        height={600}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
-                      <div
-                        className={`${styles.videoOverlay} absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent`}
-                      ></div>
-                    </div>
-                  )}
+                    )}
+                  </div>
 
                   {/* Category Badge */}
                   <div className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -237,34 +298,14 @@ const Gallery = () => {
                           : ""}
                   </div>
 
-                  {/* Overlay */}
-                  <div
-                    className={`${styles.galleryOverlay} absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 ${styles.transitionRomantic} flex items-end`}
-                  >
-                    <div className={`${styles.galleryOverlayContent} p-4 text-primary-foreground`}>
-                      <p className={`${styles.galleryOverlayText} font-medium`}>{item.alt}</p>
-                      {item.type === "video" && (
-                        <p className={`${styles.galleryOverlaySubtext} text-sm opacity-80`}>
-                          Click to play video
-                        </p>
-                      )}
+                  {/* Video Play Icon */}
+                  {"type" in item && item.type === "VIDEO" && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <Play className="w-8 h-8 text-primary ml-1" />
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Type Icon */}
-                  <div
-                    className={`${styles.galleryTypeIcon} absolute top-4 right-4 opacity-0 group-hover:opacity-100 ${styles.transitionSmooth}`}
-                  >
-                    {item.type === "video" ? (
-                      <Play
-                        className={`${styles.galleryTypeIconPlay} w-6 h-6 text-primary-foreground`}
-                      />
-                    ) : (
-                      <ImageIcon
-                        className={`${styles.galleryTypeIconImage} w-6 h-6 text-primary-foreground`}
-                      />
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
             );
@@ -272,45 +313,20 @@ const Gallery = () => {
         </div>
       </div>
 
-      {/* Modal */}
-      {selectedMedia && (
-        <div
-          className={`${styles.galleryModal} fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 ${styles.animateFadeInUp}`}
-        >
-          <div className={`${styles.galleryModalContent} relative max-w-4xl max-h-full`}>
-            <button
-              onClick={() => setSelectedMedia(null)}
-              className={`${styles.galleryModalClose} absolute -top-12 right-0 text-white hover:text-primary ${styles.transitionSmooth}`}
-            >
-              <X className={`${styles.galleryModalCloseIcon} w-8 h-8`} />
-            </button>
-
-            {selectedMedia.type === "image" ? (
-              <Image
-                src={selectedMedia.src}
-                alt={selectedMedia.alt}
-                width={800}
-                height={600}
-                className={`${styles.galleryModalImage} max-w-full max-h-[80vh] object-contain rounded-lg`}
-              />
-            ) : (
-              <div
-                className={`${styles.galleryModalVideo} bg-primary/20 rounded-lg p-8 text-center text-white`}
-              >
-                <Play
-                  className={`${styles.galleryModalVideoIcon} w-16 h-16 mx-auto mb-4 opacity-60`}
-                />
-                <p className={`${styles.galleryModalVideoText} text-lg`}>
-                  Video player would be implemented here
-                </p>
-                <p className={`${styles.galleryModalVideoSubtext} text-sm opacity-60 mt-2`}>
-                  {selectedMedia.alt}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Media Modal */}
+      <MediaModal
+        isOpen={selectedMedia !== null}
+        onClose={handleCloseModal}
+        media={selectedMedia}
+        mediaList={filteredItems.map((item) => ({
+          id: item.id,
+          url: "url" in item ? item.url : ((item as Record<string, unknown>).src as string),
+          type: "type" in item ? item.type : "PHOTO",
+          category: item.category,
+        }))}
+        currentIndex={selectedMediaIndex}
+        onNavigate={handleNavigate}
+      />
     </section>
   );
 };

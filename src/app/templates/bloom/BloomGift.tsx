@@ -2,61 +2,189 @@ import { useScrollAnimation } from "./hooks/useScrollAnimation";
 import { Button } from "./components/ui/button";
 import { Gift, Heart, ExternalLink, Check } from "lucide-react";
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import PurchaseModal from "@/components/ui/PurchaseModal";
+import CashGiftModal from "@/components/ui/CashGiftModal";
+import { formatCurrency, parsePriceToNumber } from "@/lib/utils";
 import styles from "@/styles/templates/bloom.module.css";
 
-const GiftRegistry = () => {
+interface BankDetail {
+  id: string;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+}
+
+interface GiftItem {
+  id: string;
+  item: string;
+  name?: string;
+  description?: string;
+  link?: string;
+  price: string;
+  image: string;
+  purchased: boolean;
+}
+
+interface GiftRegistryProps {
+  title?: string;
+  description?: string;
+  gifts?: GiftItem[];
+  giftRegistry?: GiftItem[]; // Legacy support
+  userId?: string; // Wedding page owner's user ID
+  bankDetails?: BankDetail[]; // Bank details for the wedding page owner
+  // Additional user data props for full integration
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  storyImage?: string;
+  heroImage?: string;
+}
+
+const GiftRegistry = (props: GiftRegistryProps) => {
+  // Extract data from props with fallbacks
+  const title = props.title || "Gift Registry";
+  const description =
+    props.description || "Help us build our home together with these thoughtfully chosen items";
+  // Extract gifts data from props (prioritize gifts over giftRegistry for consistency with API)
+  const gifts = props.gifts || props.giftRegistry || [];
+
+  // Helper function to get safe image URL
+  const getSafeImageUrl = (imageUrl: string) => {
+    // Check if it's a valid URL (starts with http/https) or a valid path (starts with /)
+    if (imageUrl && (imageUrl.startsWith("http") || imageUrl.startsWith("/"))) {
+      return imageUrl;
+    }
+    // If it's an emoji or invalid URL, return a default gift image
+    return "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800";
+  };
+  // const _bankDetails = props.bankDetails || {
+  //   bankName: "Access Bank",
+  //   accountNumber: "1234567890",
+  //   accountName: "John & Jane Doe",
+  // };
   const { elementRef, isVisible } = useScrollAnimation(0.2);
 
-  const gifts = [
-    {
-      id: 1,
-      name: "Kitchen Stand Mixer",
-      description: "Professional-grade mixer for our baking adventures together",
-      price: "$350",
-      image: "https://images.unsplash.com/photo-1586909194449-5a4b03a1c5d8?w=400&h=300&fit=crop",
-      purchased: false,
-    },
-    {
-      id: 2,
-      name: "Fine China Dinner Set",
-      description: "Elegant dinnerware for hosting family and friends",
-      price: "$280",
-      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
-      purchased: true,
-    },
-    {
-      id: 3,
-      name: "Cozy Throw Blankets",
-      description: "Soft blankets for movie nights and lazy Sundays",
-      price: "$85",
-      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
-      purchased: false,
-    },
-    {
-      id: 4,
-      name: "Coffee Table Books",
-      description: "Beautiful photography books for our living room",
-      price: "$120",
-      image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop",
-      purchased: false,
-    },
-    {
-      id: 5,
-      name: "Garden Tool Set",
-      description: "Premium tools for our future garden together",
-      price: "$150",
-      image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop",
-      purchased: false,
-    },
-    {
-      id: 6,
-      name: "Wine Glass Collection",
-      description: "Crystal glasses for celebrating special moments",
-      price: "$200",
-      image: "https://images.unsplash.com/photo-1510074377623-8cf13fb86c08?w=400&h=300&fit=crop",
-      purchased: false,
-    },
-  ];
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<GiftItem | null>(null);
+  const [bankDetailsList, setBankDetailsList] = useState<BankDetail[]>([]);
+  const [loadingBanks, setLoadingBanks] = useState(false);
+
+  const [cashGiftOpen, setCashGiftOpen] = useState(false);
+
+  const openPurchase = (gift: GiftItem) => {
+    console.log("BloomGift openPurchase called with gift:", gift);
+    console.log("Current props.userId:", props.userId);
+    setSelected(gift);
+    setOpen(true);
+  };
+
+  const handlePurchase = async (data: {
+    name: string;
+    email: string;
+    phone: string;
+    message?: string;
+  }) => {
+    console.log("BloomGift handlePurchase called with:", {
+      selected,
+      userId: props.userId,
+      data,
+    });
+
+    if (!selected || !props.userId) {
+      console.error("Missing selected gift or userId");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/public/received-gifts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          contactEmail: data.email,
+          contactPhone: data.phone,
+          message: data.message,
+          giftId: selected.id,
+          amount: parsePriceToNumber(selected.price),
+          userId: props.userId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit purchase");
+      }
+
+      const result = await response.json();
+      console.log("Purchase submitted successfully:", result);
+
+      // Mark gift as purchased locally
+      setSelected({ ...selected, purchased: true });
+    } catch (error) {
+      console.error("Purchase submission error:", error);
+      throw error;
+    }
+  };
+
+  const handleCashGift = async (data: {
+    name: string;
+    email: string;
+    phone: string;
+    message?: string;
+  }) => {
+    console.log("BloomGift handleCashGift called with:", {
+      userId: props.userId,
+      data,
+    });
+
+    if (!props.userId) {
+      console.error("Missing userId");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/public/received-gifts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          contactEmail: data.email,
+          contactPhone: data.phone,
+          message: data.message,
+          giftId: null, // No specific gift for cash
+          amount: 0, // No specific amount for cash
+          userId: props.userId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit cash gift");
+      }
+
+      const result = await response.json();
+      console.log("Cash gift submitted successfully:", result);
+    } catch (error) {
+      console.error("Cash gift submission error:", error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    // Use bank details passed from props instead of fetching from API
+    setBankDetailsList(props.bankDetails || []);
+    setLoadingBanks(false);
+  }, [open, props.bankDetails]);
+
+  useEffect(() => {
+    if (!cashGiftOpen) return;
+    // Use bank details passed from props instead of fetching from API
+    setBankDetailsList(props.bankDetails || []);
+    setLoadingBanks(false);
+  }, [cashGiftOpen, props.bankDetails]);
 
   return (
     <section
@@ -84,13 +212,11 @@ const GiftRegistry = () => {
           <h2
             className={`${styles.fontHeading} text-2xl md:text-5xl font-bold ${styles.textForeground} mb-6`}
           >
-            Gift Registry
+            {title}
           </h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
           <p className={`text-xl ${styles.textMuted} max-w-3xl mx-auto leading-relaxed`}>
-            Your presence at our wedding is the greatest gift of all. If you&apos;d like to
-            contribute to our new life together, here are some items that would help us build our
-            home with love.
+            {description}
           </p>
         </div>
 
@@ -110,8 +236,8 @@ const GiftRegistry = () => {
                 {/* Gift Image */}
                 <div className="relative overflow-hidden">
                   <Image
-                    src={gift.image}
-                    alt={gift.name}
+                    src={getSafeImageUrl(gift.image)}
+                    alt={gift.item || gift.name || `Gift item ${index + 1}`}
                     className={`${styles.giftImage} w-full h-40 sm:h-48 object-cover ${styles.transitionRomantic} group-hover:scale-105`}
                     width={400}
                     height={192}
@@ -136,7 +262,7 @@ const GiftRegistry = () => {
                   <h3
                     className={`${styles.fontHeading} text-lg sm:text-xl font-semibold ${styles.textForeground} mb-2`}
                   >
-                    {gift.name}
+                    {gift.item}
                   </h3>
                   <p className={`${styles.textMuted} mb-4 leading-relaxed text-sm sm:text-base`}>
                     {gift.description}
@@ -146,7 +272,7 @@ const GiftRegistry = () => {
                     <span
                       className={`${styles.giftPrice} font-semibold text-xl sm:text-2xl text-primary`}
                     >
-                      {gift.price}
+                      {formatCurrency(gift.price)}
                     </span>
 
                     {gift.purchased ? (
@@ -156,11 +282,12 @@ const GiftRegistry = () => {
                         className={`${styles.giftPurchasedButton} bg-[hsl(340,75%,55%)] text-white opacity-60 w-full sm:w-auto`}
                       >
                         <Check className={`${styles.giftButtonIcon} w-4 h-4 mr-2`} />
-                        Purchased
+                        Already Purchased
                       </Button>
                     ) : (
                       <Button
                         variant="romantic"
+                        onClick={() => openPurchase(gift)}
                         className={`${styles.giftPurchaseButton} bg-[hsl(340,75%,55%)] text-white group/btn w-full sm:w-auto`}
                       >
                         <span className="hidden sm:inline">Purchase Gift</span>
@@ -201,6 +328,7 @@ const GiftRegistry = () => {
             >
               <Button
                 variant="outline"
+                onClick={() => setCashGiftOpen(true)}
                 className={`${styles.giftInfoButton} bg-[hsl(340,75%,55%)] text-white group`}
               >
                 Gift Cash
@@ -210,6 +338,23 @@ const GiftRegistry = () => {
           </div>
         </div>
       </div>
+
+      <PurchaseModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        gift={selected}
+        bankDetails={bankDetailsList}
+        loadingBanks={loadingBanks}
+        onPurchase={handlePurchase}
+      />
+
+      <CashGiftModal
+        isOpen={cashGiftOpen}
+        onClose={() => setCashGiftOpen(false)}
+        bankDetails={bankDetailsList}
+        loadingBanks={loadingBanks}
+        onPurchase={handleCashGift}
+      />
     </section>
   );
 };

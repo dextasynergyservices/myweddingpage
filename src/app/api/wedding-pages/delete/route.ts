@@ -58,17 +58,30 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "No published wedding page found" }, { status: 404 });
     }
 
-    // Delete wedding page and all related data
-    await prisma.weddingPage.delete({
-      where: { id: weddingPage.id },
-    });
-
-    // Delete user template if it exists
-    if (userTemplate) {
-      await prisma.userTemplate.delete({
-        where: { id: userTemplate.id },
+    // Delete all related data in a transaction to ensure atomicity
+    await prisma.$transaction(async (tx) => {
+      // Delete media uploads
+      await tx.mediaUpload.deleteMany({
+        where: { weddingPageId: weddingPage.id },
       });
-    }
+
+      // Delete comments
+      await tx.comment.deleteMany({
+        where: { weddingPageId: weddingPage.id },
+      });
+
+      // Delete wedding page
+      await tx.weddingPage.delete({
+        where: { id: weddingPage.id },
+      });
+
+      // Delete user template if it exists
+      if (userTemplate) {
+        await tx.userTemplate.delete({
+          where: { id: userTemplate.id },
+        });
+      }
+    });
 
     return NextResponse.json({
       success: true,
@@ -76,6 +89,21 @@ export async function DELETE(req: Request) {
     });
   } catch (error) {
     console.error("Error deleting wedding page:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("Error details:", {
+      message: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+        details:
+          process.env.NODE_ENV === "development"
+            ? error instanceof Error
+              ? error.message
+              : "Unknown error"
+            : undefined,
+      },
+      { status: 500 }
+    );
   }
 }

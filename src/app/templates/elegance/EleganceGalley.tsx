@@ -1,25 +1,57 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Play, Image as ImageIcon, X } from "lucide-react";
+import { Play } from "lucide-react";
 import galleryPreview from "./assets/gallery-preview.jpg";
 import styles from "@/styles/templates/elegance.module.css";
 import Image from "next/image";
+import MediaModal from "@/components/ui/MediaModal";
 
 type GalleryCategory = "all" | "before" | "during" | "after";
 
-type GalleryProps = Record<string, never>;
+interface GalleryProps {
+  gallery?: Array<{
+    id: string;
+    url: string;
+    type: "PHOTO" | "VIDEO";
+    category: "before" | "during" | "after";
+    createdAt?: string;
+  }>;
+  images?: string[];
+  videos?: Array<{
+    id: string;
+    title: string;
+    thumbnail: string;
+    duration: string;
+    category: "before" | "during" | "after";
+  }>;
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  guests?: Record<string, unknown>[];
+  bankDetails?: Record<string, unknown>[];
+  storyImage?: string;
+  heroImage?: string;
+}
 
-const Gallery: React.FC<GalleryProps> = () => {
+const Gallery: React.FC<GalleryProps> = (props) => {
+  // Extract data from props with fallbacks
+  const gallery = props.gallery || [];
+  const images = props.images || [];
+  const videos = props.videos || [];
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  const [selectedMedia, setSelectedMedia] = useState<{
-    type: "image" | "video";
-    src: string;
-    title: string;
-  } | null>(null);
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
   const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Modal state
+  const [selectedMedia, setSelectedMedia] = useState<{
+    id: string;
+    url: string;
+    type: "PHOTO" | "VIDEO";
+    category: "before" | "during" | "after";
+  } | null>(null);
+  const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -44,78 +76,99 @@ const Gallery: React.FC<GalleryProps> = () => {
     };
   }, []);
 
+  // If user has gallery data, use it instead of static images/videos
+  const hasUserGallery = gallery.length > 0;
+  // const _displayImages = hasUserGallery ? [] : images;
+  // const _displayVideos = hasUserGallery ? [] : videos;
+
+  // Modal handlers
+  const handleMediaClick = (item: Record<string, unknown>, index: number) => {
+    // Convert gallery item to MediaModal format
+    const mediaItem = {
+      id: item.id as string,
+      url: (item.src || item.url) as string,
+      type: (item.type || "PHOTO") as "PHOTO" | "VIDEO",
+      category: item.category as "during" | "before" | "after",
+    };
+    setSelectedMedia(mediaItem);
+    setSelectedMediaIndex(index);
+  };
+
+  const handleNavigate = (index: number) => {
+    setSelectedMediaIndex(index);
+    const item = filteredItems[index];
+    const mediaItem = {
+      id: item.id as string,
+      url: "url" in item ? (item.url as string) : ((item as Record<string, unknown>).src as string),
+      type: ("type" in item ? item.type : "PHOTO") as "PHOTO" | "VIDEO",
+      category: item.category as "during" | "before" | "after",
+    };
+    setSelectedMedia(mediaItem);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMedia(null);
+  };
+
+  // Create gallery items from props - prioritize user gallery data
   const galleryItems = [
+    // Add images from gallery prop (user data) - prioritize this
+    ...gallery.map((item) => ({
+      id: item.id,
+      src: item.url,
+      url: item.url, // For MediaModal compatibility
+      alt: `Gallery ${item.id}`,
+      category: item.category,
+      type: item.type,
+      aspectRatio: "aspect-square" as const,
+    })),
+    // Add images from images prop (fallback) - only if no user gallery
+    ...(hasUserGallery
+      ? []
+      : images.map((image, index) => ({
+          id: `image-${index}`,
+          src: image,
+          url: image, // For MediaModal compatibility
+          alt: `Gallery Image ${index + 1}`,
+          category: "during" as const,
+          type: "PHOTO" as const,
+          aspectRatio: "aspect-square" as const,
+        }))),
+    // Add videos from videos prop (fallback) - only if no user gallery
+    // Note: These are just placeholder videos with thumbnails, not real video URLs
+    ...(hasUserGallery
+      ? []
+      : videos.map((video) => ({
+          id: video.id,
+          src: video.thumbnail, // Thumbnail for display
+          url: video.thumbnail, // Using thumbnail as URL since no real video URL is provided
+          alt: video.title,
+          category: video.category,
+          type: "VIDEO" as const,
+          aspectRatio: "aspect-square" as const,
+        }))),
+  ];
+
+  // If no gallery data provided, use default fallback
+  const defaultGalleryItems = [
     {
-      id: 1,
-      type: "image" as const,
+      id: "default-1",
       src: galleryPreview.src,
-      title: "Engagement Photos",
-      description: "Our romantic engagement session",
+      url: galleryPreview.src, // For MediaModal compatibility
+      alt: "Engagement Photos",
       category: "before" as const,
-    },
-    {
-      id: 2,
-      type: "video" as const,
-      src: "#",
-      title: "Proposal Video",
-      description: "The moment he asked forever",
-      category: "before" as const,
-    },
-    {
-      id: 3,
-      type: "image" as const,
-      src: galleryPreview.src,
-      title: "Pre-Wedding",
-      description: "Getting ready for our big day",
-      category: "before" as const,
-    },
-    {
-      id: 4,
-      type: "video" as const,
-      src: "#",
-      title: "Wedding Ceremony",
-      description: "Our beautiful ceremony",
-      category: "during" as const,
-    },
-    {
-      id: 5,
-      type: "image" as const,
-      src: galleryPreview.src,
-      title: "Wedding Highlights",
-      description: "Our ceremony and celebration",
-      category: "during" as const,
-    },
-    {
-      id: 6,
-      type: "image" as const,
-      src: galleryPreview.src,
-      title: "Reception",
-      description: "Dancing the night away",
-      category: "during" as const,
-    },
-    {
-      id: 7,
-      type: "image" as const,
-      src: galleryPreview.src,
-      title: "Family & Friends",
-      description: "Surrounded by love",
-      category: "during" as const,
-    },
-    {
-      id: 8,
-      type: "image" as const,
-      src: galleryPreview.src,
-      title: "Honeymoon",
-      description: "Our first adventure together",
-      category: "after" as const,
+      type: "PHOTO" as const,
+      aspectRatio: "aspect-square" as const,
     },
   ];
+
+  const finalGalleryItems = galleryItems.length > 0 ? galleryItems : defaultGalleryItems;
 
   // Filter items based on active category
   const filteredItems =
     activeCategory === "all"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === activeCategory);
+      ? finalGalleryItems
+      : finalGalleryItems.filter((item) => item.category === activeCategory);
 
   const categories = [
     { id: "all", label: "All" },
@@ -123,10 +176,6 @@ const Gallery: React.FC<GalleryProps> = () => {
     { id: "during", label: "During Wedding" },
     { id: "after", label: "After Wedding" },
   ];
-
-  const openModal = (item: (typeof galleryItems)[0]) => {
-    setSelectedMedia({ type: item.type, src: item.src, title: item.title });
-  };
 
   return (
     <section id="gallery" className={`${styles.py24} ${styles.bgBackground}`}>
@@ -174,33 +223,42 @@ const Gallery: React.FC<GalleryProps> = () => {
                 isVisible ? styles.animateScaleIn : `${styles.opacity0} ${styles.scale75}`
               }`}
               style={{ animationDelay: `${index * 100}ms` }}
-              onClick={() => openModal(item)}
+              onClick={() => handleMediaClick(item, index)}
             >
-              <div className={`${styles.relative} ${styles.aspectSquare} ${styles.overflowHidden}`}>
-                <Image
-                  src={item.src}
-                  alt={item.title}
-                  width={400}
-                  height={400}
-                  className={`${styles.wFull} ${styles.hFull} ${styles.objectCover} ${styles.transitionTransform} ${styles.duration700} ${styles.groupHoverScale110}`}
-                  style={{
-                    transform: `scale(${1 + scrollY * 0.0001})`,
-                  }}
-                />
-
-                {/* Overlay */}
-                <div
-                  className={`${styles.absolute} ${styles.inset0} ${styles.bgPrimary20} ${styles.opacity0} ${styles.groupHoverOpacity100} ${styles.transitionOpacity} ${styles.duration300} ${styles.flex} ${styles.itemsCenter} ${styles.justifyCenter}`}
-                >
-                  {item.type === "video" ? (
-                    <Play
-                      className={`${styles.w16} ${styles.h16} ${styles.textWhite}`}
-                      fill="currentColor"
+              <div className={`${styles.relative} ${item.aspectRatio} ${styles.overflowHidden}`}>
+                {"type" in item && item.type === "VIDEO" ? (
+                  // For videos, check if we have a real video URL or just a thumbnail
+                  item.url.includes(".mp4") ||
+                  item.url.includes(".mov") ||
+                  item.url.includes(".webm") ? (
+                    <video
+                      src={item.url}
+                      className={`${styles.wFull} ${styles.hFull} ${styles.objectCover} ${styles.transitionTransform} ${styles.duration700} ${styles.groupHoverScale110}`}
+                      preload="metadata"
+                      poster={item.src} // Use thumbnail as poster
                     />
                   ) : (
-                    <ImageIcon className={`${styles.w16} ${styles.h16} ${styles.textWhite}`} />
-                  )}
-                </div>
+                    // If no real video URL, display thumbnail as image with play button
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      width={400}
+                      height={400}
+                      className={`${styles.wFull} ${styles.hFull} ${styles.objectCover} ${styles.transitionTransform} ${styles.duration700} ${styles.groupHoverScale110}`}
+                    />
+                  )
+                ) : (
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    width={400}
+                    height={400}
+                    className={`${styles.wFull} ${styles.hFull} ${styles.objectCover} ${styles.transitionTransform} ${styles.duration700} ${styles.groupHoverScale110}`}
+                    style={{
+                      transform: `scale(${1 + scrollY * 0.0001})`,
+                    }}
+                  />
+                )}
 
                 {/* Category Badge */}
                 <div className={`${styles.absolute} ${styles.top3} ${styles.left3}`}>
@@ -217,66 +275,39 @@ const Gallery: React.FC<GalleryProps> = () => {
                   </div>
                 </div>
 
-                {/* Type indicator */}
-                <div className={`${styles.absolute} ${styles.top3} ${styles.right3}`}>
+                {/* Video Play Icon */}
+                {"type" in item && item.type === "VIDEO" && (
                   <div
-                    className={`${styles.bgBlack50} ${styles.textWhite} ${styles.px2} ${styles.py1} ${styles.roundedFull} ${styles.textXs} ${styles.fontMedium}`}
+                    className={`${styles.absolute} ${styles.inset0} ${styles.flex} ${styles.itemsCenter} ${styles.justifyCenter}`}
                   >
-                    {item.type === "video" ? "VIDEO" : "PHOTO"}
+                    <div
+                      className={`${styles.w16} ${styles.h16} ${styles.bgWhite80} ${styles.roundedFull} ${styles.flex} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.opacity0} ${styles.groupHoverOpacity100} ${styles.transitionOpacity} ${styles.duration300}`}
+                    >
+                      <Play
+                        className={`${styles.w8} ${styles.h8} ${styles.textPrimary} ${styles.ml1}`}
+                      />
+                    </div>
                   </div>
-                </div>
-              </div>
-
-              <div className={styles.p4}>
-                <h3
-                  className={`${styles.fontDisplay} ${styles.textLg} ${styles.fontSemibold} ${styles.textForeground} ${styles.mb1}`}
-                >
-                  {item.title}
-                </h3>
-                <p className={`${styles.fontBody} ${styles.textSm} ${styles.textMutedForeground}`}>
-                  {item.description}
-                </p>
+                )}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Modal */}
-        {selectedMedia && (
-          <div
-            className={`${styles.fixed} ${styles.inset0} ${styles.bgBlack90} ${styles.z50} ${styles.flex} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.p4}`}
-          >
-            <div
-              className={`${styles.relative} ${styles.maxW4xl} ${styles.maxH90vh} ${styles.wFull}`}
-            >
-              <button
-                className={`${styles.absolute} ${styles.negTop12} ${styles.right0} ${styles.textWhite} ${styles.borderWhite} ${styles.hoverBgWhite} ${styles.hoverTextBlack}`}
-                onClick={() => setSelectedMedia(null)}
-              >
-                <X className={`${styles.w4} ${styles.h4}`} />
-              </button>
-
-              {selectedMedia.type === "image" ? (
-                <Image
-                  src={selectedMedia.src}
-                  alt={selectedMedia.title}
-                  width={800}
-                  height={600}
-                  className={`${styles.wFull} ${styles.hFull} ${styles.objectContain} ${styles.roundedLg}`}
-                />
-              ) : (
-                <div
-                  className={`${styles.bgGray800} ${styles.roundedLg} ${styles.p8} ${styles.textCenter}`}
-                >
-                  <Play
-                    className={`${styles.w20} ${styles.h20} ${styles.textWhite} ${styles.mxAuto} ${styles.mb4}`}
-                  />
-                  <p className={`${styles.textWhite} ${styles.textLg}`}>Video coming soon!</p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+        {/* Media Modal */}
+        <MediaModal
+          isOpen={selectedMedia !== null}
+          onClose={handleCloseModal}
+          media={selectedMedia}
+          mediaList={filteredItems.map((item) => ({
+            id: item.id,
+            url: "url" in item ? item.url : ((item as Record<string, unknown>).src as string),
+            type: "type" in item ? item.type : "PHOTO",
+            category: item.category,
+          }))}
+          currentIndex={selectedMediaIndex}
+          onNavigate={handleNavigate}
+        />
       </div>
     </section>
   );

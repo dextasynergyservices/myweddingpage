@@ -4,12 +4,56 @@ import { Heart, Calendar, MapPin, Sparkles } from "lucide-react";
 import Image from "next/image";
 import styles from "@/styles/templates/bloom.module.css";
 
-const OurStory = () => {
-  const { elementRef: storyRef, isVisible: storyVisible } = useScrollAnimation(0.2);
-  const { elementRef: timelineRef, isVisible: timelineVisible } = useScrollAnimation(0.1);
-  const { elementRef: imageRef, isVisible: imageVisible } = useScrollScale(0.2);
+interface OurStoryProps {
+  title?: string;
+  description?: string;
+  storyContent?: {
+    mainTitle?: string;
+    mainDescription?: string;
+    storyText?: string;
+  };
+  milestones?: Array<{
+    date: string;
+    title: string;
+    description: string;
+    icon: string;
+  }>;
+  storyMilestones?: Array<{
+    date: string;
+    title: string;
+    description: string;
+    icon?: string;
+  }>;
+  storyImage?: string;
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  bankDetails?: Record<string, unknown>[];
+  heroImage?: string;
+  // Legacy support for ourStory prop
+  ourStory?: {
+    content?: string;
+    imageUrl?: string;
+  };
+}
 
-  const milestones = [
+const OurStory = (props: OurStoryProps) => {
+  // Extract data from props with fallbacks
+  const title = props.title || "Our Love Story";
+  const description =
+    props.description ||
+    "Every love story is beautiful, but ours is our favorite. Here's how two hearts found their way to each other and decided to walk together forever.";
+  const storyContent = props.storyContent || {
+    mainTitle: "A Love That Bloomed",
+    mainDescription:
+      props.ourStory?.content ||
+      "What started as a chance encounter at our favorite coffee shop has blossomed into a love that fills our hearts with joy every single day. We've laughed together, dreamed together, and supported each other through all of life's beautiful moments.",
+    storyText:
+      "From quiet Sunday mornings to adventurous weekend getaways, we've built a foundation of friendship, trust, and unconditional love that we can't wait to celebrate with all of you.",
+  };
+  const defaultMilestones = [
     {
       date: "March 2018",
       title: "First Meeting",
@@ -40,6 +84,31 @@ const OurStory = () => {
     },
   ];
 
+  // Ensure milestones have proper icon components
+  // Use storyMilestones if available (from template preview data), otherwise use milestones
+  let rawMilestones = props.storyMilestones || props.milestones || defaultMilestones;
+
+  // Ensure rawMilestones is always an array
+  if (!Array.isArray(rawMilestones)) {
+    rawMilestones = defaultMilestones;
+  }
+
+  const milestones = rawMilestones.map((milestone, index) => ({
+    ...milestone,
+    icon: milestone.icon || defaultMilestones[index % defaultMilestones.length]?.icon || Heart,
+  }));
+  const storyImage =
+    props.storyImage || props.ourStory?.imageUrl || "/templates/bloom/assets/couple-portrait.jpg";
+
+  // Ensure we have a valid image source (fallback to default if empty)
+  const safeStoryImage =
+    storyImage && storyImage.trim() !== ""
+      ? storyImage
+      : "/templates/bloom/assets/couple-portrait.jpg";
+  const { elementRef: storyRef, isVisible: storyVisible } = useScrollAnimation(0.2);
+  const { elementRef: timelineRef, isVisible: timelineVisible } = useScrollAnimation(0.1);
+  const { elementRef: imageRef, isVisible: imageVisible } = useScrollScale(0.2);
+
   return (
     <section
       className={`${styles.sectionPadding} ${styles.bgGradientPrimary} relative overflow-hidden`}
@@ -66,12 +135,11 @@ const OurStory = () => {
           <h2
             className={`${styles.fontHeading} text-2xl md:text-5xl font-bold ${styles.textForeground} mb-6`}
           >
-            Our Love Story
+            {title}
           </h2>
           <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
           <p className={`text-xl ${styles.textMuted} max-w-3xl mx-auto leading-relaxed`}>
-            Every love story is beautiful, but ours is our favorite. Here&apos;s how two hearts
-            found their way to each other and decided to walk together forever.
+            {description}
           </p>
         </div>
 
@@ -89,8 +157,8 @@ const OurStory = () => {
           >
             <div className={`${styles.storyImageContainer} relative group`}>
               <Image
-                src="/templates/bloom/assets/couple-portrait.jpg"
-                alt="Sarah and James"
+                src={safeStoryImage}
+                alt="Our couple portrait"
                 className={`w-full ${styles.roundedLg} ${styles.shadowElegant} transition-romantic group-hover:shadow-glow`}
                 width={600}
                 height={800}
@@ -112,18 +180,13 @@ const OurStory = () => {
               <h3
                 className={`${styles.fontHeading} md:text-4xl text-xl font-semibold ${styles.textForeground}`}
               >
-                A Love That Bloomed
+                {storyContent.mainTitle}
               </h3>
               <p className={`text-lg ${styles.textMuted} leading-relaxed`}>
-                What started as a chance encounter at our favorite coffee shop has blossomed into a
-                love that fills our hearts with joy every single day. We&apos;ve laughed together,
-                dreamed together, and supported each other through all of life&apos;s beautiful
-                moments.
+                {storyContent.mainDescription}
               </p>
               <p className={`text-lg ${styles.textMuted} leading-relaxed`}>
-                From quiet Sunday mornings to adventurous weekend getaways, we&apos;ve built a
-                foundation of friendship, trust, and unconditional love that we can&apos;t wait to
-                celebrate with all of you.
+                {storyContent.storyText}
               </p>
             </div>
           </div>

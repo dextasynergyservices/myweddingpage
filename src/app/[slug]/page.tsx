@@ -38,6 +38,13 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
     const data = await response.json();
     const { template, userData, userTemplate, plan, comments } = data;
 
+    // Debug: Log the wedding date received by the live page
+    console.log("Live Wedding Page - Received data:", {
+      weddingDate: userData?.weddingDate,
+      brideName: userData?.brideName,
+      groomName: userData?.groomName,
+    });
+
     if (!template) {
       notFound();
     }

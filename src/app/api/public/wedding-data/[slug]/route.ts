@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// Helper function to format wedding date in a user-friendly way
+function formatWeddingDate(date: Date): string {
+  try {
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  } catch (error) {
+    console.error('Error formatting wedding date:', error);
+    return date.toISOString().split('T')[0]; // Fallback to YYYY-MM-DD format
+  }
+}
+
 export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
   try {
     const { slug } = params;
@@ -65,6 +79,25 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
     const wpAi = (weddingPage.ai_data as Record<string, unknown>) ?? (weddingPage.layout_data as Record<string, unknown>) ?? {};
     const utContent = (selectedUserTemplate?.content as Record<string, unknown>) ?? {};
 
+    // Debug: Log the ai_data structure
+    console.log("Public API - ai_data structure:", JSON.stringify(wpAi, null, 2));
+    console.log("Public API - ai_data keys:", Object.keys(wpAi || {}));
+
+    // Debug: Log the formatted wedding date
+    const formattedWeddingDate = (user.weddingDate && formatWeddingDate(user.weddingDate)) ||
+      (wpAi?.weddingDate && formatWeddingDate(new Date(wpAi.weddingDate as string))) ||
+      (wpAi?.wedding_date && formatWeddingDate(new Date(wpAi.wedding_date as string))) ||
+      (utContent?.weddingDate && formatWeddingDate(new Date(utContent.weddingDate as string))) ||
+      null;
+
+    console.log("Public API - Wedding date formatting:", {
+      originalDate: user.weddingDate,
+      formattedDate: formattedWeddingDate,
+      wpAiWeddingDate: wpAi?.weddingDate,
+      wpAiWedding_date: wpAi?.wedding_date,
+      utContentWeddingDate: utContent?.weddingDate
+    });
+
     // Create userData object with all the data needed for rendering
     const userData = {
       id: user.id, // Add user ID for gift components
@@ -82,12 +115,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
         utContent?.groomName ||
         utContent?.groom_name ||
         "Groom",
-      weddingDate:
-        (user.weddingDate && user.weddingDate.toISOString()) ||
-        wpAi?.weddingDate ||
-        wpAi?.wedding_date ||
-        utContent?.weddingDate ||
-        null,
+      weddingDate: formattedWeddingDate,
       venue: weddingPage.venue || wpAi?.venue || utContent?.venue || null,
       welcomeMessage:
         weddingPage.welcomeMessage || wpAi?.welcomeMessage || utContent?.welcomeMessage || null,
@@ -107,7 +135,7 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       // Include bank details for gift components
       bankDetails: user.bankDetails ?? [],
       // Include full section content for dynamic rendering
-      sections: utContent,
+      sections: wpAi,
       userTemplate: selectedUserTemplate,
     };
 

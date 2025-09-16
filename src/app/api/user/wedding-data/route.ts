@@ -3,6 +3,20 @@ import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+// Helper function to format wedding date in a user-friendly way
+function formatWeddingDate(date: Date): string {
+  try {
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch (error) {
+    console.error("Error formatting wedding date:", error);
+    return date.toISOString().split("T")[0]; // Fallback to YYYY-MM-DD format
+  }
+}
+
 export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -59,7 +73,7 @@ export async function GET(req: Request) {
       email: user.email,
       brideName: user.brideName || null,
       groomName: user.groomName || null,
-      weddingDate: user.weddingDate ? user.weddingDate.toISOString() : null,
+      weddingDate: user.weddingDate ? formatWeddingDate(user.weddingDate) : null,
       plan: user.plan || null,
       page: livePage
         ? {

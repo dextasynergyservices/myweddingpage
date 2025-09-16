@@ -3,7 +3,66 @@ import { Button } from "./components/ui/button";
 // Hero background image - using public path
 import styles from "@/styles/templates/bloom.module.css";
 
-const WeddingHero = () => {
+interface WeddingHeroProps {
+  brideName?: string;
+  groomName?: string;
+  weddingDate?: string;
+  venue?: string;
+  description?: string;
+  heroImage?: string;
+  // Additional user data props for full integration
+  userId?: string;
+  gifts?: Record<string, unknown>[];
+  gallery?: string[];
+  guests?: Record<string, unknown>[];
+  bankDetails?: Record<string, unknown>[];
+  // Legacy support for weddingData prop
+  weddingData?: {
+    brideName?: string;
+    groomName?: string;
+    weddingDate?: string;
+    venue?: string;
+    welcomeMessage?: string;
+  };
+}
+
+const WeddingHero = (props: WeddingHeroProps) => {
+  // Extract data from props (prioritize direct props over weddingData object)
+  const brideName = props.brideName || props.weddingData?.brideName || "Bride";
+  const groomName = props.groomName || props.weddingData?.groomName || "Groom";
+  // const _venue = props.venue || props.weddingData?.venue || "Venue";
+  // const _description =
+  //   props.description ||
+  //   props.weddingData?.welcomeMessage ||
+  //   "Two hearts, one beautiful journey. Join us as we celebrate our love and begin our forever together.";
+  const dateValue = props.weddingDate || props.weddingData?.weddingDate || "Date";
+
+  // Check if the date is already formatted (contains month name like "October")
+  const isAlreadyFormatted =
+    typeof dateValue === "string" &&
+    (dateValue.includes("January") ||
+      dateValue.includes("February") ||
+      dateValue.includes("March") ||
+      dateValue.includes("April") ||
+      dateValue.includes("May") ||
+      dateValue.includes("June") ||
+      dateValue.includes("July") ||
+      dateValue.includes("August") ||
+      dateValue.includes("September") ||
+      dateValue.includes("October") ||
+      dateValue.includes("November") ||
+      dateValue.includes("December"));
+
+  const weddingDate = isAlreadyFormatted
+    ? dateValue
+    : dateValue && dateValue !== "Date"
+      ? new Date(dateValue).toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "Date";
+  const heroImage = props.heroImage || "/templates/bloom/assets/wedding-hero.jpg";
   return (
     <section
       className={`${styles.heroSection} relative min-h-screen flex items-center justify-center overflow-hidden`}
@@ -11,7 +70,7 @@ const WeddingHero = () => {
       {/* Background Image */}
       <div
         className={`${styles.heroBackground} absolute inset-0 bg-cover bg-center bg-no-repeat`}
-        style={{ backgroundImage: `url('/templates/bloom/assets/wedding-hero.jpg')` }}
+        style={{ backgroundImage: `url('${heroImage}')` }}
       >
         <div className={`${styles.gradientHero} absolute inset-0`}></div>
       </div>
@@ -28,7 +87,7 @@ const WeddingHero = () => {
           <h1
             className={`${styles.heroTitle} font-heading text-6xl md:text-8xl lg:text-9xl font-bold text-primary-foreground mb-6 leading-tight`}
           >
-            Sarah & James
+            {brideName} & {groomName}
           </h1>
 
           <div
@@ -38,17 +97,16 @@ const WeddingHero = () => {
             <p
               className={`${styles.heroDate} font-heading text-2xl md:text-3xl text-primary-foreground/90 font-medium`}
             >
-              June 15, 2024
+              {weddingDate}
             </p>
             <div className={`${styles.heroDateLine} h-px bg-primary-foreground/50 w-16`}></div>
           </div>
 
-          <p
+          {/* <p
             className={`${styles.heroDescription} text-xl md:text-2xl text-primary-foreground/80 mb-12 max-w-2xl mx-auto leading-relaxed`}
           >
-            Two hearts, one beautiful journey. Join us as we celebrate our love and begin our
-            forever together.
-          </p>
+            {description}
+          </p> */}
 
           <div
             className={`${styles.heroButtonContainer} flex flex-col sm:flex-row gap-4 justify-center`}

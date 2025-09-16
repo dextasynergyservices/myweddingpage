@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
 import { ColorScheme } from "@/lib/component-registry";
+import { SectionType } from "@/generated/prisma";
 import {
   Eye,
   Save,
@@ -23,7 +24,6 @@ import {
 import Modal from "@/components/ui/Modal";
 import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
 import EditWeddingDetailsModal from "./EditWeddingDetailsModal";
-import TemplatePreviewModal from "@/components/TemplatePreviewModal";
 import { UserTemplate, Template, UserPlan, WeddingPage } from "@/types/wedding";
 import toast from "react-hot-toast";
 
@@ -54,6 +54,7 @@ const TemplateEditor = ({
   const [selectedColorScheme] = useState<ColorScheme | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -71,6 +72,25 @@ const TemplateEditor = ({
     groomName: "",
     weddingDate: "",
     venue: "",
+    heroImage: undefined as string | undefined,
+    storyImage: undefined as string | undefined,
+    gallery: [] as Array<{ id: string; url: string; title?: string; category?: string }>,
+    gifts: [] as Array<{
+      id: string;
+      item: string;
+      price: string;
+      image: string;
+      purchased: boolean;
+    }>,
+    guests: [] as Array<{
+      id: string;
+      name: string;
+      email?: string;
+      phone?: string;
+      rsvp?: "yes" | "no" | "pending";
+    }>,
+    bankDetails: {} as Record<string, unknown>,
+    id: "",
   });
 
   useEffect(() => {
@@ -80,17 +100,58 @@ const TemplateEditor = ({
         const response = await fetch("/api/wedding-data");
         if (response.ok) {
           const data = await response.json();
-          setUserData(
-            data.userData || {
-              brideName: "Bride",
-              groomName: "Groom",
-              weddingDate: new Date().toISOString(),
-              venue: "Venue",
-            }
-          );
+          console.log("TemplateEditor - API response wedding date:", data.userData?.weddingDate);
+          setUserData({
+            ...data.userData,
+            // Ensure we have all required fields with fallbacks
+            brideName: data.userData?.brideName || "Bride",
+            groomName: data.userData?.groomName || "Groom",
+            weddingDate:
+              data.userData?.weddingDate ||
+              new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }),
+            venue: data.userData?.venue || "Venue",
+            heroImage: data.userData?.heroImage || undefined,
+            storyImage: data.userData?.storyImage || undefined,
+            gallery: data.userData?.gallery || [],
+            gifts: data.userData?.gifts || [],
+            guests: data.userData?.guests || [],
+            bankDetails: data.userData?.bankDetails || {},
+            id: data.userData?.id || "",
+          });
+          console.log("TemplateEditor - Final userData state:", {
+            weddingDate:
+              data.userData?.weddingDate ||
+              new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }),
+          });
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
+        // Set fallback data on error
+        setUserData({
+          brideName: "Bride",
+          groomName: "Groom",
+          weddingDate: new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
+          venue: "Venue",
+          heroImage: undefined,
+          storyImage: undefined,
+          gallery: [],
+          gifts: [],
+          guests: [],
+          bankDetails: {},
+          id: "",
+        });
       }
     };
 
@@ -129,6 +190,9 @@ const TemplateEditor = ({
   // Debug logging
   console.log("TemplateEditor - selectedTemplate:", selectedTemplate);
   console.log("TemplateEditor - selectedTemplate.sections:", selectedTemplate.sections);
+  console.log("TemplateEditor - userTemplate:", userTemplate);
+  console.log("TemplateEditor - userTemplate.content:", userTemplate?.content);
+  console.log("TemplateEditor - userData:", userData);
 
   const saveTemplateContent = async () => {
     setIsSaving(true);
@@ -202,20 +266,29 @@ const TemplateEditor = ({
 
     setIsPublishing(true);
     try {
+      const publishData = {
+        templateId: selectedTemplate.id,
+        content: userTemplate?.content || {},
+        colorScheme: selectedColorScheme || userTemplate?.colorScheme,
+        title: `${userData.groomName || "Groom"} & ${userData.brideName || "Bride"} Wedding`,
+        slug: customSlug || slug,
+      };
+
+      console.log("TemplateEditor - Publishing with data:", publishData);
+      console.log("TemplateEditor - userTemplate content:", userTemplate?.content);
+
       const response = await fetch("/api/wedding-pages/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          templateId: selectedTemplate.id,
-          content: userTemplate?.content || {},
-          colorScheme: selectedColorScheme || userTemplate?.colorScheme,
-          title: `${userData.groomName || "Groom"} & ${userData.brideName || "Bride"} Wedding`,
-          slug: customSlug || slug,
-        }),
+        body: JSON.stringify(publishData),
       });
+
+      console.log("TemplateEditor - Response status:", response.status);
+      console.log("TemplateEditor - Response ok:", response.ok);
 
       if (response.ok) {
         const data = await response.json();
+        console.log("TemplateEditor - Response data:", data);
         toast.success(
           data.isNewPublication
             ? "Wedding page published successfully!"
@@ -229,6 +302,7 @@ const TemplateEditor = ({
         setShowSlugModal(false);
       } else {
         const errorData = await response.json();
+        console.error("TemplateEditor - Error response:", errorData);
         throw new Error(errorData.error || "Failed to publish template");
       }
     } catch (err: unknown) {
@@ -239,10 +313,42 @@ const TemplateEditor = ({
     }
   };
 
+  const handleUpdateLiveSite = async () => {
+    if (!selectedTemplate) return;
+
+    setIsPublishing(true);
+    try {
+      const response = await fetch("/api/wedding-pages/update-live", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          templateId: selectedTemplate.id,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success("Live site updated successfully!");
+
+        if (onWeddingPageUpdate) {
+          onWeddingPageUpdate(data.weddingPage);
+        }
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update live site");
+      }
+    } catch (err: unknown) {
+      console.error("Error updating live site:", err);
+      toast.error((err as Error)?.message || String(err) || "Failed to update live site");
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (!weddingPage) return;
 
-    setIsSaving(true);
+    setIsDeleting(true);
     try {
       const response = await fetch("/api/wedding-pages/delete", {
         method: "DELETE",
@@ -273,7 +379,7 @@ const TemplateEditor = ({
       console.error("Error deleting wedding page:", err);
       toast.error((err as Error)?.message || String(err) || "Failed to delete wedding page");
     } finally {
-      setIsSaving(false);
+      setIsDeleting(false);
     }
   };
 
@@ -288,6 +394,7 @@ const TemplateEditor = ({
   };
 
   const handleSectionContentUpdate = (sectionId: string, content: Record<string, unknown>) => {
+    console.log("TemplateEditor - handleSectionContentUpdate called with:", sectionId, content);
     onContentUpdate(sectionId, content);
   };
 
@@ -452,7 +559,11 @@ const TemplateEditor = ({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              publishTemplate();
+              if (weddingPage && weddingPage.is_live) {
+                handleUpdateLiveSite();
+              } else {
+                publishTemplate();
+              }
             }}
             disabled={isSaving || isPublishing}
             type="button"
@@ -477,8 +588,8 @@ const TemplateEditor = ({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowDeleteModal(true)}
-              disabled={isSaving}
-              className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-colors text-sm bg-red-600 hover:bg-red-700 text-white"
+              disabled={isDeleting}
+              className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-colors text-sm bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Trash2 className="h-3 w-3 md:h-4 md:w-4" />
               Delete
@@ -643,7 +754,11 @@ const TemplateEditor = ({
       </div>
 
       {/* Preview Modal */}
-      <Modal isOpen={showPreviewModal} onClose={() => setShowPreviewModal(false)} size="xl">
+      <Modal
+        isOpen={showPreviewModal}
+        onClose={() => setShowPreviewModal(false)}
+        maxWidth="max-w-[95vw]"
+      >
         <div className={`p-6 h-full ${isDarkMode ? "bg-slate-900" : "bg-white"}`}>
           <div className="flex items-center justify-between mb-6">
             <h2 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
@@ -660,9 +775,70 @@ const TemplateEditor = ({
 
           <div className="h-[calc(100%-4rem)] overflow-auto">
             <DynamicTemplateRenderer
-              template={selectedTemplate}
+              template={{
+                ...selectedTemplate,
+                sections: selectedTemplate.sections.map((section) => ({
+                  ...section,
+                  layout:
+                    (section as unknown as { layout?: string }).layout ?? (section.type as string),
+                  type: section.type as unknown as SectionType,
+                  order: (section as unknown as { order?: number }).order ?? 0,
+                  components: {
+                    ...(section.components || {}),
+                    ...(userTemplate?.content?.[section.id] || {}), // Merge user's saved content
+                  },
+                })),
+              }}
               userPlan={userPlan || { id: "default", name: "Default", maxComponents: 10 }}
-              userData={userData}
+              userData={{
+                ...userData,
+                // Extract hero image from template content if available
+                heroImage: (() => {
+                  // First check if there's a hero image in the template content
+                  const heroSection = selectedTemplate.sections?.find((s) => s.type === "HERO");
+                  console.log("TemplateEditor - heroSection:", heroSection);
+                  console.log(
+                    "TemplateEditor - heroSection content:",
+                    heroSection ? userTemplate?.content?.[heroSection.id] : "No hero section"
+                  );
+
+                  if (heroSection && userTemplate?.content?.[heroSection.id]) {
+                    const sectionContent = userTemplate.content[heroSection.id] as Record<
+                      string,
+                      unknown
+                    >;
+                    if (sectionContent.heroImage) {
+                      const heroImage = sectionContent.heroImage as string;
+                      console.log(
+                        "TemplateEditor - Using hero image from template content:",
+                        heroImage
+                      );
+                      return heroImage;
+                    }
+                  }
+                  // Fall back to userData.heroImage
+                  console.log(
+                    "TemplateEditor - Using hero image from userData:",
+                    userData.heroImage
+                  );
+                  return userData.heroImage;
+                })(),
+                // Extract story image from template content if available
+                storyImage: (() => {
+                  const storySection = selectedTemplate.sections?.find((s) => s.type === "STORY");
+                  if (storySection && userTemplate?.content?.[storySection.id]) {
+                    const sectionContent = userTemplate.content[storySection.id] as Record<
+                      string,
+                      unknown
+                    >;
+                    if (sectionContent.storyImage) {
+                      return sectionContent.storyImage as string;
+                    }
+                  }
+                  return userData.storyImage;
+                })(),
+                sections: (userTemplate?.content || {}) as Record<string, Record<string, unknown>>, // Pass userTemplate content as sections
+              }}
               colorScheme={((): ColorScheme | undefined => {
                 if (selectedColorScheme) return selectedColorScheme;
                 const cs = userTemplate?.colorScheme as unknown;
@@ -680,6 +856,7 @@ const TemplateEditor = ({
                 return undefined;
               })()}
               editable={false}
+              isPreview={true}
             />
           </div>
         </div>
@@ -832,28 +1009,15 @@ const TemplateEditor = ({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleDelete}
-                disabled={isSaving}
+                disabled={isDeleting}
                 className="flex-1 px-4 py-2 rounded-lg text-sm bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSaving ? "Deleting..." : "Delete Forever"}
+                {isDeleting ? "Deleting..." : "Delete Forever"}
               </motion.button>
             </div>
           </div>
         </div>
       </Modal>
-
-      {/* Template Preview Modal */}
-      {selectedTemplate && (
-        <TemplatePreviewModal
-          isOpen={showPreviewModal}
-          onClose={() => setShowPreviewModal(false)}
-          template={selectedTemplate}
-          userTemplate={userTemplate ?? undefined}
-          weddingPage={weddingPage ?? undefined}
-          userPlan={userPlan ?? undefined}
-          isSelect={true} // This is customize mode, so show dynamic preview
-        />
-      )}
     </>
   );
 };
