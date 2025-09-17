@@ -173,7 +173,7 @@ const WeddingPageBuilder = () => {
       {/* Mode Toggle */}
       <div className="mb-6">
         <div
-          className={`p-1 rounded-lg inline-flex ${isDarkMode ? "bg-slate-700" : "bg-slate-200"}`}
+          className={`p-1 rounded-lg inline-flex gap-4 ${isDarkMode ? "bg-slate-700" : "bg-slate-200"}`}
         >
           <button
             onClick={() => setIsSelect(false)}
@@ -194,7 +194,7 @@ const WeddingPageBuilder = () => {
               !selectedTemplate
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : !isSelect
-                  ? "bg-white text-slate-900 shadow hover:bg-gray-50"
+                  ? "bg-black text-white shadow hover:bg-black"
                   : isDarkMode
                     ? "text-slate-300 hover:text-white"
                     : "text-slate-600 hover:text-slate-900"
