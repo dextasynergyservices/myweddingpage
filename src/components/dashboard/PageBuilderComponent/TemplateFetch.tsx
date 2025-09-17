@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
-import { Search, Eye, X, Check } from "lucide-react";
+import { Search, X, Check } from "lucide-react";
 import TemplatePreviewModal from "@/components/TemplatePreviewModal";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import { Template, UserPlan } from "@/types/wedding";
@@ -33,6 +33,42 @@ interface TemplateSelectionProps {
     | undefined;
 }
 
+// Helper function to get template thumbnail with fallbacks
+const getTemplateThumbnailUrl = (template: Template): string => {
+  // Debug logging with type information
+  console.log(`Template ${template.name}:`, {
+    thumbnail: template.thumbnail,
+    thumbnail_type: typeof template.thumbnail,
+    hero_image: template.hero_image,
+    hero_image_type: typeof template.hero_image,
+    fallback: `/thumbnail/${template.name.toLowerCase()}_thumbnail.png`,
+  });
+
+  // Ensure we're working with strings and handle null/undefined
+  const thumbnailUrl = template.thumbnail ? String(template.thumbnail).trim() : null;
+  const heroImageUrl = template.hero_image ? String(template.hero_image).trim() : null;
+
+  console.log(`Template ${template.name} processed URLs:`, {
+    thumbnailUrl,
+    heroImageUrl,
+    thumbnailUrl_length: thumbnailUrl?.length,
+    heroImageUrl_length: heroImageUrl?.length,
+  });
+
+  // Priority 1: Template thumbnail field (Canva or uploaded thumbnail)
+  if (thumbnailUrl) {
+    return thumbnailUrl;
+  }
+
+  // Priority 2: Template hero_image field
+  if (heroImageUrl) {
+    return heroImageUrl;
+  }
+
+  // Priority 3: Default template preview based on template name
+  return `/thumbnail/${template.name.toLowerCase()}_thumbnail.png`;
+};
+
 const TemplateSelection = ({
   onUserTemplateSelected,
   userPlan,
@@ -52,14 +88,32 @@ const TemplateSelection = ({
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
-        const response = await fetch("/api/templates", {
+        // First try the new thumbnails API (no auth required)
+        const response = await fetch("/api/templates/thumbnails", {
           credentials: "include",
         });
 
         if (response.ok) {
-          const templatesData = await response.json();
+          const responseData = await response.json();
+
+          // Handle the new API response format
+          const templatesData = responseData.templates || responseData;
           setTemplates(templatesData);
           setFilteredTemplates(templatesData);
+        } else {
+          // Fallback to the original templates API (requires auth)
+          console.log("Thumbnails API failed, trying original templates API");
+          const fallbackResponse = await fetch("/api/templates", {
+            credentials: "include",
+          });
+
+          if (fallbackResponse.ok) {
+            const templatesData = await fallbackResponse.json();
+            setTemplates(templatesData);
+            setFilteredTemplates(templatesData);
+          } else {
+            console.error("Both template APIs failed");
+          }
         }
       } catch (error) {
         console.error("Error fetching templates:", error);
@@ -137,7 +191,7 @@ const TemplateSelection = ({
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
           <h2
-            className={`text-lg md:text-xl font-semibold ${
+            className={`text-sm md:text-md font-semibold ${
               isDarkMode ? "text-white" : "text-slate-900"
             }`}
           >
@@ -153,7 +207,7 @@ const TemplateSelection = ({
                 placeholder="Search templates..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text- placeholder:text-black placeholder:text-sm"
               />
             </div>
 
@@ -215,16 +269,32 @@ const TemplateSelection = ({
                 whileHover={{ y: -5 }}
               >
                 <div
-                  className="relative h-24 md:h-32 w-full mb-2 overflow-hidden rounded-lg"
+                  className="relative h-24 md:h-32 w-full mb-2 overflow-hidden rounded-lg bg-gray-200 border border-gray-300"
                   onClick={() => handlePreviewTemplate(template)}
                 >
+                  {/* Test with a simple image first */}
                   <Image
-                    src={template.thumbnail || "/default-template.jpg"}
+                    src={getTemplateThumbnailUrl(template)}
                     alt={template.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                     fill
-                    className="object-cover transition-transform duration-300 hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    onLoad={(e) => {
+                      console.log(
+                        `Image loaded successfully for ${template.name}:`,
+                        (e.target as HTMLImageElement).src
+                      );
+                    }}
+                    onError={(e) => {
+                      console.error(
+                        `Image failed to load for ${template.name}:`,
+                        (e.target as HTMLImageElement).src
+                      );
+                    }}
                   />
-                  <div className="absolute top-2 left-2">
+
+                  {/* Category badge */}
+                  {/* <div className="absolute top-2 left-2 z-10">
                     <span
                       className={`text-xs px-2 py-1 rounded-full ${
                         isDarkMode ? "bg-slate-800 text-slate-200" : "bg-white text-slate-800"
@@ -232,14 +302,11 @@ const TemplateSelection = ({
                     >
                       {template.category.name}
                     </span>
-                  </div>
-                  <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-                    <Eye className="h-6 w-6 text-white opacity-0 hover:opacity-100 transition-opacity duration-300" />
-                  </div>
+                  </div> */}
 
                   {/* Selected overlay: green check in top-right */}
                   {userTemplate?.templateId === template.id && (
-                    <div className="absolute top-2 right-2 bg-green-600 text-white p-1.5 rounded-full shadow-lg">
+                    <div className="absolute top-2 right-2 bg-green-600 text-white p-1.5 rounded-full shadow-lg z-10">
                       <Check className="h-4 w-4" />
                     </div>
                   )}
