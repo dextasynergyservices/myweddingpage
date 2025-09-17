@@ -19,6 +19,10 @@ interface UserData {
   };
   subscription_end?: string;
   email?: string;
+  // Grace period fields
+  gracePeriodStart?: string;
+  gracePeriodEnd?: string;
+  isInGracePeriod?: boolean;
 }
 
 interface OverviewContentProps {
@@ -164,15 +168,74 @@ const OverviewContent = ({
 
   const displayUser = userData || user;
 
-  const remainingDays = displayUser?.subscription_end
-    ? Math.max(
+  // Enhanced subscription status calculation with grace period support
+  const getSubscriptionStatus = () => {
+    if (!displayUser?.subscription_end) {
+      return {
+        remainingDays: 0,
+        status: "no-plan",
+        message: "No active plan",
+        isExpired: false,
+        graceDaysLeft: 0,
+      };
+    }
+
+    const now = new Date();
+    const subscriptionEnd = new Date(displayUser.subscription_end);
+    const remainingDays = Math.ceil(
+      (subscriptionEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    // Plan is still active
+    if (remainingDays > 0) {
+      return {
+        remainingDays,
+        status: "active",
+        message: `${remainingDays} days`,
+        isExpired: false,
+        graceDaysLeft: 0,
+      };
+    }
+
+    // Plan has expired - check grace period
+    if (displayUser.isInGracePeriod && displayUser.gracePeriodEnd) {
+      const gracePeriodEnd = new Date(displayUser.gracePeriodEnd);
+      const graceDaysLeft = Math.max(
         0,
-        Math.ceil(
-          (new Date(displayUser.subscription_end).getTime() - new Date().getTime()) /
-            (1000 * 60 * 60 * 24)
-        )
-      )
-    : 0;
+        Math.ceil((gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+      );
+
+      if (graceDaysLeft > 0) {
+        return {
+          remainingDays: 0,
+          status: "grace-period",
+          message: "EXPIRED",
+          isExpired: true,
+          graceDaysLeft,
+        };
+      } else {
+        return {
+          remainingDays: 0,
+          status: "deletion-pending",
+          message: "EXPIRED",
+          isExpired: true,
+          graceDaysLeft: 0,
+        };
+      }
+    }
+
+    // Just expired, grace period not started yet
+    return {
+      remainingDays: 0,
+      status: "just-expired",
+      message: "EXPIRED",
+      isExpired: true,
+      graceDaysLeft: 3,
+    };
+  };
+
+  const subscriptionStatus = getSubscriptionStatus();
+  const { remainingDays, status, message, isExpired, graceDaysLeft } = subscriptionStatus;
 
   return (
     <div className="space-y-8">
@@ -198,18 +261,45 @@ const OverviewContent = ({
               className={`text-base md:text-md ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}
             >
               Your wedding plan is:{" "}
-              <span className="font-bold text-lg">{displayUser?.plan?.name || "No plan"}</span>,
-              valid for{" "}
-              <span className={`font-bold text-lg ${remainingDays <= 7 ? "text-red-500" : ""}`}>
-                {remainingDays} days
-              </span>
+              <span className="font-bold text-lg">{displayUser?.plan?.name || "No plan"}</span>
+              {status === "active" && (
+                <>
+                  , valid for{" "}
+                  <span className={`font-bold text-lg ${remainingDays <= 7 ? "text-red-500" : ""}`}>
+                    {message}
+                  </span>
+                </>
+              )}
+              {(status === "grace-period" || status === "just-expired") && (
+                <>
+                  {" - "}
+                  <span className="font-bold text-lg text-red-600">{message}</span>
+                  {graceDaysLeft > 0 && (
+                    <span className="text-red-500 text-sm ml-2">
+                      Renew within {graceDaysLeft} day{graceDaysLeft !== 1 ? "s" : ""} to avoid
+                      deletion
+                    </span>
+                  )}
+                </>
+              )}
+              {status === "deletion-pending" && (
+                <>
+                  {" - "}
+                  <span className="font-bold text-lg text-red-700">{message}</span>
+                  <span className="text-red-700 text-sm ml-2">
+                    Wedding page scheduled for deletion
+                  </span>
+                </>
+              )}
             </p>
-            {remainingDays <= 7 && (
+            {(remainingDays <= 7 || isExpired) && status !== "deletion-pending" && (
               <button
                 onClick={() => setRenewalOpen(true)}
-                className="ml-2 text-red-500 underline text-sm font-medium cursor-pointer"
+                className={`ml-2 underline text-sm font-medium cursor-pointer ${
+                  isExpired ? "text-red-600 font-bold" : "text-red-500"
+                }`}
               >
-                Renew Plan
+                {isExpired ? "URGENT: Renew Now" : "Renew Plan"}
               </button>
             )}
             <RenewalModal
@@ -233,6 +323,47 @@ const OverviewContent = ({
           </div>
         </div>
       </div>
+
+      {/* Grace Period Alert Banner */}
+      {(status === "grace-period" || status === "just-expired") && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-red-50 border border-red-200 rounded-2xl p-4 md:p-6"
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+              <div>
+                <h3 className="text-red-800 font-semibold text-lg">
+                  ⚠️ Plan Expired - Grace Period Active
+                </h3>
+                <p className="text-red-700 text-sm">
+                  {graceDaysLeft > 0 ? (
+                    <>
+                      You have{" "}
+                      <strong>
+                        {graceDaysLeft} day{graceDaysLeft !== 1 ? "s" : ""}
+                      </strong>{" "}
+                      to renew before your wedding page is permanently deleted.
+                    </>
+                  ) : (
+                    <>Your grace period has ended. Wedding page deletion is imminent.</>
+                  )}
+                </p>
+              </div>
+            </div>
+            {graceDaysLeft > 0 && (
+              <button
+                onClick={() => setRenewalOpen(true)}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors whitespace-nowrap"
+              >
+                Renew Now
+              </button>
+            )}
+          </div>
+        </motion.div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">

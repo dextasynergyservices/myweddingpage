@@ -1,5 +1,9 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { Button } from "./components/ui/button";
+import { LiveStreamHero } from "@/components/LiveStreamHero";
 // Hero background image - using public path
 import styles from "@/styles/templates/bloom.module.css";
 
@@ -26,7 +30,47 @@ interface WeddingHeroProps {
   };
 }
 
+interface Stream {
+  id: string;
+  name: string;
+  youtubeUrl: string;
+  youtubeId: string;
+  camera: string;
+  quality: string;
+  isActive: boolean;
+  viewerCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const WeddingHero = (props: WeddingHeroProps) => {
+  // Livestream state
+  const [activeStream, setActiveStream] = useState<Stream | null>(null);
+  const [isLoadingStream, setIsLoadingStream] = useState(true);
+
+  // Check for active livestream
+  useEffect(() => {
+    const fetchActiveStream = async () => {
+      try {
+        const response = await fetch("/api/active-stream");
+        if (response.ok) {
+          const data = await response.json();
+          setActiveStream(data.activeStream);
+        } else if (response.status === 401) {
+          // Unauthorized (not logged in) - this is expected for public pages
+          setActiveStream(null);
+        }
+      } catch (error) {
+        console.error("Error fetching active stream:", error);
+        setActiveStream(null);
+      } finally {
+        setIsLoadingStream(false);
+      }
+    };
+
+    fetchActiveStream();
+  }, []);
+
   // Extract data from props (prioritize direct props over weddingData object)
   const brideName = props.brideName || props.weddingData?.brideName || "Bride";
   const groomName = props.groomName || props.weddingData?.groomName || "Groom";
@@ -77,6 +121,37 @@ const WeddingHero = (props: WeddingHeroProps) => {
       gallerySection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
+
+  // Show loading state while checking for livestream
+  if (isLoadingStream) {
+    return (
+      <section className="relative min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // If there's an active livestream, show LiveStreamHero instead
+  if (activeStream) {
+    const venue = props.venue || props.weddingData?.venue || "Wedding Venue";
+    return (
+      <LiveStreamHero
+        stream={activeStream}
+        brideName={brideName}
+        groomName={groomName}
+        weddingDate={weddingDate}
+        venue={venue}
+        subtitle="Two hearts, one beautiful journey"
+        description={props.description}
+        className={styles.heroSection}
+        overlayClassName={styles.gradientHero}
+        contentClassName={styles.heroContent}
+      />
+    );
+  }
 
   return (
     <section

@@ -21,10 +21,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Slug is missing" }, { status: 400 });
     }
 
-    // Get the wedding page using the slug
-    const weddingPage = await prisma.weddingPage.findUnique({
+    // Get the wedding page using the slug (excluding deleted pages)
+    const weddingPage = await prisma.weddingPage.findFirst({
       where: {
-        slug: slug, // Assuming you have a slug field in WeddingPage
+        slug: slug,
+        deleted_at: null, // Only allow comments on non-deleted pages
       },
       select: { id: true, userId: true },
     });
@@ -66,10 +67,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Slug is required" }, { status: 400 });
     }
 
-    // Get the wedding page using the slug
-    const weddingPage = await prisma.weddingPage.findUnique({
+    // Get the wedding page using the slug (excluding deleted pages)
+    const weddingPage = await prisma.weddingPage.findFirst({
       where: {
         slug: slug,
+        deleted_at: null, // Only show comments for non-deleted pages
       },
       select: { id: true },
     });

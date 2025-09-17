@@ -293,6 +293,12 @@ const DynamicTemplateRendererComponent = ({
                 storyImage: userData?.storyImage,
                 logoUrl: userData?.logoUrl,
                 logoAlt: userData?.logoAlt,
+                // Add core wedding data as direct props for Hero components
+                brideName: userData?.brideName,
+                groomName: userData?.groomName,
+                weddingDate: userData?.weddingDate,
+                venue: userData?.venue,
+                welcomeMessage: userData?.welcomeMessage,
               };
 
               return <RenderComponent {...componentProps} />;

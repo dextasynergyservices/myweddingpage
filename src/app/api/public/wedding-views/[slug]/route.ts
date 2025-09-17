@@ -8,8 +8,14 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
       return NextResponse.json({ error: "Missing slug" }, { status: 400 });
     }
 
-    // Find the wedding page id only
-    const weddingPage = await prisma.weddingPage.findUnique({ where: { slug }, select: { id: true, is_live: true, views: true } });
+    // Find the wedding page id only (excluding deleted pages)
+    const weddingPage = await prisma.weddingPage.findFirst({
+      where: {
+        slug,
+        deleted_at: null, // Only show non-deleted pages
+      },
+      select: { id: true, is_live: true, views: true }
+    });
     if (!weddingPage || !weddingPage.is_live) {
       return NextResponse.json({ error: "Page not found" }, { status: 404 });
     }
