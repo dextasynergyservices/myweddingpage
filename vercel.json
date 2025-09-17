@@ -5,19 +5,7 @@
       "schedule": "0 0 * * *"
     },
     {
-      "path": "/api/cron/task-reminder",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/cron/wedding-date-reminders",
-      "schedule": "0 8 * * *"
-    },
-    {
-      "path": "/api/cron/wedding-congratulations",
-      "schedule": "0 8 * * *"
-    },
-    {
-      "path": "/api/cron/expiration-manager",
+      "path": "/api/cron/daily-automated-tasks",
       "schedule": "0 8 * * *"
     }
   ]
