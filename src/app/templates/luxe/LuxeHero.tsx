@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Heart } from "lucide-react";
+import { LiveStreamHero } from "@/components/LiveStreamHero";
 import styles from "@/styles/templates/luxe.module.css";
 import Image from "next/image";
 
@@ -28,7 +29,63 @@ interface HeroProps {
   };
 }
 
+interface Stream {
+  id: string;
+  name: string;
+  youtubeUrl: string;
+  youtubeId: string;
+  camera: string;
+  quality: string;
+  isActive: boolean;
+  viewerCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function Hero(props: HeroProps) {
+  // Debug: Log all received props
+  console.log("LuxeHero: Received props:", props);
+
+  // Livestream state
+  const [activeStream, setActiveStream] = useState<Stream | null>(null);
+  const [isLoadingStream, setIsLoadingStream] = useState(true);
+
+  // Check for active livestream
+  useEffect(() => {
+    const fetchActiveStream = async () => {
+      console.log("LuxeHero: Starting fetchActiveStream");
+      try {
+        const response = await fetch("/api/active-stream");
+        console.log("LuxeHero: API response status:", response.status);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("LuxeHero: Received stream data:", data);
+          setActiveStream(data.activeStream);
+        } else if (response.status === 401) {
+          // Unauthorized (not logged in) - this is expected for public pages
+          console.log("LuxeHero: Unauthorized (expected for public pages)");
+          setActiveStream(null);
+        }
+      } catch (error) {
+        console.error("LuxeHero: Error fetching active stream:", error);
+        setActiveStream(null);
+      } finally {
+        console.log("LuxeHero: Setting isLoadingStream to false");
+        setIsLoadingStream(false);
+      }
+    };
+
+    fetchActiveStream();
+
+    // Safety timeout to ensure loading doesn't hang indefinitely
+    const timeout = setTimeout(() => {
+      console.log("LuxeHero: Timeout reached, setting isLoadingStream to false");
+      setIsLoadingStream(false);
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   // Extract data from props (prioritize direct props over weddingData object)
   const brideName = props.brideName || props.weddingData?.brideName || "Bride";
   const groomName = props.groomName || props.weddingData?.groomName || "Groom";
@@ -113,6 +170,43 @@ export default function Hero(props: HeroProps) {
       storySection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
+
+  // Show loading state while checking for livestream (temporary skip for debugging)
+  // if (isLoadingStream) {
+  //   return (
+  //     <section className="relative min-h-screen flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+  //         <p>Loading...</p>
+  //       </div>
+  //     </section>
+  //   );
+  // }
+
+  console.log(
+    "LuxeHero: About to render, isLoadingStream:",
+    isLoadingStream,
+    "activeStream:",
+    activeStream
+  );
+
+  // If there's an active livestream, show LiveStreamHero instead
+  if (activeStream) {
+    return (
+      <LiveStreamHero
+        stream={activeStream}
+        brideName={brideName}
+        groomName={groomName}
+        weddingDate={weddingDate}
+        venue={venue}
+        subtitle="Elegance & Grace"
+        description={props.description}
+        className="bg-gradient-to-br from-rose-50 via-sage-50 to-emerald-50"
+        overlayClassName="bg-black/40"
+        contentClassName="text-center"
+      />
+    );
+  }
 
   return (
     <section

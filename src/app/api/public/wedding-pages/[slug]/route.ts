@@ -10,8 +10,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Missing slug" }, { status: 400 });
     }
 
-    const page = await prisma.weddingPage.findUnique({
-      where: { slug },
+    const page = await prisma.weddingPage.findFirst({
+      where: {
+        slug,
+        deleted_at: null, // Only show non-deleted pages
+      },
       include: {
         template: true,
         mediaUploads: true,

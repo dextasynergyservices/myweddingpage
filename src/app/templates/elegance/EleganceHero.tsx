@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Heart, Calendar } from "lucide-react";
+import { LiveStreamHero } from "@/components/LiveStreamHero";
 import weddingHero from "./assets/wedding-hero.jpg";
 import styles from "@/styles/templates/elegance.module.css";
 import Image from "next/image";
@@ -29,7 +30,47 @@ interface HeroProps {
   };
 }
 
+interface Stream {
+  id: string;
+  name: string;
+  youtubeUrl: string;
+  youtubeId: string;
+  camera: string;
+  quality: string;
+  isActive: boolean;
+  viewerCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const Hero: React.FC<HeroProps> = (props) => {
+  // Livestream state
+  const [activeStream, setActiveStream] = useState<Stream | null>(null);
+  const [isLoadingStream, setIsLoadingStream] = useState(true);
+
+  // Check for active livestream
+  useEffect(() => {
+    const fetchActiveStream = async () => {
+      try {
+        const response = await fetch("/api/active-stream");
+        if (response.ok) {
+          const data = await response.json();
+          setActiveStream(data.activeStream);
+        } else if (response.status === 401) {
+          // Unauthorized (not logged in) - this is expected for public pages
+          setActiveStream(null);
+        }
+      } catch (error) {
+        console.error("Error fetching active stream:", error);
+        setActiveStream(null);
+      } finally {
+        setIsLoadingStream(false);
+      }
+    };
+
+    fetchActiveStream();
+  }, []);
+
   // Extract data from props (prioritize direct props over weddingData object)
   const brideName = props.brideName || props.weddingData?.brideName || "Bride";
   const groomName = props.groomName || props.weddingData?.groomName || "Groom";
@@ -96,6 +137,37 @@ const Hero: React.FC<HeroProps> = (props) => {
     }
   };
 
+  // Show loading state while checking for livestream
+  if (isLoadingStream) {
+    return (
+      <section className="relative min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // If there's an active livestream, show LiveStreamHero instead
+  if (activeStream) {
+    const venue = props.venue || props.weddingData?.venue || "Wedding Venue";
+    return (
+      <LiveStreamHero
+        stream={activeStream}
+        brideName={brideName}
+        groomName={groomName}
+        weddingDate={formattedDate}
+        venue={venue}
+        subtitle="Timeless Elegance"
+        description={props.description}
+        className={`${styles.relative} ${styles.minHScreen} ${styles.bgGradientSection}`}
+        overlayClassName="bg-black/40"
+        contentClassName="text-center"
+      />
+    );
+  }
+
   return (
     <section
       className={`${styles.relative} ${styles.minHScreen} ${styles.bgGradientSection} ${styles.overflowHidden}`}
@@ -159,7 +231,7 @@ const Hero: React.FC<HeroProps> = (props) => {
               </p> */}
 
               <div
-                className={`${styles.flex} ${styles.flexRow} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.lgJustifyStart} ${styles.gap4} ${styles.lgGap6}`}
+                className={`pb-18 ${styles.flex} ${styles.flexRow} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.lgJustifyStart} ${styles.gap4} ${styles.lgGap6}`}
               >
                 <button
                   className="bg-rose-400 text-white px-6 py-2 lg:px-8 lg:py-3 text-sm lg:text-base rounded-lg font-semibold transition-all duration-300 hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2"

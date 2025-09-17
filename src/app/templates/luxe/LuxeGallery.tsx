@@ -245,26 +245,22 @@ export default function Gallery({
               >
                 <div className={`${item.aspectRatio} overflow-hidden`}>
                   {"type" in item && item.type === "VIDEO" ? (
-                    // For videos, check if we have a real video URL or just a thumbnail
-                    item.url.includes(".mp4") ||
-                    item.url.includes(".mov") ||
-                    item.url.includes(".webm") ? (
-                      <video
-                        src={item.url}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        preload="metadata"
-                        poster={item.src} // Use thumbnail as poster
-                      />
-                    ) : (
-                      // If no real video URL, display thumbnail as image with play button
-                      <Image
-                        src={item.src}
-                        alt={item.alt}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        width={600}
-                        height={400}
-                      />
-                    )
+                    <div className="w-full h-full flex items-center justify-center bg-black cursor-pointer">
+                      <video className="w-full h-full object-cover">
+                        <source src={item.url} type="video/mp4" />
+                      </video>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-8 h-8 text-white ml-1"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
                   ) : (
                     <Image
                       src={item.src}
@@ -287,21 +283,6 @@ export default function Gallery({
                         ? "After Wedding"
                         : ""}
                 </div>
-
-                {/* Video Play Icon */}
-                {"type" in item && item.type === "VIDEO" && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <svg
-                        className="w-8 h-8 text-purple-600 ml-1"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           ))}
