@@ -79,7 +79,6 @@
     "@types/react-dom": "^19",
     "@types/react-router-dom": "^5.3.3",
     "@types/redis": "^4.0.11",
-    "@types/twilio": "^3.19.0",
     "@types/uuid": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
