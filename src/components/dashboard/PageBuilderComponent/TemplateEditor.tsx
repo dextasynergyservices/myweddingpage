@@ -11,8 +11,6 @@ import {
   Download,
   Edit,
   Heart,
-  FileText,
-  ImageIcon,
   Gift,
   Users,
   Calendar,
@@ -37,6 +35,7 @@ interface TemplateEditorProps {
   editedSections: string[];
   onWeddingPageUpdate?: (weddingPage: WeddingPage | null) => void;
   onUserTemplateUpdate?: (userTemplate: UserTemplate | null) => void;
+  setActiveTab?: (tab: string) => void;
 }
 
 const TemplateEditor = ({
@@ -48,6 +47,7 @@ const TemplateEditor = ({
   editedSections = [],
   onWeddingPageUpdate,
   onUserTemplateUpdate,
+  setActiveTab,
 }: TemplateEditorProps) => {
   const { isDarkMode } = useTheme();
   const [selectedSection, setSelectedSection] = useState<{ id: string; type: string } | null>(null);
@@ -419,18 +419,24 @@ const TemplateEditor = ({
       case "HERO":
         return (
           <div className="text-center">
-            <h1 className="text-2xl md:text-4xl font-bold mb-2">
+            <h1
+              className={`text-2xl md:text-4xl font-bold mb-2 ${isDarkMode ? "text-white" : "text-black"}`}
+            >
               {renderText(
                 content.title,
-                `${userData.groomName || "Groom"} & ${userData.brideName || "Bride"}`
+                `${userData.brideName || "Bride"} & ${userData.groomName || "Groom"}`
               )}
             </h1>
-            <div className="flex items-center justify-center gap-2 text-lg md:text-xl">
+            <div
+              className={`flex items-center justify-center gap-2 text-lg md:text-xl ${isDarkMode ? "text-white" : "text-black"}`}
+            >
               <Calendar className="h-5 w-5" />
               <p>{renderText(content.subtitle, renderText(content.date, userData.weddingDate))}</p>
             </div>
             {(content.venue || content.location || userData.venue) && (
-              <div className="flex items-center justify-center gap-2 text-sm md:text-base mt-2">
+              <div
+                className={`flex items-center justify-center gap-2 text-sm md:text-base mt-2 ${isDarkMode ? "text-white" : "text-black"}`}
+              >
                 <MapPin className="h-4 w-4" />
                 <p>{renderText(content.venue, renderText(content.location, userData.venue))}</p>
               </div>
@@ -440,11 +446,13 @@ const TemplateEditor = ({
       case "STORY":
         return (
           <div>
-            <h2 className="text-xl md:text-2xl font-semibold mb-2 flex items-center gap-2">
+            <h2
+              className={`text-xl md:text-2xl font-semibold mb-2 flex items-center gap-2 ${isDarkMode ? "text-white" : "text-black"}`}
+            >
               <Heart className="h-5 w-5 text-pink-500" />
               {renderText(content.title, "Our Story")}
             </h2>
-            <p className="text-sm md:text-base">
+            <p className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}>
               {renderText(
                 content.text,
                 renderText(content.content, "Your love story goes here...")
@@ -454,46 +462,62 @@ const TemplateEditor = ({
         );
       case "GALLERY":
         return (
-          <div>
-            <h2 className="text-xl md:text-2xl font-semibold mb-2">Photo Gallery</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {(() => {
-                const imgs = (content as Record<string, unknown>).images;
-                return Array.isArray(imgs) ? (imgs as (string | number)[]) : [1, 2, 3];
-              })().map((img: string | number, i: number) =>
-                typeof img === "string" ? (
-                  <div key={i} className="aspect-square relative bg-gray-200 rounded">
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-                      Image {i + 1}
-                    </div>
-                  </div>
-                ) : (
-                  <div key={i} className="aspect-square bg-gray-200 rounded"></div>
-                )
-              )}
-            </div>
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (setActiveTab) {
+                setActiveTab("gallery");
+              }
+            }}
+          >
+            <h2
+              className={`text-xl md:text-2xl font-semibold mb-2 cursor-pointer transition-colors flex items-center gap-2  ${isDarkMode ? "text-white" : "text-black"}`}
+            >
+              Photo Gallery
+            </h2>
+            <p className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}>
+              {renderText(content.content, "Add photos and videos ...")}
+            </p>
           </div>
         );
       case "REGISTRY":
         return (
-          <div>
-            <h2 className="text-xl md:text-2xl font-semibold mb-2 flex items-center gap-2">
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (setActiveTab) {
+                setActiveTab("gift");
+              }
+            }}
+          >
+            <h2
+              className={`text-xl md:text-2xl font-semibold mb-2 flex items-center cursor-pointer gap-2 ${isDarkMode ? "text-white" : "text-black"}`}
+            >
               <Gift className="h-5 w-5 text-amber-500" />
               Gift Registry
             </h2>
-            <p className="text-sm md:text-base">
+            <p className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}>
               {renderText(content.content, "Browse our gift registry...")}
             </p>
           </div>
         );
       case "WISHES":
         return (
-          <div>
-            <h2 className="text-xl md:text-2xl font-semibold mb-2 flex items-center gap-2">
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (setActiveTab) {
+                setActiveTab("gift:comments");
+              }
+            }}
+          >
+            <h2
+              className={`text-xl md:text-2xl font-semibold mb-2 flex items-center gap-2 cursor-pointer transition-colors ${isDarkMode ? "text-white" : "text-black"}`}
+            >
               <Users className="h-5 w-5 text-blue-500" />
               Guest Wishes
             </h2>
-            <p className="text-sm md:text-base">
+            <p className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}>
               {renderText(content.content, "Leave your wishes for the couple...")}
             </p>
           </div>
@@ -680,7 +704,7 @@ const TemplateEditor = ({
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      className={`relative p-4 md:p-6 rounded-xl border-2 border-dashed transition-all duration-300 cursor-pointer group ${
+                      className={`relative p-4 md:p-6 rounded-xl border-2 border-dashed transition-all duration-300 cursor-pointer group ${isDarkMode ? "hover:bg-slate-800" : "hover:bg-slate-300"} ${
                         isComplete ? "border-green-400 bg-green-50 dark:bg-green-900/20" : ""
                       }`}
                       onClick={() => openEditModal(section)}
@@ -713,21 +737,10 @@ const TemplateEditor = ({
                                 ? "#10b981"
                                 : `linear-gradient(to right, ${selectedColorScheme?.primary}, ${selectedColorScheme?.secondary})`,
                             }}
-                          >
-                            {/* Icons based on section type */}
-                            {section.type === "HERO" && <Heart className="h-4 w-4 text-white" />}
-                            {section.type === "STORY" && (
-                              <FileText className="h-4 w-4 text-white" />
-                            )}
-                            {section.type === "GALLERY" && (
-                              <ImageIcon className="h-4 w-4 text-white" />
-                            )}
-                            {section.type === "REGISTRY" && <Gift className="h-4 w-4 text-white" />}
-                            {section.type === "WISHES" && <Users className="h-4 w-4 text-white" />}
-                          </motion.div>
-                          <h3 className="text-sm font-medium">
+                          ></motion.div>
+                          {/* <h3 className="text-sm font-medium text-black">
                             {section.type.charAt(0) + section.type.slice(1).toLowerCase()}
-                          </h3>
+                          </h3> */}
                         </div>
                         {/* Edit button for editable sections */}
                         {(section.type === "HERO" || section.type === "STORY") && (

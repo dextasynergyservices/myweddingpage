@@ -52,10 +52,11 @@ export default function Hero(props: HeroProps) {
 
   // Check for active livestream
   useEffect(() => {
+    console.log("LuxeHero: useEffect triggered");
     const fetchActiveStream = async () => {
       console.log("LuxeHero: Starting fetchActiveStream");
       try {
-        const response = await fetch("/api/active-stream");
+        const response = await fetch("/api/public/active-stream");
         console.log("LuxeHero: API response status:", response.status);
         if (response.ok) {
           const data = await response.json();
@@ -64,6 +65,10 @@ export default function Hero(props: HeroProps) {
         } else if (response.status === 401) {
           // Unauthorized (not logged in) - this is expected for public pages
           console.log("LuxeHero: Unauthorized (expected for public pages)");
+          setActiveStream(null);
+        } else {
+          // Other error statuses
+          console.log("LuxeHero: API error status:", response.status);
           setActiveStream(null);
         }
       } catch (error) {
@@ -76,14 +81,6 @@ export default function Hero(props: HeroProps) {
     };
 
     fetchActiveStream();
-
-    // Safety timeout to ensure loading doesn't hang indefinitely
-    const timeout = setTimeout(() => {
-      console.log("LuxeHero: Timeout reached, setting isLoadingStream to false");
-      setIsLoadingStream(false);
-    }, 5000);
-
-    return () => clearTimeout(timeout);
   }, []);
 
   // Extract data from props (prioritize direct props over weddingData object)
@@ -124,27 +121,9 @@ export default function Hero(props: HeroProps) {
   const heroImage =
     props.heroImage ||
     "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=800";
-  const [isVisible, setIsVisible] = useState(false);
   const [imageScale, setImageScale] = useState(1);
   const heroRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
 
   const handleScroll = useCallback(() => {
     if (imageRef.current) {
@@ -171,24 +150,17 @@ export default function Hero(props: HeroProps) {
     }
   };
 
-  // Show loading state while checking for livestream (temporary skip for debugging)
-  // if (isLoadingStream) {
-  //   return (
-  //     <section className="relative min-h-screen flex items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-  //         <p>Loading...</p>
-  //       </div>
-  //     </section>
-  //   );
-  // }
-
-  console.log(
-    "LuxeHero: About to render, isLoadingStream:",
-    isLoadingStream,
-    "activeStream:",
-    activeStream
-  );
+  // Show loading state while checking for livestream
+  if (isLoadingStream) {
+    return (
+      <section className="relative min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </section>
+    );
+  }
 
   // If there's an active livestream, show LiveStreamHero instead
   if (activeStream) {
@@ -222,16 +194,10 @@ export default function Hero(props: HeroProps) {
       />
 
       {/* Content */}
-      <div
-        className={`relative z-10 text-center transition-all duration-1000 ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`}
-      >
+      <div className="relative z-10 text-center transition-all duration-1000 opacity-100 translate-y-0">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           {/* Couple Image */}
-          <div
-            className={`mb-8 transition-all duration-1000 transform ${isVisible ? "scale-100 opacity-100" : "scale-75 opacity-0"}`}
-          >
+          <div className="mb-8 transition-all duration-1000 transform scale-100 opacity-100">
             <div ref={imageRef} className="relative inline-block">
               <div className="w-72 h-72 mx-auto rounded-lg overflow-hidden shadow-2xl ring-8 ring-rose-200/60 relative group">
                 <Image

@@ -55,7 +55,7 @@ const DashboardContent = ({
       case "builder":
         return <WeddingPageBuilder />;
       case "page-builder":
-        return <PageBuilder />;
+        return <PageBuilder setActiveTab={setActiveTab} />;
       case "gallery":
         return <Gallery />;
       case "guests":
@@ -64,6 +64,8 @@ const DashboardContent = ({
         return <LiveStreaming />;
       case "gift":
         return <GiftRegistration />;
+      case "gift:comments":
+        return <GiftRegistration initialSubTab="comments" />;
       case "checklist":
         return <InteractiveChecklist />;
       default:
