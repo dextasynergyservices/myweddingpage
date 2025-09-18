@@ -1,10 +1,4 @@
-declare module 'twilio' {
-  interface TwilioError extends Error {
-    code?: number;
-    moreInfo?: string;
-    status?: number;
-  }
-
+declare module "twilio" {
   interface MessageInstance {
     sid: string;
     status: string;
@@ -44,8 +38,8 @@ declare module 'twilio' {
 
   interface TwilioClient {
     messages: MessageListInstance;
-    account: any;
-    api: any;
+    account: Record<string, unknown>;
+    api: Record<string, unknown>;
   }
 
   function twilio(accountSid: string, authToken: string): TwilioClient;
