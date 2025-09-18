@@ -34,7 +34,7 @@ const HomeWeddingCard = ({ wedding, index, isDarkMode }: WeddingCardProps) => {
       <Link
         href={`/wedding-pages/${wedding.slug || wedding.id}`}
         className={`block h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-300 ${
-          isDarkMode ? "bg-slate-800 hover:bg-slate-700" : "bg-white hover:bg-slate-50"
+          isDarkMode ? "bg-black/50 hover:bg-black/70" : "bg-white/80 hover:bg-amber-50"
         }`}
       >
         <div className="relative h-48 w-full">
@@ -56,7 +56,7 @@ const HomeWeddingCard = ({ wedding, index, isDarkMode }: WeddingCardProps) => {
           >
             {wedding.title}
           </h3>
-          <p className={`text-sm mb-1 ${isDarkMode ? "text-indigo-300" : "text-indigo-600"}`}>
+          <p className={`text-sm mb-1 ${isDarkMode ? "text-[#ab862b]" : "text-[#ab862b]"}`}>
             {wedding.date}
           </p>
           <p className={`text-sm mb-3 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>

@@ -56,17 +56,14 @@ export default function ForgotPasswordModal({
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         onClick={(e) => e.stopPropagation()} // Prevent click from closing when inside modal
-        className="bg-white p-6 rounded-lg w-full max-w-md relative"
+        className="bg-white/50 p-6 rounded-lg w-full max-w-md relative"
       >
         {/* ✅ Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-        >
+        <button onClick={onClose} className="absolute top-3 right-3 text-black hover:text-black">
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-xl font-semibold mb-4 text-slate-800">Reset Password</h2>
+        <h2 className="text-xl font-semibold mb-4 text-black">Reset Password</h2>
 
         {/* Form with no extra background */}
         <form onSubmit={handleSubmit} className="space-y-4 bg-transparent">
@@ -75,7 +72,7 @@ export default function ForgotPasswordModal({
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="bg-white"
+            className="bg-black"
             required
           />
           <div className="space-y-3">

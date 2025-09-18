@@ -78,9 +78,11 @@ const ContactForm = () => {
     <AnimatedSection animation="fadeRight">
       <div
         className={`${
-          isDarkMode ? "bg-slate-800/80" : "bg-white/80"
+          isDarkMode
+            ? "bg-gradient-to-br from-black via-[#ab862b]/10 to-[#ab862b]/5"
+            : "bg-white/80"
         } backdrop-blur-xl rounded-3xl shadow-2xl border ${
-          isDarkMode ? "border-slate-700/50" : "border-white/20"
+          isDarkMode ? "border-[#ab862b]/20" : "border-black/20"
         } p-8`}
       >
         <h2 className={`text-3xl font-light mb-8 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
@@ -105,9 +107,9 @@ const ContactForm = () => {
                 required
                 className={`w-full px-4 py-3 rounded-2xl border transition-all duration-300 ${
                   isDarkMode
-                    ? "bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500 focus:bg-slate-700"
-                    : "bg-white/50 border-slate-300 text-slate-900 placeholder-slate-500 focus:border-indigo-500 focus:bg-white"
-                } focus:ring-2 focus:ring-indigo-500/20 focus:outline-none`}
+                    ? "bg-[#ab862b]/10 border-[#ab862b] text-white placeholder-white focus:border-[#ab862b] focus:bg-[#ab862b]/10 focus:ring-[#ab862b]"
+                    : "bg-white/50 border-black text-slate-900 placeholder-slate-500 focus:border-black focus:bg-white focus:ring-black"
+                } focus:ring-2 focus:outline-none`}
                 placeholder="Enter your name"
               />
               {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
@@ -128,9 +130,9 @@ const ContactForm = () => {
                 required
                 className={`w-full px-4 py-3 rounded-2xl border transition-all duration-300 ${
                   isDarkMode
-                    ? "bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500 focus:bg-slate-700"
-                    : "bg-white/50 border-slate-300 text-slate-900 placeholder-slate-500 focus:border-indigo-500 focus:bg-white"
-                } focus:ring-2 focus:ring-indigo-500/20 focus:outline-none`}
+                    ? "bg-[#ab862b]/10 border-[#ab862b] text-white placeholder-white focus:border-[#ab862b] focus:bg-[#ab862b]/10 focus:ring-[#ab862b]"
+                    : "bg-white/50 border-black text-slate-900 placeholder-slate-500 focus:border-black focus:bg-white focus:ring-black"
+                } focus:ring-2 focus:outline-none`}
                 placeholder="Enter your email"
               />
               {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -152,9 +154,9 @@ const ContactForm = () => {
               required
               className={`w-full px-4 py-3 rounded-2xl border transition-all duration-300 ${
                 isDarkMode
-                  ? "bg-slate-700/50 border-slate-600 text-white focus:border-indigo-500 focus:bg-slate-700"
-                  : "bg-white/50 border-slate-300 text-slate-900 focus:border-indigo-500 focus:bg-white"
-              } focus:ring-2 focus:ring-indigo-500/20 focus:outline-none`}
+                  ? "bg-[#ab862b]/10 border-[#ab862b] text-white placeholder-white focus:border-[#ab862b] focus:bg-[#ab862b]/10 focus:ring-[#ab862b]"
+                  : "bg-white/50 border-black text-slate-900 placeholder-slate-500 focus:border-black focus:bg-white focus:ring-black"
+              } focus:ring-2 focus:outline-none`}
             ></input>
             {errors.subject && <p className="text-red-500 text-sm mt-1">{errors.subject}</p>}
           </div>
@@ -175,9 +177,9 @@ const ContactForm = () => {
               rows={6}
               className={`w-full px-4 py-3 rounded-2xl border transition-all duration-300 resize-none ${
                 isDarkMode
-                  ? "bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500 focus:bg-slate-700"
-                  : "bg-white/50 border-slate-300 text-slate-900 placeholder-slate-500 focus:border-indigo-500 focus:bg-white"
-              } focus:ring-2 focus:ring-indigo-500/20 focus:outline-none`}
+                  ? "bg-[#ab862b]/10 border-[#ab862b] text-white placeholder-white focus:border-[#ab862b] focus:bg-[#ab862b]/10 focus:ring-[#ab862b]"
+                  : "bg-white/50 border-black text-slate-900 placeholder-slate-500 focus:border-black focus:bg-white focus:ring-black"
+              } focus:ring-2 focus:outline-none`}
               placeholder="Tell us how we can help you..."
             />
             {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
@@ -204,7 +206,7 @@ const ContactForm = () => {
             disabled={isSubmitting}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 px-6 rounded-2xl font-medium hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className={`w-full text-white py-4 px-6 rounded-2xl font-medium hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${isDarkMode ? "bg-gradient-to-r from-black/50 to-[#ab862b]" : "bg-black"}`}
           >
             {isSubmitting ? (
               <>

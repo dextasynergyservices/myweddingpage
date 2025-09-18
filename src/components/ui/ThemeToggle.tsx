@@ -13,7 +13,7 @@ const ThemeToggle: React.FC = () => {
       onClick={toggleTheme}
       className={`relative p-3 rounded-2xl transition-all duration-300 ${
         isDarkMode
-          ? "bg-slate-800 text-yellow-400 hover:bg-slate-700"
+          ? "bg-[#000000] text-[#ab862b] hover:bg-[#ab862b] hover:text-[#000000]"
           : "bg-white text-slate-600 hover:bg-slate-50 shadow-lg"
       }`}
       whileHover={{ scale: 1.05 }}
