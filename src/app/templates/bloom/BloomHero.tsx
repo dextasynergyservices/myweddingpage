@@ -52,7 +52,7 @@ const WeddingHero = (props: WeddingHeroProps) => {
   useEffect(() => {
     const fetchActiveStream = async () => {
       try {
-        const response = await fetch("/api/active-stream");
+        const response = await fetch("/api/public/active-stream");
         if (response.ok) {
           const data = await response.json();
           setActiveStream(data.activeStream);
