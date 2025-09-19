@@ -70,7 +70,7 @@ const CTAButton = ({
                 onClick={() => setIsMobileMenuOpen?.(false)}
                 className={`w-full px-4 py-2 rounded-xl font-medium transition-colors duration-200 cursor-pointer ${
                   isDarkMode
-                    ? "text-slate-900 hover:bg-slate-800"
+                    ? "text-slate-900 hover:bg-black hover:text-white"
                     : "text-slate-700 hover:bg-slate-100"
                 }`}
               >
@@ -80,7 +80,7 @@ const CTAButton = ({
             <Link href="/packages">
               <button
                 onClick={() => setIsMobileMenuOpen?.(false)}
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-xl font-medium cursor-pointer"
+                className="w-full bg-gradient-to-r from-[#000000] to-[#ab862b] text-white px-4 py-2 rounded-xl font-medium cursor-pointer"
               >
                 Sign Up
               </button>
@@ -101,7 +101,7 @@ const CTAButton = ({
             <motion.button
               className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
                 isDarkMode
-                  ? "text-slate-300 hover:bg-slate-800"
+                  ? "text-slate-300 hover:bg-[#000000] hover:text-[#ab862b]"
                   : isScrolled
                     ? "text-slate-700 hover:bg-slate-100"
                     : "text-slate-900 hover:bg-white/10"
@@ -117,7 +117,7 @@ const CTAButton = ({
             onClick={handleLogout} // ✅ Unified logout
             className={`p-2 rounded-xl transition-all duration-200 ${
               isDarkMode
-                ? "text-slate-400 hover:text-slate-300 hover:bg-slate-800"
+                ? "text-slate-400 hover:bg-[#000000] hover:text-[#ab862b]"
                 : isScrolled
                   ? "text-slate-600 hover:text-slate-700 hover:bg-slate-100"
                   : "text-slate-900 hover:text-white hover:bg-white/10"
@@ -134,7 +134,7 @@ const CTAButton = ({
             <motion.button
               className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 cursor-pointer ${
                 isDarkMode
-                  ? "text-slate-300 hover:bg-slate-800"
+                  ? "text-slate-300 hover:bg-black"
                   : isScrolled
                     ? "text-slate-700 hover:bg-slate-100"
                     : "text-slate-900 hover:bg-white/10"
@@ -147,7 +147,7 @@ const CTAButton = ({
           </Link>
           <Link href="/packages">
             <motion.button
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
+              className="bg-gradient-to-r from-[#000000] to-[#ab862b] text-white px-4 py-2 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

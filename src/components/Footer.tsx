@@ -2,12 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { motion, useInView, useAnimation } from "framer-motion";
-import { Heart } from "lucide-react";
 import ParallaxBackground from "./ParallaxBackground";
 import AnimatedSection from "./AnimatedSection";
 import FloatingHeart from "./FloatingHeart";
 import Link from "next/link";
 import { useTheme } from "@/contexts/ThemeContext";
+import Image from "next/image";
 
 const listItemVariant = {
   hidden: { opacity: 0, x: -20 },
@@ -45,26 +45,22 @@ const Footer = () => {
       {/* Footer */}
       <footer
         className={`py-20 relative overflow-hidden ${
-          isDarkMode ? "bg-slate-900 text-white" : "bg-slate-900 text-white"
+          isDarkMode ? "bg-black text-white" : "bg-black text-white"
         }`}
       >
         <ParallaxBackground speed={0.05}>
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#ab862b]/30 to-amber-500/10 rounded-full blur-3xl"></div>
         </ParallaxBackground>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <AnimatedSection animation="fadeRight" className="md:col-span-2">
               <div className="flex items-center gap-3 mb-6">
-                <motion.div
-                  className="p-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl"
-                  whileHover={{ rotate: 5, scale: 1.1 }}
-                >
-                  <Heart className="h-6 w-6 text-white" fill="currentColor" />
+                <motion.div className="p-2 rounded-xl" whileHover={{ rotate: 5, scale: 1.1 }}>
+                  <Image src="/logo.png" alt="my wedding page" width={300} height={100} />
                 </motion.div>
-                <span className="text-2xl font-light">WeddingPlatform</span>
               </div>
-              <p className="text-slate-400 leading-relaxed font-light text-lg max-w-md">
+              <p className="text-white leading-relaxed font-light text-lg max-w-md">
                 Creating beautiful, modern wedding experiences for couples who value elegance and
                 simplicity.
               </p>
@@ -72,7 +68,7 @@ const Footer = () => {
 
             <AnimatedSection animation="fadeUp" delay={0.2}>
               <h3 className="text-lg font-medium mb-6">Platform</h3>
-              <ul ref={listRef} className="space-y-3 text-slate-400 font-light">
+              <ul ref={listRef} className="space-y-3 text-white font-light">
                 {["Wedding Pages", "Packages", "Login"].map((item, i) => (
                   <motion.li
                     key={item}
@@ -91,7 +87,7 @@ const Footer = () => {
 
             <AnimatedSection animation="fadeUp" delay={0.4}>
               <h3 className="text-lg font-medium mb-6">Support</h3>
-              <ul className="space-y-3 text-slate-400 font-light">
+              <ul className="space-y-3 text-white font-light">
                 {["How To", "Contact"].map((item, i) => (
                   <motion.li
                     key={item}
@@ -110,15 +106,15 @@ const Footer = () => {
           </div>
 
           <AnimatedSection animation="fadeUp" delay={0.6}>
-            <div className="border-t border-slate-800 mt-16 pt-8 flex flex-col justify-between items-center">
-              <p className="text-slate-400 font-light">
+            <div className="border-t border-[#ab862b] mt-16 pt-8 flex flex-col justify-between items-center">
+              <p className="text-white font-light">
                 &copy; {new Date().getFullYear()} Myweddingpage. All rights reserved.
               </p>
               <div className="flex gap-6 mt-4 md:mt-0">
                 {["Privacy", "Terms", "Cookies"].map((item, i) => (
                   <motion.span
                     key={item}
-                    className="text-slate-400 hover:text-white transition-colors duration-300 cursor-pointer font-light"
+                    className="text-white hover:text-white transition-colors duration-300 cursor-pointer font-light"
                     variants={footerLinkVariant}
                     custom={i}
                     initial="hidden"

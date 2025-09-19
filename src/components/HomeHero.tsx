@@ -6,6 +6,7 @@ import { Heart, ArrowRight } from "lucide-react";
 import ParallaxBackground from "./ParallaxBackground";
 import FloatingHeart from "./FloatingHeart";
 import { useTheme } from "@/contexts/ThemeContext";
+import Image from "next/image";
 
 const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
   const { isDarkMode } = useTheme();
@@ -17,20 +18,20 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
         <div
           className={`absolute inset-0 ${
             isDarkMode
-              ? "bg-gradient-to-br from-indigo-900/20 via-purple-900/20 to-pink-900/20"
-              : "bg-gradient-to-br from-slate-900/5 via-indigo-900/5 to-purple-900/5"
+              ? "bg-gradient-to-br from-black/30 via-amber-900/20 to-yellow-900/15"
+              : "bg-gradient-to-br from-amber-50/30 via-yellow-50/20 to-amber-100/15"
           }`}
         ></div>
 
         {/* Animated Background Elements */}
         <ParallaxBackground speed={0.2}>
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-indigo-200/30 to-purple-200/30 rounded-full blur-xl"></div>
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-black/20 to-amber-600/30 rounded-full blur-xl"></div>
         </ParallaxBackground>
         <ParallaxBackground speed={0.3}>
-          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-pink-200/30 to-rose-200/30 rounded-full blur-xl"></div>
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-amber-500/30 to-yellow-600/25 rounded-full blur-xl"></div>
         </ParallaxBackground>
         <ParallaxBackground speed={0.4}>
-          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-full blur-xl"></div>
+          <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-gradient-to-br from-amber-300/25 to-yellow-400/20 rounded-full blur-xl"></div>
         </ParallaxBackground>
 
         {/* Floating Hearts */}
@@ -55,7 +56,7 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
                 delay: i * 0.5,
               }}
             >
-              <Heart className="h-4 w-4 text-pink-300/40" fill="currentColor" />
+              <Heart className="h-4 w-4 text-amber-400/40" fill="currentColor" />
             </motion.div>
           ))}
         </div>
@@ -68,21 +69,14 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
               animate={{ scale: 1, rotate: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
             >
-              <div className="relative p-6 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20">
-                <motion.div
-                  animate={{
-                    boxShadow: [
-                      "0 0 20px rgba(99, 102, 241, 0.3)",
-                      "0 0 40px rgba(99, 102, 241, 0.6)",
-                      "0 0 20px rgba(99, 102, 241, 0.3)",
-                    ],
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  <Heart className="h-12 w-12 text-indigo-600" fill="currentColor" />
+              <div
+                className={`relative p-6 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 ${isDarkMode ? "bg-white" : "bg-white/80"}`}
+              >
+                <motion.div transition={{ duration: 2, repeat: Infinity }}>
+                  <Image src="/logoicon.png" alt="my wedding page" width={48} height={48} />
                 </motion.div>
                 <motion.div
-                  className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full"
+                  className="absolute -top-2 -right-2 w-6 h-6 bg-[#ab862b] rounded-full"
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 />
@@ -99,7 +93,7 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
             >
               Your Perfect
               <motion.span
-                className="block font-small bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
+                className={`block font-small bg-clip-text ${isDarkMode ? "text-white" : "text-black"}`}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, delay: 1 }}
@@ -110,7 +104,7 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
 
             <motion.p
               className={`text-small mb-12 max-w-3xl mx-auto leading-relaxed font-light ${
-                isDarkMode ? "text-slate-300" : "text-slate-600"
+                isDarkMode ? "text-white" : "text-slate-600"
               }`}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -130,7 +124,7 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
                 <motion.button
                   type="button"
                   onClick={onStartDemo}
-                  className="w-50 sm:w-auto group bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-2xl font-small text-small shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 m-auto"
+                  className="w-50 sm:w-auto group bg-gradient-to-r from-[#000000] to-[#ab862b] text-white px-4 py-2 rounded-2xl font-small text-small shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 m-auto"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -143,10 +137,10 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
                 <motion.button
                   type="button"
                   onClick={onStartDemo}
-                  className={`w-50 sm:w-auto border-2 border-slate-300 text-slate-700 px-4 py-2 rounded-2xl font-small text-small hover:bg-slate-50 hover:border-slate-400 transition-all duration-300 flex items-center justify-center gap-2 m-auto ${
+                  className={`w-50 sm:w-auto border-2 border-black text-black px-4 py-2 rounded-2xl font-small text-small hover:bg-[#ab862b] hover:border-black transition-all duration-300 flex items-center justify-center gap-2 m-auto ${
                     isDarkMode
-                      ? "border-slate-600 text-white hover:bg-slate-800 hover:border-slate-500"
-                      : "border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400"
+                      ? "border-black text-white hover:bg-[#ab862b] hover:border-black"
+                      : "border-black text-black hover:bg-slate-50 hover:border-slate-400"
                   }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

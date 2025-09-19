@@ -171,11 +171,11 @@ const WeddingHero = (props: WeddingHeroProps) => {
       <div className={`${styles.heroContent} relative z-10 text-center px-4 max-w-4xl mx-auto`}>
         <div className={`${styles.animateFadeInUp}`}>
           <Heart
-            className={`${styles.heroIcon} w-16 h-16 mx-auto mb-8 text-primary-foreground animate-gentle-pulse`}
+            className={`${styles.heroIcon} ${styles.textWhite} text-white w-16 h-16 mx-auto mb-8 text-primary-foreground animate-gentle-pulse`}
           />
 
           <h1
-            className={`${styles.heroTitle} font-heading text-6xl md:text-8xl lg:text-9xl font-bold text-primary-foreground mb-6 leading-tight`}
+            className={`${styles.heroTitle} ${styles.textWhite} text-white font-heading text-6xl md:text-8xl lg:text-9xl font-bold mb-6 leading-tight`}
           >
             {brideName} & {groomName}
           </h1>
@@ -183,13 +183,13 @@ const WeddingHero = (props: WeddingHeroProps) => {
           <div
             className={`${styles.heroDateContainer} flex items-center justify-center gap-4 mb-8`}
           >
-            <div className={`${styles.heroDateLine} h-px bg-primary-foreground/50 w-16`}></div>
+            <div className={`${styles.heroDateLine} h-px w-16`}></div>
             <p
-              className={`${styles.heroDate} font-heading text-2xl md:text-3xl text-primary-foreground/90 font-medium`}
+              className={`${styles.heroDate} ${styles.textWhite} text-white font-heading text-2xl md:text-3xl font-medium`}
             >
               {weddingDate}
             </p>
-            <div className={`${styles.heroDateLine} h-px bg-primary-foreground/50 w-16`}></div>
+            <div className={`${styles.heroDateLine} h-px w-16`}></div>
           </div>
 
           {/* <p
@@ -213,7 +213,7 @@ const WeddingHero = (props: WeddingHeroProps) => {
             <Button
               variant="outline"
               size="lg"
-              className={`${styles.heroButtonOutline} text-lg px-8 py-4 h-auto font-medium border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary`}
+              className={`${styles.heroButtonOutline} ${styles.textWhite} text-white border-white text-lg px-8 py-4 h-auto font-medium hover:bg-white hover:text-primary`}
               onClick={handleScrollToGallery}
             >
               Gallery
@@ -225,19 +225,21 @@ const WeddingHero = (props: WeddingHeroProps) => {
         <div
           className={`${styles.floatingHeart} absolute top-20 left-10 opacity-30 ${styles.animateRomanticFloat}`}
         >
-          <Heart className={`${styles.floatingHeartIcon} w-8 h-8 text-primary-foreground`} />
+          <Heart className={`${styles.floatingHeartIcon} ${styles.textWhite} text-white w-8 h-8`} />
         </div>
         <div
           className={`${styles.floatingHeart} absolute bottom-32 right-16 opacity-20 ${styles.animateRomanticFloat}`}
           style={{ animationDelay: "1s" }}
         >
-          <Heart className={`${styles.floatingHeartIcon} w-6 h-6 text-primary-foreground`} />
+          <Heart className={`${styles.floatingHeartIcon} ${styles.textWhite} text-white w-6 h-6`} />
         </div>
         <div
           className={`${styles.floatingHeart} absolute top-40 right-20 opacity-25 ${styles.animateRomanticFloat}`}
           style={{ animationDelay: "2s" }}
         >
-          <Heart className={`${styles.floatingHeartIcon} w-10 h-10 text-primary-foreground`} />
+          <Heart
+            className={`${styles.floatingHeartIcon} ${styles.textWhite} text-white w-10 h-10`}
+          />
         </div>
       </div>
     </section>

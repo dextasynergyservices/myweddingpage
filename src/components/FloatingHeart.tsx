@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Heart } from "lucide-react";
+import Image from "next/image";
 
 const FloatingHeart = () => (
   <div className="fixed bottom-10 right-10 pointer-events-none z-50">
@@ -16,7 +16,7 @@ const FloatingHeart = () => (
         ease: "easeInOut",
       }}
     >
-      <Heart className="h-8 w-8 text-indigo-400 opacity-60" fill="currentColor" />
+      <Image src="/logoicon.png" alt="my wedding page" width={48} height={48} />
     </motion.div>
   </div>
 );

@@ -17,11 +17,10 @@ interface ButtonProps extends MotionButtonProps {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  default: "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg",
+  default: "bg-gradient-to-r from-black/50 to-[#ab862b] text-white hover:shadow-lg",
   outline:
-    "bg-transparent border border-indigo-600 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800",
-  ghost:
-    "bg-transparent text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700",
+    "bg-transparent border border-[#ab862b] text-[#ab862b] hover:bg-[#ab862b]/5 dark:hover:bg-slate-800",
+  ghost: "bg-transparent text-black dark:text-white hover:bg-black/5 dark:hover:bg-white/5",
   danger: "bg-red-600 text-white hover:bg-red-700",
 };
 

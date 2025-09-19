@@ -130,7 +130,7 @@ export default function ManualVerificationPage() {
           value={code}
           onChange={(e) => setCode(e.target.value)}
           required
-          className="bg-white"
+          className="bg-white text-black placeholder:text-black"
         />
 
         {showEmailInput && (
@@ -143,14 +143,15 @@ export default function ManualVerificationPage() {
                 setEmail(e.target.value);
                 localStorage.setItem("pendingEmail", e.target.value);
               }}
+              className="bg-white text-black placeholder:text-black"
             />
 
             <Button
               type="button"
               onClick={handleResend}
               disabled={cooldown > 0}
-              className={`underline text-sm text-white ${
-                cooldown > 0 ? "text-gray-500" : "text-blue-600"
+              className={`underline text-sm text-white bg-white text-black placeholder:text-black ${
+                cooldown > 0 ? "text-black" : "text-black"
               }`}
             >
               {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend Verification Code"}
@@ -163,7 +164,7 @@ export default function ManualVerificationPage() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white p-2 rounded disabled:opacity-50"
+          className="w-full bg-black text-white p-2 rounded disabled:opacity-50"
         >
           {loading ? "Verifying..." : "Verify"}
         </Button>

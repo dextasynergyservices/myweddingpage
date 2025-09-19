@@ -20,9 +20,11 @@ const ContactInfo = () => {
           <motion.div
             whileHover={{ scale: 1.02, y: -5 }}
             className={`${
-              isDarkMode ? "bg-slate-800/80" : "bg-white/80"
+              isDarkMode
+                ? "bg-gradient-to-br from-[#ab862b]/5 via-black/10 to-[#ab862b]/5"
+                : "bg-white/80"
             } backdrop-blur-xl rounded-3xl shadow-xl border ${
-              isDarkMode ? "border-slate-700/50" : "border-white/20"
+              isDarkMode ? "border-[#ab862b]/20" : "border-black/20"
             } p-8`}
           >
             <div className="flex items-center gap-6">
@@ -37,12 +39,12 @@ const ContactInfo = () => {
                 >
                   Email Us
                 </h3>
-                <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-2`}>
+                <p className={`${isDarkMode ? "text-white/50" : "text-black"} mb-2`}>
                   Send us an email anytime
                 </p>
                 <a
                   href="mailto:hello@weddingplatform.com"
-                  className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors duration-200"
+                  className="text-[#ab862b]/80 hover:text-[#ab862b] font-medium transition-colors duration-200"
                 >
                   info@myweddingpage.online
                 </a>
@@ -54,9 +56,11 @@ const ContactInfo = () => {
           <motion.div
             whileHover={{ scale: 1.02, y: -5 }}
             className={`${
-              isDarkMode ? "bg-slate-800/80" : "bg-white/80"
+              isDarkMode
+                ? "bg-gradient-to-br from-[#ab862b]/5 via-black/10 to-[#ab862b]/5"
+                : "bg-white/80"
             } backdrop-blur-xl rounded-3xl shadow-xl border ${
-              isDarkMode ? "border-slate-700/50" : "border-white/20"
+              isDarkMode ? "border-[#ab862b]/20" : "border-black/20"
             } p-8`}
           >
             <div className="flex items-center gap-6">
@@ -71,12 +75,12 @@ const ContactInfo = () => {
                 >
                   Call Us
                 </h3>
-                <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-2`}>
+                <p className={`${isDarkMode ? "text-white/50" : "text-black"} mb-2`}>
                   Mon-Fri from 10am to 6pm (WAT)
                 </p>
                 <a
                   href="tel:+2348103208297"
-                  className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors duration-200"
+                  className="text-[#ab862b]/80 hover:text-[#ab862b] font-medium transition-colors duration-200"
                 >
                   +234 810 320 8297
                 </a>
@@ -88,9 +92,11 @@ const ContactInfo = () => {
           <motion.div
             whileHover={{ scale: 1.02, y: -5 }}
             className={`${
-              isDarkMode ? "bg-slate-800/80" : "bg-white/80"
+              isDarkMode
+                ? "bg-gradient-to-br from-[#ab862b]/5 via-black/10 to-[#ab862b]/5"
+                : "bg-white/80"
             } backdrop-blur-xl rounded-3xl shadow-xl border ${
-              isDarkMode ? "border-slate-700/50" : "border-white/20"
+              isDarkMode ? "border-[#ab862b]/20" : "border-black/20"
             } p-8`}
           >
             <div className="flex items-center gap-6">
@@ -107,7 +113,7 @@ const ContactInfo = () => {
                 </h3>
                 <Link
                   href="https://wa.me/2348103208297"
-                  className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors duration-200"
+                  className="text-[#ab862b]/80 hover:text-[#ab862b] font-medium transition-colors duration-200"
                 >
                   +234 810 320 8297
                 </Link>
@@ -119,9 +125,11 @@ const ContactInfo = () => {
           <motion.div
             whileHover={{ scale: 1.02, y: -5 }}
             className={`${
-              isDarkMode ? "bg-slate-800/80" : "bg-white/80"
+              isDarkMode
+                ? "bg-gradient-to-br from-[#ab862b]/5 via-black/10 to-[#ab862b]/5"
+                : "bg-white/80"
             } backdrop-blur-xl rounded-3xl shadow-xl border ${
-              isDarkMode ? "border-slate-700/50" : "border-white/20"
+              isDarkMode ? "border-[#ab862b]/20" : "border-black/20"
             } p-8`}
           >
             <div className="flex items-center gap-6">
@@ -139,7 +147,7 @@ const ContactInfo = () => {
                 {/* <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-2`}>
                   Come say hello at our office
                 </p> */}
-                <p className={`${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+                <p className={`${isDarkMode ? "text-white/50" : "text-black"}`}>
                   147 NTA Road, Mgbuoba
                   <br />
                   Port Harcourt, Rivers State, Nigeria.
@@ -152,13 +160,15 @@ const ContactInfo = () => {
         {/* Business Hours */}
         <div
           className={`${
-            isDarkMode ? "bg-slate-800/80" : "bg-white/80"
+            isDarkMode
+              ? "bg-gradient-to-br from-[#ab862b]/5 via-black/10 to-[#ab862b]/5"
+              : "bg-white/80"
           } backdrop-blur-xl rounded-3xl shadow-xl border ${
-            isDarkMode ? "border-slate-700/50" : "border-white/20"
+            isDarkMode ? "border-[#ab862b]/20" : "border-black/20"
           } p-8`}
         >
           <div className="flex items-center gap-4 mb-6">
-            <Clock className="h-6 w-6 text-indigo-600" />
+            <Clock className="h-6 w-6 text-[#ab862b]/80" />
             <h3 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Business Hours
             </h3>
@@ -170,10 +180,10 @@ const ContactInfo = () => {
               { day: "Sunday", hours: "Closed" },
             ].map((schedule, index) => (
               <div key={index} className="flex justify-between items-center">
-                <span className={`${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+                <span className={`${isDarkMode ? "text-white/50" : "text-black/50"}`}>
                   {schedule.day}
                 </span>
-                <span className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                <span className={`font-medium ${isDarkMode ? "text-white/50" : "text-black/50"}`}>
                   {schedule.hours}
                 </span>
               </div>
@@ -186,19 +196,19 @@ const ContactInfo = () => {
           whileHover={{ scale: 1.02 }}
           className={`${
             isDarkMode
-              ? "bg-gradient-to-r from-slate-800/80 to-slate-700/80"
-              : "bg-gradient-to-r from-indigo-50/80 to-purple-50/80"
+              ? "bg-gradient-to-br from-[#ab862b]/5 via-black/10 to-[#ab862b]/5"
+              : "bg-white/80"
           } backdrop-blur-xl rounded-3xl shadow-xl border ${
-            isDarkMode ? "border-slate-700/50" : "border-white/20"
+            isDarkMode ? "border-[#ab862b]/20" : "border-black/20"
           } p-8 text-center`}
         >
-          <Heart className="h-12 w-12 text-indigo-600 mx-auto mb-4" fill="currentColor" />
+          <Heart className="h-12 w-12 text-[#ab862b]/80 mx-auto mb-4" fill="currentColor" />
           <h3
             className={`text-xl font-semibold mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
           >
             Need Quick Answers?
           </h3>
-          <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-4`}>
+          <p className={`${isDarkMode ? "text-white/50" : "text-black/50"} mb-4`}>
             Check out our frequently asked questions for instant help.
           </p>
           <ViewFaqButton />

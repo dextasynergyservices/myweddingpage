@@ -275,17 +275,20 @@ const InteractiveChecklist = () => {
     };
 
     try {
+      const notificationResults = [];
+
       // Email Notification - only send if email exists
       if (task.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(task.email)) {
         const changes = isUpdate ? "updated" : "assigned";
         const action = isUpdate ? "Updated" : "New";
 
-        await sendNotification(
-          "/api/send-task-email",
-          {
-            to: task.email,
-            subject: `${action} Task: ${task.title}`,
-            html: `
+        try {
+          await sendNotification(
+            "/api/send-task-email",
+            {
+              to: task.email,
+              subject: `${action} Task: ${task.title}`,
+              html: `
             <h1>Task ${changes}</h1>
             <p><strong>Title:</strong> ${task.title}</p>
             <p><strong>Description:</strong> ${task.description || "No description"}</p>
@@ -295,34 +298,87 @@ const InteractiveChecklist = () => {
             <p>Click <a href="${process.env.NEXT_PUBLIC_APP_URL}/task/${task.token}">here</a> to view the task.</p>
             ${isUpdate ? `<p><em>This task has been updated. Please review the changes.</em></p>` : ""}
           `,
-          },
-          "email"
-        );
+            },
+            "email"
+          );
+          notificationResults.push("Email sent successfully");
+        } catch (emailError) {
+          console.error("Email notification failed:", emailError);
+          notificationResults.push("Email failed");
+        }
       }
 
       // WhatsApp Notification - only send if phone exists
       if (task.phone && /^\+?[1-9]\d{1,14}$/.test(task.phone)) {
-        await sendNotification(
-          "/api/send-task-whatsapp",
+        try {
+          await sendNotification(
+            "/api/send-task-whatsapp",
+            {
+              to: task.phone,
+              body:
+                `${isUpdate ? "Updated" : "New"} Task: ${task.title}\n\n` +
+                `Description: ${task.description || "None"}\n` +
+                `Due: ${new Date(task.dueDate).toLocaleDateString()}\n` +
+                `Priority: ${task.TaskPriority?.name || "Not specified"}\n` +
+                `Status: ${task.completed ? "Completed" : "Pending"}\n\n` +
+                `View: ${process.env.NEXT_PUBLIC_APP_URL}/task/${task.token}` +
+                (isUpdate ? "\n\nThis task has been updated. Please review the changes." : ""),
+            },
+            "WhatsApp"
+          );
+          notificationResults.push("WhatsApp sent successfully");
+        } catch (whatsappError) {
+          console.error("WhatsApp notification failed:", whatsappError);
+          // Check if it's a network error specifically
+          if (
+            whatsappError instanceof Error &&
+            whatsappError.message.includes("Network connectivity")
+          ) {
+            notificationResults.push("WhatsApp temporarily unavailable (network issue)");
+          } else {
+            notificationResults.push("WhatsApp failed");
+          }
+        }
+      }
+
+      // Show appropriate success/warning message
+      if (notificationResults.length === 0) {
+        // No notifications were attempted (no email or phone provided)
+        return;
+      }
+
+      const failedNotifications = notificationResults.filter(
+        (result) => result.includes("failed") || result.includes("unavailable")
+      );
+
+      if (failedNotifications.length === 0) {
+        // All notifications succeeded
+        console.log("All notifications sent successfully:", notificationResults);
+      } else if (failedNotifications.length < notificationResults.length) {
+        // Some succeeded, some failed
+        toast(
+          `Task ${isUpdate ? "updated" : "created"} successfully. Some notifications failed: ${failedNotifications.join(", ")}`,
           {
-            to: task.phone,
-            body:
-              `${isUpdate ? "Updated" : "New"} Task: ${task.title}\n\n` +
-              `Description: ${task.description || "None"}\n` +
-              `Due: ${new Date(task.dueDate).toLocaleDateString()}\n` +
-              `Priority: ${task.TaskPriority?.name || "Not specified"}\n` +
-              `Status: ${task.completed ? "Completed" : "Pending"}\n\n` +
-              `View: ${process.env.NEXT_PUBLIC_APP_URL}/task/${task.token}` +
-              (isUpdate ? "\n\nThis task has been updated. Please review the changes." : ""),
-          },
-          "WhatsApp"
+            icon: <AlertTriangle className="text-yellow-500" />,
+            style: {
+              borderLeft: "4px solid #f59e0b",
+              backgroundColor: "#fef3c7",
+            },
+          }
+        );
+      } else {
+        // All notifications failed
+        toast.error(
+          `Task ${isUpdate ? "updated" : "created"} successfully, but all notifications failed.`,
+          {
+            icon: <AlertTriangle className="text-yellow-500" />,
+          }
         );
       }
     } catch (error) {
       console.error("Notification error:", error);
       toast.error(
-        `Task ${isUpdate ? "updated" : "created"} successfully, but notifications failed.\n` +
-          (error instanceof Error ? error.message : "Notification service error"),
+        `Task ${isUpdate ? "updated" : "created"} successfully, but notifications failed.`,
         {
           icon: <AlertTriangle className="text-yellow-500" />,
         }

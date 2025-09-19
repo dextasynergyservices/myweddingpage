@@ -1,10 +1,19 @@
 import Twilio from "twilio";
 
+const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
+const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+
 export class WhatsAppService {
-  private static client = Twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+  private static client =
+    twilioAccountSid && twilioAuthToken ? Twilio(twilioAccountSid, twilioAuthToken) : null;
 
   static async sendMessage({ to, message }: { to: string; message: string }) {
     try {
+      if (!this.client || !process.env.TWILIO_WHATSAPP_NUMBER) {
+        console.warn("Twilio not configured. WhatsApp message skipped.");
+        return false;
+      }
+
       // Clean and validate phone number
       const cleanedNumber = this.cleanPhoneNumber(to);
       if (!this.isValidPhoneNumber(cleanedNumber)) {
