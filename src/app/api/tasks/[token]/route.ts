@@ -5,10 +5,16 @@ import { authOptions } from "@/lib/authOptions";
 import { Resend } from "resend";
 import twilio from "twilio";
 
-// Initialize Resend + Twilio
+// Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+// Initialize Twilio client with proper type checking
+const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
+const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioPhoneNumber = process.env.TWILIO_WHATSAPP_NUMBER;
+
+const twilioClient =
+  twilioAccountSid && twilioAuthToken ? twilio(twilioAccountSid, twilioAuthToken) : null;
 
 // Helper function to check if string looks like an ID
 function isId(str: string): boolean {
@@ -86,7 +92,7 @@ export async function PUT(request: Request, { params }: { params: { token: strin
           }
 
           // Send WhatsApp via Twilio
-          if (updatedTask.user.whatsapp) {
+          if (updatedTask.user.whatsapp && twilioClient && twilioPhoneNumber) {
             await twilioClient.messages.create({
               from: `whatsapp:${twilioPhoneNumber}`,
               to: `whatsapp:${updatedTask.user.whatsapp}`,

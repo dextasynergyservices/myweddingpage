@@ -16,6 +16,7 @@
   /* Romantic Rose Gold & Blush */
   --bloom-primary: 340 75% 55%;
   --bloom-primary-foreground: 0 0% 98%;
+  --bloom-white: 0 0% 100%;
 
   --bloom-secondary: 340 20% 95%;
   --bloom-secondary-foreground: 340 10% 20%;
@@ -273,6 +274,14 @@
   color: hsl(var(--bloom-accent-foreground));
 }
 
+.textWhite {
+  color: white !important;
+}
+
+.bgWhite {
+  background: hsl(var(--bloom-white));
+}
+
 .borderBorder {
   border-color: hsl(var(--bloom-border));
 }
@@ -376,14 +385,14 @@
   width: 4rem;
   height: 4rem;
   margin: 0 auto 2rem;
-  color: hsl(var(--bloom-primary-foreground));
+  color: white !important;
 }
 
 .heroTitle {
   font-family: var(--bloom-font-heading);
   font-size: 3.75rem;
   font-weight: 700;
-  color: hsl(var(--bloom-primary-foreground));
+  color: white !important;
   margin-bottom: 1.5rem;
   line-height: 1.1;
 }
@@ -398,14 +407,14 @@
 
 .heroDateLine {
   height: 1px;
-  background-color: hsl(var(--bloom-primary-foreground) / 0.5);
+  background-color: hsl(var(--bloom-white) / 0.5);
   width: 4rem;
 }
 
 .heroDate {
   font-family: var(--bloom-font-heading);
   font-size: 1.5rem;
-  color: hsl(var(--bloom-primary-foreground) / 0.9);
+  color: white !important;
   font-weight: 500;
 }
 
@@ -516,13 +525,13 @@
   padding: 1rem 2rem;
   height: auto;
   font-weight: 500;
-  border-color: hsl(var(--bloom-primary-foreground));
-  color: hsl(var(--bloom-primary-foreground));
+  border-color: white !important;
+  color: white !important;
 }
 
 .heroButtonOutline:hover {
-  background-color: hsl(var(--bloom-primary-foreground));
-  color: hsl(var(--bloom-primary));
+  background-color: white !important;
+  color: hsl(var(--bloom-primary)) !important;
 }
 
 /* Floating Hearts */
@@ -532,7 +541,7 @@
 }
 
 .floatingHeartIcon {
-  color: hsl(var(--bloom-primary-foreground));
+  color: white !important;
 }
 
 /* Scroll Indicator */
