@@ -10,7 +10,7 @@ const Label = ({ className, ...props }: LabelProps) => {
     <label
       className={cn(
         "block text-sm font-medium mb-2",
-        isDarkMode ? "text-slate-300" : "text-slate-700",
+        isDarkMode ? "text-white/50" : "text-black",
         className
       )}
       {...props}

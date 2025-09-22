@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useScrollAnimation } from "@/app/templates/vows/hooks/useScrollAnimation";
+import { LiveStreamHero } from "@/components/LiveStreamHero";
 import styles from "@/styles/templates/vows.module.css";
 
 interface HeroSectionProps {
@@ -27,7 +29,60 @@ interface HeroSectionProps {
   };
 }
 
+interface Stream {
+  id: string;
+  name: string;
+  youtubeUrl: string;
+  youtubeId: string;
+  camera: string;
+  quality: string;
+  isActive: boolean;
+  viewerCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const HeroSection = (props: HeroSectionProps) => {
+  // Debug: Log all received props
+  console.log("VowsHero: Received props:", props);
+
+  // Livestream state
+  const [activeStream, setActiveStream] = useState<Stream | null>(null);
+  const [isLoadingStream, setIsLoadingStream] = useState(true);
+
+  // Check for active livestream
+  useEffect(() => {
+    console.log("VowsHero: useEffect triggered");
+    const fetchActiveStream = async () => {
+      console.log("VowsHero: Starting fetchActiveStream");
+      try {
+        const response = await fetch("/api/public/active-stream");
+        console.log("VowsHero: API response status:", response.status);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("VowsHero: Received stream data:", data);
+          setActiveStream(data.activeStream);
+        } else if (response.status === 401) {
+          // Unauthorized (not logged in) - this is expected for public pages
+          console.log("VowsHero: Unauthorized (expected for public pages)");
+          setActiveStream(null);
+        } else {
+          // Other error statuses
+          console.log("VowsHero: API error status:", response.status);
+          setActiveStream(null);
+        }
+      } catch (error) {
+        console.error("VowsHero: Error fetching active stream:", error);
+        setActiveStream(null);
+      } finally {
+        console.log("VowsHero: Setting isLoadingStream to false");
+        setIsLoadingStream(false);
+      }
+    };
+
+    fetchActiveStream();
+  }, []);
+
   // Extract data from props (prioritize direct props over weddingData object)
   const brideName = props.brideName || props.weddingData?.brideName || "Bride";
   const groomName = props.groomName || props.weddingData?.groomName || "Groom";
@@ -77,7 +132,7 @@ export const HeroSection = (props: HeroSectionProps) => {
   }
 
   const heroImage = props.heroImage || "/templates/vows/assets/hero-wedding.jpg";
-  const { ref, isVisible } = useScrollAnimation(0.3);
+  const { ref } = useScrollAnimation(0.3);
 
   // Handle scroll to story section
   const handleScrollToStory = () => {
@@ -86,6 +141,36 @@ export const HeroSection = (props: HeroSectionProps) => {
       storySection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
+
+  // Show loading state while checking for livestream
+  if (isLoadingStream) {
+    return (
+      <section className="relative min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // If there's an active livestream, show LiveStreamHero instead
+  if (activeStream) {
+    return (
+      <LiveStreamHero
+        stream={activeStream}
+        brideName={brideName}
+        groomName={groomName}
+        weddingDate={formattedDate}
+        venue={venue}
+        subtitle={props.subtitle}
+        description={props.description}
+        className={styles.heroSection}
+        overlayClassName={styles.gradientHero}
+        contentClassName={styles.heroContent}
+      />
+    );
+  }
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -100,9 +185,7 @@ export const HeroSection = (props: HeroSectionProps) => {
       {/* Content */}
       <div
         ref={ref}
-        className={`relative z-10 text-center text-white transition-all duration-1000 ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        }`}
+        className="relative z-10 text-center text-white transition-all duration-1000 opacity-100 translate-y-0"
       >
         <div className={styles.containerWedding}>
           <h1

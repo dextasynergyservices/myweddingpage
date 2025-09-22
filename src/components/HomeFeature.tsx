@@ -13,10 +13,14 @@ const HomeFeatures = () => {
   return (
     <section
       id="features"
-      className={`py-24 relative overflow-hidden ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+      className={`py-24 relative overflow-hidden ${
+        isDarkMode
+          ? "bg-gradient-to-br from-black/20 to-amber-900/20"
+          : "bg-gradient-to-br from-amber-50/30 to-yellow-50/30"
+      }`}
     >
       <ParallaxBackground speed={0.1}>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-100/30 to-purple-100/30 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-amber-200/20 to-yellow-200/20 rounded-full blur-3xl"></div>
       </ParallaxBackground>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -44,41 +48,41 @@ const HomeFeatures = () => {
               title: "Smart Galleries",
               description:
                 "AI-powered photo organization with unlimited storage and instant sharing",
-              color: "from-blue-500 to-indigo-600",
+              color: "from-red-600 to-rose-700",
             },
             {
               icon: Gift,
               title: "Gift Management",
               description: "Seamless gift tracking with automated thank you notes and analytics",
-              color: "from-emerald-500 to-teal-600",
+              color: "from-blue-600 to-indigo-700",
             },
             {
               icon: MessageCircle,
               title: "Guest Engagement",
               description: "Interactive guestbook with real-time moderation and sentiment analysis",
-              color: "from-purple-500 to-pink-600",
+              color: "from-orange-600 to-amber-700",
             },
             {
               icon: Users,
               title: "Couple Dashboard",
               description: "Intuitive control center with insights and collaboration tools",
-              color: "from-amber-500 to-orange-600",
+              color: "from-green-600 to-emerald-700",
             },
           ].map((feature, index) => (
             <AnimatedSection key={index} animation="fadeUp" delay={index * 0.2} className="group">
               <motion.div
                 className={`relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border overflow-hidden ${
                   isDarkMode
-                    ? "bg-slate-700 border-slate-600 hover:border-slate-500"
-                    : "bg-white border-slate-100 hover:border-slate-200"
+                    ? "bg-black/50 border-[#ab862b]/30 hover:border-[#ab862b]/50"
+                    : "bg-white/80 border-amber-200 hover:border-[#ab862b]/30"
                 }`}
                 whileHover={{ y: -10 }}
               >
                 <div
                   className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
                     isDarkMode
-                      ? "bg-gradient-to-br from-slate-600/50 to-slate-700"
-                      : "bg-gradient-to-br from-slate-50/50 to-white"
+                      ? "bg-gradient-to-br from-black/30 to-[#ab862b]/10"
+                      : "bg-gradient-to-br from-amber-50/50 to-yellow-50/30"
                   }`}
                 ></div>
 

@@ -36,11 +36,12 @@ function ThemeWrapper({ children }: { children: ReactNode }) {
 
   return (
     <div
-      className={`min-h-screen overflow-x-hidden transition-colors duration-300 ${
-        isDarkMode
-          ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-          : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
-      }`}
+      className="min-h-screen overflow-x-hidden transition-colors duration-300"
+      style={{
+        background: isDarkMode
+          ? "linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%)"
+          : "linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%)",
+      }}
     >
       {children}
     </div>

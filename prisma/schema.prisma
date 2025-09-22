@@ -77,6 +77,11 @@ model User {
   subscription_start DateTime?
   subscription_end   DateTime?
   status            SubscriptionStatus @default(INACTIVE)
+
+  gracePeriodStart  DateTime?     // When grace period started (when plan expired)
+  gracePeriodEnd    DateTime?     // When grace period ends (3 days after expiration)
+  isInGracePeriod   Boolean       @default(false)
+
   whatsapp           String?  @unique
   verification_code  String?
   verification_token   String?
@@ -233,6 +238,9 @@ model WeddingPage {
   is_live           Boolean  @default(false)
   created_by_admin  Boolean  @default(false)
   created_at        DateTime @default(now())
+
+  deleted_at        DateTime?
+  deletion_reason   String?   // e.g., "subscription_expired", "user_requested"
 
   user              User      @relation(fields: [userId], references: [id])
   template          Template  @relation(fields: [templateId], references: [id])

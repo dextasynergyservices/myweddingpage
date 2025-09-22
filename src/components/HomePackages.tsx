@@ -26,10 +26,10 @@ type Plan = {
 };
 
 const defaultGradients = [
-  "from-indigo-600 to-purple-600",
-  "from-pink-500 to-yellow-500",
-  "from-green-500 to-emerald-600",
-  "from-red-500 to-pink-600",
+  "from-red-600 to-rose-700",
+  "from-blue-600 to-indigo-700",
+  "from-orange-600 to-amber-700",
+  "from-green-600 to-emerald-700",
 ];
 
 // const currencyFlags = {
@@ -102,12 +102,12 @@ const HomePackages = () => {
         id="packages"
         className={`py-24 relative overflow-hidden ${
           isDarkMode
-            ? "bg-gradient-to-br from-slate-900 to-slate-800"
-            : "bg-gradient-to-br from-slate-50 to-white"
+            ? "bg-gradient-to-br from-black/20 to-amber-900/20"
+            : "bg-gradient-to-br from-amber-50/30 to-yellow-50/30"
         }`}
       >
         <ParallaxBackground speed={0.15}>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-100/30 to-pink-100/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-amber-200/30 to-yellow-200/30 rounded-full blur-3xl"></div>
         </ParallaxBackground>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -144,7 +144,7 @@ const HomePackages = () => {
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ delay: 1 + index * 0.2 }}
                   >
-                    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-[10px] py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-lg">
+                    <div className="bg-gradient-to-r from-black to-[#ab862b] text-white px-[10px] py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-lg">
                       <Star className="h-4 w-4 fill-current" />
                       Most Popular
                     </div>
@@ -153,15 +153,15 @@ const HomePackages = () => {
 
                 <motion.div
                   className={`relative rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-slate-100 overflow-hidden ${
-                    isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+                    isDarkMode ? "bg-black/50 border-[#ab862b]/30" : "bg-white/80 border-amber-200"
                   } ${plan.popular ? "ring-2 ring-indigo-500/20 scale-105" : ""}`}
                   whileHover={{ y: -5, scale: plan.popular ? 1.08 : 1.03 }}
                 >
                   <div
                     className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
                       isDarkMode
-                        ? "bg-gradient-to-br from-slate-700/30 to-slate-800"
-                        : "bg-gradient-to-br from-slate-50/30 to-white"
+                        ? "bg-gradient-to-br from-black/30 to-[#ab862b]/10"
+                        : "bg-gradient-to-br from-amber-50/50 to-yellow-50/30"
                     }`}
                   ></div>
 
@@ -206,7 +206,7 @@ const HomePackages = () => {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 1 + index * 0.2 + featureIndex * 0.1 }}
                         >
-                          <div className="flex-shrink-0 w-4 h-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mt-0.5">
+                          <div className="flex-shrink-0 w-4 h-4 bg-gradient-to-r from-black to-[#ab862b] rounded-full flex items-center justify-center mt-0.5">
                             <Check className="w-3 h-3 text-white stroke-2" />
                           </div>
                           <span
@@ -225,10 +225,10 @@ const HomePackages = () => {
                         onClick={() => setSelectedPackage(plan)}
                         className={`block text-center w-40 m-auto py-4 px-6 rounded-2xl font-medium transition-all cursor-pointer duration-300 ${
                           plan.popular
-                            ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:scale-105"
+                            ? "bg-gradient-to-r from-black to-[#ab862b] text-white hover:shadow-lg hover:scale-105"
                             : isDarkMode
-                              ? "border-2 border-slate-600 text-slate-300 hover:border-slate-500 hover:bg-slate-700"
-                              : "border-2 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+                              ? "border-2 border-[#ab862b] text-white hover:border-yellow-400 hover:bg-black/80"
+                              : "border-2 border-black text-black hover:border-[#ab862b] hover:bg-amber-50"
                         }`}
                       >
                         Get Started
@@ -268,7 +268,7 @@ const HomePackages = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="placeholder:text-md bg-white"
+                    className="text-black placeholder:text-md placeholder:text-black"
                     placeholder="Enter your email"
                     required
                   />
@@ -283,7 +283,7 @@ const HomePackages = () => {
                     type="tel"
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
-                    className="placeholder:text-md bg-white"
+                    className="text-black placeholder:text-md placeholder:text-black"
                     placeholder="WhatsApp number with country code e.g +234"
                     required
                   />
@@ -295,7 +295,7 @@ const HomePackages = () => {
                 <button
                   type="button"
                   onClick={() => setShowTerms((prev) => !prev)}
-                  className="text-indigo-600 font-medium hover:underline focus:outline-none"
+                  className="text-black font-medium hover:underline focus:outline-none"
                 >
                   {showTerms ? "Hide Terms and Conditions ▲" : "Show Terms and Conditions ▼"}
                 </button>
@@ -317,7 +317,7 @@ const HomePackages = () => {
                   type="checkbox"
                   checked={agreeTerms}
                   onChange={(e) => setAgreeTerms(e.target.checked)}
-                  className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                  className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
                 />
                 <span>I agree to the Terms and Conditions</span>
               </label>
@@ -368,8 +368,8 @@ const HomePackages = () => {
               }}
               className={`w-full py-3 px-4 rounded-xl text-center font-medium transition cursor-pointer ${
                 loadingPayment || !email || !whatsapp || !agreeTerms
-                  ? "bg-indigo-400 text-white cursor-not-allowed"
-                  : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:bg-indigo-700"
+                  ? "bg-black text-white cursor-not-allowed"
+                  : "bg-gradient-to-r from-black to-[#ab862b] text-white hover:bg-black"
               }`}
             >
               {loadingPayment ? "Processing..." : "Pay Now"}

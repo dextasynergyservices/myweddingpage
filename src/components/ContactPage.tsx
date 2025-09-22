@@ -15,8 +15,8 @@ export default function ContactPage() {
     <div
       className={`min-h-screen transition-colors duration-300 ${
         isDarkMode
-          ? "bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-          : "bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50"
+          ? "bg-gradient-to-br from-black via-[#ab862b]/10 to-[#ab862b]/5"
+          : "bg-gradient-to-br from-white via-white to-white"
       }`}
     >
       {/* Background gradients */}

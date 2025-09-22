@@ -7,7 +7,11 @@ import TemplateSelection from "@/components/dashboard/PageBuilderComponent/Templ
 import TemplateEditor from "@/components/dashboard/PageBuilderComponent/TemplateEditor";
 import { Template, UserTemplate, UserPlan, WeddingPage } from "@/types/wedding";
 
-const WeddingPageBuilder = () => {
+interface WeddingPageBuilderProps {
+  setActiveTab?: (tab: string) => void;
+}
+
+const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
   const { isDarkMode } = useTheme();
   const [isSelect, setIsSelect] = useState(false);
   const [, setTemplates] = useState<Template[]>([]);
@@ -228,6 +232,7 @@ const WeddingPageBuilder = () => {
             editedSections={editedSections}
             onWeddingPageUpdate={(wp) => setWeddingPage(wp)}
             onUserTemplateUpdate={(ut) => setUserTemplate(ut)}
+            setActiveTab={setActiveTab}
           />
         ) : (
           <div

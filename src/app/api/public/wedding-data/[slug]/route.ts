@@ -17,15 +17,18 @@ function formatWeddingDate(date: Date): string {
 
 export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
   try {
-    const { slug } = params;
+    const { slug } = await params;
 
     if (!slug) {
       return NextResponse.json({ error: "Missing slug" }, { status: 400 });
     }
 
-    // Find the wedding page with all related data
-    const weddingPage = await prisma.weddingPage.findUnique({
-      where: { slug },
+    // Find the wedding page with all related data (excluding deleted pages)
+    const weddingPage = await prisma.weddingPage.findFirst({
+      where: {
+        slug,
+        deleted_at: null, // Only show non-deleted pages
+      },
       include: {
         user: {
           include: {

@@ -90,7 +90,7 @@ const LoginForm = () => {
           <Label>Email or WhatsApp Number</Label>
           <div className="relative">
             <Mail
-              className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 ${isDarkMode ? "text-slate-400" : "text-slate-400"}`}
+              className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 ${isDarkMode ? "text-white/50" : "text-black/50"}`}
             />
             <Input
               type="text"
@@ -116,7 +116,7 @@ const LoginForm = () => {
           <Label>Password</Label>
           <div className="relative">
             <Lock
-              className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 ${isDarkMode ? "text-slate-400" : "text-slate-400"}`}
+              className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 ${isDarkMode ? "text-white/50" : "text-black/50"}`}
             />
             <Input
               type={showPassword ? "text" : "password"}
@@ -130,8 +130,8 @@ const LoginForm = () => {
               onClick={() => setShowPassword(!showPassword)}
               className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${
                 isDarkMode
-                  ? "text-slate-400 hover:text-slate-300"
-                  : "text-slate-400 hover:text-slate-600"
+                  ? "text-white/50 hover:text-white/30"
+                  : "text-black/50 hover:text-black/60"
               } transition-colors duration-200`}
             >
               {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -153,7 +153,7 @@ const LoginForm = () => {
           <button
             type="button"
             onClick={() => setForgotOpen(true)}
-            className="text-indigo-600 hover:underline"
+            className="text-[#ab862b]/80 hover:text-[#ab862b] hover:underline"
           >
             Forgot password?
           </button>
@@ -170,11 +170,11 @@ const LoginForm = () => {
         <GoogleAuthButton />
 
         {/* Signup Link */}
-        <p className={`text-center mt-8 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+        <p className={`text-center mt-8 ${isDarkMode ? "text-white/50" : "text-black"}`}>
           Don&lsquo;t have an account?{" "}
           <Link
             href="/packages"
-            className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors duration-200"
+            className="text-[#ab862b]/80 hover:text-[#ab862b] font-medium transition-colors duration-200"
           >
             Sign up
           </Link>

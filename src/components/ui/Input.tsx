@@ -12,9 +12,9 @@ const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLI
         className={cn(
           "w-full pl-12 pr-4 py-3 rounded-2xl border transition-all duration-300",
           isDarkMode
-            ? "bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500 focus:bg-slate-700"
-            : "bg-white/50 border-slate-300 text-slate-900 placeholder-slate-500 focus:border-indigo-500 focus:bg-white",
-          "focus:ring-2 focus:ring-indigo-500/20 focus:outline-none",
+            ? "bg-[#ab862b]/10 border-[#ab862b] text-white placeholder-white focus:border-[#ab862b] focus:bg-[#ab862b]/10 focus:ring-[#ab862b]"
+            : "bg-white/50 border-black text-slate-900 placeholder-slate-500 focus:border-black focus:bg-white focus:ring-black",
+          "focus:ring-2 focus:outline-none",
           className
         )}
         {...props}

@@ -12,27 +12,31 @@ const HomeTestimonials = () => {
   return (
     <section
       id="testimonials"
-      className={`py-24 relative overflow-hidden ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
+      className={`py-24 relative overflow-hidden ${
+        isDarkMode
+          ? "bg-gradient-to-br from-black/20 to-amber-900/20"
+          : "bg-gradient-to-br from-amber-50/30 to-yellow-50/30"
+      }`}
     >
       <ParallaxBackground speed={0.1}>
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-rose-100/30 to-pink-100/30 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-amber-200/30 to-yellow-200/30 rounded-full blur-3xl"></div>
       </ParallaxBackground>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <AnimatedSection className="text-center mb-20">
           <h2
             className={`text-4xl md:text-5xl font-light mb-6 tracking-tight ${
-              isDarkMode ? "text-white" : "text-slate-900"
+              isDarkMode ? "text-white" : "text-black"
             }`}
           >
             Loved by Couples
           </h2>
           <p
             className={`text-xl max-w-2xl mx-auto font-light ${
-              isDarkMode ? "text-slate-300" : "text-slate-600"
+              isDarkMode ? "text-white/50" : "text-black"
             }`}
           >
-            Join thousands of couples who've created their perfect wedding experience.
+            Join thousands of couples who&apos;ve created their perfect wedding experience.
           </p>
         </AnimatedSection>
 
@@ -69,8 +73,8 @@ const HomeTestimonials = () => {
               <motion.div
                 className={`rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 border h-full flex flex-col justify-between ${
                   isDarkMode
-                    ? "bg-slate-700 border-slate-600 hover:border-slate-500"
-                    : "bg-white border-slate-100 hover:border-slate-200"
+                    ? "bg-black/50 border-[#ab862b]/30 hover:border-[#ab862b]/50"
+                    : "bg-white/80 border-amber-200 hover:border-[#ab862b]/30"
                 }`}
                 whileHover={{ y: -5, scale: 1.02 }}
               >
@@ -93,10 +97,10 @@ const HomeTestimonials = () => {
                 </motion.div>
                 <p
                   className={`mb-8 leading-relaxed font-light text-lg ${
-                    isDarkMode ? "text-slate-300" : "text-slate-700"
+                    isDarkMode ? "text-white/50" : "text-black"
                   }`}
                 >
-                  "{testimonial.text}"
+                  &ldquo;{testimonial.text}&rdquo;
                 </p>
                 <div className="flex items-center gap-4 mt-auto">
                   <motion.img
@@ -105,7 +109,7 @@ const HomeTestimonials = () => {
                     className="w-12 h-12 rounded-full object-cover"
                     whileHover={{ scale: 1.1 }}
                   />
-                  <div className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                  <div className={`font-medium ${isDarkMode ? "text-white" : "text-black"}`}>
                     {testimonial.name}
                   </div>
                 </div>

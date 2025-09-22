@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Heart, Mail, Lock, User, Eye, EyeOff, Calendar, MessageCircleIcon } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, Calendar, MessageCircleIcon } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useRouter } from "next/navigation";
 import GoogleAuthButton from "@/app/auth/GoogleAuthButton";
@@ -152,9 +152,9 @@ const RegisterForm = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       className={`w-full max-w-md relative ${
-        isDarkMode ? "bg-slate-800/80" : "bg-white/80"
+        isDarkMode ? "bg-gradient-to-br from-black via-[#ab862b]/10 to-[#ab862b]/5" : "bg-white/80"
       } backdrop-blur-xl rounded-3xl shadow-2xl border ${
-        isDarkMode ? "border-slate-700/50" : "border-white/20"
+        isDarkMode ? "border-[#ab862b]/20" : "border-black/20"
       } p-8`}
     >
       {/* Header */}
@@ -165,14 +165,14 @@ const RegisterForm = () => {
           transition={{ delay: 0.2, type: "spring" }}
           className="flex justify-center mb-6"
         >
-          <div className="p-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-lg">
-            <Heart className="h-8 w-8 text-white" fill="currentColor" />
+          <div className="p-4 bg-white rounded-2xl shadow-lg">
+            <Image src="/logoicon.png" alt="my wedding page" width={60} height={60} />
           </div>
         </motion.div>
-        <h1 className={`text-2xl font-thin mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+        <h1 className={`text-2xl font-thin mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>
           Continue to create your Wedding Page
         </h1>
-        <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"} text-md font-light`}>
+        <p className={`${isDarkMode ? "text-white/50" : "text-black"} text-md font-light`}>
           Start your wedding journey today
         </p>
       </div>
@@ -184,7 +184,7 @@ const RegisterForm = () => {
           <div className="relative">
             <User
               className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 ${
-                isDarkMode ? "text-slate-400" : "text-slate-400"
+                isDarkMode ? "text-white/50" : "text-black/50"
               }`}
             />
             <Input
@@ -211,7 +211,7 @@ const RegisterForm = () => {
           <div className="relative">
             <User
               className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 ${
-                isDarkMode ? "text-slate-400" : "text-slate-400"
+                isDarkMode ? "text-white/50" : "text-black/50"
               }`}
             />
             <Input
@@ -238,7 +238,7 @@ const RegisterForm = () => {
           <div className="relative">
             <Mail
               className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 ${
-                isDarkMode ? "text-slate-400" : "text-slate-400"
+                isDarkMode ? "text-white/50" : "text-black/50"
               }`}
             />
             <Input
@@ -267,7 +267,7 @@ const RegisterForm = () => {
           <div className="relative">
             <MessageCircleIcon
               className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 ${
-                isDarkMode ? "text-slate-400" : "text-slate-400"
+                isDarkMode ? "text-white/50" : "text-black/50"
               }`}
             />
             <Input
@@ -301,7 +301,7 @@ const RegisterForm = () => {
               placeholderText="Select wedding date"
               className={`w-full pl-10 pr-4 py-3 rounded-2xl border transition-all duration-300 placeholder:text-sm ${
                 isDarkMode
-                  ? "bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500 focus:bg-slate-700"
+                  ? "bg-gradient-to-br from-black/50 to-[#ab862b] text-white placeholder-white focus:border-[#ab862b] focus:bg-[#ab862b]/10 focus:ring-[#ab862b]"
                   : "bg-white/50 border-slate-300 text-slate-900 placeholder-slate-500 focus:border-indigo-500 focus:bg-white"
               } focus:ring-2 focus:ring-indigo-500/20 focus:outline-none`}
             />
@@ -325,7 +325,7 @@ const RegisterForm = () => {
             onChange={handleImageChange}
             className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4
                file:rounded-full file:border-0 file:text-sm file:font-semibold
-               file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+               file:bg-black/50 file:text-[#ab862b] hover:file:bg-[#ab862b]/10"
           />
           {formData.image && (
             <div className="mt-2">
@@ -353,7 +353,7 @@ const RegisterForm = () => {
               className="pl-10 pr-10 placeholder:text-sm"
             />
             <span
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-black"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -373,7 +373,7 @@ const RegisterForm = () => {
         <div>
           <Label>Confirm Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-black w-4 h-4" />
             <Input
               name="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
@@ -383,7 +383,7 @@ const RegisterForm = () => {
               className="pl-10 pr-10 placeholder:text-sm"
             />
             <span
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-black"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
               {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -409,9 +409,9 @@ const RegisterForm = () => {
 
       <GoogleAuthButton />
 
-      <p className={`text-center mt-8 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+      <p className={`text-center mt-8 ${isDarkMode ? "text-white/50" : "text-black"}`}>
         Already have an account?{" "}
-        <span className="text-indigo-600 hover:text-indigo-700 font-medium cursor-pointer transition-colors duration-200">
+        <span className="text-[#ab862b]/80 hover:text-[#ab862b] font-medium cursor-pointer transition-colors duration-200">
           Sign in
         </span>
       </p>

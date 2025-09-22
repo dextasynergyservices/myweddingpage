@@ -16,9 +16,9 @@ const HowToSteps = () => {
   const { isDarkMode } = useTheme();
 
   return (
-    <AnimatedSection className={`py-16 px-6 ${isDarkMode ? "bg-slate-900" : " bg-gray-50"}`}>
+    <AnimatedSection className={`py-16 px-6 ${isDarkMode ? "bg-[#ab862b]/10" : " bg-gray-50"}`}>
       <div className="max-w-5xl mx-auto text-center">
-        <h2 className={`text-3xl font-bold mb-10 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+        <h2 className={`text-3xl font-bold mb-10 ${isDarkMode ? "text-white" : "text-black"}`}>
           Step-by-Step Guide
         </h2>
         <div className="grid md:grid-cols-4 gap-8">
@@ -28,9 +28,9 @@ const HowToSteps = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.2 }}
-              className={`rounded-xl shadow-lg p-6 ${isDarkMode ? " bg-slate-700 text-white" : "bg-white text-slate-900"}`}
+              className={`rounded-xl shadow-lg p-6 ${isDarkMode ? " bg-[#ab862b]/5 text-white" : "bg-white text-slate-900"}`}
             >
-              <CheckCircle className="w-10 h-10 text-blue-500 mx-auto mb-4" />
+              <CheckCircle className="w-10 h-10 text-[#ab862b] mx-auto mb-4" />
               <h3 className="font-semibold text-lg">{step.title}</h3>
               <p className={` mt-2 ${isDarkMode ? "text-gray-300" : " text-gray-900"}`}>
                 {step.desc}

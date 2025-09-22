@@ -47,10 +47,14 @@ type WellWish = {
   approved?: boolean;
 };
 
-const GiftRegistration = () => {
+interface GiftRegistrationProps {
+  initialSubTab?: "registry" | "cash" | "received" | "comments";
+}
+
+const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps) => {
   const { isDarkMode } = useTheme();
   const [activeTab, setActiveTab] = useState<"registry" | "cash" | "received" | "comments">(
-    "registry"
+    initialSubTab
   );
 
   // State for data from database

@@ -26,7 +26,7 @@ const HowToFAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className={`py-16 px-6 ${isDarkMode ? "bg-slate-800" : " bg-white"}`}>
+    <section id="faq" className={`py-16 px-6 ${isDarkMode ? "bg-[#000000]/5" : " bg-white"}`}>
       <div className="max-w-3xl mx-auto">
         <h2 className={`text-3xl font-bold mb-10 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
           Frequently Asked Questions
@@ -38,7 +38,7 @@ const HowToFAQ = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`rounded-lg shadow-lg ${isDarkMode ? "dark:bg-gray-900 text-white" : "bg-white text-slate-800"}`}
+              className={`rounded-lg shadow-lg ${isDarkMode ? "bg-[#ab862b]/10 text-white" : "bg-white text-slate-800"}`}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}

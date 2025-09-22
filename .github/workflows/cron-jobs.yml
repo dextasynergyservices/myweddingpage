@@ -1,0 +1,56 @@
+name: Daily Cron Jobs
+
+on:
+  schedule:
+    # Runs daily at 8:00 AM UTC (adjust timezone as needed)
+    - cron: "0 8 * * *"
+  workflow_dispatch: # Allows manual triggering for testing
+
+jobs:
+  run-cron-jobs:
+    name: Execute Daily Cron Jobs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Wedding Date Reminders
+        run: |
+          echo "Running wedding date reminders cron job..."
+          curl -f -X GET "${{ secrets.APP_URL }}/api/cron/wedding-date-reminders" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --max-time 300 \
+            --retry 3 \
+            --retry-delay 10
+        continue-on-error: false
+
+      - name: Wedding Congratulations
+        run: |
+          echo "Running wedding congratulations cron job..."
+          curl -f -X GET "${{ secrets.APP_URL }}/api/cron/wedding-congratulations" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --max-time 300 \
+            --retry 3 \
+            --retry-delay 10
+        continue-on-error: false
+
+      - name: Expiration Manager
+        run: |
+          echo "Running expiration manager cron job..."
+          curl -f -X GET "${{ secrets.APP_URL }}/api/cron/expiration-manager" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --max-time 300 \
+            --retry 3 \
+            --retry-delay 10
+        continue-on-error: false
+
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          echo "One or more cron jobs failed. Check the logs above for details."
+          # Optionally send a notification to admin email or Slack
+          curl -X POST "${{ secrets.APP_URL }}/api/admin/notify-failure" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"message": "Daily cron jobs failed", "timestamp": "'$(date -Iseconds)'"}' || true

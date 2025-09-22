@@ -63,12 +63,12 @@ const HomeFindWedding = () => {
       id="search"
       className={`py-24 relative overflow-hidden ${
         isDarkMode
-          ? "bg-gradient-to-br from-indigo-900/20 to-purple-900/20"
-          : "bg-gradient-to-br from-indigo-50 to-purple-50"
+          ? "bg-gradient-to-br from-black/20 to-amber-900/20"
+          : "bg-gradient-to-br from-amber-50/30 to-yellow-50/30"
       }`}
     >
       <ParallaxBackground speed={0.2}>
-        <div className="absolute top-1/2 right-0 w-64 h-64 bg-gradient-to-br from-indigo-200/40 to-purple-200/40 rounded-full blur-2xl"></div>
+        <div className="absolute top-1/2 right-0 w-64 h-64 bg-gradient-to-br from-amber-200/40 to-yellow-200/40 rounded-full blur-2xl"></div>
       </ParallaxBackground>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -79,8 +79,14 @@ const HomeFindWedding = () => {
             animate={{ scale: 1 }}
             transition={{ type: "spring", delay: 0.5 }}
           >
-            <div className="p-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl shadow-xl">
-              <Sparkles className="h-12 w-12 text-white" />
+            <div
+              className={`p-4 rounded-3xl shadow-xl ${
+                isDarkMode
+                  ? "bg-gradient-to-r from-black to-[#ab862b]"
+                  : "bg-gradient-to-r from-[#ab862b] to-yellow-500"
+              }`}
+            >
+              <Sparkles className={`h-12 w-12 ${isDarkMode ? "text-white" : "text-white"}`} />
             </div>
           </motion.div>
 
@@ -154,8 +160,8 @@ const HomeFindWedding = () => {
             href="/wedding-pages"
             className={`inline-flex items-center px-4 py-3 rounded-2xl font-medium text-small transition-all duration-300 ${
               isDarkMode
-                ? "text-indigo-300 hover:text-indigo-100 bg-indigo-900/50 hover:bg-indigo-900/70"
-                : "text-indigo-600 hover:text-indigo-800 bg-indigo-100 hover:bg-indigo-200"
+                ? "text-white hover:text-gray-200 bg-black hover:bg-gray-800"
+                : "text-white hover:text-gray-200 bg-black hover:bg-gray-800"
             }`}
           >
             View All Weddings
