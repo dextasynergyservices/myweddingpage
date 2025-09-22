@@ -3,6 +3,33 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import prisma from "@/lib/prisma";
 
+/**
+ * Validate that the URL is from our Cloudinary domain or a trusted source
+ */
+function validateImageUrl(url: string): boolean {
+  try {
+    const urlObj = new URL(url);
+
+    // Allow Cloudinary URLs from our cloud
+    const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    if (cloudinaryCloudName && urlObj.hostname === `res.cloudinary.com`) {
+      return urlObj.pathname.startsWith(`/${cloudinaryCloudName}/`);
+    }
+
+    // Allow other trusted domains (add more as needed)
+    const trustedDomains = [
+      "images.unsplash.com",
+      "images.pexels.com",
+      "via.placeholder.com",
+      "placehold.co",
+    ];
+
+    return trustedDomains.includes(urlObj.hostname);
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     console.log("=== LOGO API CALLED ===");
@@ -22,6 +49,18 @@ export async function POST(request: NextRequest) {
     if (!logoUrl) {
       console.log("Logo API - No logo URL provided, returning 400");
       return NextResponse.json({ error: "Logo URL is required" }, { status: 400 });
+    }
+
+    // Validate the logo URL
+    if (!validateImageUrl(logoUrl)) {
+      console.log("Logo API - Invalid logo URL, returning 400");
+      return NextResponse.json(
+        {
+          error:
+            "Invalid logo URL. Please use images from trusted sources or upload through our system.",
+        },
+        { status: 400 }
+      );
     }
 
     // Get the user's wedding page

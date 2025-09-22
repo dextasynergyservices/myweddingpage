@@ -3,6 +3,33 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import prisma from "@/lib/prisma";
 
+/**
+ * Validate that the URL is from our Cloudinary domain or a trusted source
+ */
+function validateImageUrl(url: string): boolean {
+  try {
+    const urlObj = new URL(url);
+
+    // Allow Cloudinary URLs from our cloud
+    const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    if (cloudinaryCloudName && urlObj.hostname === `res.cloudinary.com`) {
+      return urlObj.pathname.startsWith(`/${cloudinaryCloudName}/`);
+    }
+
+    // Allow other trusted domains (add more as needed)
+    const trustedDomains = [
+      "images.unsplash.com",
+      "images.pexels.com",
+      "via.placeholder.com",
+      "placehold.co",
+    ];
+
+    return trustedDomains.includes(urlObj.hostname);
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -15,6 +42,17 @@ export async function POST(request: NextRequest) {
 
     if (!heroImage) {
       return NextResponse.json({ error: "Hero image URL is required" }, { status: 400 });
+    }
+
+    // Validate the image URL
+    if (!validateImageUrl(heroImage)) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid image URL. Please use images from trusted sources or upload through our system.",
+        },
+        { status: 400 }
+      );
     }
 
     // Get the user's wedding page
@@ -35,6 +73,12 @@ export async function POST(request: NextRequest) {
       data: {
         hero_image: heroImage,
       },
+    });
+
+    console.log("Hero image updated:", {
+      userId: session.user.id,
+      weddingPageId: weddingPage.id,
+      heroImage,
     });
 
     return NextResponse.json({
