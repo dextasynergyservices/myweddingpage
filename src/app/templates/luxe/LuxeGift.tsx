@@ -131,51 +131,6 @@ export default function GiftRegistry(props: GiftRegistryProps) {
     }
   };
 
-  const handleCashGift = async (data: {
-    name: string;
-    email: string;
-    phone: string;
-    message?: string;
-  }) => {
-    console.log("LuxeGift handleCashGift called with:", {
-      userId: props.userId,
-      data,
-    });
-
-    if (!props.userId) {
-      console.error("Missing userId");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/public/received-gifts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: data.name,
-          contactEmail: data.email,
-          contactPhone: data.phone,
-          message: data.message,
-          giftId: null, // No specific gift for cash
-          amount: 0, // No specific amount for cash
-          userId: props.userId,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit cash gift");
-      }
-
-      const result = await response.json();
-      console.log("Cash gift submitted successfully:", result);
-    } catch (error) {
-      console.error("Cash gift submission error:", error);
-      throw error;
-    }
-  };
-
   useEffect(() => {
     if (!open) return;
     // Use bank details passed from props instead of fetching from API
@@ -346,7 +301,7 @@ export default function GiftRegistry(props: GiftRegistryProps) {
         onClose={() => setCashGiftOpen(false)}
         bankDetails={bankDetailsList}
         loadingBanks={loadingBanks}
-        onPurchase={handleCashGift}
+        userId={props.userId || ""}
       />
     </section>
   );

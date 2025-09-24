@@ -25,7 +25,6 @@ export default function Modal({
   children,
   title,
   maxWidth = "max-w-2xl",
-  forceLight = false,
 }: ModalProps) {
   const visible = open ?? isOpen ?? false;
 
@@ -56,14 +55,14 @@ export default function Modal({
           <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
           <motion.div
-            className={`relative w-full ${resolvedMaxWidth} ${forceLight ? "bg-white" : "bg-white dark:bg-slate-800"} rounded-xl shadow-lg p-6 z-10`}
+            className={`relative w-full ${resolvedMaxWidth} bg-white rounded-xl shadow-lg p-6 z-10`}
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
           >
             {title && (
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold dark:text-white">{title}</h2>
+                <h2 className="text-lg font-semibold text-black">{title}</h2>
                 <button
                   onClick={onClose}
                   className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"

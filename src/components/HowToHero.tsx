@@ -61,7 +61,8 @@ const HowToHero = () => {
       <VideoPlayerModal
         isOpen={isVideoOpen}
         onClose={() => setIsVideoOpen(false)}
-        videoUrl="/videos/overview.mp4"
+        videoUrl="https://youtu.be/YNJxxn2eJUY"
+        videoType="youtube"
       />
     </AnimatedSection>
   );

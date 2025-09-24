@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Heart, Calendar, MapPin, Mail, Phone, Instagram, Facebook } from "lucide-react";
+import { Heart, Calendar, MapPin, Mail, Instagram, Facebook } from "lucide-react";
 import Image from "next/image";
 
 interface WeddingPageFooterProps {
@@ -9,8 +9,7 @@ interface WeddingPageFooterProps {
   groomName?: string;
   weddingDate?: string;
   venue?: string;
-  contactEmail?: string;
-  contactPhone?: string;
+  email?: string;
   logoUrl?: string;
   logoAlt?: string;
   socialMedia?: {
@@ -25,12 +24,10 @@ export default function WeddingPageFooter({
   groomName = "Groom",
   weddingDate,
   venue,
-  contactEmail,
-  contactPhone,
+  email,
   logoUrl,
   logoAlt,
   socialMedia,
-  guestMessageCount = 0,
 }: WeddingPageFooterProps) {
   // Format wedding date
   const formatDate = (dateString?: string) => {
@@ -119,28 +116,28 @@ export default function WeddingPageFooter({
           >
             <h4 className="text-lg font-semibold text-gray-800 mb-4">Get In Touch</h4>
             <div className="space-y-3">
-              {contactEmail && (
+              {email && (
                 <div className="flex items-center justify-center md:justify-start space-x-2 text-gray-600">
                   <Mail className="h-4 w-4 text-pink-500" />
                   <a
-                    href={`mailto:${contactEmail}`}
+                    href={`mailto:${email}`}
                     className="text-sm hover:text-pink-600 transition-colors duration-200"
                   >
-                    {contactEmail}
+                    {email}
                   </a>
                 </div>
               )}
-              {contactPhone && (
+              {/* {whatsapp && (
                 <div className="flex items-center justify-center md:justify-start space-x-2 text-gray-600">
                   <Phone className="h-4 w-4 text-pink-500" />
                   <a
-                    href={`tel:${contactPhone}`}
+                    href={`tel:${whatsapp}`}
                     className="text-sm hover:text-pink-600 transition-colors duration-200"
                   >
-                    {contactPhone}
+                    {whatsapp}
                   </a>
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* Social Media */}
@@ -175,31 +172,18 @@ export default function WeddingPageFooter({
           </motion.div>
         </div>
 
-        {/* Stats Section */}
-        {guestMessageCount > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-center py-6 border-t border-pink-200 mb-6"
-          >
-            <p className="text-sm text-gray-600">
-              <span className="font-semibold text-pink-600">{guestMessageCount}</span>{" "}
-              {guestMessageCount === 1 ? "guest message" : "guest messages"} received
-            </p>
-          </motion.div>
-        )}
-
         {/* Bottom Bar */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center py-4 border-t border-pink-200"
+          className="text-center py-8 border-t border-pink-200"
         >
-          <p className="text-sm text-gray-500">
-            Created with <Heart className="inline h-3 w-3 text-pink-500 mx-1" />
-            using our wedding page builder
+          <p className="text-md text-gray-500">
+            Created using{" "}
+            <a href="https://myweddingpage.online" target="_blank">
+              myweddingpage.online
+            </a>
           </p>
         </motion.div>
       </div>

@@ -275,9 +275,11 @@ const Comments: React.FC<CommentsProps> = (props) => {
 
           {/* Comments List */}
           <div className="space-y-6">
-            <h3 className="font-serif md:text-2xl text-xl font-semibold text-gray-900 mb-8 text-center">
-              Messages from Family & Friends ({comments.length})
-            </h3>
+            <div className="pt-18">
+              <h3 className="font-serif md:text-2xl text-xl font-semibold text-gray-900 mb-8 text-center">
+                Messages from Family & Friends
+              </h3>
+            </div>
 
             {loadingComments ? (
               <div className="text-center py-12">

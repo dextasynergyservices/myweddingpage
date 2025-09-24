@@ -218,7 +218,7 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
               handleTemplateSelect(userTemplate as unknown as UserTemplate | null)
             }
             userPlan={userPlan ?? null}
-            // Provide a safe userTemplate only when it includes a template
+            // Provide a safe userTemplate only when it includes a templates
             userTemplate={safeUserTemplate}
           />
         ) : selectedTemplate ? (

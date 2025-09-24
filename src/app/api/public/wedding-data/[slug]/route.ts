@@ -137,6 +137,8 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       guests: user.guests ?? [],
       // Include bank details for gift components
       bankDetails: user.bankDetails ?? [],
+      email: user.email || null,
+      whatsapp: user.whatsapp || null,
       // Include full section content for dynamic rendering
       sections: wpAi,
       userTemplate: selectedUserTemplate,

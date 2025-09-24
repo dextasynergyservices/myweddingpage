@@ -208,7 +208,7 @@ export const GallerySection = (props: GallerySectionProps) => {
   ];
 
   return (
-    <section className={`py-32 ${styles.bgMuted}`}>
+    <section className={`${styles.bgMuted}`}>
       <div className={styles.containerWedding}>
         <div
           ref={sectionRef}

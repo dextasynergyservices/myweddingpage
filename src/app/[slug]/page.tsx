@@ -36,7 +36,7 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
     }
 
     const data = await response.json();
-    const { template, userData, userTemplate, plan, comments } = data;
+    const { template, userData, userTemplate, plan } = data;
 
     // Debug: Log the wedding date received by the live page
     console.log("Live Wedding Page - Received data:", {
@@ -89,7 +89,7 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
           venue={userData.venue}
           logoUrl={userData.logoUrl}
           logoAlt={userData.logoAlt}
-          guestMessageCount={comments?.length || 0}
+          email={userData.email}
         />
       </div>
     );
