@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Heart, Bot } from "lucide-react";
+import { X, Bot } from "lucide-react";
 import { NavigationItem } from "@/types/dashboard";
 import LogoutButton from "@/components/LogoutButton";
 
@@ -40,9 +40,6 @@ const DashboardMobileSidebar = ({
           <div className="p-4 border-b border-slate-200 dark:border-slate-700">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl">
-                  <Heart className="h-5 w-5 text-white" fill="currentColor" />
-                </div>
                 <div>
                   <h1
                     className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}

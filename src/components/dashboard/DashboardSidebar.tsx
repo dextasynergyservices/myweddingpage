@@ -1,6 +1,6 @@
 import { NavigationItem } from "@/types/dashboard";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import { Heart, Bot } from "lucide-react";
+import { Bot } from "lucide-react";
 import { motion } from "framer-motion";
 import LogoutButton from "@/components/LogoutButton";
 
@@ -31,9 +31,6 @@ const DashboardSidebar = ({
     >
       <div className="p-6 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl">
-            <Heart className="h-6 w-6 text-white" fill="currentColor" />
-          </div>
           <div>
             <h1 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Wedding Dashboard

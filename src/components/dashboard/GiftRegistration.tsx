@@ -97,6 +97,20 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  // Helper function to format numbers with commas
+  const formatNumberWithCommas = (num: number): string => {
+    return num.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
+  // Helper function to get gift name by ID from the Gift model
+  const getGiftNameById = (giftId: string): string => {
+    const gift = gifts.find((g) => g.id === giftId);
+    return gift ? gift.name : "Unknown Gift";
+  };
+
   // Fetch data from API
   useEffect(() => {
     const fetchData = async () => {
@@ -684,11 +698,13 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
                   <div className="mt-2">
                     {gift.giftId ? (
                       <p className="flex items-center gap-1 text-sm">
-                        <Gift size={14} /> Gift
+                        <Gift size={14} /> {getGiftNameById(gift.giftId)}
                       </p>
                     ) : (
                       <p className="flex items-center gap-1 text-sm">
-                        <span className="font-medium">${gift.amount?.toFixed(2)}</span>
+                        <span className="font-medium">
+                          ₦{gift.amount ? formatNumberWithCommas(gift.amount) : "0.00"}
+                        </span>
                       </p>
                     )}
                   </div>

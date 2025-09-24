@@ -494,6 +494,24 @@
   margin-top: 1rem;
 }
 
+.avoidTopSpace {
+  padding-top: 0 !important;
+  margin-top: -15rem !important;
+}
+
+/* Responsive adjustments for avoidTopSpace */
+@media (max-width: 768px) {
+  .avoidTopSpace {
+    margin-top: -8rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .avoidTopSpace {
+    margin-top: -15rem !important;
+  }
+}
+
 .gap8 {
   gap: 2rem;
 }

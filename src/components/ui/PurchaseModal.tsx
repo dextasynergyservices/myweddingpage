@@ -108,18 +108,20 @@ export default function PurchaseModal({
   if (!gift) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Purchase ${gift.item}`} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={`Purchase ${gift.name}`} size="lg">
       <div className="space-y-6">
         {/* Gift Information */}
         <div className="flex flex-col md:flex-row gap-6">
           <div className="md:w-1/2">
-            <Image
-              src={gift.image}
-              alt={gift.item || `Gift image ${gift.id}`}
-              width={400}
-              height={300}
-              className="rounded-xl w-full h-48 object-cover"
-            />
+            <div className="border-2 border-black/20 shadow rounded">
+              <Image
+                src={gift.image}
+                alt={gift.item || `Gift image ${gift.id}`}
+                width={400}
+                height={300}
+                className="w-full h-48 object-cover"
+              />
+            </div>
             <div className="mt-4">
               <h4 className="font-semibold text-lg">{gift.item}</h4>
               {gift.description && (

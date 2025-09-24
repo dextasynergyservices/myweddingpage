@@ -9,20 +9,36 @@ interface VideoPlayerModalProps {
   isOpen: boolean;
   onClose: () => void;
   videoUrl?: string;
+  videoType?: "local" | "youtube";
 }
 
 const VideoPlayerModal = ({
   isOpen,
   onClose,
   videoUrl = "/videos/overview.mp4",
+  videoType = "local",
 }: VideoPlayerModalProps) => {
   const { isDarkMode } = useTheme();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Helper function to extract YouTube video ID
+  const getYouTubeId = (url: string): string => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : "";
+  };
+
+  // Get YouTube embed URL with hidden controls
+  const getYouTubeEmbedUrl = (url: string): string => {
+    const videoId = getYouTubeId(url);
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&fs=0&disablekb=1&playsinline=1`;
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -37,13 +53,26 @@ const VideoPlayerModal = ({
   }, [isOpen]);
 
   const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
+    if (videoType === "youtube") {
+      const iframe = iframeRef.current;
+      if (iframe) {
+        const currentSrc = iframe.src;
+        if (isPlaying) {
+          iframe.src = currentSrc.replace("autoplay=1", "autoplay=0");
+        } else {
+          iframe.src = currentSrc.replace("autoplay=0", "autoplay=1");
+        }
+        setIsPlaying(!isPlaying);
       }
-      setIsPlaying(!isPlaying);
+    } else {
+      if (videoRef.current) {
+        if (isPlaying) {
+          videoRef.current.pause();
+        } else {
+          videoRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
+      }
     }
   };
 
@@ -135,47 +164,80 @@ const VideoPlayerModal = ({
 
             {/* Video Element */}
             <div className="relative">
-              <video
-                ref={videoRef}
-                src={videoUrl}
-                className="w-full h-auto max-h-[70vh] object-cover"
-                onTimeUpdate={handleTimeUpdate}
-                onLoadedMetadata={handleLoadedMetadata}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                onEnded={() => setIsPlaying(false)}
-              />
+              {videoType === "youtube" ? (
+                <>
+                  <iframe
+                    ref={iframeRef}
+                    src={getYouTubeEmbedUrl(videoUrl)}
+                    className="w-full h-auto max-h-[70vh] aspect-video"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title="YouTube video player"
+                  />
 
-              {/* Play/Pause Overlay */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={togglePlay}
-                className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors"
-              >
-                <motion.div
-                  animate={{ scale: isPlaying ? 0 : 1 }}
-                  transition={{ duration: 0.2 }}
-                  className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center shadow-lg"
-                >
-                  <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
-                </motion.div>
-              </motion.button>
+                  {/* Custom Play/Pause Overlay for YouTube */}
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={togglePlay}
+                    className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors"
+                  >
+                    <motion.div
+                      animate={{ scale: isPlaying ? 0 : 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center shadow-lg"
+                    >
+                      <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
+                    </motion.div>
+                  </motion.button>
+                </>
+              ) : (
+                <>
+                  <video
+                    ref={videoRef}
+                    src={videoUrl}
+                    className="w-full h-auto max-h-[70vh] object-cover"
+                    onTimeUpdate={handleTimeUpdate}
+                    onLoadedMetadata={handleLoadedMetadata}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onEnded={() => setIsPlaying(false)}
+                  />
+
+                  {/* Play/Pause Overlay */}
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={togglePlay}
+                    className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors"
+                  >
+                    <motion.div
+                      animate={{ scale: isPlaying ? 0 : 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center shadow-lg"
+                    >
+                      <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
+                    </motion.div>
+                  </motion.button>
+                </>
+              )}
             </div>
 
-            {/* Controls */}
+            {/* Controls - Show for both local and YouTube videos */}
             <div className={`p-4 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
-              {/* Progress Bar */}
-              <div className="mb-4">
-                <input
-                  type="range"
-                  min="0"
-                  max={duration}
-                  value={currentTime}
-                  onChange={handleSeek}
-                  className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider"
-                />
-              </div>
+              {/* Progress Bar - Only show for local videos */}
+              {videoType === "local" && (
+                <div className="mb-4">
+                  <input
+                    type="range"
+                    min="0"
+                    max={duration}
+                    value={currentTime}
+                    onChange={handleSeek}
+                    className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider"
+                  />
+                </div>
+              )}
 
               {/* Control Buttons */}
               <div className="flex items-center justify-between">
@@ -191,20 +253,26 @@ const VideoPlayerModal = ({
                     {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
                   </motion.button>
 
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={toggleMute}
-                    className={`p-2 rounded-full ${
-                      isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
-                    } hover:bg-gray-600 transition-colors`}
-                  >
-                    {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                  </motion.button>
+                  {/* Mute button - Only show for local videos */}
+                  {videoType === "local" && (
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={toggleMute}
+                      className={`p-2 rounded-full ${
+                        isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
+                      } hover:bg-gray-600 transition-colors`}
+                    >
+                      {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                    </motion.button>
+                  )}
 
-                  <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                  </span>
+                  {/* Time display - Only show for local videos */}
+                  {videoType === "local" && (
+                    <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </span>
+                  )}
                 </div>
 
                 <motion.button
