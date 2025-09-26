@@ -159,7 +159,7 @@ const WeddingPageList = () => {
                   placeholder="Search weddings by couple, location, or keywords..."
                   className={`block w-full pl-10 pr-3 py-4 border ${
                     isDarkMode
-                      ? "border-[#ab862b] bg-[#ab862b]/10 text-white placeholder-white placeholder:text-white"
+                      ? "border-[#ab862b] bg-[#ab862b]/10 text-white placeholder:text-white"
                       : "border-black bg-white text-black placeholder-gray-500"
                   } rounded-xl shadow-sm focus:outline-none focus:ring-1 focus:ring-[#ab862b] focus:border-[#ab862b]`}
                   value={searchTerm}

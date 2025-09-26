@@ -5,6 +5,8 @@ export interface NavigationItem {
   label: string;
   icon: ComponentType<{ className?: string }>;
   description: string;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 export interface StatItem {

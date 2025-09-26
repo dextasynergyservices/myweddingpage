@@ -35,6 +35,7 @@ interface DashboardContentProps {
   setActiveTab: (tab: string) => void;
   tasksTotal?: number;
   tasksCompleted?: number;
+  weddingPageDeleted?: boolean;
 }
 
 const DashboardContent = ({
@@ -49,6 +50,7 @@ const DashboardContent = ({
   setActiveTab,
   tasksTotal,
   tasksCompleted,
+  weddingPageDeleted = false,
 }: DashboardContentProps) => {
   const renderContent = () => {
     switch (activeTab) {
@@ -82,6 +84,7 @@ const DashboardContent = ({
             // pass task totals for card progress
             tasksTotal={tasksTotal}
             tasksCompleted={tasksCompleted}
+            weddingPageDeleted={weddingPageDeleted}
           />
         );
     }

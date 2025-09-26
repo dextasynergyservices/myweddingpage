@@ -23,12 +23,15 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       return NextResponse.json({ error: "Missing slug" }, { status: 400 });
     }
 
-    // Find the wedding page with all related data (excluding deleted pages)
+    // Check if this is a preview request
+    const { searchParams } = new URL(req.url);
+    const isPreview = searchParams.get("preview") === "true";
+
+    // Find the wedding page with all related data
     const weddingPage = await prisma.weddingPage.findFirst({
-      where: {
-        slug,
-        deleted_at: null, // Only show non-deleted pages
-      },
+      where: isPreview
+        ? { slug } // For preview, include all pages (even soft-deleted)
+        : { slug, deleted_at: null }, // Normal access: only non-deleted pages
       include: {
         user: {
           include: {
@@ -66,7 +69,12 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
       },
     });
 
-    if (!weddingPage || !weddingPage.is_live) {
+    if (!weddingPage) {
+      return NextResponse.json({ error: "Page not found" }, { status: 404 });
+    }
+
+    // For normal access (not preview), ensure page is live
+    if (!isPreview && !weddingPage.is_live) {
       return NextResponse.json({ error: "Page not found" }, { status: 404 });
     }
 
@@ -155,7 +163,6 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
     };
 
   // Allow callers to skip incrementing (server-side fetches should set ?noIncrement=1)
-  const { searchParams } = new URL(req.url);
   const noIncrement = searchParams.get("noIncrement") === "1";
 
   // Cookie-based unique-per-day counting + simple UA bot filter
@@ -169,7 +176,8 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
 
     let updatedViews: number | null = null;
 
-  if (!noIncrement && !isBot && !seenCookie) {
+  // Only increment views for live pages, not previews
+  if (!noIncrement && !isBot && !seenCookie && !isPreview && weddingPage.is_live) {
       try {
         // Atomic increment
         await prisma.$executeRaw`UPDATE "WeddingPage" SET views = COALESCE(views, 0) + 1 WHERE id = ${weddingPage.id}`;

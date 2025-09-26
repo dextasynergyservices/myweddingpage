@@ -67,17 +67,24 @@ const DashboardMobileSidebar = ({
               <motion.button
                 key={item.id}
                 onClick={() => {
+                  if (item.disabled) {
+                    alert(item.disabledReason || "This feature is currently disabled.");
+                    return;
+                  }
                   setActiveTab(item.id);
                   setMobileMenuOpen(false);
                 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: item.disabled ? 1 : 1.02 }}
+                whileTap={{ scale: item.disabled ? 1 : 0.98 }}
+                disabled={item.disabled}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 ${
-                  activeTab === item.id
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
-                    : isDarkMode
-                      ? "text-slate-300 hover:bg-slate-700 hover:text-white"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  item.disabled
+                    ? "opacity-50 cursor-not-allowed text-gray-400"
+                    : activeTab === item.id
+                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
+                      : isDarkMode
+                        ? "text-slate-300 hover:bg-slate-700 hover:text-white"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
                 <item.icon className="h-5 w-5 flex-shrink-0" />

@@ -233,7 +233,7 @@ const Hero: React.FC<HeroProps> = (props) => {
               </p> */}
 
               <div
-                className={`pb-18 ${styles.flex} ${styles.flexRow} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.lgJustifyStart} ${styles.gap4} ${styles.lgGap6}`}
+                className={`pb-32 ${styles.flex} ${styles.flexRow} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.lgJustifyStart} ${styles.gap4} ${styles.lgGap6}`}
               >
                 <button
                   className="bg-rose-400 text-white px-6 py-2 lg:px-8 lg:py-3 text-sm lg:text-base rounded-lg font-semibold transition-all duration-300 hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2"

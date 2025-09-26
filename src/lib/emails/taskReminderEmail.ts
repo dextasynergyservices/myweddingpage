@@ -13,7 +13,7 @@ export async function sendEmailNotification({
 }) {
   try {
     await resend.emails.send({
-      from: "Task Manager <info@myweddingpage.online>",
+      from: "Myweddingpage <info@myweddingpage.online>",
       to,
       subject,
       html,
