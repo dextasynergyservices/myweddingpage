@@ -230,7 +230,7 @@ const TemplatePreviewModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="max-w-[95vw]">
-      <div className={`p-0 ${isDarkMode ? "bg-slate-900" : "bg-white"}`}>
+      <div className={`p-0 ${isDarkMode ? "bg-white" : "bg-white"}`}>
         <div
           className={`flex items-center justify-between mb-6 px-4 py-3 rounded-t ${
             isDarkMode

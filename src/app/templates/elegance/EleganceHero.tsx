@@ -170,13 +170,13 @@ const Hero: React.FC<HeroProps> = (props) => {
 
   return (
     <section
-      className={`${styles.relative} ${styles.minHScreen} ${styles.bgGradientSection} ${styles.overflowHidden}`}
+      className={`${styles.relative} ${styles.minHScreen} ${styles.bgGradientSection} ${styles.overflowHidden} ${styles.avoidTopSpace}`}
     >
       <div
-        className={`${styles.container} ${styles.mxAuto} ${styles.px4} ${styles.hScreen} ${styles.flex} ${styles.itemsCenter}`}
+        className={`${styles.container} ${styles.mxAuto} ${styles.px4} ${styles.hScreen} ${styles.flex} ${styles.itemsCenter} min-h-screen`}
       >
         <div
-          className={`${styles.flex} ${styles.flexCol} ${styles.lgGrid} ${styles.lgGridCols2} ${styles.gap8} ${styles.lgGap12} ${styles.itemsCenter} ${styles.wFull} relative top-36`}
+          className={`${styles.flex} ${styles.flexCol} ${styles.lgGrid} ${styles.lgGridCols2} ${styles.gap8} ${styles.lgGap12} ${styles.itemsCenter} ${styles.wFull} relative top-36 md:top-32 lg:top-36`}
         >
           {/* Image - First on mobile, second on desktop */}
           <div className={`${styles.relative} ${styles.wFull} ${styles.order1} ${styles.lgOrder2}`}>
@@ -188,7 +188,7 @@ const Hero: React.FC<HeroProps> = (props) => {
                 alt={`${brideName} and ${groomName} wedding photo`}
                 width={800}
                 height={600}
-                className={`${styles.wFull} ${styles.h300px} ${styles.smH400px} ${styles.lgH600px} ${styles.objectCover} ${styles.transitionTransform} ${styles.duration300} ${styles.easeOut}`}
+                className={`${styles.wFull} h-64 sm:h-80 md:h-96 lg:h-[500px] xl:h-[600px] ${styles.objectCover} ${styles.transitionTransform} ${styles.duration300} ${styles.easeOut}`}
                 style={{
                   transform: `scale(${imageScale})`,
                   opacity: imageOpacity,
@@ -205,10 +205,10 @@ const Hero: React.FC<HeroProps> = (props) => {
             className={`${styles.textCenter} ${styles.lgTextLeft} ${styles.textForeground} ${styles.wFull} ${styles.order2} ${styles.lgOrder1} ${styles.pt16} ${styles.lgPt0}`}
           >
             <div className={styles.animateFadeInUp}>
-              <Heart className="w-12 h-12 mx-auto lg:mx-0 mb-6 animate-float text-amber-500" />
+              <Heart className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 mx-auto lg:mx-0 mb-4 sm:mb-6 animate-float text-amber-500" />
 
               <h1
-                className={`${styles.fontDisplay} text-2xl md:text-6xl lg:text-7xl font-bold mb-4 leading-none text-gray-900`}
+                className={`${styles.fontDisplay} text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 leading-tight text-gray-900`}
               >
                 {brideName} <span className="text-amber-500">&</span> {groomName}
               </h1>
@@ -216,9 +216,11 @@ const Hero: React.FC<HeroProps> = (props) => {
               <div
                 className={`${styles.flex} ${styles.itemsCenter} ${styles.justifyCenter} ${styles.lgJustifyStart} ${styles.mb4} ${styles.lgMb6} text-amber-500`}
               >
-                <Calendar className={`w-6 h-6 md:w4 md:h4 lg:w4 lg:h4 ${styles.mr2}`} />
+                <Calendar
+                  className={`w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 ${styles.mr2}`}
+                />
                 <p
-                  className={`${styles.textSm} ${styles.smTextBase} ${styles.lgTextXl} ${styles.fontLight} ${styles.trackingWider} text-amber-500`}
+                  className={`text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl ${styles.fontLight} ${styles.trackingWider} text-amber-500`}
                 >
                   {formattedDate}
                 </p>

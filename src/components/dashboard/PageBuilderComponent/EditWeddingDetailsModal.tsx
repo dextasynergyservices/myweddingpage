@@ -7,6 +7,8 @@ import { X, Upload } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { uploadToApiWithProgress } from "@/lib/upload-with-progress";
+import { useUploadProgress, UploadProgress } from "@/components/ui/UploadProgress";
 import {
   getStoryComponent,
   getStoryFormFields,
@@ -55,6 +57,9 @@ const EditWeddingDetailsModal = ({
     logo: "",
   });
   const [loading, setLoading] = useState(false);
+
+  // Upload progress tracking
+  const progressHandler = useUploadProgress();
 
   // Story-specific state
   const [storyFormData, setStoryFormData] = useState<Record<string, unknown>>({});
@@ -175,74 +180,79 @@ const EditWeddingDetailsModal = ({
         setStoryImagePreviews((prev) => ({ ...prev, [imageType]: URL.createObjectURL(file) }));
       }
 
-      // Upload to Cloudinary via our API
+      // Upload to Cloudinary via our API with progress tracking
       try {
         const uploadData = new FormData();
         uploadData.append("file", file);
         uploadData.append("imageType", imageType);
 
-        const response = await fetch("/api/upload-image", {
-          method: "POST",
-          body: uploadData,
+        // Add upload to progress tracker
+        progressHandler.addUpload(file.name, file.size);
+
+        const data = await uploadToApiWithProgress("/api/upload-image", uploadData, {
+          onProgress: (loaded, total, speed) => {
+            progressHandler.updateProgress(file.name, loaded, speed);
+          },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          const imageUrl = data.secure_url;
-          console.log("Image uploaded successfully:", imageUrl);
+        const uploadResult = data as { secure_url: string };
+        const imageUrl = uploadResult.secure_url;
+        console.log("Image uploaded successfully:", imageUrl);
 
-          // Update form data with the uploaded image URL
-          if (imageType === "hero") {
-            setFormData((prev) => ({ ...prev, heroImage: imageUrl }));
-          } else if (imageType === "story") {
-            setFormData((prev) => ({ ...prev, storyImage: imageUrl }));
-          } else if (imageType === "logo") {
-            setFormData((prev) => ({ ...prev, logoUrl: imageUrl }));
+        // Mark upload as successful
+        progressHandler.setUploadSuccess(file.name);
 
-            // Also save logo directly to WeddingPage using the dedicated logo API
-            try {
-              const logoResponse = await fetch("/api/wedding-pages/logo", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  logoUrl: imageUrl,
-                  logoAlt: formData.logoAlt || "Wedding Logo",
-                }),
-              });
+        // Update form data with the uploaded image URL
+        if (imageType === "hero") {
+          setFormData((prev) => ({ ...prev, heroImage: imageUrl }));
+        } else if (imageType === "story") {
+          setFormData((prev) => ({ ...prev, storyImage: imageUrl }));
+        } else if (imageType === "logo") {
+          setFormData((prev) => ({ ...prev, logoUrl: imageUrl }));
 
-              console.log("Logo API response status:", logoResponse.status);
-              console.log("Logo API response ok:", logoResponse.ok);
-
-              if (logoResponse.ok) {
-                const logoData = await logoResponse.json();
-                console.log("Logo saved directly to WeddingPage via dedicated API:", logoData);
-              } else {
-                const errorData = await logoResponse.json();
-                console.error("Failed to save logo via dedicated API:", {
-                  status: logoResponse.status,
-                  error: errorData,
-                });
-              }
-            } catch (error) {
-              console.error("Error saving logo via dedicated API:", error);
-            }
-          } else if (section.type === "STORY") {
-            // Update story form data with the uploaded image URL
-            setStoryFormData((prev: Record<string, unknown>) => {
-              const newData = { ...prev };
-              setNestedValue(newData, imageType, imageUrl);
-              return newData;
+          // Also save logo directly to WeddingPage using the dedicated logo API
+          try {
+            const logoResponse = await fetch("/api/wedding-pages/logo", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                logoUrl: imageUrl,
+                logoAlt: formData.logoAlt || "Wedding Logo",
+              }),
             });
-          }
 
-          toast.success("Image uploaded successfully! Click 'Update Section' to save it.");
-        } else {
-          const errorData = await response.json();
-          console.error("Image upload failed:", errorData);
-          throw new Error(errorData.error || "Failed to upload image");
+            console.log("Logo API response status:", logoResponse.status);
+            console.log("Logo API response ok:", logoResponse.ok);
+
+            if (logoResponse.ok) {
+              const logoData = await logoResponse.json();
+              console.log("Logo saved directly to WeddingPage via dedicated API:", logoData);
+            } else {
+              const errorData = await logoResponse.json();
+              console.error("Failed to save logo via dedicated API:", {
+                status: logoResponse.status,
+                error: errorData,
+              });
+            }
+          } catch (error) {
+            console.error("Error saving logo via dedicated API:", error);
+          }
+        } else if (section.type === "STORY") {
+          // Update story form data with the uploaded image URL
+          setStoryFormData((prev: Record<string, unknown>) => {
+            const newData = { ...prev };
+            setNestedValue(newData, imageType, imageUrl);
+            return newData;
+          });
         }
+
+        toast.success("Image uploaded successfully! Click 'Update Section' to save it.");
       } catch (error) {
         console.error("Error uploading image:", error);
+        progressHandler.setUploadError(
+          file.name,
+          error instanceof Error ? error.message : "Upload failed"
+        );
         toast.error(
           `Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}`
         );
@@ -690,6 +700,18 @@ const EditWeddingDetailsModal = ({
           </form>
         )}
       </div>
+
+      {/* Upload Progress Indicator */}
+      <UploadProgress
+        uploads={progressHandler.uploads}
+        onCancel={(fileName: string) => progressHandler.removeUpload(fileName)}
+        onRetry={(fileName: string) => {
+          // Find the file input that was used for this upload and trigger re-upload
+          // For now, just remove the failed upload
+          progressHandler.removeUpload(fileName);
+        }}
+        onDismiss={(fileName: string) => progressHandler.removeUpload(fileName)}
+      />
     </Modal>
   );
 };

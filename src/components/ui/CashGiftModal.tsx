@@ -16,12 +16,7 @@ interface CashGiftModalProps {
   onClose: () => void;
   bankDetails: BankDetail[];
   loadingBanks: boolean;
-  onPurchase: (data: {
-    name: string;
-    email: string;
-    phone: string;
-    message?: string;
-  }) => Promise<void>;
+  userId: string; // Wedding page owner's user ID
 }
 
 export default function CashGiftModal({
@@ -29,12 +24,13 @@ export default function CashGiftModal({
   onClose,
   bankDetails,
   loadingBanks,
-  onPurchase,
+  userId,
 }: CashGiftModalProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
+    amount: "",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,18 +41,52 @@ export default function CashGiftModal({
     e.preventDefault();
     setError("");
 
-    if (!formData.name || !formData.email || !formData.phone) {
+    if (!formData.name || !formData.email || !formData.phone || !formData.amount) {
       setError("Please fill in all required fields");
+      return;
+    }
+
+    if (!userId) {
+      setError("Wedding page owner ID is missing");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      await onPurchase(formData);
-      setFormData({ name: "", email: "", phone: "", message: "" });
+      // Call the new cash gifts API endpoint directly
+      const response = await fetch("/api/cash-gifts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          amount: formData.amount,
+          message: formData.message,
+          userId: userId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to submit cash gift");
+      }
+
+      const result = await response.json();
+      console.log("Cash gift submitted successfully:", result);
+
+      // Show success message
+      toast.success("Cash gift submitted successfully!");
+
+      // Reset form and close modal
+      setFormData({ name: "", email: "", phone: "", message: "", amount: "" });
       onClose();
     } catch (err) {
-      setError("Failed to submit cash gift. Please try again.");
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to submit cash gift. Please try again.";
+      setError(errorMessage);
       console.error("Cash gift submission error:", err);
     } finally {
       setIsSubmitting(false);
@@ -235,6 +265,22 @@ export default function CashGiftModal({
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Enter your phone number"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+                Amount *
+              </label>
+              <input
+                type="number"
+                id="amount"
+                name="amount"
+                value={formData.amount}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                placeholder="Enter amount sent"
               />
             </div>
 

@@ -131,51 +131,6 @@ const GiftRegistry = (props: GiftRegistryProps) => {
     }
   };
 
-  const handleCashGift = async (data: {
-    name: string;
-    email: string;
-    phone: string;
-    message?: string;
-  }) => {
-    console.log("VowsGift handleCashGift called with:", {
-      userId: props.userId,
-      data,
-    });
-
-    if (!props.userId) {
-      console.error("Missing userId");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/public/received-gifts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: data.name,
-          contactEmail: data.email,
-          contactPhone: data.phone,
-          message: data.message,
-          giftId: null, // No specific gift for cash
-          amount: 0, // No specific amount for cash
-          userId: props.userId,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit cash gift");
-      }
-
-      const result = await response.json();
-      console.log("Cash gift submitted successfully:", result);
-    } catch (error) {
-      console.error("Cash gift submission error:", error);
-      throw error;
-    }
-  };
-
   useEffect(() => {
     if (!open) return;
     // Use bank details passed from props instead of fetching from API
@@ -191,7 +146,7 @@ const GiftRegistry = (props: GiftRegistryProps) => {
   }, [cashGiftOpen, props.bankDetails]);
 
   return (
-    <section className="py-32 bg-background">
+    <section className="bg-background">
       <div className="container-wedding">
         <div
           ref={sectionRef}
@@ -206,7 +161,7 @@ const GiftRegistry = (props: GiftRegistryProps) => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 lg:px-16 py-4 md:gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 lg:px-16 pb-14 md:gap-8">
           {gifts.map((item, index) => (
             <div
               key={item.id}
@@ -257,7 +212,7 @@ const GiftRegistry = (props: GiftRegistryProps) => {
           ))}
         </div>
 
-        <div className="text-center bg-black/80 rounded-lg shadow-soft w-5/6 mx-auto py-16">
+        <div className="text-center bg-black/80 rounded-lg shadow-soft w-5/6 mx-auto py-8">
           <div className="elegant-card p-8 md:p-12 max-w-2xl mx-auto">
             <h3 className="font-heading text-2xl md:text-3xl text-white/70 mb-4">Cash Gifts</h3>
             <p className="font-body text-white/70 mb-6 leading-relaxed">
@@ -266,7 +221,7 @@ const GiftRegistry = (props: GiftRegistryProps) => {
             </p>
             <Button
               onClick={() => setCashGiftOpen(true)}
-              className="bg-white text-black transition-colors duration-300 rounded-full px-8 py-4 font-xl lg:font-2xl"
+              className="bg-white text-black text-lg transition-colors duration-300 rounded-full px-8 py-4 font-xl lg:font-2xl"
             >
               Gift Cash
             </Button>
@@ -288,7 +243,7 @@ const GiftRegistry = (props: GiftRegistryProps) => {
         onClose={() => setCashGiftOpen(false)}
         bankDetails={bankDetailsList}
         loadingBanks={loadingBanks}
-        onPurchase={handleCashGift}
+        userId={props.userId || ""}
       />
     </section>
   );
