@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Layout,
   BarChart3,
@@ -51,43 +51,47 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
   }, []);
 
   // ✅ DEFAULT NAVIGATION ITEMS
-  const baseItems: NavigationItem[] = [
-    { id: "overview", label: "Overview", icon: BarChart3, description: "Dashboard overview" },
-    {
-      id: "page-builder",
-      label: "Page Builder",
-      icon: Layout,
-      description: "Wedding page builder",
-    },
-    { id: "gallery", label: "Gallery", icon: Camera, description: "Photos" },
-    {
-      id: "gift",
-      label: "Gifts/Wishes",
-      icon: Gift,
-      description: "Share what you'd love to receive",
-    },
-  ];
+  const baseItems = useMemo(
+    (): NavigationItem[] => [
+      { id: "overview", label: "Overview", icon: BarChart3, description: "Dashboard overview" },
+      { id: "gallery", label: "Gallery", icon: Camera, description: "Photos" },
+      {
+        id: "gift",
+        label: "Gifts/Wishes",
+        icon: Gift,
+        description: "Share what you'd love to receive",
+      },
+    ],
+    []
+  );
 
-  const extraItems: NavigationItem[] = [
-    { id: "guests", label: "Guests", icon: Users, description: "Guest management & seating" },
-    { id: "streaming", label: "Live Stream", icon: Video, description: "Live streaming setup" },
-    {
-      id: "checklist",
-      label: "Task/Checklist",
-      icon: CheckSquare,
-      description: "Interactive planning checklist",
-    },
-  ];
+  const extraItems = useMemo(
+    (): NavigationItem[] => [
+      { id: "guests", label: "Guests", icon: Users, description: "Guest management & seating" },
+      { id: "streaming", label: "Live Stream", icon: Video, description: "Live streaming setup" },
+      {
+        id: "checklist",
+        label: "Task/Checklist",
+        icon: CheckSquare,
+        description: "Interactive planning checklist",
+      },
+    ],
+    []
+  );
 
-  let navigationItems: NavigationItem[] = [...baseItems];
+  const navigationItems = useMemo(() => {
+    let items: NavigationItem[] = [...baseItems];
 
-  if (planName === "Dazzle") {
-    navigationItems = [...navigationItems, ...extraItems.slice(2)]; // add checklist only
-  }
+    if (planName === "Dazzle") {
+      items = [...items, ...extraItems.slice(2)]; // add checklist only
+    }
 
-  if (planName === "Dynasty Royale") {
-    navigationItems = [...navigationItems, ...extraItems]; // add all
-  }
+    if (planName === "Dynasty Royale") {
+      items = [...items, ...extraItems]; // add all
+    }
+
+    return items;
+  }, [planName, baseItems, extraItems]);
 
   const [userWeddings, setUserWeddings] = useState<Wedding[]>([]);
   const [totalViews, setTotalViews] = useState<number | null>(null);
@@ -95,6 +99,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
   const [tasksCompleted, setTasksCompleted] = useState<number>(0);
   const [guestsTotal, setGuestsTotal] = useState<number>(0);
   const [guestsResponded, setGuestsResponded] = useState<number>(0);
+  const [weddingPageDeleted, setWeddingPageDeleted] = useState<boolean>(false);
 
   // Fetch tasks to compute checklist totals
   useEffect(() => {
@@ -170,6 +175,9 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
 
         // Set template status for navigation
         setHasTemplate(!!data?.userTemplate);
+
+        // Check if wedding page is soft deleted
+        setWeddingPageDeleted(!!wp?.deleted_at);
 
         const weddingObj: Wedding = {
           id: wp?.id ?? u.id ?? "",
@@ -272,6 +280,22 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
       window.removeEventListener("focus", onFocus);
     };
   }, []);
+
+  // Create navigation items with conditional page-builder disabling
+  const finalNavigationItems = useMemo(() => {
+    const pageBuilderItem: NavigationItem = {
+      id: "page-builder",
+      label: "Page Builder",
+      icon: Layout,
+      description: weddingPageDeleted ? "Page deleted - renew to restore" : "Wedding page builder",
+      disabled: weddingPageDeleted,
+      disabledReason: weddingPageDeleted
+        ? "Wedding page has been deleted. Please renew your subscription to restore access."
+        : undefined,
+    };
+
+    return [...navigationItems.slice(0, 1), pageBuilderItem, ...navigationItems.slice(1)];
+  }, [navigationItems, weddingPageDeleted]);
 
   const baseStats: StatItem[] = [
     {
@@ -407,7 +431,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
           isDarkMode={isDarkMode}
           mobileMenuOpen={mobileMenuOpen}
           setMobileMenuOpen={setMobileMenuOpen}
-          navigationItems={navigationItems}
+          navigationItems={finalNavigationItems}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           showAIAssistant={showAIAssistant}
@@ -417,7 +441,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
 
         <DashboardSidebar
           isDarkMode={isDarkMode}
-          navigationItems={navigationItems}
+          navigationItems={finalNavigationItems}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           showAIAssistant={showAIAssistant}
@@ -440,6 +464,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
                 setActiveTab={setActiveTab}
                 tasksTotal={tasksTotal}
                 tasksCompleted={tasksCompleted}
+                weddingPageDeleted={weddingPageDeleted}
               />
             </div>
           </div>

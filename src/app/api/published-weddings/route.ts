@@ -162,9 +162,13 @@ function extractSearchTerms(weddingPage: WeddingData, user: UserData): string[] 
 
 export async function GET() {
   try {
+    // Include both live and not-live pages for the wedding pages gallery
     const publishedWeddings = await prisma.weddingPage.findMany({
       where: {
-        is_live: true,
+        OR: [
+          { is_live: true }, // Live pages (accessible)
+          { is_live: false, deleted_at: { not: null } }, // Not-live pages (preview only)
+        ],
       },
       include: {
         user: {
@@ -271,6 +275,8 @@ export async function GET() {
           tags,
           slug: wedding.slug,
           views: wedding.views,
+          is_live: wedding.is_live, // Include live status for badge display
+          deleted_at: wedding.deleted_at, // Include for determining status
         };
       })
     );

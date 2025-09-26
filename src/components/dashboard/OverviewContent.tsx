@@ -36,6 +36,7 @@ interface OverviewContentProps {
   setActiveTab?: (tab: string) => void;
   tasksTotal?: number;
   tasksCompleted?: number;
+  weddingPageDeleted?: boolean;
 }
 
 interface RemoteInfo {
@@ -54,6 +55,7 @@ const OverviewContent = ({
   setActiveTab,
   tasksTotal,
   tasksCompleted,
+  weddingPageDeleted = false,
 }: OverviewContentProps) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isRenewalOpen, setRenewalOpen] = useState(false);
@@ -186,6 +188,17 @@ const OverviewContent = ({
       (subscriptionEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
     );
 
+    // Check if wedding page is soft deleted first
+    if (weddingPageDeleted) {
+      return {
+        remainingDays: 0,
+        status: "deletion-pending",
+        message: "EXPIRED",
+        isExpired: true,
+        graceDaysLeft: 0,
+      };
+    }
+
     // Plan is still active
     if (remainingDays > 0) {
       return {
@@ -214,6 +227,7 @@ const OverviewContent = ({
           graceDaysLeft,
         };
       } else {
+        // Grace period has ended - wedding page should be soft deleted
         return {
           remainingDays: 0,
           status: "deletion-pending",
@@ -361,6 +375,34 @@ const OverviewContent = ({
                 Renew Now
               </button>
             )}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Deletion Pending Alert Banner */}
+      {status === "deletion-pending" && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gray-900 border border-gray-700 rounded-2xl p-4 md:p-6"
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+              <div>
+                <h3 className="text-gray-100 font-semibold text-lg">🔒 Wedding Page Deleted</h3>
+                <p className="text-gray-300 text-sm">
+                  Your wedding page has been soft-deleted. You can still restore it by renewing your
+                  subscription within 30 days. The Page Builder is now disabled.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setRenewalOpen(true)}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors whitespace-nowrap"
+            >
+              Restore Page
+            </button>
           </div>
         </motion.div>
       )}

@@ -63,7 +63,13 @@ const Navbar = () => {
             onClick={handleNavClick}
           >
             <Link href="/" passHref>
-              <Image src="/logo.png" alt="my wedding page" width={300} height={100} />
+              <Image
+                src="/logo.png"
+                alt="my wedding page"
+                width={300}
+                height={100}
+                className="w-50 h-auto sm:w-[300px]"
+              />
             </Link>
           </motion.div>
 
