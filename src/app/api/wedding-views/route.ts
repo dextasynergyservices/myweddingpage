@@ -22,7 +22,7 @@ export async function GET() {
     // Try to find the user's live wedding page first
     let wp = await prisma.weddingPage.findFirst({
       where: { userId: user.id, is_live: true },
-      select: { id: true, slug: true, views: true, is_live: true },
+      select: { id: true, slug: true, views: true, is_live: true, deleted_at: true },
     });
 
     // If no live page exists, fall back to the most recently created wedding page for the user
@@ -32,7 +32,7 @@ export async function GET() {
       wp = await prisma.weddingPage.findFirst({
         where: { userId: user.id },
         orderBy: { created_at: "desc" },
-        select: { id: true, slug: true, views: true, is_live: true },
+        select: { id: true, slug: true, views: true, is_live: true, deleted_at: true },
       });
     }
 
@@ -46,7 +46,7 @@ export async function GET() {
     );
     return NextResponse.json({
       views: wp.views ?? 0,
-      weddingPage: { id: wp.id, slug: wp.slug, is_live: wp.is_live },
+      weddingPage: { id: wp.id, slug: wp.slug, is_live: wp.is_live, deleted_at: wp.deleted_at },
     });
   } catch (error) {
     console.error("Error fetching wedding views:", error);
