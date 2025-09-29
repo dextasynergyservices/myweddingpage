@@ -17,6 +17,62 @@ export async function GET(request: NextRequest) {
       );
     }
     const now = new Date();
+
+    // Early exit optimization: Check if any users need processing today
+    const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const usersNeedingAction = await prisma.user.count({
+      where: {
+        OR: [
+          // Users with subscriptions expiring in 7 days
+          {
+            subscription_end: {
+              gte: new Date(sevenDaysFromNow.getTime() - 12 * 60 * 60 * 1000), // 12 hours buffer
+              lte: new Date(sevenDaysFromNow.getTime() + 12 * 60 * 60 * 1000), // 12 hours buffer
+            },
+            isInGracePeriod: false,
+          },
+          // Newly expired users (expired today, grace period not started)
+          {
+            subscription_end: {
+              lte: now,
+            },
+            isInGracePeriod: false,
+          },
+          // Users whose grace period ends today (need final warning)
+          {
+            isInGracePeriod: true,
+            gracePeriodEnd: {
+              lte: now,
+              gte: new Date(now.getTime() - 24 * 60 * 60 * 1000), // Started within last 24 hours
+            },
+          },
+          // Users still in grace period (need reminders)
+          {
+            isInGracePeriod: true,
+            gracePeriodEnd: {
+              gt: now,
+            },
+          },
+        ],
+      },
+    });
+
+    // If no users need action, return early
+    if (usersNeedingAction === 0) {
+      return NextResponse.json({
+        success: true,
+        message: "No users require action today",
+        skipped: true,
+        results: {
+          sevenDayWarnings: 0,
+          newExpirations: 0,
+          gracePeriodReminders: 0,
+          deletionsProcessed: 0,
+          errors: [],
+        },
+      });
+    }
+
     const results = {
       sevenDayWarnings: 0,
       newExpirations: 0,
@@ -26,7 +82,6 @@ export async function GET(request: NextRequest) {
     };
 
     // 0. Find users with subscriptions expiring in 7 days - send warning
-    const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
     const sevenDayWarningUsers = await prisma.user.findMany({
       where: {
         subscription_end: {
@@ -233,12 +288,13 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // 2. Find users in grace period for reminder emails
-    const gracePeriodUsers = await prisma.user.findMany({
+    // 2. Send FINAL DAY warnings to users whose grace period ends today (before deletion)
+    const finalDayUsers = await prisma.user.findMany({
       where: {
         isInGracePeriod: true,
         gracePeriodEnd: {
-          gte: now, // Grace period hasn't ended yet
+          lte: now, // Grace period ends today or has ended
+          gte: new Date(now.getTime() - 24 * 60 * 60 * 1000), // Started within last 24 hours
         },
       },
       select: {
@@ -254,93 +310,61 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Send grace period reminder emails
-    for (const user of gracePeriodUsers) {
+    // Send final day warnings
+    for (const user of finalDayUsers) {
       try {
-        const gracePeriodEnd = new Date(user.gracePeriodEnd!);
-        const daysLeft = Math.ceil(
-          (gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-        );
-
-        // Send reminder on days 2, 1, and 0 (final day)
-        if ([2, 1, 0].includes(daysLeft)) {
-          const urgencyLevel = daysLeft === 0 ? "FINAL" : daysLeft === 1 ? "URGENT" : "REMINDER";
-
-          // Send email reminder
-          if (user.email) {
-            await sendEmailNotification({
-              to: user.email,
-              subject: `🚨 ${urgencyLevel}: Wedding Page Deletion in ${daysLeft || "Less Than 1"} Day${daysLeft !== 1 ? "s" : ""}`,
-              html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                  <h2 style="color: #dc2626;">${urgencyLevel} Notice: Plan Renewal Required</h2>
-                  <p>Dear ${user.groomName || "User"} & ${user.brideName || "Partner"},</p>
-
-                  <div style="background-color: #fef2f2; border: 2px solid #dc2626; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
-                    <h3 style="color: #dc2626; margin-top: 0; font-size: 24px;">
-                      ${daysLeft > 0 ? `${daysLeft} DAY${daysLeft !== 1 ? "S" : ""} LEFT` : "FINAL HOURS"}
-                    </h3>
-                    <p style="font-size: 18px; margin-bottom: 0;">
-                      Your wedding page will be permanently deleted ${daysLeft > 0 ? `in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}` : "today"}.
-                    </p>
-                  </div>
-
-                  <p>This is your ${daysLeft === 0 ? "final" : daysLeft === 1 ? "last" : ""} chance to save your wedding page and all your memories.</p>
-
-                  <p>
-                    <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard"
-                       style="background-color: #dc2626; color: white; padding: 16px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 18px;">
-                      ${daysLeft === 0 ? "RENEW NOW - FINAL CHANCE" : "Renew Your Plan"}
-                    </a>
-                  </p>
-
-                  <p style="color: #666; font-size: 14px;">
-                    Once deleted, your wedding page and all associated data cannot be recovered.
-                  </p>
-                </div>
-              `,
-            });
-          }
-
-          // Send WhatsApp reminder
-          if (user.whatsapp) {
-            const whatsappMessage =
-              daysLeft === 0
-                ? `🚨 FINAL HOURS: Wedding Page Deletion TODAY!\n\nHi ${user.groomName || "User"} & ${user.brideName || "Partner"},\n\nThis is your FINAL CHANCE! Your wedding page will be permanently deleted TODAY.\n\n⚠️ Once deleted, all your data cannot be recovered.\n\nRENEW NOW: ${process.env.NEXT_PUBLIC_APP_URL}/dashboard\n\n- MyWeddingPage Team`
-                : `🚨 ${urgencyLevel} ALERT: ${daysLeft} Day${daysLeft !== 1 ? "s" : ""} Left!\n\nHi ${user.groomName || "User"} & ${user.brideName || "Partner"},\n\nYour wedding page will be permanently deleted in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}!\n\nThis is your ${daysLeft === 1 ? "last" : ""} chance to save your wedding page and memories.\n\nRenew now: ${process.env.NEXT_PUBLIC_APP_URL}/dashboard\n\n- MyWeddingPage Team`;
-
-            await sendWhatsAppNotification({
-              to: user.whatsapp,
-              body: whatsappMessage,
-            });
-          }
-
-          // Send admin notification for grace period reminders
+        // Send final warning email
+        if (user.email) {
           await sendEmailNotification({
-            to: process.env.EMAIL_FROM!,
-            subject: `⚠️ Grace Period Alert - ${daysLeft} Day${daysLeft !== 1 ? "s" : ""} Left`,
+            to: user.email,
+            subject: "🚨 FINAL HOURS: Wedding Page Deletion TODAY!",
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #dc2626;">Grace Period Alert - ${urgencyLevel}</h2>
-                <p><strong>User:</strong> ${user.groomName || "User"} & ${user.brideName || "Partner"}</p>
-                <p><strong>Email:</strong> ${user.email}</p>
-                <p><strong>Plan:</strong> ${user.plan?.name || "Unknown"}</p>
-                <p><strong>Days Left:</strong> ${daysLeft} day${daysLeft !== 1 ? "s" : ""}</p>
-                <p><strong>Grace Period Ends:</strong> ${new Date(user.gracePeriodEnd!).toLocaleDateString()}</p>
-                <p>${daysLeft === 0 ? "User's wedding page will be deleted today if not renewed!" : "Consider urgent outreach for renewal assistance."}</p>
+                <h2 style="color: #dc2626;">FINAL NOTICE: Plan Renewal Required</h2>
+                <p>Dear ${user.groomName || "User"} & ${user.brideName || "Partner"},</p>
+
+                <div style="background-color: #fef2f2; border: 2px solid #dc2626; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
+                  <h3 style="color: #dc2626; margin-top: 0; font-size: 24px;">
+                    FINAL HOURS
+                  </h3>
+                  <p style="font-size: 18px; margin-bottom: 0;">
+                    Your wedding page will be permanently deleted TODAY.
+                  </p>
+                </div>
+
+                <p>This is your FINAL CHANCE to save your wedding page and all your memories.</p>
+
+                <p>
+                  <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard"
+                     style="background-color: #dc2626; color: white; padding: 16px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 18px;">
+                    RENEW NOW - FINAL CHANCE
+                  </a>
+                </p>
+
+                <p style="color: #666; font-size: 14px;">
+                  Once deleted, your wedding page and all associated data cannot be recovered.
+                </p>
               </div>
             `,
           });
-
-          results.gracePeriodReminders++;
         }
+
+        // Send final WhatsApp warning
+        if (user.whatsapp) {
+          await sendWhatsAppNotification({
+            to: user.whatsapp,
+            body: `🚨 FINAL HOURS: Wedding Page Deletion TODAY!\n\nHi ${user.groomName || "User"} & ${user.brideName || "Partner"},\n\nThis is your FINAL CHANCE! Your wedding page will be permanently deleted TODAY.\n\n⚠️ Once deleted, all your data cannot be recovered.\n\nRENEW NOW: ${process.env.NEXT_PUBLIC_APP_URL}/dashboard\n\n- MyWeddingPage Team`,
+          });
+        }
+
+        results.gracePeriodReminders++;
       } catch (error) {
-        console.error(`Error sending grace period reminder to user ${user.id}:`, error);
-        results.errors.push(`Failed to send reminder to user ${user.id}: ${error}`);
+        console.error(`Error sending final day warning to user ${user.id}:`, error);
+        results.errors.push(`Failed to send final warning to user ${user.id}: ${error}`);
       }
     }
 
-    // 3. Find users whose grace period has ended - delete their wedding pages
+    // 3. Find users whose grace period has ended - delete their wedding pages AFTER final warnings
     const usersForDeletion = await prisma.user.findMany({
       where: {
         isInGracePeriod: true,
@@ -364,7 +388,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Process deletions
+    // Process deletions FIRST
     for (const user of usersForDeletion) {
       try {
         // Soft delete wedding pages and set them as not live
@@ -464,6 +488,110 @@ export async function GET(request: NextRequest) {
       } catch (error) {
         console.error(`Error processing deletion for user ${user.id}:`, error);
         results.errors.push(`Failed to delete wedding page for user ${user.id}: ${error}`);
+      }
+    }
+
+    // 4. Find users STILL in grace period for reminder emails (AFTER deletions processed)
+    const gracePeriodUsers = await prisma.user.findMany({
+      where: {
+        isInGracePeriod: true,
+        gracePeriodEnd: {
+          gt: now, // Grace period hasn't ended yet (use 'gt' instead of 'gte' to be more precise)
+        },
+      },
+      select: {
+        id: true,
+        email: true,
+        groomName: true,
+        brideName: true,
+        whatsapp: true,
+        gracePeriodEnd: true,
+        plan: {
+          select: { name: true },
+        },
+      },
+    });
+
+    // Send grace period reminder emails
+    for (const user of gracePeriodUsers) {
+      try {
+        const gracePeriodEnd = new Date(user.gracePeriodEnd!);
+        const daysLeft = Math.ceil(
+          (gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        // Send reminder on days 2 and 1 only (day 0 users are already processed for deletion)
+        if ([2, 1].includes(daysLeft)) {
+          const urgencyLevel = daysLeft === 1 ? "URGENT" : "REMINDER";
+
+          // Send email reminder
+          if (user.email) {
+            await sendEmailNotification({
+              to: user.email,
+              subject: `🚨 ${urgencyLevel}: Wedding Page Deletion in ${daysLeft} Day${daysLeft !== 1 ? "s" : ""}`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2 style="color: #dc2626;">${urgencyLevel} Notice: Plan Renewal Required</h2>
+                  <p>Dear ${user.groomName || "User"} & ${user.brideName || "Partner"},</p>
+
+                  <div style="background-color: #fef2f2; border: 2px solid #dc2626; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
+                    <h3 style="color: #dc2626; margin-top: 0; font-size: 24px;">
+                      ${daysLeft} DAY${daysLeft !== 1 ? "S" : ""} LEFT
+                    </h3>
+                    <p style="font-size: 18px; margin-bottom: 0;">
+                      Your wedding page will be permanently deleted in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}.
+                    </p>
+                  </div>
+
+                  <p>This is your ${daysLeft === 1 ? "last" : ""} chance to save your wedding page and all your memories.</p>
+
+                  <p>
+                    <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard"
+                       style="background-color: #dc2626; color: white; padding: 16px 32px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold; font-size: 18px;">
+                      Renew Your Plan
+                    </a>
+                  </p>
+
+                  <p style="color: #666; font-size: 14px;">
+                    Once deleted, your wedding page and all associated data cannot be recovered.
+                  </p>
+                </div>
+              `,
+            });
+          }
+
+          // Send WhatsApp reminder
+          if (user.whatsapp) {
+            const whatsappMessage = `🚨 ${urgencyLevel} ALERT: ${daysLeft} Day${daysLeft !== 1 ? "s" : ""} Left!\n\nHi ${user.groomName || "User"} & ${user.brideName || "Partner"},\n\nYour wedding page will be permanently deleted in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}!\n\nThis is your ${daysLeft === 1 ? "last" : ""} chance to save your wedding page and memories.\n\nRenew now: ${process.env.NEXT_PUBLIC_APP_URL}/dashboard\n\n- MyWeddingPage Team`;
+
+            await sendWhatsAppNotification({
+              to: user.whatsapp,
+              body: whatsappMessage,
+            });
+          }
+
+          // Send admin notification for grace period reminders
+          await sendEmailNotification({
+            to: process.env.EMAIL_FROM!,
+            subject: `⚠️ Grace Period Alert - ${daysLeft} Day${daysLeft !== 1 ? "s" : ""} Left`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #dc2626;">Grace Period Alert - ${urgencyLevel}</h2>
+                <p><strong>User:</strong> ${user.groomName || "User"} & ${user.brideName || "Partner"}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Plan:</strong> ${user.plan?.name || "Unknown"}</p>
+                <p><strong>Days Left:</strong> ${daysLeft} day${daysLeft !== 1 ? "s" : ""}</p>
+                <p><strong>Grace Period Ends:</strong> ${new Date(user.gracePeriodEnd!).toLocaleDateString()}</p>
+                <p>${daysLeft === 1 ? "User's wedding page will be deleted tomorrow if not renewed!" : "Consider urgent outreach for renewal assistance."}</p>
+              </div>
+            `,
+          });
+
+          results.gracePeriodReminders++;
+        }
+      } catch (error) {
+        console.error(`Error sending grace period reminder to user ${user.id}:`, error);
+        results.errors.push(`Failed to send reminder to user ${user.id}: ${error}`);
       }
     }
 
