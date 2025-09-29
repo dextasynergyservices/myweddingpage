@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import { Search, MapPin, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 import { useTheme } from "@/contexts/ThemeContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import WeddingPreviewModal from "./WeddingPreviewModal";
 
 interface Wedding {
   id: string;
@@ -19,6 +19,8 @@ interface Wedding {
   tags: string[];
   slug?: string;
   views?: number;
+  is_live?: boolean;
+  deleted_at?: string | null;
 }
 
 const WeddingPageList = () => {
@@ -28,6 +30,7 @@ const WeddingPageList = () => {
   const [selectedTag] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalWedding, setModalWedding] = useState<Wedding | null>(null);
   const { isDarkMode } = useTheme();
 
   const weddingsPerPage = 6;
@@ -113,6 +116,21 @@ const WeddingPageList = () => {
     setFilteredWeddings(results);
   }, [searchTerm, selectedTag, weddings]);
 
+  // Click handler for wedding cards
+  const handleWeddingClick = (wedding: Wedding, e: React.MouseEvent) => {
+    e.preventDefault();
+
+    const isLive = wedding.is_live && !wedding.deleted_at;
+
+    if (isLive) {
+      // Navigate to live page in new tab
+      window.open(`/${wedding.slug || wedding.id}`, "_blank", "noopener,noreferrer");
+    } else {
+      // Open preview modal for not-live pages
+      setModalWedding(wedding);
+    }
+  };
+
   // const allTags = Array.from(new Set(weddings.flatMap((w) => w.tags)));
 
   // Dark mode classes
@@ -197,20 +215,18 @@ const WeddingPageList = () => {
             ) : currentWeddings.length > 0 ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {currentWeddings.map((wedding, index) => (
-                    <motion.div
-                      key={wedding.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ y: -5 }}
-                      className={`${cardBgClass} rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300`}
-                    >
-                      <Link
-                        href={`/${wedding.slug}`}
-                        className="block"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                  {currentWeddings.map((wedding, index) => {
+                    const isLive = wedding.is_live && !wedding.deleted_at;
+
+                    return (
+                      <motion.div
+                        key={wedding.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ y: -5 }}
+                        className={`${cardBgClass} rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer`}
+                        onClick={(e) => handleWeddingClick(wedding, e)}
                       >
                         <div className="relative h-48 w-full">
                           <Image
@@ -221,6 +237,19 @@ const WeddingPageList = () => {
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             priority={index < 3}
                           />
+
+                          {/* Live/Not Live Badge */}
+                          <div className="absolute top-3 right-3">
+                            {isLive ? (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                🟢 LIVE
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                                ⚪ NOT LIVE
+                              </span>
+                            )}
+                          </div>
                         </div>
                         <div className="p-6">
                           <h3
@@ -260,9 +289,9 @@ const WeddingPageList = () => {
                             ))}
                           </div>
                         </div>
-                      </Link>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    );
+                  })}
                 </div>
 
                 {/* Pagination */}
@@ -329,6 +358,14 @@ const WeddingPageList = () => {
           </div>
         </div>
       </div>
+
+      {/* Wedding Preview Modal */}
+      <WeddingPreviewModal
+        isOpen={!!modalWedding}
+        onClose={() => setModalWedding(null)}
+        weddingSlug={modalWedding?.slug || modalWedding?.id || ""}
+        weddingTitle={modalWedding?.title || ""}
+      />
 
       {/* Footer - Full width outside main container */}
       <Footer />
