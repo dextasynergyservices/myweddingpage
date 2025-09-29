@@ -6,7 +6,7 @@ import TemplatePreviewModal from "@/components/TemplatePreviewModal";
 import TemplateSelection from "@/components/dashboard/PageBuilderComponent/TemplateFetch";
 import TemplateEditor from "@/components/dashboard/PageBuilderComponent/TemplateEditor";
 import { Template, UserTemplate, UserPlan, WeddingPage } from "@/types/wedding";
-
+import Link from "next/link";
 interface WeddingPageBuilderProps {
   setActiveTab?: (tab: string) => void;
 }
@@ -103,6 +103,13 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
 
   const handleContentUpdate = async (sectionId: string, content: Record<string, unknown>) => {
     if (!userTemplate || !selectedTemplate) return;
+
+    // Check if wedding page is soft deleted - disable editing
+    if (weddingPage && weddingPage.deleted_at) {
+      throw new Error(
+        "Cannot edit a deleted wedding page. Please restore your subscription to continue editing."
+      );
+    }
 
     try {
       console.log("Making request to /api/template-sections/edit with:", {
@@ -208,6 +215,39 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
           </button>
         </div>
       </div>
+
+      {/* Soft Delete Warning Banner */}
+      {weddingPage && weddingPage.deleted_at && (
+        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">Wedding Page Editing Disabled</h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>
+                  Your wedding page has been soft deleted due to subscription expiration. You can
+                  still view it but cannot make edits.
+                  <Link
+                    href="/packages"
+                    className="font-medium underline text-red-800 hover:text-red-900"
+                  >
+                    Renew your subscription
+                  </Link>{" "}
+                  to restore editing capabilities.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       <div className="flex-1 overflow-auto">

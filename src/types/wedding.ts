@@ -90,14 +90,19 @@ export interface WeddingPage {
   templateId: string;
   title: string;
   slug: string;
+  views?: number;
   ai_data?: Record<string, unknown>;
   layout_data?: { components: TemplateComponent[] };
   color_theme?: string;
   hero_image?: string;
   story_image?: string;
+  logo_url?: string;
+  logo_alt?: string;
   venue?: string;
   welcomeMessage?: string;
   is_live: boolean;
   created_by_admin?: boolean;
   created_at: string;
+  deleted_at?: string | null; // For soft delete functionality
+  deletion_reason?: string | null; // Reason for deletion
 }

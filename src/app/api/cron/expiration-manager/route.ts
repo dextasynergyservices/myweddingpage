@@ -367,13 +367,14 @@ export async function GET(request: NextRequest) {
     // Process deletions
     for (const user of usersForDeletion) {
       try {
-        // Soft delete wedding pages
+        // Soft delete wedding pages and set them as not live
         const deleteResult = await prisma.weddingPage.updateMany({
           where: {
             userId: user.id,
             deleted_at: null, // Only delete pages not already deleted
           },
           data: {
+            is_live: false, // Mark as not live for badge display
             deleted_at: now,
             deletion_reason: "subscription_expired",
           },

@@ -384,6 +384,14 @@ const TemplateEditor = ({
   };
 
   const openEditModal = (section: { id: string; type: string }) => {
+    // Check if wedding page is soft deleted - disable editing
+    if (weddingPage && weddingPage.deleted_at) {
+      toast.error(
+        "Cannot edit deleted wedding page. Please restore your subscription to continue editing."
+      );
+      return;
+    }
+
     // Only allow editing for hero and story sections
     if (!section.type.includes("HERO") && !section.type.includes("STORY")) {
       return;
@@ -553,7 +561,10 @@ const TemplateEditor = ({
               e.stopPropagation();
               saveTemplateContent();
             }}
-            disabled={isSaving}
+            disabled={
+              isSaving ||
+              (weddingPage?.deleted_at !== null && weddingPage?.deleted_at !== undefined)
+            }
             type="button"
             className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-colors text-sm ${
               isSaving ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"
@@ -589,7 +600,11 @@ const TemplateEditor = ({
                 publishTemplate();
               }
             }}
-            disabled={isSaving || isPublishing}
+            disabled={
+              isSaving ||
+              isPublishing ||
+              (weddingPage?.deleted_at !== null && weddingPage?.deleted_at !== undefined)
+            }
             type="button"
             className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-colors text-sm ${
               isSaving || isPublishing
