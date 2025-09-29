@@ -23,6 +23,44 @@ export async function GET(request: NextRequest) {
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
 
+    // Early exit optimization: Check if any users have weddings today or tomorrow
+    const usersNeedingCongratulations = await prisma.user.count({
+      where: {
+        OR: [
+          // Users with weddings tomorrow (pre-wedding congratulations)
+          {
+            weddingDate: {
+              gte: tomorrow,
+              lt: new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000),
+            },
+            OR: [{ email: { not: null } }, { whatsapp: { not: null } }],
+          },
+          // Users with weddings today (wedding day congratulations)
+          {
+            weddingDate: {
+              gte: today,
+              lt: new Date(today.getTime() + 24 * 60 * 60 * 1000),
+            },
+            OR: [{ email: { not: null } }, { whatsapp: { not: null } }],
+          },
+        ],
+      },
+    });
+
+    // If no users need congratulations, return early
+    if (usersNeedingCongratulations === 0) {
+      return NextResponse.json({
+        success: true,
+        message: "No wedding congratulations needed today",
+        skipped: true,
+        results: {
+          preWeddingMessages: 0,
+          weddingDayMessages: 0,
+          errors: [],
+        },
+      });
+    }
+
     const results = {
       preWeddingMessages: 0,
       weddingDayMessages: 0,
