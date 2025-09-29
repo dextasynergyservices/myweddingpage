@@ -26,6 +26,53 @@ export async function GET(request: NextRequest) {
     const oneDayAhead = new Date(today);
     oneDayAhead.setDate(today.getDate() + 1);
 
+    // Early exit optimization: Check if any users have weddings in the target dates
+    const usersNeedingReminders = await prisma.user.count({
+      where: {
+        OR: [
+          // Users with weddings in 3 days
+          {
+            weddingDate: {
+              gte: threeDaysAhead,
+              lt: new Date(threeDaysAhead.getTime() + 24 * 60 * 60 * 1000),
+            },
+            OR: [{ email: { not: null } }, { whatsapp: { not: null } }],
+          },
+          // Users with weddings in 1 day
+          {
+            weddingDate: {
+              gte: oneDayAhead,
+              lt: new Date(oneDayAhead.getTime() + 24 * 60 * 60 * 1000),
+            },
+            OR: [{ email: { not: null } }, { whatsapp: { not: null } }],
+          },
+          // Users with weddings today
+          {
+            weddingDate: {
+              gte: today,
+              lt: new Date(today.getTime() + 24 * 60 * 60 * 1000),
+            },
+            OR: [{ email: { not: null } }, { whatsapp: { not: null } }],
+          },
+        ],
+      },
+    });
+
+    // If no users need reminders, return early
+    if (usersNeedingReminders === 0) {
+      return NextResponse.json({
+        success: true,
+        message: "No wedding date reminders needed today",
+        skipped: true,
+        results: {
+          threeDayReminders: 0,
+          oneDayReminders: 0,
+          weddingDayReminders: 0,
+          errors: [],
+        },
+      });
+    }
+
     const results = {
       threeDayReminders: 0,
       oneDayReminders: 0,
