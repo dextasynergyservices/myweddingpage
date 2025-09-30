@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { StatItem, QuickAction, Wedding } from "@/types/dashboard";
-import { Plus, Edit2, AccessibilityIcon } from "lucide-react";
+import { Plus, Edit2, AccessibilityIcon, RotateCcw } from "lucide-react";
 import WeddingCard from "@/components/dashboard/WeddingCard";
 import NoWeddings from "@/components/dashboard/NoWeddings";
 import Button from "@/components/ui/Button";
@@ -40,7 +40,7 @@ interface OverviewContentProps {
 }
 
 interface RemoteInfo {
-  weddingPage?: { slug?: string; is_live?: boolean };
+  weddingPage?: { slug?: string; is_live?: boolean; deleted_at?: string | null };
   userTemplate?: unknown;
 }
 
@@ -82,12 +82,12 @@ const OverviewContent = ({
     const fetchRemote = async () => {
       setLoadingRemoteInfo(true);
       try {
-        const res = await fetch("/api/wedding-views", { credentials: "same-origin" });
-        if (!res.ok) {
+        const response = await fetch("/api/wedding-views", { credentials: "same-origin" });
+        if (!response.ok) {
           setRemoteInfo(null);
           return;
         }
-        const data = await res.json();
+        const data = await response.json();
         setRemoteInfo(data);
       } catch (err) {
         console.error("Failed to fetch wedding/template info:", err);
@@ -251,6 +251,57 @@ const OverviewContent = ({
   const subscriptionStatus = getSubscriptionStatus();
   const { remainingDays, status, message, isExpired, graceDaysLeft } = subscriptionStatus;
 
+  // Helper function to get deletion message
+  const getDeletionMessage = () => {
+    if (remoteInfo?.weddingPage?.deleted_at) {
+      const deletedAt = new Date(remoteInfo.weddingPage.deleted_at);
+      const now = new Date();
+      const daysSinceDeleted = Math.floor(
+        (now.getTime() - deletedAt.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      const remainingDays = Math.max(0, 30 - daysSinceDeleted);
+
+      if (remainingDays > 0) {
+        return `Your wedding page has been soft-deleted. You can still restore it by renewing your subscription within ${remainingDays} day${remainingDays !== 1 ? "s" : ""}. The Page Builder is now disabled.`;
+      } else {
+        return "Your wedding page has been permanently deleted. The 30-day recovery period has expired.";
+      }
+    }
+    return "Your wedding page has been soft-deleted. You can still restore it by renewing your subscription within 30 days. The Page Builder is now disabled.";
+  };
+
+  // Helper function to get restore button
+  const getRestoreButton = () => {
+    if (remoteInfo?.weddingPage?.deleted_at) {
+      const deletedAt = new Date(remoteInfo.weddingPage.deleted_at);
+      const now = new Date();
+      const daysSinceDeleted = Math.floor(
+        (now.getTime() - deletedAt.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      const remainingDays = Math.max(0, 30 - daysSinceDeleted);
+
+      if (remainingDays > 0) {
+        return (
+          <button
+            onClick={() => setRenewalOpen(true)}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors whitespace-nowrap"
+          >
+            Restore Page
+          </button>
+        );
+      }
+      return null;
+    }
+    return (
+      <button
+        onClick={() => setRenewalOpen(true)}
+        className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors whitespace-nowrap"
+      >
+        Restore Page
+      </button>
+    );
+  };
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
@@ -391,18 +442,10 @@ const OverviewContent = ({
               <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
               <div>
                 <h3 className="text-gray-100 font-semibold text-lg">🔒 Wedding Page Deleted</h3>
-                <p className="text-gray-300 text-sm">
-                  Your wedding page has been soft-deleted. You can still restore it by renewing your
-                  subscription within 30 days. The Page Builder is now disabled.
-                </p>
+                <p className="text-gray-300 text-sm">{getDeletionMessage()}</p>
               </div>
             </div>
-            <button
-              onClick={() => setRenewalOpen(true)}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors whitespace-nowrap"
-            >
-              Restore Page
-            </button>
+            {getRestoreButton()}
           </div>
         </motion.div>
       )}
@@ -511,11 +554,28 @@ const OverviewContent = ({
             </button>
           ) : remoteInfo?.weddingPage ? (
             <button
-              onClick={() => setActiveTab && setActiveTab("page-builder")}
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-medium hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+              onClick={() => {
+                // Check if page is soft-deleted
+                if (remoteInfo.weddingPage?.deleted_at) {
+                  setRenewalOpen(true);
+                  return;
+                }
+                if (setActiveTab) setActiveTab("page-builder");
+              }}
+              className={`px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-medium hover:shadow-lg transition-all duration-300 flex items-center gap-2 ${
+                remoteInfo.weddingPage?.deleted_at
+                  ? "bg-red-600 hover:bg-red-700 text-white"
+                  : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+              }`}
             >
-              <Edit2 className="h-3 md:h-4 w-3 md:w-4" />
-              <span className="text-sm md:text-base">Edit Wedding page</span>
+              {remoteInfo.weddingPage?.deleted_at ? (
+                <RotateCcw className="h-3 md:h-4 w-3 md:w-4" />
+              ) : (
+                <Edit2 className="h-3 md:h-4 w-3 md:w-4" />
+              )}
+              <span className="text-sm md:text-base">
+                {remoteInfo.weddingPage?.deleted_at ? "Restore Page" : "Edit Wedding page"}
+              </span>
             </button>
           ) : remoteInfo?.userTemplate ? (
             <button
@@ -564,6 +624,7 @@ const OverviewContent = ({
                   isLive={remoteInfo?.weddingPage?.is_live ?? false}
                   tasksTotal={perWedding.total}
                   tasksCompleted={perWedding.completed}
+                  isDeleted={!!remoteInfo?.weddingPage?.deleted_at}
                 />
               );
             })}

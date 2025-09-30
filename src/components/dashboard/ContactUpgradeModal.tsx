@@ -32,7 +32,7 @@ export default function ContactUpgradeModal({ isOpen, onClose }: ContactUpgradeM
           Choose an option below to reach our sales team and upgrade your plan.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-white">
           <a
             href={whatsappUrl}
             target="_blank"
@@ -42,7 +42,7 @@ export default function ContactUpgradeModal({ isOpen, onClose }: ContactUpgradeM
           >
             <MessageSquare className="h-8 w-8 text-emerald-600" />
             <span className="font-semibold">WhatsApp</span>
-            <span className="text-sm text-slate-500">+234 810 320 8297</span>
+            <span className="text-sm text-white">+234 810 320 8297</span>
           </a>
 
           <a
@@ -52,16 +52,20 @@ export default function ContactUpgradeModal({ isOpen, onClose }: ContactUpgradeM
           >
             <Phone className="h-8 w-8 text-indigo-600" />
             <span className="font-semibold">Call</span>
-            <span className="text-sm text-slate-500">+234 810 320 8297</span>
+            <span className="text-sm text-white">+234 810 320 8297</span>
           </a>
 
           <div className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-yellow-50 hover:bg-yellow-100 dark:bg-slate-700 dark:hover:bg-slate-600 transition">
             <Mail className="h-8 w-8 text-amber-600" />
             <div className="flex flex-col items-center">
-              <a href={mailtoPrimary} onClick={onClose} className="font-semibold">
+              <a href={mailtoPrimary} onClick={onClose} className="font-semibold text-white">
                 info@dexta.services
               </a>
-              <a href={mailtoAlt} onClick={onClose} className="text-sm text-slate-500 mt-1">
+              <a
+                href={mailtoAlt}
+                onClick={onClose}
+                className="text-sm text-slate-500 mt-1 text-white"
+              >
                 hellodexta@gmail.com
               </a>
             </div>
