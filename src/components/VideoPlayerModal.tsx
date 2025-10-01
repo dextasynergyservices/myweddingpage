@@ -1,9 +1,22 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Play, Pause, Volume2, VolumeX, Maximize2 } from "lucide-react";
+import { X, Play, Pause, Volume2, VolumeX, Maximize2, SkipBack, SkipForward } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+
+// YouTube API types
+declare global {
+  interface Window {
+    YT: {
+      Player: unknown;
+      PlayerState: {
+        PLAYING: number;
+      };
+    };
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
 
 interface VideoPlayerModalProps {
   isOpen: boolean;
@@ -25,7 +38,7 @@ const VideoPlayerModal = ({
   const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [, setIsFullscreen] = useState(false);
 
   // Helper function to extract YouTube video ID
   const getYouTubeId = (url: string): string => {
@@ -34,10 +47,10 @@ const VideoPlayerModal = ({
     return match && match[2].length === 11 ? match[2] : "";
   };
 
-  // Get YouTube embed URL with hidden controls
+  // Get YouTube embed URL with native controls enabled
   const getYouTubeEmbedUrl = (url: string): string => {
     const videoId = getYouTubeId(url);
-    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&fs=0&disablekb=1&playsinline=1`;
+    return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&fs=1&playsinline=1`;
   };
 
   useEffect(() => {
@@ -53,26 +66,13 @@ const VideoPlayerModal = ({
   }, [isOpen]);
 
   const togglePlay = () => {
-    if (videoType === "youtube") {
-      const iframe = iframeRef.current;
-      if (iframe) {
-        const currentSrc = iframe.src;
-        if (isPlaying) {
-          iframe.src = currentSrc.replace("autoplay=1", "autoplay=0");
-        } else {
-          iframe.src = currentSrc.replace("autoplay=0", "autoplay=1");
-        }
-        setIsPlaying(!isPlaying);
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
       }
-    } else {
-      if (videoRef.current) {
-        if (isPlaying) {
-          videoRef.current.pause();
-        } else {
-          videoRef.current.play();
-        }
-        setIsPlaying(!isPlaying);
-      }
+      setIsPlaying(!isPlaying);
     }
   };
 
@@ -104,17 +104,47 @@ const VideoPlayerModal = ({
   };
 
   const toggleFullscreen = () => {
-    if (videoRef.current) {
-      if (!isFullscreen) {
-        if (videoRef.current.requestFullscreen) {
-          videoRef.current.requestFullscreen();
-        }
+    const container = document.querySelector(".video-modal-container");
+    if (container) {
+      if (!document.fullscreenElement) {
+        container
+          .requestFullscreen()
+          .then(() => {
+            setIsFullscreen(true);
+          })
+          .catch((err) => {
+            console.log("Error attempting to enable fullscreen:", err);
+          });
       } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
+        document.exitFullscreen().then(() => {
+          setIsFullscreen(false);
+        });
       }
-      setIsFullscreen(!isFullscreen);
+    }
+  };
+
+  // Add fullscreen event listeners
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  // Seek forward/backward functions - for local videos only
+  const seekForward = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 10, duration);
+    }
+  };
+
+  const seekBackward = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = Math.max(videoRef.current.currentTime - 10, 0);
     }
   };
 
@@ -138,8 +168,8 @@ const VideoPlayerModal = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             onClick={onClose}
+            className="absolute inset-0 bg-black/20"
           />
 
           {/* Video Player Container */}
@@ -148,7 +178,7 @@ const VideoPlayerModal = ({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className={`relative w-full max-w-4xl mx-4 rounded-2xl overflow-hidden shadow-2xl ${
+            className={`video-modal-container relative w-full max-w-4xl mx-4 rounded-2xl overflow-hidden shadow-2xl ${
               isDarkMode ? "bg-gray-900" : "bg-white"
             }`}
           >
@@ -165,32 +195,14 @@ const VideoPlayerModal = ({
             {/* Video Element */}
             <div className="relative">
               {videoType === "youtube" ? (
-                <>
-                  <iframe
-                    ref={iframeRef}
-                    src={getYouTubeEmbedUrl(videoUrl)}
-                    className="w-full h-auto max-h-[70vh] aspect-video"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title="YouTube video player"
-                  />
-
-                  {/* Custom Play/Pause Overlay for YouTube */}
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={togglePlay}
-                    className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors"
-                  >
-                    <motion.div
-                      animate={{ scale: isPlaying ? 0 : 1 }}
-                      transition={{ duration: 0.2 }}
-                      className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center shadow-lg"
-                    >
-                      <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
-                    </motion.div>
-                  </motion.button>
-                </>
+                <iframe
+                  ref={iframeRef}
+                  src={getYouTubeEmbedUrl(videoUrl)}
+                  className="w-full h-auto max-h-[70vh] aspect-video"
+                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                  allowFullScreen
+                  title="YouTube video player"
+                />
               ) : (
                 <>
                   <video
@@ -209,7 +221,7 @@ const VideoPlayerModal = ({
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={togglePlay}
-                    className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors"
+                    className="absolute inset-0 flex items-center justify-center transition-colors"
                   >
                     <motion.div
                       animate={{ scale: isPlaying ? 0 : 1 }}
@@ -223,10 +235,10 @@ const VideoPlayerModal = ({
               )}
             </div>
 
-            {/* Controls - Show for both local and YouTube videos */}
-            <div className={`p-4 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
-              {/* Progress Bar - Only show for local videos */}
-              {videoType === "local" && (
+            {/* Controls - Show only for local videos */}
+            {videoType === "local" && (
+              <div className={`p-4 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
+                {/* Progress Bar */}
                 <div className="mb-4">
                   <input
                     type="range"
@@ -237,24 +249,47 @@ const VideoPlayerModal = ({
                     className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer slider"
                   />
                 </div>
-              )}
 
-              {/* Control Buttons */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={togglePlay}
-                    className={`p-2 rounded-full ${
-                      isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
-                    } hover:bg-gray-600 transition-colors`}
-                  >
-                    {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-                  </motion.button>
+                {/* Control Buttons */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={togglePlay}
+                      className={`p-2 rounded-full ${
+                        isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
+                      } hover:bg-gray-600 transition-colors`}
+                    >
+                      {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                    </motion.button>
 
-                  {/* Mute button - Only show for local videos */}
-                  {videoType === "local" && (
+                    {/* Seek buttons */}
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={seekBackward}
+                      className={`p-2 rounded-full ${
+                        isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
+                      } hover:bg-gray-600 transition-colors`}
+                      title="Skip back 10s"
+                    >
+                      <SkipBack className="w-5 h-5" />
+                    </motion.button>
+
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={seekForward}
+                      className={`p-2 rounded-full ${
+                        isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
+                      } hover:bg-gray-600 transition-colors`}
+                      title="Skip forward 10s"
+                    >
+                      <SkipForward className="w-5 h-5" />
+                    </motion.button>
+
+                    {/* Mute button */}
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
@@ -265,28 +300,26 @@ const VideoPlayerModal = ({
                     >
                       {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                     </motion.button>
-                  )}
 
-                  {/* Time display - Only show for local videos */}
-                  {videoType === "local" && (
+                    {/* Time display */}
                     <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
                       {formatTime(currentTime)} / {formatTime(duration)}
                     </span>
-                  )}
-                </div>
+                  </div>
 
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={toggleFullscreen}
-                  className={`p-2 rounded-full ${
-                    isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
-                  } hover:bg-gray-600 transition-colors`}
-                >
-                  <Maximize2 className="w-5 h-5" />
-                </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={toggleFullscreen}
+                    className={`p-2 rounded-full ${
+                      isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
+                    } hover:bg-gray-600 transition-colors`}
+                  >
+                    <Maximize2 className="w-5 h-5" />
+                  </motion.button>
+                </div>
               </div>
-            </div>
+            )}
           </motion.div>
         </motion.div>
       )}

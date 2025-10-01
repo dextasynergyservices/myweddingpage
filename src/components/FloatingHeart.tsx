@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 
 const FloatingHeart = () => (
   <div className="fixed bottom-10 right-10 pointer-events-none z-50">
@@ -16,7 +15,7 @@ const FloatingHeart = () => (
         ease: "easeInOut",
       }}
     >
-      <Image src="/logoicon.png" alt="my wedding page" width={48} height={48} />
+      {/* <Image src="/logoicon.png" alt="my wedding page" width={48} height={48} /> */}
     </motion.div>
   </div>
 );
