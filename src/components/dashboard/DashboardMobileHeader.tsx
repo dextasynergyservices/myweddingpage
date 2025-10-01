@@ -1,5 +1,7 @@
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowLeft } from "lucide-react";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface DashboardMobileHeaderProps {
   isDarkMode: boolean;
@@ -15,7 +17,20 @@ const DashboardMobileHeader = ({
   return (
     <div className="md:hidden flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
       <div className="flex items-center gap-3">
-        <div>
+        <div className="flex items-center gap-2">
+          <Link href="/">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className={`p-2 rounded-lg transition-colors ${
+                isDarkMode
+                  ? "text-slate-400 hover:text-white hover:bg-slate-700"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              }`}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </motion.button>
+          </Link>
           <h1 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
             Wedding Dashboard
           </h1>

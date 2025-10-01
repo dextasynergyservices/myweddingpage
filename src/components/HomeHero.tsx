@@ -14,7 +14,13 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
   return (
     <>
       {/* Hero Section */}
-      <section id="home" className="relative min-h-screen overflow-hidden">
+      <section
+        id="home"
+        className="relative min-h-screen overflow-hidden bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${isDarkMode ? "/hero_bg_dark.png" : "/hero_bg_light.png"})`,
+        }}
+      >
         <div
           className={`absolute inset-0 ${
             isDarkMode
@@ -104,7 +110,7 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
 
             <motion.p
               className={`text-small mb-12 max-w-3xl mx-auto leading-relaxed font-light ${
-                isDarkMode ? "text-white" : "text-slate-600"
+                isDarkMode ? "text-white" : "text-black"
               }`}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -137,7 +143,7 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
                 <motion.button
                   type="button"
                   onClick={onStartDemo}
-                  className={`w-50 sm:w-auto border-2 border-black text-black px-4 py-2 rounded-2xl font-small text-small hover:bg-[#ab862b] hover:border-black transition-all duration-300 flex items-center justify-center gap-2 m-auto ${
+                  className={`w-50 sm:w-auto border border-black text-black px-4 py-2 rounded-2xl font-small text-small hover:bg-[#ab862b] hover:border-black transition-all duration-300 flex items-center justify-center gap-2 m-auto ${
                     isDarkMode
                       ? "border-black text-white hover:bg-[#ab862b] hover:border-black"
                       : "border-black text-black hover:bg-slate-50 hover:border-slate-400"

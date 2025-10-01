@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { motion, useInView, useAnimation } from "framer-motion";
 import ParallaxBackground from "./ParallaxBackground";
 import AnimatedSection from "./AnimatedSection";
-import FloatingHeart from "./FloatingHeart";
 import Link from "next/link";
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
@@ -57,7 +56,7 @@ const Footer = () => {
             <AnimatedSection animation="fadeRight" className="md:col-span-2">
               <div className="flex items-center gap-3 mb-6">
                 <motion.div className="p-2 rounded-xl" whileHover={{ rotate: 5, scale: 1.1 }}>
-                  <Image src="/logo.png" alt="my wedding page" width={300} height={100} />
+                  <Image src={"/logowhite.png"} alt="my wedding page" width={300} height={100} />
                 </motion.div>
               </div>
               <p className="text-white leading-relaxed font-light text-lg max-w-md">
@@ -131,7 +130,7 @@ const Footer = () => {
       </footer>
 
       {/* Floating Element */}
-      <FloatingHeart />
+      {/* <FloatingHeart /> */}
     </>
   );
 };
