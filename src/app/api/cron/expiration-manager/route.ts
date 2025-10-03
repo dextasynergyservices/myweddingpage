@@ -216,6 +216,10 @@ export async function GET(request: NextRequest) {
           },
         });
 
+        console.log(
+          `[GRACE PERIOD ACTIVATED] User ${user.id} - grace period until ${gracePeriodEnd.toISOString()}`
+        );
+
         // Log the expiration
         await prisma.expirationLog.create({
           data: {
@@ -404,15 +408,18 @@ export async function GET(request: NextRequest) {
           },
         });
 
-        // Reset grace period flags
+        // Reset grace period flag (keep dates for historical record/audit trail)
         await prisma.user.update({
           where: { id: user.id },
           data: {
             isInGracePeriod: false,
-            gracePeriodStart: null,
-            gracePeriodEnd: null,
+            // Keep gracePeriodStart and gracePeriodEnd for historical record
           },
         });
+
+        console.log(
+          `[DELETION] Grace period ended for user ${user.id} - ${deleteResult.count} page(s) soft deleted`
+        );
 
         // Send final deletion notification
         if (user.email && deleteResult.count > 0) {
@@ -498,6 +505,12 @@ export async function GET(request: NextRequest) {
         gracePeriodEnd: {
           gt: now, // Grace period hasn't ended yet (use 'gt' instead of 'gte' to be more precise)
         },
+        // CRITICAL FIX: Only send reminders to users who have active (non-deleted) wedding pages
+        weddingPages: {
+          some: {
+            deleted_at: null, // Only users with non-deleted pages
+          },
+        },
       },
       select: {
         id: true,
@@ -509,20 +522,42 @@ export async function GET(request: NextRequest) {
         plan: {
           select: { name: true },
         },
+        // Include wedding pages to verify user has active pages
+        weddingPages: {
+          where: {
+            deleted_at: null,
+          },
+          select: {
+            id: true,
+            slug: true,
+            deleted_at: true,
+          },
+        },
       },
     });
 
     // Send grace period reminder emails
     for (const user of gracePeriodUsers) {
       try {
+        // CRITICAL FIX: Double-check user has active wedding pages before sending
+        if (!user.weddingPages || user.weddingPages.length === 0) {
+          console.log(`[GRACE PERIOD] Skipping user ${user.id} - no active wedding pages found`);
+          continue;
+        }
+
         const gracePeriodEnd = new Date(user.gracePeriodEnd!);
         const daysLeft = Math.ceil(
           (gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
         );
 
-        // Send reminder on days 2 and 1 only (day 0 users are already processed for deletion)
-        if ([2, 1].includes(daysLeft)) {
-          const urgencyLevel = daysLeft === 1 ? "URGENT" : "REMINDER";
+        // ENHANCEMENT: Send reminders on ALL 3 days of grace period (days 3, 2, and 1)
+        // Day 0 users are processed for deletion in Step 3
+        if ([3, 2, 1].includes(daysLeft)) {
+          const urgencyLevel = daysLeft === 1 ? "URGENT" : daysLeft === 2 ? "CRITICAL" : "REMINDER";
+
+          console.log(
+            `[GRACE PERIOD] Sending ${urgencyLevel} reminder to user ${user.id} - ${daysLeft} day(s) left`
+          );
 
           // Send email reminder
           if (user.email) {
