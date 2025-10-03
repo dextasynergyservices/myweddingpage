@@ -45,13 +45,15 @@ const HowToHero = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsVideoOpen(true)}
-        className={`mt-8 px-6 py-3 rounded-full flex items-center gap-2 mx-auto shadow-lg ${
-          isDarkMode ? "bg-[#ab862b]/20 text-white" : "bg-white text-black"
+        className={`mt-8 px-6 py-3 rounded-full flex items-center gap-2 mx-auto ${
+          isDarkMode
+            ? "bg-transparent text-white border border-white/20"
+            : "bg-white text-black border border-gray-200"
         }`}
       >
         <Play
           className={`text-sm md:text-lg font-light w-5 h-5 max-w-3xl mx-auto ${
-            isDarkMode ? "text-white/50" : "text-black"
+            isDarkMode ? "text-white" : "text-black"
           }`}
         />{" "}
         Watch Overview

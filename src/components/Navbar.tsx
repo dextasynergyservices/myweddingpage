@@ -50,7 +50,7 @@ const Navbar = () => {
           : "bg-transparent"
       }`}
       style={{
-        backgroundColor: isScrolled && isDarkMode ? "rgb(34, 21, 2)" : undefined,
+        backgroundColor: isScrolled && isDarkMode ? "rgba(7, 7, 7, 0.9)" : undefined,
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,7 +64,7 @@ const Navbar = () => {
           >
             <Link href="/" passHref>
               <Image
-                src="/logo.png"
+                src={isDarkMode ? "/logowhite.png" : "/logo.png"}
                 alt="my wedding page"
                 width={300}
                 height={100}

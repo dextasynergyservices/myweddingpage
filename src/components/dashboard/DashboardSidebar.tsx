@@ -1,8 +1,9 @@
 import { NavigationItem } from "@/types/dashboard";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import { Bot } from "lucide-react";
+import { Bot, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import LogoutButton from "@/components/LogoutButton";
+import Link from "next/link";
 
 interface DashboardSidebarProps {
   isDarkMode: boolean;
@@ -32,10 +33,29 @@ const DashboardSidebar = ({
       <div className="p-6 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center gap-3 mb-4">
           <div>
-            <h1 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-              Wedding Dashboard
-            </h1>
-            <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+            <div className="flex items-center gap-2">
+              <Link href="/">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className={`p-1 rounded-md transition-colors ${
+                    isDarkMode
+                      ? "text-slate-400 hover:text-white hover:bg-slate-700"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </motion.button>
+              </Link>
+              <h1
+                className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
+              >
+                Wedding Dashboard
+              </h1>
+            </div>
+            <p
+              className={`text-sm text-center ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+            >
               Plan your perfect day
             </p>
           </div>
