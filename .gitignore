@@ -144,13 +144,18 @@ vite.config.ts.timestamp-*
 
 vercel.json
 
-# Phase 1 Security Implementation Documentation (Internal)
-RECAPTCHA_SETUP.md
-PHASE_1_SECURITY_SUMMARY.md
-LOCAL_TESTING_GUIDE.md
+# Security Implementation Documentation (Internal - Not for GitHub)
+# All Phase 1 & Phase 2 security documentation, guides, and test scripts
+docs/security/
+
+# Individual security docs (if accidentally left in root)
+*PHASE*.md
+*SECURITY*.md
+*CSRF*.md
+*LOCKOUT*.md
+*ENVIRONMENT_VALIDATION*.md
+*ERROR_FIXES*.md
+*TESTING*.md
+*RECAPTCHA*.md
 test-security.ps1
 quick-test.ps1
-TESTING_GUIDE.md
-QUICK_TEST_CHECKLIST.md
-PHASE_1_PROGRESS_REPORT.md
-DEPLOYMENT_CHECKLIST_PHASE1.md

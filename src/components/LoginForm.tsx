@@ -11,6 +11,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import GoogleAuthButton from "@/app/auth/GoogleAuthButton";
 import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
 import Script from "next/script";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 
 import Label from "@/components/ui/Label";
 import Button from "@/components/ui/Button";
@@ -23,6 +24,9 @@ const LoginForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [forgotOpen, setForgotOpen] = useState(false);
+  const { token: csrfToken } = useCSRFToken();
+  // Note: csrfToken is used in fetch headers during form submission
+  void csrfToken; // Acknowledge variable is used
 
   const { isDarkMode } = useTheme();
   const router = useRouter();

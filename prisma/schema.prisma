@@ -300,12 +300,20 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
+  id             String    @id @default(cuid())
+  sessionToken   String    @unique
+  userId         String
+  expires        DateTime
+  createdAt      DateTime  @default(now())
+  lastAccessedAt DateTime  @default(now())
+  ipAddress      String?
+  userAgent      String?
 
   user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([expires])
+  @@index([lastAccessedAt])
 }
 model Subscription {
   id          String   @id @default(uuid())
@@ -492,4 +500,90 @@ model GalleryMedia {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+}
+
+enum SecurityEventType {
+  LOGIN_ATTEMPT
+  LOGIN_SUCCESS
+  LOGIN_FAILURE
+  LOGOUT
+  REGISTER_ATTEMPT
+  REGISTER_SUCCESS
+  PASSWORD_RESET_REQUEST
+  PASSWORD_RESET_SUCCESS
+  RATE_LIMIT_HIT
+  VALIDATION_FAILURE
+  CSRF_VIOLATION
+  XSS_ATTEMPT
+  SUSPICIOUS_ACTIVITY
+  FILE_UPLOAD_REJECTED
+  UNAUTHORIZED_ACCESS
+  SESSION_HIJACK_ATTEMPT
+  BRUTE_FORCE_DETECTED
+  API_ABUSE
+}
+
+enum SecuritySeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model SecurityLog {
+  id          String            @id @default(cuid())
+  eventType   SecurityEventType
+  severity    SecuritySeverity  @default(MEDIUM)
+  userId      String?
+  ipAddress   String
+  userAgent   String?
+  endpoint    String?
+  method      String?
+  statusCode  Int?
+  message     String?
+  metadata    Json?
+  timestamp   DateTime          @default(now())
+
+  @@index([eventType])
+  @@index([severity])
+  @@index([userId])
+  @@index([ipAddress])
+  @@index([timestamp])
+}
+
+model LoginAttempt {
+  id            String   @id @default(cuid())
+  userId        String?
+  email         String
+  ipAddress     String
+  userAgent     String?
+  success       Boolean
+  failureReason String?
+  attemptedAt   DateTime @default(now())
+
+  @@index([email])
+  @@index([ipAddress])
+  @@index([userId])
+  @@index([attemptedAt])
+  @@index([success])
+}
+
+model AccountLockout {
+  id            String    @id @default(cuid())
+  userId        String?
+  email         String
+  ipAddress     String
+  lockedAt      DateTime  @default(now())
+  lockedUntil   DateTime
+  unlocked      Boolean   @default(false)
+  unlockedAt    DateTime?
+  unlockedBy    String?
+  attemptCount  Int
+  lockoutReason String?
+
+  @@index([email])
+  @@index([ipAddress])
+  @@index([userId])
+  @@index([lockedUntil])
+  @@index([unlocked])
 }

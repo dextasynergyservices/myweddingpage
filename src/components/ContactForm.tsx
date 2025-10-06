@@ -7,6 +7,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import AnimatedSection from "@/components/AnimatedSection";
 import toast from "react-hot-toast";
 import Script from "next/script";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 
 interface FormData {
   name: string;
@@ -18,6 +19,7 @@ interface FormData {
 
 const ContactForm = () => {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [hasMounted, setHasMounted] = useState(false);
@@ -80,7 +82,10 @@ const ContactForm = () => {
 
       const res = await fetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify({ ...formData, recaptchaToken }),
       });
 
