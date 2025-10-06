@@ -15,7 +15,10 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
-    "seed:tasks": "tsx prisma/seed-tasks-cp.ts"
+    "seed:tasks": "tsx prisma/seed-tasks-cp.ts",
+    "validate:env": "pwsh -File scripts/validate-env.ps1",
+    "validate:env:strict": "pwsh -File scripts/validate-env.ps1 -Strict",
+    "generate:secrets": "pwsh -File scripts/validate-env.ps1 -GenerateSecrets"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
