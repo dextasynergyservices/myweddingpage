@@ -378,11 +378,11 @@ async function sendLockoutNotification(email: string, lockedUntil: Date, attempt
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #d32f2f;">Account Temporarily Locked</h2>
-          
+
           <p>We detected ${attemptCount} failed login attempts on your account.</p>
-          
+
           <p>For your security, your account has been temporarily locked for <strong>${lockoutMinutes} minutes</strong>.</p>
-          
+
           <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0;">
             <p style="margin: 0;"><strong>Lockout Details:</strong></p>
             <ul style="margin: 10px 0;">
@@ -390,7 +390,7 @@ async function sendLockoutNotification(email: string, lockedUntil: Date, attempt
               <li>Locked until: ${lockedUntil.toLocaleString()}</li>
             </ul>
           </div>
-          
+
           <h3>What to do:</h3>
           <ul>
             <li>Wait ${lockoutMinutes} minutes before trying again</li>
@@ -398,7 +398,7 @@ async function sendLockoutNotification(email: string, lockedUntil: Date, attempt
             <li>If you forgot your password, use the "Forgot Password" link</li>
             <li>If you didn't attempt to log in, contact support immediately</li>
           </ul>
-          
+
           <p style="color: #666; font-size: 12px; margin-top: 30px;">
             This is an automated security message. If you need assistance, please contact our support team.
           </p>

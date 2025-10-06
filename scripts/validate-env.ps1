@@ -24,13 +24,13 @@ function Write-ColoredLine {
 # Load environment variables from .env files
 function Load-EnvFile {
     $envFiles = @(".env.local", ".env")
-    
+
     foreach ($file in $envFiles) {
         $envPath = Join-Path $PWD $file
         if (Test-Path $envPath) {
             Write-ColoredLine "Loading $file..." "Cyan"
             $content = Get-Content $envPath
-            
+
             foreach ($line in $content) {
                 if ($line -match '^([^#][^=]+)=(.*)$') {
                     $key = $Matches[1].Trim()
@@ -41,11 +41,11 @@ function Load-EnvFile {
                     }
                 }
             }
-            
+
             return $true
         }
     }
-    
+
     Write-ColoredLine "No .env.local or .env file found" "Yellow"
     return $false
 }
@@ -135,13 +135,13 @@ function Test-Environment {
     Write-ColoredLine "Summary" "Cyan"
     Write-ColoredLine "$('=' * 60)" "Cyan"
     Write-Host "Checked: $checked variables"
-    
+
     if ($errors.Count -gt 0) {
         Write-ColoredLine "Errors: $($errors.Count)" "Red"
     } else {
         Write-ColoredLine "Errors: 0" "Green"
     }
-    
+
     if ($warnings.Count -gt 0) {
         Write-ColoredLine "Warnings: $($warnings.Count)" "Yellow"
     } else {
@@ -217,7 +217,7 @@ if ($GenerateSecrets) {
     New-Secrets
 } else {
     $valid = Test-Environment
-    
+
     if ($Strict -and -not $valid) {
         exit 1
     }
