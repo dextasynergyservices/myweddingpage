@@ -10,7 +10,10 @@ class CanvaAPI {
   constructor() {
     this.clientId = process.env.CANVA_CLIENT_ID || "";
     this.clientSecret = process.env.CANVA_CLIENT_SECRET || "";
+  }
 
+  // Check if credentials are configured (call this before using the API)
+  private checkCredentials(): void {
     if (!this.clientId || !this.clientSecret) {
       throw new Error("Canva API credentials not found in environment variables");
     }
@@ -31,6 +34,7 @@ class CanvaAPI {
 
   // Generate OAuth URL for user authorization with PKCE
   generateAuthURL(redirectUri: string): { authUrl: string; codeVerifier: string; state: string } {
+    this.checkCredentials(); // Check credentials before using
     const { codeVerifier, codeChallenge } = this.generatePKCE();
     const state = this.generateState();
 
@@ -60,6 +64,7 @@ class CanvaAPI {
     codeVerifier: string,
     redirectUri: string
   ): Promise<{ access_token: string; refresh_token?: string; expires_in: number }> {
+    this.checkCredentials(); // Check credentials before using
     try {
       const tokenUrl = "https://api.canva.com/rest/v1/oauth/token";
       const tokenData = {

@@ -8,13 +8,24 @@ import twilio from "twilio";
 // Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Initialize Twilio client with proper type checking
-const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
-const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
-const twilioPhoneNumber = process.env.TWILIO_WHATSAPP_NUMBER;
+// Lazy initialization: only create client when actually needed
+function getTwilioClient() {
+  const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
+  const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
 
-const twilioClient =
-  twilioAccountSid && twilioAuthToken ? twilio(twilioAccountSid, twilioAuthToken) : null;
+  if (!twilioAccountSid || !twilioAuthToken) {
+    return null;
+  }
+
+  try {
+    return twilio(twilioAccountSid, twilioAuthToken);
+  } catch (error) {
+    console.error("Failed to initialize Twilio client:", error);
+    return null;
+  }
+}
+
+const twilioPhoneNumber = process.env.TWILIO_WHATSAPP_NUMBER;
 
 // Helper function to check if string looks like an ID
 function isId(str: string): boolean {
@@ -92,6 +103,7 @@ export async function PUT(request: Request, { params }: { params: { token: strin
           }
 
           // Send WhatsApp via Twilio
+          const twilioClient = getTwilioClient();
           if (updatedTask.user.whatsapp && twilioClient && twilioPhoneNumber) {
             await twilioClient.messages.create({
               from: `whatsapp:${twilioPhoneNumber}`,

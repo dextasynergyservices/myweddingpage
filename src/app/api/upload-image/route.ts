@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/authOptions";
 import { v2 as cloudinary, UploadApiOptions } from "cloudinary";
 import { trackUploadStart, trackUploadComplete } from "@/lib/upload-monitor";
 import { createUserAwareRateLimit, rateLimitConfigs, addRateLimitHeaders } from "@/lib/rate-limit";
+import { validateFile } from "@/lib/file-validation";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -78,6 +79,19 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: `File too large. Maximum size is ${maxSize / 1024 / 1024}MB` },
         { status: 413 }
+      );
+    }
+
+    // Advanced file validation with magic number verification
+    const validationResult = await validateFile(file, file.name, file.type, session.user.id);
+
+    if (!validationResult.valid) {
+      return NextResponse.json(
+        {
+          error: validationResult.error || "File validation failed",
+          details: validationResult.details,
+        },
+        { status: 400 }
       );
     }
 

@@ -17,10 +17,12 @@ import { enGB } from "date-fns/locale";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Script from "next/script";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 
 const RegisterForm = () => {
   const router = useRouter();
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
 
   const searchParams = useSearchParams();
   const emailFromQuery = searchParams.get("email") || "";
@@ -49,7 +51,10 @@ const RegisterForm = () => {
       try {
         const res = await fetch("/api/auth/token-user", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "x-csrf-token": csrfToken || "",
+          },
           body: JSON.stringify({ token }),
         });
 
@@ -67,6 +72,7 @@ const RegisterForm = () => {
     };
 
     fetchUserFromToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, router]);
 
   const [weddingDate, setWeddingDate] = useState<Date | null>(null);
@@ -154,6 +160,9 @@ const RegisterForm = () => {
 
       const res = await fetch("/api/auth/register", {
         method: "POST",
+        headers: {
+          "x-csrf-token": csrfToken || "",
+        },
         body: form,
       });
 
