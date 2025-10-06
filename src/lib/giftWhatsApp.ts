@@ -1,15 +1,27 @@
 import Twilio from "twilio";
 
-const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
-const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
-
 export class WhatsAppService {
-  private static client =
-    twilioAccountSid && twilioAuthToken ? Twilio(twilioAccountSid, twilioAuthToken) : null;
+  private static getClient() {
+    const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
+    const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+
+    if (!twilioAccountSid || !twilioAuthToken) {
+      return null;
+    }
+
+    try {
+      return Twilio(twilioAccountSid, twilioAuthToken);
+    } catch (error) {
+      console.error("Failed to initialize Twilio client:", error);
+      return null;
+    }
+  }
 
   static async sendMessage({ to, message }: { to: string; message: string }) {
     try {
-      if (!this.client || !process.env.TWILIO_WHATSAPP_NUMBER) {
+      const client = this.getClient();
+
+      if (!client || !process.env.TWILIO_WHATSAPP_NUMBER) {
         console.warn("Twilio not configured. WhatsApp message skipped.");
         return false;
       }
@@ -20,7 +32,7 @@ export class WhatsAppService {
         throw new Error("Invalid phone number format");
       }
 
-      const response = await this.client.messages.create({
+      const response = await client.messages.create({
         body: message,
         from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
         to: `whatsapp:${cleanedNumber}`,
