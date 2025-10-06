@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
+
+// Strict rate limiting for payment renewal (5 requests per hour per IP)
+const renewalRateLimit = rateLimit({
+  maxRequests: 5,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  message: "Too many renewal requests. Please try again later.",
+});
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY!;
 
@@ -12,6 +20,12 @@ const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY!;
  */
 export async function POST(req: Request) {
   try {
+    // Apply strict rate limiting first
+    const rateLimitResponse = await renewalRateLimit(req);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const { optionId, userId, groomName, brideName, email } = await req.json();
 
     if (!optionId) {
