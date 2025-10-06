@@ -143,3 +143,14 @@ vite.config.ts.timestamp-*
 /src/generated/prisma
 
 vercel.json
+
+# Phase 1 Security Implementation Documentation (Internal)
+RECAPTCHA_SETUP.md
+PHASE_1_SECURITY_SUMMARY.md
+LOCAL_TESTING_GUIDE.md
+test-security.ps1
+quick-test.ps1
+TESTING_GUIDE.md
+QUICK_TEST_CHECKLIST.md
+PHASE_1_PROGRESS_REPORT.md
+DEPLOYMENT_CHECKLIST_PHASE1.md
