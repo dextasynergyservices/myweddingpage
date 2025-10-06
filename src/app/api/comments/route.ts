@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
+import { commentSchema } from "@/lib/validators";
+import { sanitizeBasicHTML } from "@/lib/sanitize";
+import { rateLimit } from "@/lib/rate-limit";
+
+// Apply rate limiting to comments (20 requests per hour per user)
+const commentsRateLimit = rateLimit({
+  maxRequests: 20,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  message: "Too many comment requests. Please try again later.",
+});
 
 export async function GET() {
   try {
@@ -29,23 +39,48 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    // Apply rate limiting first
+    const rateLimitResponse = await commentsRateLimit(request);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
     const body = await request.json();
-    if (!body.name || !body.message) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    const { name: rawName, message: rawMessage, created_at, weddingPageId } = body;
+
+    // Sanitize inputs to prevent XSS attacks
+    const name = rawName ? sanitizeBasicHTML(rawName) : "";
+    const message = rawMessage ? sanitizeBasicHTML(rawMessage) : "";
+
+    // Validate with Zod schema
+    const validationResult = commentSchema.safeParse({
+      name,
+      message,
+      weddingPageId: weddingPageId || "",
+    });
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((err) => ({
+        field: err.path[0]?.toString() || "unknown",
+        message: err.message,
+      }));
+      return NextResponse.json({ error: "Validation failed", details: errors }, { status: 400 });
     }
+
+    const validatedData = validationResult.data;
 
     const comment = await prisma.comment.create({
       data: {
-        name: body.name,
-        message: body.message,
-        created_at: body.created_at,
+        name: validatedData.name,
+        message: validatedData.message,
+        created_at: created_at,
         userId: user.id,
-        weddingPageId: body.weddingPageId,
+        weddingPageId: validatedData.weddingPageId,
       },
     });
 
@@ -64,6 +99,12 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    // Apply rate limiting
+    const rateLimitResponse = await commentsRateLimit(request);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -102,6 +143,12 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
+    // Apply rate limiting
+    const rateLimitResponse = await commentsRateLimit(request);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });

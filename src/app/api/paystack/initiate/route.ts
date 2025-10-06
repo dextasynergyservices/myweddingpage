@@ -1,7 +1,21 @@
 import { NextResponse } from "next/server";
+import { rateLimit } from "@/lib/rate-limit";
+
+// Strict rate limiting for payment initiation (5 requests per hour per IP)
+const paymentRateLimit = rateLimit({
+  maxRequests: 5,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  message: "Too many payment requests. Please try again later.",
+});
 
 export async function POST(req: Request) {
   try {
+    // Apply strict rate limiting first
+    const rateLimitResponse = await paymentRateLimit(req);
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
+
     const body = await req.json();
     const { email, whatsapp, planId, amount } = body;
 

@@ -10,6 +10,7 @@ import { signIn } from "next-auth/react";
 import { useTheme } from "@/contexts/ThemeContext";
 import GoogleAuthButton from "@/app/auth/GoogleAuthButton";
 import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
+import Script from "next/script";
 
 import Label from "@/components/ui/Label";
 import Button from "@/components/ui/Button";
@@ -54,10 +55,38 @@ const LoginForm = () => {
 
     setIsLoading(true);
     try {
+      // Execute reCAPTCHA v3
+      let recaptchaToken = "";
+      if (
+        typeof window !== "undefined" &&
+        (
+          window as Window & {
+            grecaptcha?: {
+              execute: (siteKey: string, options: { action: string }) => Promise<string>;
+            };
+          }
+        ).grecaptcha
+      ) {
+        try {
+          recaptchaToken = await (
+            window as unknown as {
+              grecaptcha: {
+                execute: (siteKey: string, options: { action: string }) => Promise<string>;
+              };
+            }
+          ).grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_V3 || "", {
+            action: "login",
+          });
+        } catch (error) {
+          console.error("reCAPTCHA error:", error);
+        }
+      }
+
       const res = await signIn("credentials", {
         redirect: false,
         emailOrPhone: formData.email, // ✅ Match provider field name
         password: formData.password,
+        recaptchaToken,
       });
 
       if (res?.ok) {
@@ -84,6 +113,10 @@ const LoginForm = () => {
 
   return (
     <>
+      <Script
+        src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_V3}`}
+        strategy="lazyOnload"
+      />
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Email */}
         <div>
