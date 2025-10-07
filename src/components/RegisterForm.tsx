@@ -171,13 +171,24 @@ const RegisterForm = () => {
       if (!res.ok) {
         // Show specific error from backend
         if (result.details && result.details.length > 0) {
-          // Password validation errors - show all details
-          const errorMessage = result.details.join(". ");
-          const suggestionMessage =
-            result.suggestions && result.suggestions.length > 0
-              ? " Suggestions: " + result.suggestions.join(". ")
-              : "";
-          toast.error(errorMessage + suggestionMessage, { duration: 6000 });
+          // Check if details are objects (Zod validation errors) or strings (password validation)
+          const isObjectArray = typeof result.details[0] === "object";
+
+          if (isObjectArray) {
+            // Zod validation errors: { field: "email", message: "Invalid email" }
+            const errorMessage = result.details
+              .map((err: { field: string; message: string }) => err.message)
+              .join(". ");
+            toast.error(errorMessage, { duration: 6000 });
+          } else {
+            // Password validation errors - array of strings
+            const errorMessage = result.details.join(". ");
+            const suggestionMessage =
+              result.suggestions && result.suggestions.length > 0
+                ? " Suggestions: " + result.suggestions.join(". ")
+                : "";
+            toast.error(errorMessage + suggestionMessage, { duration: 6000 });
+          }
         } else {
           toast.error(result.error || result.message || "Registration failed. Please try again.");
         }
