@@ -173,7 +173,7 @@ export function validatePassword(password: string): PasswordValidationResult {
   const hasLowercase = /[a-z]/.test(password);
   const hasUppercase = /[A-Z]/.test(password);
   const hasNumber = /\d/.test(password);
-  const hasSpecial = /[@$!%*?&]/.test(password);
+  const hasSpecial = /[@$!%*?&#^()\-_+=\[\]{}|;:',.<>\/~`]/.test(password);
 
   if (!hasLowercase) {
     errors.push("Password must contain at least one lowercase letter");
@@ -197,8 +197,8 @@ export function validatePassword(password: string): PasswordValidationResult {
   }
 
   if (!hasSpecial) {
-    errors.push("Password must contain at least one special character (@$!%*?&)");
-    suggestions.push("Add special characters (@$!%*?&)");
+    errors.push("Password must contain at least one special character");
+    suggestions.push("Add special characters (@, $, !, %, *, ?, &, #, etc.)");
   } else {
     score += 10;
   }
@@ -290,7 +290,7 @@ export function isPasswordValid(password: string): boolean {
   const hasLowercase = /[a-z]/.test(password);
   const hasUppercase = /[A-Z]/.test(password);
   const hasNumber = /\d/.test(password);
-  const hasSpecial = /[@$!%*?&]/.test(password);
+  const hasSpecial = /[@$!%*?&#^()\-_+=\[\]{}|;:',.<>\/~`]/.test(password);
 
   return hasLowercase && hasUppercase && hasNumber && hasSpecial;
 }
