@@ -169,16 +169,16 @@ const RegisterForm = () => {
       const result = await res.json();
 
       if (!res.ok) {
-        toast.error(result.message || "Registration failed.");
+        // Show specific error from backend (not generic message)
+        toast.error(result.error || result.message || "Registration failed. Please try again.");
         return;
       }
 
-      toast.success("Registration successful!");
-      toast.success("Registration successful!");
+      toast.success("Registration successful! Please check your email.");
       router.push(`/verify-code?email=${formData.email}`);
     } catch (error: unknown) {
       console.error("Registration Failed:", error);
-      toast.error("Something went wrong.");
+      toast.error("Network error. Please check your connection and try again.");
     } finally {
       setIsLoading(false);
     }

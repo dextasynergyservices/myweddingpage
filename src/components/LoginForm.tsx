@@ -24,6 +24,12 @@ const LoginForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [forgotOpen, setForgotOpen] = useState(false);
+  const [show2FAModal, setShow2FAModal] = useState(false);
+  const [twoFactorToken, setTwoFactorToken] = useState("");
+  const [useBackupCode, setUseBackupCode] = useState(false);
+  const [twoFactorMethod, setTwoFactorMethod] = useState<"totp" | "email">("totp");
+  const [emailCodeSent, setEmailCodeSent] = useState(false);
+  const [isSendingCode, setIsSendingCode] = useState(false);
   const { token: csrfToken } = useCSRFToken();
   // Note: csrfToken is used in fetch headers during form submission
   void csrfToken; // Acknowledge variable is used
@@ -59,6 +65,40 @@ const LoginForm = () => {
 
     setIsLoading(true);
     try {
+      // First, check if user requires 2FA
+      const check2FAResponse = await fetch("/api/auth/check-2fa", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emailOrPhone: formData.email }),
+      });
+
+      const check2FAData = await check2FAResponse.json();
+
+      if (check2FAData.requires2FA) {
+        // User has 2FA enabled - show 2FA modal
+        setTwoFactorMethod(check2FAData.method || "totp");
+        setShow2FAModal(true);
+        setIsLoading(false);
+
+        // If email method, automatically send code
+        if (check2FAData.method === "email") {
+          await sendEmailCode();
+        }
+        return;
+      }
+
+      // No 2FA required - proceed with normal login
+      await performLogin();
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Login failed. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  const performLogin = async (twoFactorCode?: string, isBackup?: boolean) => {
+    setIsLoading(true);
+    try {
       // Execute reCAPTCHA v3
       let recaptchaToken = "";
       if (
@@ -88,16 +128,36 @@ const LoginForm = () => {
 
       const res = await signIn("credentials", {
         redirect: false,
-        emailOrPhone: formData.email, // ✅ Match provider field name
+        emailOrPhone: formData.email,
         password: formData.password,
         recaptchaToken,
+        twoFactorToken: twoFactorCode,
+        isBackupCode: isBackup ? "true" : "false",
       });
 
       if (res?.ok) {
         toast.success("Login successful");
-        router.push("/dashboard");
+        setShow2FAModal(false);
+
+        // Get fresh session with getSession (forces session refetch)
+        const { getSession } = await import("next-auth/react");
+        const session = await getSession();
+
+        console.log("Session after login:", session); // Debug log
+
+        if (session?.user?.role === "ADMIN") {
+          router.push("/dashboard/admin");
+        } else {
+          router.push("/dashboard");
+        }
       } else {
-        toast.error(res?.error || "Login failed. Please check your credentials.");
+        if (res?.error === "2FA_REQUIRED") {
+          toast.error("2FA verification required");
+        } else if (res?.error === "Invalid 2FA token") {
+          toast.error("Invalid verification code. Please try again.");
+        } else {
+          toast.error(res?.error || "Login failed. Please check your credentials.");
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -105,6 +165,51 @@ const LoginForm = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const sendEmailCode = async () => {
+    setIsSendingCode(true);
+    try {
+      const res = await fetch("/api/auth/2fa/email/send-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      if (res.ok) {
+        setEmailCodeSent(true);
+        toast.success("Verification code sent to your email");
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to send code");
+      }
+    } catch (error) {
+      console.error("Send email code error:", error);
+      toast.error("Failed to send code. Please try again.");
+    } finally {
+      setIsSendingCode(false);
+    }
+  };
+
+  const handle2FASubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!twoFactorToken.trim()) {
+      toast.error("Please enter your verification code");
+      return;
+    }
+
+    // For email method, verify via email endpoint
+    if (twoFactorMethod === "email" && !useBackupCode) {
+      await verifyEmailCode();
+    } else {
+      await performLogin(twoFactorToken, useBackupCode);
+    }
+  };
+
+  const verifyEmailCode = async () => {
+    // For email 2FA, pass the code through performLogin which will verify it via NextAuth
+    await performLogin(twoFactorToken, false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,6 +226,104 @@ const LoginForm = () => {
         src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_V3}`}
         strategy="lazyOnload"
       />
+
+      {/* 2FA Modal */}
+      {show2FAModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className={`max-w-md w-full rounded-2xl p-8 ${
+              isDarkMode ? "bg-gray-800" : "bg-white"
+            } shadow-2xl`}
+          >
+            <h2 className="text-2xl font-bold mb-2">Two-Factor Authentication</h2>
+            <p className={`mb-6 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              {useBackupCode
+                ? "Enter one of your backup codes"
+                : twoFactorMethod === "email"
+                  ? "Enter the 6-digit code sent to your email"
+                  : "Enter the 6-digit code from your authenticator app"}
+            </p>
+
+            {/* Email code status */}
+            {twoFactorMethod === "email" && !useBackupCode && (
+              <div
+                className={`mb-4 p-3 rounded-lg ${
+                  isDarkMode
+                    ? "bg-blue-500/10 border border-blue-500/30"
+                    : "bg-blue-50 border border-blue-200"
+                }`}
+              >
+                <p className={`text-sm ${isDarkMode ? "text-blue-300" : "text-blue-800"}`}>
+                  {emailCodeSent
+                    ? "📧 Code sent! Check your email inbox."
+                    : "Sending verification code..."}
+                </p>
+                {emailCodeSent && (
+                  <button
+                    type="button"
+                    onClick={sendEmailCode}
+                    disabled={isSendingCode}
+                    className={`mt-2 text-sm underline ${
+                      isDarkMode
+                        ? "text-blue-400 hover:text-blue-300"
+                        : "text-blue-600 hover:text-blue-700"
+                    } disabled:opacity-50`}
+                  >
+                    {isSendingCode ? "Sending..." : "Resend code"}
+                  </button>
+                )}
+              </div>
+            )}
+
+            <form onSubmit={handle2FASubmit} className="space-y-4">
+              <div>
+                <Input
+                  type="text"
+                  value={twoFactorToken}
+                  onChange={(e) => setTwoFactorToken(e.target.value)}
+                  placeholder={useBackupCode ? "XXXX-XXXX" : "000000"}
+                  maxLength={useBackupCode ? 9 : 6}
+                  className="text-center text-2xl tracking-widest"
+                  autoFocus
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <Button type="submit" isLoading={isLoading} className="flex-1">
+                  Verify
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    setShow2FAModal(false);
+                    setTwoFactorToken("");
+                    setUseBackupCode(false);
+                    setEmailCodeSent(false);
+                    setIsLoading(false);
+                  }}
+                  className="flex-1 bg-gray-500 hover:bg-gray-600"
+                >
+                  Cancel
+                </Button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setUseBackupCode(!useBackupCode);
+                  setTwoFactorToken("");
+                }}
+                className="text-sm text-[#ab862b] hover:underline w-full text-center mt-2"
+              >
+                {useBackupCode ? "Use authenticator code" : "Use backup code instead"}
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Email */}
         <div>
