@@ -34,7 +34,7 @@ export const registerSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .max(128, "Password must be less than 128 characters")
     .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()\-_+=\[\]{}|;:',.<>\/~`])/,
       "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     ),
   weddingDate: z.string().datetime().optional().or(z.literal("")),
@@ -68,7 +68,7 @@ export const resetPasswordSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .max(128, "Password must be less than 128 characters")
     .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()\-_+=\[\]{}|;:',.<>\/~`])/,
       "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     ),
 });
