@@ -156,6 +156,10 @@ docs/project/
 # Grace period tests, cleanup guides, data retention policies, and diagnostic queries
 docs/diagnostics/
 
+# Fix Documentation (Internal - Not for GitHub)
+# Bug fix documentation and resolution tracking
+docs/fixes/
+
 # Individual security/phase docs (if accidentally left in root)
 *PHASE*.md
 *SECURITY*.md
