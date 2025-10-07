@@ -9,6 +9,8 @@ import RenewalModal from "@/components/dashboard/RenewalModal";
 import ContactUpgradeModal from "@/components/dashboard/ContactUpgradeModal";
 import TwoFactorPrompt from "@/components/TwoFactorPrompt";
 import toast from "react-hot-toast";
+import PWAStatus from "@/components/pwa/PWAStatus";
+import { NotificationPermission } from "@/components/pwa";
 
 interface UserData {
   id?: string;
@@ -496,6 +498,15 @@ const OverviewContent = ({
             </div>
           </motion.div>
         ))}
+      </div>
+
+      {/* PWA Features Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        {/* PWA Status Widget */}
+        <PWAStatus showInstallButton={true} showNotificationToggle={true} compact={false} />
+
+        {/* Notification Settings */}
+        <NotificationPermission showTestButton={true} />
       </div>
 
       {/* Quick Actions */}
