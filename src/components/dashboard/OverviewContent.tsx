@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import { useEffect, useState, useCallback } from "react";
 import RenewalModal from "@/components/dashboard/RenewalModal";
 import ContactUpgradeModal from "@/components/dashboard/ContactUpgradeModal";
+import TwoFactorPrompt from "@/components/TwoFactorPrompt";
 import toast from "react-hot-toast";
 
 interface UserData {
@@ -449,6 +450,9 @@ const OverviewContent = ({
           </div>
         </motion.div>
       )}
+
+      {/* Two-Factor Authentication Prompt */}
+      <TwoFactorPrompt onEnableClick={() => setActiveTab?.("security")} />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">

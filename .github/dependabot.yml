@@ -1,0 +1,87 @@
+# Dependabot Configuration
+# Automatically checks for dependency updates and security vulnerabilities
+# Learn more: https://docs.github.com/en/code-security/dependabot
+
+version: 2
+updates:
+  # Enable version updates for npm (Node.js dependencies)
+  - package-ecosystem: "npm"
+    directory: "/" # Location of package.json
+    schedule:
+      interval: "weekly" # Check for updates weekly
+      day: "monday" # Run on Mondays
+      time: "09:00" # At 9 AM UTC
+      timezone: "UTC"
+
+    # Pull request configuration
+    open-pull-requests-limit: 10 # Maximum concurrent PRs
+
+    # Automatically group minor and patch updates
+    groups:
+      # Group all patch updates together
+      patch-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+
+      # Group all minor updates together
+      minor-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+
+    # Commit message configuration
+    commit-message:
+      prefix: "chore(deps)" # Prefix for dependency update commits
+      prefix-development: "chore(deps-dev)" # Prefix for dev dependency updates
+      include: "scope" # Include dependency name in commit message
+
+    # Labels for pull requests
+    labels:
+      - "dependencies" # Add 'dependencies' label
+      - "automated" # Add 'automated' label
+
+    # Reviewers - will be requested to review Dependabot PRs
+    reviewers:
+      - "dextasynergyservices"
+
+    # Assignees - will be assigned to Dependabot PRs
+    assignees:
+      - "eyurenalison" # Ignore specific dependencies (add as needed)
+    ignore:
+      # Example: Ignore major version updates for specific packages
+      # - dependency-name: "next"
+      #   update-types: ["version-update:semver-major"]
+
+      # Temporarily ignore specific versions
+      # - dependency-name: "react"
+      #   versions: ["19.x"]
+
+    # Allow both direct and indirect dependency updates
+    versioning-strategy: auto
+
+    # Increase the version requirements only if needed
+    # Compatible with existing package.json version ranges
+    target-branch: "main" # Change to your default branch if different
+
+  # Enable security updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+
+    commit-message:
+      prefix: "chore(actions)"
+      include: "scope"
+
+    labels:
+      - "github-actions"
+      - "dependencies"
+      - "automated"
+
+    open-pull-requests-limit: 5

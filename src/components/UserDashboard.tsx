@@ -11,6 +11,7 @@ import {
   CheckSquare,
   Eye,
   Calendar,
+  Shield,
   // (DollarSign was removed as it was unused)
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -60,6 +61,12 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
         label: "Gifts/Wishes",
         icon: Gift,
         description: "Share what you'd love to receive",
+      },
+      {
+        id: "security",
+        label: "Security",
+        icon: Shield,
+        description: "Two-factor authentication & account security",
       },
     ],
     []

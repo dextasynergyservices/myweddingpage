@@ -145,10 +145,18 @@ vite.config.ts.timestamp-*
 vercel.json
 
 # Security Implementation Documentation (Internal - Not for GitHub)
-# All Phase 1 & Phase 2 security documentation, guides, and test scripts
+# All Phase 1, 2, 3 security documentation, guides, test scripts, and admin dashboard docs
 docs/security/
 
-# Individual security docs (if accidentally left in root)
+# Project Documentation (Internal - Not for GitHub)
+# Cron jobs, Canva setup, wedding design strategy, and other project-specific docs
+docs/project/
+
+# Diagnostics Documentation (Internal - Not for GitHub)
+# Grace period tests, cleanup guides, data retention policies, and diagnostic queries
+docs/diagnostics/
+
+# Individual security/phase docs (if accidentally left in root)
 *PHASE*.md
 *SECURITY*.md
 *CSRF*.md
@@ -157,5 +165,15 @@ docs/security/
 *ERROR_FIXES*.md
 *TESTING*.md
 *RECAPTCHA*.md
+*ADMIN_DASHBOARD*.md
+*ADMIN_TESTING*.md
+*REDIS*.md
+*UPSTASH*.md
+*UPLOAD*.md
+*DEPENDABOT*.md
+*DEPLOYMENT*.md
+*CRON*.md
+*CANVA*.md
+*WEDDING*.md
 test-security.ps1
 quick-test.ps1

@@ -95,6 +95,73 @@ const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
+        // Check if user has 2FA enabled
+        const twoFactorSecret = await prisma.twoFactorSecret.findUnique({
+          where: { userId: user.id },
+        });
+
+        const has2FA = twoFactorSecret?.enabled ?? false;
+
+        // If 2FA is enabled, we need to verify it
+        // NOTE: NextAuth doesn't support multi-step auth natively
+        // So we'll handle 2FA verification in the JWT callback
+        // The client must call /api/auth/2fa/verify before calling signIn
+
+        if (has2FA) {
+          // Check if 2FA token was provided in credentials
+          const twoFactorToken = (credentials as Record<string, string>).twoFactorToken;
+          const isBackupCode = (credentials as Record<string, string>).isBackupCode === "true";
+
+          if (!twoFactorToken) {
+            // 2FA required but not provided
+            throw new Error("2FA_REQUIRED");
+          }
+
+          // Verify 2FA token
+          const { verify2FAToken, verifyAndConsumeBackupCode } = await import("@/lib/two-factor");
+          const { verifyEmailCode } = await import("@/lib/email-two-factor");
+
+          let isVerified = false;
+          let errorMessage = "";
+
+          if (isBackupCode) {
+            // Backup code verification (works for both TOTP and Email methods)
+            const result = await verifyAndConsumeBackupCode(user.id, twoFactorToken);
+            isVerified = result.success;
+            errorMessage = result.error || "";
+          } else {
+            // Check user's preferred 2FA method
+            const userMethod = user.twoFactorMethod || "totp";
+
+            if (userMethod === "email") {
+              // Verify email 2FA code
+              const result = await verifyEmailCode(user.id, twoFactorToken);
+              isVerified = result.valid;
+              errorMessage = result.error || "";
+            } else {
+              // Verify TOTP token
+              const result = await verify2FAToken(user.id, twoFactorToken);
+              isVerified = result.success;
+              errorMessage = result.error || "";
+            }
+          }
+
+          if (!isVerified) {
+            // Track failed 2FA attempt
+            await prisma.loginAttempt.create({
+              data: {
+                userId: user.id,
+                email: credentials.emailOrPhone,
+                ipAddress: ip,
+                success: false,
+                failureReason: `Invalid 2FA token: ${errorMessage || "Unknown error"}`,
+              },
+            });
+
+            throw new Error(errorMessage || "Invalid 2FA token");
+          }
+        }
+
         // Track successful login and clear lockouts
         await prisma.loginAttempt.create({
           data: {
@@ -120,6 +187,21 @@ const authOptions: NextAuthOptions = {
   ],
   session: { strategy: "jwt" },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // If the URL is a sign in, check the user's role and redirect accordingly
+      // This will be called after successful sign in
+
+      // If url is a callback URL from the sign in page
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      // If it's a relative URL
+      else if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
+      // Default to base URL
+      return baseUrl;
+    },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
