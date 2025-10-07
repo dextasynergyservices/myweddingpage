@@ -85,9 +85,16 @@ export async function PUT(request: Request, { params }: { params: { token: strin
         include: { TaskCategory: true, TaskPriority: true, user: true },
       });
 
-      // 🔔 Notify the task owner (User) via Email + WhatsApp
+      // 🔔 Notify the task owner (User) via Email + WhatsApp + Push Notification
       if (updatedTask.user) {
         try {
+          // Send Push Notification (instant)
+          const { sendNotificationToUser, createTaskNotification } = await import(
+            "@/lib/notifications/notificationService"
+          );
+          const notification = createTaskNotification(updatedTask.title);
+          await sendNotificationToUser(updatedTask.user.id, notification);
+
           // Send Email via Resend
           if (updatedTask.user.email) {
             await resend.emails.send({

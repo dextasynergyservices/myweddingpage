@@ -13,10 +13,30 @@ export async function POST(request: Request, { params }: { params: { token: stri
     const guest = await prisma.guest.update({
       where: { invitationToken: token },
       data: { rsvpStatus: status },
+      include: {
+        user: true, // Include user to send notification
+      },
     });
 
     if (!guest) {
       return NextResponse.json({ error: "Invitation not found" }, { status: 404 });
+    }
+
+    // 🔔 Send push notification to wedding page owner
+    if (guest.user) {
+      try {
+        const { sendNotificationToUser, createRSVPNotification } = await import(
+          "@/lib/notifications/notificationService"
+        );
+        const notification = createRSVPNotification(
+          guest.name,
+          status as "ATTENDING" | "NOT_ATTENDING" | "MAYBE"
+        );
+        await sendNotificationToUser(guest.user.id, notification);
+      } catch (notifyError) {
+        console.error("Failed to send push notification:", notifyError);
+        // Don't fail the RSVP update if notification fails
+      }
     }
 
     return NextResponse.json({ success: true, guest });

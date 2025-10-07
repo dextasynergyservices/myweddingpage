@@ -114,6 +114,7 @@ model User {
   streams       Stream[]
   userTemplates     UserTemplate[]
   galleryMedias GalleryMedia[]
+  pushSubscriptions PushSubscription[]
 }
 
 model Plan {
@@ -650,4 +651,20 @@ model EmailTwoFactorCode {
   @@index([code])
   @@index([expiresAt])
   @@index([used])
+}
+
+model PushSubscription {
+  id              String    @id @default(cuid())
+  userId          String
+  endpoint        String    // Push service endpoint
+  keys            Json      // Subscription keys (p256dh, auth)
+  expirationTime  DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, endpoint])
+  @@index([userId])
+  @@index([endpoint])
 }
