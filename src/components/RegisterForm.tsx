@@ -169,8 +169,18 @@ const RegisterForm = () => {
       const result = await res.json();
 
       if (!res.ok) {
-        // Show specific error from backend (not generic message)
-        toast.error(result.error || result.message || "Registration failed. Please try again.");
+        // Show specific error from backend
+        if (result.details && result.details.length > 0) {
+          // Password validation errors - show all details
+          const errorMessage = result.details.join(". ");
+          const suggestionMessage =
+            result.suggestions && result.suggestions.length > 0
+              ? " Suggestions: " + result.suggestions.join(". ")
+              : "";
+          toast.error(errorMessage + suggestionMessage, { duration: 6000 });
+        } else {
+          toast.error(result.error || result.message || "Registration failed. Please try again.");
+        }
         return;
       }
 
@@ -404,6 +414,10 @@ const RegisterForm = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </span>
             </div>
+            <p className={`text-xs mt-2 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              Password must be at least 8 characters with uppercase, lowercase, number, and special
+              character (@, $, !, %, *, ?, &, #, etc.)
+            </p>
             {formErrors.password && (
               <motion.p
                 initial={{ opacity: 0, y: -10 }}
