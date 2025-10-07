@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@auth/prisma-adapter':
         specifier: ^2.10.0
-        version: 2.10.0(@prisma/client@6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3))(nodemailer@7.0.5)
+        version: 2.10.0(@prisma/client@6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3))(nodemailer@7.0.7)
       '@next-auth/prisma-adapter':
         specifier: ^1.0.7
-        version: 1.0.7(@prisma/client@6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3))(next-auth@4.24.11(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
+        version: 1.0.7(@prisma/client@6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3))(next-auth@4.24.11(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.7)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
       '@paystack/paystack-sdk':
         specifier: ^1.0.1
         version: 1.0.1
@@ -55,13 +55,13 @@ importers:
         version: 15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-auth:
         specifier: ^4.24.11
-        version: 4.24.11(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 4.24.11(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.7)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-cloudinary:
         specifier: ^6.16.0
         version: 6.16.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       nodemailer:
-        specifier: ^7.0.5
-        version: 7.0.5
+        specifier: ^7.0.7
+        version: 7.0.7
       openai:
         specifier: ^5.9.0
         version: 5.9.0(zod@3.25.76)
@@ -2239,8 +2239,8 @@ packages:
       sass:
         optional: true
 
-  nodemailer@7.0.5:
-    resolution: {integrity: sha512-nsrh2lO3j4GkLLXoeEksAMgAOqxOv6QumNRVQTJwKH4nuiww6iC2y7GyANs9kRAxCexg3+lTWM3PZ91iLlVjfg==}
+  nodemailer@7.0.7:
+    resolution: {integrity: sha512-jGOaRznodf62TVzdyhKt/f1Q/c3kYynk8629sgJHpRzGZj01ezbgMMWJSAjHADcwTKxco3B68/R+KHJY2T5BaA==}
     engines: {node: '>=6.0.0'}
 
   oauth-sign@0.9.0:
@@ -2994,7 +2994,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.12
       '@jridgewell/trace-mapping': 0.3.29
 
-  '@auth/core@0.40.0(nodemailer@7.0.5)':
+  '@auth/core@0.40.0(nodemailer@7.0.7)':
     dependencies:
       '@panva/hkdf': 1.2.1
       jose: 6.0.12
@@ -3002,11 +3002,11 @@ snapshots:
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
     optionalDependencies:
-      nodemailer: 7.0.5
+      nodemailer: 7.0.7
 
-  '@auth/prisma-adapter@2.10.0(@prisma/client@6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3))(nodemailer@7.0.5)':
+  '@auth/prisma-adapter@2.10.0(@prisma/client@6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3))(nodemailer@7.0.7)':
     dependencies:
-      '@auth/core': 0.40.0(nodemailer@7.0.5)
+      '@auth/core': 0.40.0(nodemailer@7.0.7)
       '@prisma/client': 6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3)
     transitivePeerDependencies:
       - '@simplewebauthn/browser'
@@ -3332,10 +3332,10 @@ snapshots:
       '@tybys/wasm-util': 0.10.0
     optional: true
 
-  '@next-auth/prisma-adapter@1.0.7(@prisma/client@6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3))(next-auth@4.24.11(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
+  '@next-auth/prisma-adapter@1.0.7(@prisma/client@6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3))(next-auth@4.24.11(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.7)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
     dependencies:
       '@prisma/client': 6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3)
-      next-auth: 4.24.11(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next-auth: 4.24.11(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.7)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
   '@next/env@15.3.5': {}
 
@@ -5031,7 +5031,7 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-auth@4.24.11(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.5)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  next-auth@4.24.11(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.7)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@babel/runtime': 7.27.6
       '@panva/hkdf': 1.2.1
@@ -5046,7 +5046,7 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
       uuid: 8.3.2
     optionalDependencies:
-      nodemailer: 7.0.5
+      nodemailer: 7.0.7
 
   next-cloudinary@6.16.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
     dependencies:
@@ -5081,7 +5081,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  nodemailer@7.0.5: {}
+  nodemailer@7.0.7: {}
 
   oauth-sign@0.9.0: {}
 
