@@ -4,13 +4,23 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 
-// Configure VAPID details
-if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
-  webPush.setVapidDetails(
-    process.env.VAPID_SUBJECT || "mailto:support@myweddingpage.com",
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-  );
+// Track if VAPID is configured
+let vapidConfigured = false;
+
+/**
+ * Configure VAPID details (lazy initialization)
+ */
+function ensureVapidConfigured() {
+  if (vapidConfigured) return;
+
+  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    webPush.setVapidDetails(
+      process.env.VAPID_SUBJECT || "mailto:support@myweddingpage.com",
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+    vapidConfigured = true;
+  }
 }
 
 /**
@@ -18,6 +28,8 @@ if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
  * Subscribe to push notifications
  */
 export async function POST(request: NextRequest) {
+  // Ensure VAPID is configured
+  ensureVapidConfigured();
   try {
     const session = await getServerSession(authOptions);
 

@@ -7,13 +7,24 @@
 import { prisma } from "@/lib/prisma";
 import webPush from "web-push";
 
-// Configure VAPID details
-if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
-  webPush.setVapidDetails(
-    process.env.VAPID_SUBJECT || "mailto:support@myweddingpage.com",
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-  );
+// Track if VAPID is configured to avoid redundant calls
+let vapidConfigured = false;
+
+/**
+ * Configure VAPID details (lazy initialization)
+ * Only called when actually sending notifications
+ */
+function ensureVapidConfigured() {
+  if (vapidConfigured) return;
+
+  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    webPush.setVapidDetails(
+      process.env.VAPID_SUBJECT || "mailto:support@myweddingpage.com",
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+    vapidConfigured = true;
+  }
 }
 
 export interface NotificationPayload {
@@ -37,6 +48,9 @@ export async function sendNotificationToUser(
   payload: NotificationPayload
 ): Promise<{ sent: number; failed: number }> {
   try {
+    // Ensure VAPID is configured before sending
+    ensureVapidConfigured();
+
     // Get user's push subscriptions
     const user = await prisma.user.findUnique({
       where: { id: userId },

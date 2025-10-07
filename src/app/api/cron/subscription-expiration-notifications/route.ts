@@ -2,13 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import webPush from "web-push";
 
-// Configure VAPID details
-if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
-  webPush.setVapidDetails(
-    process.env.VAPID_SUBJECT || "mailto:support@myweddingpage.com",
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-  );
+// Track if VAPID is configured
+let vapidConfigured = false;
+
+/**
+ * Configure VAPID details (lazy initialization)
+ */
+function ensureVapidConfigured() {
+  if (vapidConfigured) return;
+
+  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    webPush.setVapidDetails(
+      process.env.VAPID_SUBJECT || "mailto:support@myweddingpage.com",
+      process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+    vapidConfigured = true;
+  }
 }
 
 /**
@@ -25,6 +35,8 @@ if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
  * - During grace period (daily)
  */
 export async function GET(request: NextRequest) {
+  // Ensure VAPID is configured
+  ensureVapidConfigured();
   try {
     // Verify cron secret
     const authHeader = request.headers.get("authorization");
