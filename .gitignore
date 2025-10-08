@@ -179,8 +179,20 @@ docs/fixes/
 *CRON*.md
 *CANVA*.md
 *WEDDING*.md
+*GUIDE*.md
+*SETUP*.md
+*CHECKLIST*.md
+*AUDIT*.md
+*IMPLEMENTATION*.md
+*SUMMARY*.md
+*STRATEGY*.md
 test-security.ps1
 quick-test.ps1
+test-*.js
 
 # PWA Documentation (not for repo)
 PWA_*.md
+
+# Documentation folder (Internal - Not for GitHub)
+# All internal documentation, guides, and implementation details
+docs/
