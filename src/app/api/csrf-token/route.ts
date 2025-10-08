@@ -9,5 +9,5 @@ import { getCSRFTokenResponse } from "@/lib/csrf";
  * @returns JSON response with CSRF token
  */
 export async function GET() {
-  return getCSRFTokenResponse();
+  return await getCSRFTokenResponse();
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import galleryPreview from "./assets/gallery-preview.jpg";
 import Image from "next/image";
 import MediaModal from "@/components/ui/MediaModal";
 
@@ -35,8 +34,6 @@ interface GalleryProps {
 const Gallery: React.FC<GalleryProps> = (props) => {
   // Extract data from props with fallbacks
   const gallery = props.gallery || [];
-  const images = props.images || [];
-  const videos = props.videos || [];
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>("all");
@@ -77,9 +74,6 @@ const Gallery: React.FC<GalleryProps> = (props) => {
       observer.disconnect();
     };
   }, []);
-
-  // If user has gallery data, use it instead of static images/videos
-  const hasUserGallery = gallery.length > 0;
   // const _displayImages = hasUserGallery ? [] : images;
   // const _displayVideos = hasUserGallery ? [] : videos;
 
@@ -112,59 +106,19 @@ const Gallery: React.FC<GalleryProps> = (props) => {
     setSelectedMedia(null);
   };
 
-  // Create gallery items from props - prioritize user gallery data
-  const galleryItems = [
-    // Add images from gallery prop (user data) - prioritize this
-    ...gallery.map((item) => ({
-      id: item.id,
-      src: item.url,
-      url: item.url, // For MediaModal compatibility
-      alt: `Gallery ${item.id}`,
-      category: item.category,
-      type: item.type,
-      aspectRatio: "aspect-square" as const,
-    })),
-    // Add images from images prop (fallback) - only if no user gallery
-    ...(hasUserGallery
-      ? []
-      : images.map((image, index) => ({
-          id: `image-${index}`,
-          src: image,
-          url: image, // For MediaModal compatibility
-          alt: `Gallery Image ${index + 1}`,
-          category: "during" as const,
-          type: "PHOTO" as const,
-          aspectRatio: "aspect-square" as const,
-        }))),
-    // Add videos from videos prop (fallback) - only if no user gallery
-    // Note: These are just placeholder videos with thumbnails, not real video URLs
-    ...(hasUserGallery
-      ? []
-      : videos.map((video) => ({
-          id: video.id,
-          src: video.thumbnail, // Thumbnail for display
-          url: video.thumbnail, // Using thumbnail as URL since no real video URL is provided
-          alt: video.title,
-          category: video.category,
-          type: "VIDEO" as const,
-          aspectRatio: "aspect-square" as const,
-        }))),
-  ];
+  // Create gallery items from props - ONLY use user gallery data
+  const galleryItems = gallery.map((item) => ({
+    id: item.id,
+    src: item.url,
+    url: item.url, // For MediaModal compatibility
+    alt: `Gallery ${item.id}`,
+    category: item.category,
+    type: item.type,
+    aspectRatio: "aspect-square" as const,
+  }));
 
-  // If no gallery data provided, use default fallback
-  const defaultGalleryItems = [
-    {
-      id: "default-1",
-      src: galleryPreview.src,
-      url: galleryPreview.src, // For MediaModal compatibility
-      alt: "Engagement Photos",
-      category: "before" as const,
-      type: "PHOTO" as const,
-      aspectRatio: "aspect-square" as const,
-    },
-  ];
-
-  const finalGalleryItems = galleryItems.length > 0 ? galleryItems : defaultGalleryItems;
+  // Use user gallery items if available, otherwise empty array (no fallback to template images)
+  const finalGalleryItems = galleryItems;
 
   // Filter items based on active category
   const filteredItems =
@@ -233,83 +187,112 @@ const Gallery: React.FC<GalleryProps> = (props) => {
           </p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => handleCategoryChange(category.id as GalleryCategory)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                activeCategory === category.id
-                  ? "bg-rose-600 text-white shadow-lg"
-                  : "text-gray-600 hover:bg-rose-600 hover:text-white hover:shadow-md"
-              }`}
-            >
-              {category.label}
-            </button>
-          ))}
-        </div>
+        {/* Tab Navigation - Only show if there are gallery items */}
+        {finalGalleryItems.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => handleCategoryChange(category.id as GalleryCategory)}
+                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+                  activeCategory === category.id
+                    ? "bg-rose-600 text-white shadow-lg"
+                    : "text-gray-600 hover:bg-rose-600 hover:text-white hover:shadow-md"
+                }`}
+              >
+                {category.label}
+              </button>
+            ))}
+          </div>
+        )}
 
-        <div className="grid grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {paginatedItems.map((item, index) => (
-            <div
-              key={item.id}
-              className={`group cursor-pointer overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-500 rounded-2xl ${
-                isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
-              }`}
-              style={{ animationDelay: `${index * 100}ms` }}
-              onClick={() => handleMediaClick(item, index)}
-            >
-              <div className={`relative ${item.aspectRatio} overflow-hidden`}>
-                {"type" in item && item.type === "VIDEO" ? (
-                  <div className="w-full h-full flex items-center justify-center bg-black cursor-pointer">
-                    <video className="w-full h-full object-cover">
-                      <source src={item.url} type="video/mp4" />
-                    </video>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center">
-                        <svg
-                          className="w-8 h-8 text-white ml-1"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
+        {/* Empty State - Show when no gallery items */}
+        {finalGalleryItems.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="text-center max-w-md">
+              <svg
+                className="w-24 h-24 mx-auto mb-6 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <h3 className="font-serif text-2xl font-semibold text-gray-800 mb-3">
+                No Gallery Media Yet
+              </h3>
+              <p className="text-gray-600 text-lg">
+                Photos and videos will appear here once they are uploaded to the gallery.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {paginatedItems.map((item, index) => (
+              <div
+                key={item.id}
+                className={`group cursor-pointer overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-500 rounded-2xl ${
+                  isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
+                }`}
+                style={{ animationDelay: `${index * 100}ms` }}
+                onClick={() => handleMediaClick(item, index)}
+              >
+                <div className={`relative ${item.aspectRatio} overflow-hidden`}>
+                  {"type" in item && item.type === "VIDEO" ? (
+                    <div className="w-full h-full flex items-center justify-center bg-black cursor-pointer">
+                      <video className="w-full h-full object-cover">
+                        <source src={item.url} type="video/mp4" />
+                      </video>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center">
+                          <svg
+                            className="w-8 h-8 text-white ml-1"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    width={400}
-                    height={400}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    style={{
-                      transform: `scale(${1 + scrollY * 0.0001})`,
-                    }}
-                  />
-                )}
+                  ) : (
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      width={400}
+                      height={400}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      style={{
+                        transform: `scale(${1 + scrollY * 0.0001})`,
+                      }}
+                    />
+                  )}
 
-                {/* Category Badge */}
-                <div className="absolute top-3 left-3">
-                  <div className="bg-black/50 text-white px-2 py-1 rounded-full text-xs font-medium">
-                    {item.category === "before"
-                      ? "Before Wedding"
-                      : item.category === "during"
-                        ? "During Wedding"
-                        : item.category === "after"
-                          ? "After Wedding"
-                          : ""}
+                  {/* Category Badge */}
+                  <div className="absolute top-3 left-3">
+                    <div className="bg-black/50 text-white px-2 py-1 rounded-full text-xs font-medium">
+                      {item.category === "before"
+                        ? "Before Wedding"
+                        : item.category === "during"
+                          ? "During Wedding"
+                          : item.category === "after"
+                            ? "After Wedding"
+                            : ""}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Pagination Controls */}
-        {totalPages > 1 && (
+        {finalGalleryItems.length > 0 && totalPages > 1 && (
           <div className="flex flex-col items-center mt-16 space-y-4">
             {/* Page Numbers */}
             <div className="flex items-center space-x-2">

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 import {
   Activity,
   TrendingUp,
@@ -47,6 +48,7 @@ interface RateLimitStats {
 
 export default function RateLimitsPage() {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [limits, setLimits] = useState<RateLimit[]>([]);
   const [stats, setStats] = useState<RateLimitStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -88,6 +90,10 @@ export default function RateLimitsPage() {
     try {
       const response = await fetch(`/api/admin/rate-limits/${encodeURIComponent(identifier)}`, {
         method: "DELETE",
+        credentials: "include",
+        headers: {
+          "x-csrf-token": csrfToken || "",
+        },
       });
 
       if (response.ok) {

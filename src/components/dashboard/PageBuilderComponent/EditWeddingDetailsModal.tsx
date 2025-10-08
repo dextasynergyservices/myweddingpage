@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import { uploadToApiWithProgress } from "@/lib/upload-with-progress";
 import { useUploadProgress, UploadProgress } from "@/components/ui/UploadProgress";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 import {
   getStoryComponent,
   getStoryFormFields,
@@ -40,6 +41,7 @@ const EditWeddingDetailsModal = ({
   isSaving,
 }: EditWeddingDetailsModalProps) => {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [formData, setFormData] = useState({
     brideName: "",
     groomName: "",
@@ -193,6 +195,9 @@ const EditWeddingDetailsModal = ({
           onProgress: (loaded, total, speed) => {
             progressHandler.updateProgress(file.name, loaded, speed);
           },
+          headers: {
+            "x-csrf-token": csrfToken || "",
+          },
         });
 
         const uploadResult = data as { secure_url: string };
@@ -214,24 +219,26 @@ const EditWeddingDetailsModal = ({
           try {
             const logoResponse = await fetch("/api/wedding-pages/logo", {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+                "x-csrf-token": csrfToken || "",
+              },
               body: JSON.stringify({
                 logoUrl: imageUrl,
                 logoAlt: formData.logoAlt || "Wedding Logo",
               }),
             });
 
-            console.log("Logo API response status:", logoResponse.status);
-            console.log("Logo API response ok:", logoResponse.ok);
-
             if (logoResponse.ok) {
-              const logoData = await logoResponse.json();
-              console.log("Logo saved directly to WeddingPage via dedicated API:", logoData);
+              await logoResponse.json();
+              console.log("Logo saved successfully to WeddingPage");
             } else {
-              const errorData = await logoResponse.json();
-              console.error("Failed to save logo via dedicated API:", {
+              const errorText = await logoResponse.text();
+              console.error("Failed to save logo:", {
                 status: logoResponse.status,
-                error: errorData,
+                statusText: logoResponse.statusText,
+                error: errorText,
               });
             }
           } catch (error) {
@@ -655,7 +662,11 @@ const EditWeddingDetailsModal = ({
                                   try {
                                     const logoResponse = await fetch("/api/wedding-pages/logo", {
                                       method: "POST",
-                                      headers: { "Content-Type": "application/json" },
+                                      credentials: "include",
+                                      headers: {
+                                        "Content-Type": "application/json",
+                                        "x-csrf-token": csrfToken || "",
+                                      },
                                       body: JSON.stringify({
                                         logoUrl: formData.logoUrl,
                                         logoAlt: newAltText || "Wedding Logo",
@@ -663,7 +674,14 @@ const EditWeddingDetailsModal = ({
                                     });
 
                                     if (logoResponse.ok) {
-                                      console.log("Logo alt text updated in WeddingPage");
+                                      console.log("Logo alt text updated successfully");
+                                    } else {
+                                      const errorText = await logoResponse.text();
+                                      console.error("Failed to update logo alt text:", {
+                                        status: logoResponse.status,
+                                        statusText: logoResponse.statusText,
+                                        error: errorText,
+                                      });
                                     }
                                   } catch (error) {
                                     console.error("Error updating logo alt text:", error);

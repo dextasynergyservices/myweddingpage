@@ -13,6 +13,7 @@ import {
   uploadToCloudinaryWithProgress,
   uploadToApiWithProgress,
 } from "@/lib/upload-with-progress";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 
 // Image compression utility (quality-preserving approach)
 const compressImage = (file: File, maxSizeBytes: number, quality: number = 0.9): Promise<File> => {
@@ -272,6 +273,7 @@ const Gallery = () => {
   const [maxLimits, setMaxLimits] = useState({ photos: 0, videos: 0 });
   const { isDarkMode } = useTheme();
   const { data: session } = useSession();
+  const { token: csrfToken } = useCSRFToken();
 
   // Upload progress tracking
   const { uploads, addUpload, updateProgress, setUploadSuccess, setUploadError, removeUpload } =
@@ -675,8 +677,10 @@ const Gallery = () => {
       // Save metadata to our database
       const metadataResponse = await fetch("/api/gallery/save-metadata", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify({
           files: uploadedFiles,
@@ -733,6 +737,10 @@ const Gallery = () => {
 
       const response = await fetch(`/api/gallery/${id}`, {
         method: "DELETE",
+        credentials: "include",
+        headers: {
+          "x-csrf-token": csrfToken || "",
+        },
       });
 
       console.log(`Delete response status: ${response.status}`);

@@ -496,26 +496,26 @@
 
 .avoidTopSpace {
   padding-top: 0 !important;
-  margin-top: -15rem !important;
+  margin-top: -4rem !important;
 }
 
 /* Responsive adjustments for avoidTopSpace */
 /* Laptop screens (14-16 inches) - Less negative margin to bring content down */
 @media (min-width: 769px) and (max-width: 1600px) {
   .avoidTopSpace {
-    margin-top: -4rem !important;
+    margin-top: 0rem !important;
   }
 }
 
 @media (max-width: 768px) {
   .avoidTopSpace {
-    margin-top: -8rem !important;
+    margin-top: 0rem !important;
   }
 }
 
 @media (max-width: 480px) {
   .avoidTopSpace {
-    margin-top: -15rem !important;
+    margin-top: 0rem !important;
   }
 }
 
