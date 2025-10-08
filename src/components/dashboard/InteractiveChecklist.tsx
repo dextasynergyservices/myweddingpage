@@ -20,6 +20,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import AnimatedSection from "@/components/AnimatedSection";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 
 interface ChecklistItem {
   id: string;
@@ -70,6 +71,7 @@ interface NotificationPayload {
 const InteractiveChecklist = () => {
   const { isDarkMode } = useTheme();
   const { data: session } = useSession();
+  const { token: csrfToken } = useCSRFToken();
 
   const [tasks, setTasks] = useState<ChecklistItem[]>([]);
   const [categories, setCategories] = useState<TaskCategory[]>([]);
@@ -170,8 +172,10 @@ const InteractiveChecklist = () => {
 
       const response = await fetch(`/api/tasks/${identifier}`, {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify({
           completed: updatedTask.completed,
@@ -222,6 +226,10 @@ const InteractiveChecklist = () => {
 
       const response = await fetch(`/api/tasks/${identifier}`, {
         method: "DELETE",
+        credentials: "include",
+        headers: {
+          "x-csrf-token": csrfToken || "",
+        },
       });
 
       if (!response.ok) {
@@ -256,7 +264,11 @@ const InteractiveChecklist = () => {
       try {
         const response = await fetch(endpoint, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "x-csrf-token": csrfToken || "",
+          },
           body: JSON.stringify(payload),
         });
 
@@ -393,8 +405,10 @@ const InteractiveChecklist = () => {
     try {
       const response = await fetch("/api/tasks", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify({
           ...newTask,
@@ -437,8 +451,10 @@ const InteractiveChecklist = () => {
     try {
       const response = await fetch(`/api/tasks/${editingTask.id}`, {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify({
           title: editingTask.title,

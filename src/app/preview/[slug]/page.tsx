@@ -26,12 +26,16 @@ export default async function WeddingPreviewPage({
 
   try {
     // Fetch wedding data for preview (include not-live pages)
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/public/wedding-data/${slug}?preview=true&noIncrement=1`,
-      {
-        cache: "no-store",
-      }
-    );
+    // Use relative URL for server-side fetches to avoid connection issues
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const apiUrl = `${baseUrl}/api/public/wedding-data/${slug}?preview=true&noIncrement=1`;
+
+    const response = await fetch(apiUrl, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       if (response.status === 404) {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 import { Lock, Unlock, AlertCircle, Clock, Shield, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { PageSkeleton } from "@/components/admin/LoadingSkeleton";
@@ -34,6 +35,7 @@ interface LockoutStats {
 
 export default function AccountLockoutsPage() {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [lockouts, setLockouts] = useState<AccountLockout[]>([]);
   const [stats, setStats] = useState<LockoutStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -66,6 +68,10 @@ export default function AccountLockoutsPage() {
     try {
       const response = await fetch(`/api/admin/lockouts/${id}/unlock`, {
         method: "POST",
+        credentials: "include",
+        headers: {
+          "x-csrf-token": csrfToken || "",
+        },
       });
 
       if (response.ok) {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 import {
   Users,
   Search,
@@ -35,6 +36,7 @@ interface User {
 
 export default function UserManagementPage() {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -91,7 +93,11 @@ export default function UserManagementPage() {
     try {
       const response = await fetch(`/api/admin/users/${userId}/role`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify({
           role: currentRole === "ADMIN" ? "USER" : "ADMIN",
         }),
@@ -118,6 +124,10 @@ export default function UserManagementPage() {
     try {
       const response = await fetch(`/api/admin/users/${userId}/reset-2fa`, {
         method: "POST",
+        credentials: "include",
+        headers: {
+          "x-csrf-token": csrfToken || "",
+        },
       });
 
       if (response.ok) {
@@ -139,6 +149,10 @@ export default function UserManagementPage() {
     try {
       const response = await fetch(`/api/admin/users/${userId}/unlock`, {
         method: "POST",
+        credentials: "include",
+        headers: {
+          "x-csrf-token": csrfToken || "",
+        },
       });
 
       if (response.ok) {
@@ -163,6 +177,10 @@ export default function UserManagementPage() {
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: "DELETE",
+        credentials: "include",
+        headers: {
+          "x-csrf-token": csrfToken || "",
+        },
       });
 
       if (response.ok) {

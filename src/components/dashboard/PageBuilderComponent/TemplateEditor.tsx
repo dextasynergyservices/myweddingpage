@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 import { ColorScheme } from "@/lib/component-registry";
 import { SectionType } from "@/generated/prisma";
 import {
@@ -50,6 +51,7 @@ const TemplateEditor = ({
   setActiveTab,
 }: TemplateEditorProps) => {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [selectedSection, setSelectedSection] = useState<{ id: string; type: string } | null>(null);
   const [selectedColorScheme] = useState<ColorScheme | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -206,7 +208,11 @@ const TemplateEditor = ({
       // Save all content to user template
       const response = await fetch("/api/user/templates", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify({
           templateId: selectedTemplate.id,
           content: userTemplate?.content || {},
@@ -279,7 +285,11 @@ const TemplateEditor = ({
 
       const response = await fetch("/api/wedding-pages/publish", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify(publishData),
       });
 
@@ -320,7 +330,11 @@ const TemplateEditor = ({
     try {
       const response = await fetch("/api/wedding-pages/update-live", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify({
           templateId: selectedTemplate.id,
         }),
@@ -352,7 +366,11 @@ const TemplateEditor = ({
     try {
       const response = await fetch("/api/wedding-pages/delete", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify({
           brideName: deleteConfirmation.brideName,
           groomName: deleteConfirmation.groomName,

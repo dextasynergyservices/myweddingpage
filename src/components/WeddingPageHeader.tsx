@@ -173,7 +173,7 @@ export default function WeddingPageHeader({
             {/* Couple Names */}
             <div className="flex items-center space-x-1">
               <span className="text-lg md:text-xl font-bold text-gray-800">
-                {groomName} & {brideName}
+                {brideName} & {groomName}
               </span>
             </div>
           </motion.div>
