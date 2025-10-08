@@ -181,3 +181,6 @@ docs/fixes/
 *WEDDING*.md
 test-security.ps1
 quick-test.ps1
+
+# PWA Documentation (not for repo)
+PWA_*.md

@@ -22,7 +22,9 @@
     "admin:promote": "tsx scripts/admin-manager.ts promote",
     "admin:demote": "tsx scripts/admin-manager.ts demote",
     "admin:list": "tsx scripts/admin-manager.ts list",
-    "admin:check": "tsx scripts/admin-manager.ts check"
+    "admin:check": "tsx scripts/admin-manager.ts check",
+    "generate:icons": "node scripts/generate-icons.js",
+    "generate:vapid": "node scripts/generate-vapid-keys.js"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -54,6 +56,7 @@
     "next": "15.3.5",
     "next-auth": "^4.24.11",
     "next-cloudinary": "^6.16.0",
+    "next-pwa": "5.6.0",
     "next-themes": "^0.4.6",
     "nodemailer": "^7.0.5",
     "openai": "^5.9.0",
@@ -79,6 +82,7 @@
     "tailwind-variants": "^2.1.0",
     "twilio": "^5.8.0",
     "uuid": "^11.1.0",
+    "web-push": "^3.6.7",
     "zod": "^4.1.11"
   },
   "devDependencies": {
@@ -95,12 +99,14 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/redis": "^4.0.11",
     "@types/uuid": "^10.0.0",
+    "@types/web-push": "^3.6.4",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
     "prettier": "^3.6.2",
     "prisma": "^6.12.0",
+    "sharp": "^0.34.4",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
