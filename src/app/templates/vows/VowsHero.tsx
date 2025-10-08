@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { MapPin, Calendar } from "lucide-react";
 import { useScrollAnimation } from "@/app/templates/vows/hooks/useScrollAnimation";
 import { LiveStreamHero } from "@/components/LiveStreamHero";
+import { formatWeddingDate } from "@/lib/dateUtils";
 import styles from "@/styles/templates/vows.module.css";
 
 interface HeroSectionProps {
@@ -86,50 +88,15 @@ export const HeroSection = (props: HeroSectionProps) => {
   // Extract data from props (prioritize direct props over weddingData object)
   const brideName = props.brideName || props.weddingData?.brideName || "Bride";
   const groomName = props.groomName || props.weddingData?.groomName || "Groom";
-  const venue = props.venue || props.weddingData?.venue || "Wedding Venue";
+  const venue = props.venue || props.weddingData?.venue || "";
   // const _description =
   //   props.description ||
   //   props.weddingData?.welcomeMessage ||
   //   "Join us as we celebrate our love story";
   const dateValue = props.weddingDate || props.weddingData?.weddingDate;
 
-  console.log("VowsHero - Received dateValue:", dateValue);
-  console.log("VowsHero - Type of dateValue:", typeof dateValue);
-
-  // Check if the date is already formatted (contains month name like "October")
-  const isAlreadyFormatted =
-    typeof dateValue === "string" &&
-    (dateValue.includes("January") ||
-      dateValue.includes("February") ||
-      dateValue.includes("March") ||
-      dateValue.includes("April") ||
-      dateValue.includes("May") ||
-      dateValue.includes("June") ||
-      dateValue.includes("July") ||
-      dateValue.includes("August") ||
-      dateValue.includes("September") ||
-      dateValue.includes("October") ||
-      dateValue.includes("November") ||
-      dateValue.includes("December"));
-
-  let formattedDate;
-  if (isAlreadyFormatted) {
-    // Date is already formatted, use it directly
-    formattedDate = dateValue;
-    console.log("VowsHero - Using already formatted date:", formattedDate);
-  } else {
-    // Date needs to be formatted
-    const weddingDate = dateValue ? new Date(dateValue) : new Date();
-    console.log("VowsHero - Parsed weddingDate:", weddingDate);
-    console.log("VowsHero - Is valid date:", !isNaN(weddingDate.getTime()));
-
-    formattedDate = weddingDate.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
-    console.log("VowsHero - Final formattedDate:", formattedDate);
-  }
+  // Use timezone-agnostic date formatting
+  const formattedDate = formatWeddingDate(dateValue);
 
   const heroImage = props.heroImage || "/templates/vows/assets/hero-wedding.jpg";
   const { ref } = useScrollAnimation(0.3);
@@ -189,17 +156,39 @@ export const HeroSection = (props: HeroSectionProps) => {
       >
         <div className={styles.containerWedding}>
           <h1
-            className={`${styles.fontScript} text-6xl md:text-8xl lg:text-9xl mb-4 ${styles.animateFadeUp}`}
+            className={`${styles.fontScript} text-4xl md:text-6xl lg:text-7xl mb-4 ${styles.animateFadeUp}`}
           >
             {brideName} & {groomName}
           </h1>
           <div className="h-px w-32 bg-white mx-auto mb-6 opacity-80" />
-          <p className={`${styles.fontHeading} text-xl md:text-2xl lg:text-3xl mb-4 tracking-wide`}>
-            {props.subtitle || "Together Forever"}
-          </p>
-          <p className={`${styles.fontBody} text-lg md:text-xl text-gray-200 mb-8`}>
-            {formattedDate} • {venue}
-          </p>
+
+          {/* Date - icon above text on mobile */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 mb-6">
+            <Calendar className="w-5 h-5 md:w-6 md:h-6 text-gray-200" />
+            <p className={`${styles.fontBody} text-lg md:text-xl text-gray-200 text-center`}>
+              {formattedDate}
+            </p>
+          </div>
+
+          {/* Venue - icon above text on mobile for long venues */}
+          {venue && (
+            <div className="flex flex-col items-center justify-center mb-8 text-gray-200 max-w-full px-4">
+              <MapPin className="w-5 h-5 md:w-6 md:h-6 mb-2 md:hidden" />
+              <div className="hidden md:flex items-center gap-3">
+                <MapPin className="w-5 h-5 md:w-6 md:h-6" />
+                <p
+                  className={`${styles.fontBody} text-lg md:text-xl text-center md:text-left break-words max-w-full`}
+                >
+                  {venue}
+                </p>
+              </div>
+              <p
+                className={`md:hidden ${styles.fontBody} text-lg md:text-xl text-center break-words max-w-full`}
+              >
+                {venue}
+              </p>
+            </div>
+          )}
           <div className={styles.animatePulseGentle}>
             <button
               onClick={handleScrollToStory}

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Users, CheckCircle, XCircle, Clock, Edit, Trash2, Search, UserPlus } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -78,6 +79,7 @@ const AlertDialog = ({
 
 const GuestManagement = () => {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showAddGuest, setShowAddGuest] = useState(false);
@@ -100,6 +102,14 @@ const GuestManagement = () => {
   });
   const [guests, setGuests] = useState<Guest[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Configure axios with CSRF token
+  useEffect(() => {
+    if (csrfToken) {
+      axios.defaults.withCredentials = true;
+      axios.defaults.headers.common["x-csrf-token"] = csrfToken;
+    }
+  }, [csrfToken]);
 
   // Fetch guests (simplified without react-query)
   React.useEffect(() => {
@@ -235,6 +245,10 @@ const GuestManagement = () => {
 
           const response = await fetch("/api/upload-image", {
             method: "POST",
+            credentials: "include",
+            headers: {
+              "x-csrf-token": csrfToken || "",
+            },
             body: uploadFormData,
           });
 

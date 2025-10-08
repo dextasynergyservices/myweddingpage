@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 import Image from "next/image";
 import { Search, X, Check } from "lucide-react";
 import TemplatePreviewModal from "@/components/TemplatePreviewModal";
@@ -75,6 +76,7 @@ const TemplateSelection = ({
   userTemplate,
 }: TemplateSelectionProps) => {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [filteredTemplates, setFilteredTemplates] = useState<Template[]>([]);
   const [templateToPreview, setTemplateToPreview] = useState<Template | null>(null);
@@ -417,7 +419,11 @@ const TemplateSelection = ({
 
           const res = await fetch("/api/templates/delete", {
             method: "DELETE",
-            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              "x-csrf-token": csrfToken || "",
+            },
             body: JSON.stringify({ templateId: pendingDeleteTemplateId }),
           });
 

@@ -10,6 +10,7 @@ import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
 import { Template, UserTemplate, WeddingPage, UserPlan } from "@/types/wedding";
 import { UserData } from "@/types/user-data";
 import toast from "react-hot-toast";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 
 interface TemplatePreviewModalProps {
   isOpen: boolean;
@@ -35,7 +36,9 @@ const TemplatePreviewModal = ({
   isSelect,
 }: TemplatePreviewModalProps) => {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken, loading: csrfLoading } = useCSRFToken();
   const [isSelecting, setIsSelecting] = useState(false);
+
   const [previewData, setPreviewData] = useState<UserData | null>(null);
   const [loadingData, setLoadingData] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -87,7 +90,11 @@ const TemplatePreviewModal = ({
     try {
       const res = await fetch("/api/templates/select", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include", // Important: send cookies with request
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify({ templateId: template.id }),
       });
 
@@ -118,7 +125,11 @@ const TemplatePreviewModal = ({
     try {
       const res = await fetch("/api/templates/delete", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include", // Important: send cookies with request
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify({ templateId: template.id }),
       });
 
@@ -285,17 +296,21 @@ const TemplatePreviewModal = ({
             // show Select button for preview mode
             <div className="flex-1">
               <motion.button
-                whileHover={{ scale: isSelecting || isAnotherTemplateSelected ? 1 : 1.02 }}
-                whileTap={{ scale: isSelecting || isAnotherTemplateSelected ? 1 : 0.98 }}
+                whileHover={{
+                  scale: isSelecting || isAnotherTemplateSelected || csrfLoading ? 1 : 1.02,
+                }}
+                whileTap={{
+                  scale: isSelecting || isAnotherTemplateSelected || csrfLoading ? 1 : 0.98,
+                }}
                 onClick={handleSelectTemplate}
-                disabled={isSelecting || isAnotherTemplateSelected}
+                disabled={isSelecting || isAnotherTemplateSelected || csrfLoading || !csrfToken}
                 className={`w-full text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors ${
-                  isSelecting || isAnotherTemplateSelected
+                  isSelecting || isAnotherTemplateSelected || csrfLoading || !csrfToken
                     ? "bg-indigo-400 text-white cursor-not-allowed opacity-70"
                     : "bg-indigo-600 hover:bg-indigo-700 text-white"
                 }`}
               >
-                {isSelecting ? "Selecting..." : "Select Template"}
+                {csrfLoading ? "Loading..." : isSelecting ? "Selecting..." : "Select Template"}
               </motion.button>
 
               {isAnotherTemplateSelected && (

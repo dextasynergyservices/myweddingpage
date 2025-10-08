@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useScrollAnimation, useScrollScale } from "@/app/templates/vows/hooks/useScrollAnimation";
-import galleryImage1 from "@/app/templates/vows/assets/gallery-1.jpg";
 // import galleryImage2 from "@/app/templates/vows/assets/gallery-2.jpg";
 import Image from "next/image";
 import MediaModal from "@/components/ui/MediaModal";
@@ -45,14 +44,9 @@ export const GallerySection = (props: GallerySectionProps) => {
   // Extract data from props with fallbacks
   // Prioritize user's gallery data over static template data
   const gallery = props.gallery || [];
-  const images = props.images || [];
-  const videos = props.videos || [];
   const title = props.title || "Our Gallery";
   const description =
     props.description || "Capturing the beautiful moments of our journey together";
-
-  // If user has gallery data, use it instead of static images/videos
-  const hasUserGallery = gallery.length > 0;
   // const _displayImages = hasUserGallery ? [] : images;
   // const _displayVideos = hasUserGallery ? [] : videos;
   // const _fallbackImages = props.fallbackImages || [galleryImage1, galleryImage2];
@@ -103,59 +97,19 @@ export const GallerySection = (props: GallerySectionProps) => {
     setSelectedMedia(null);
   };
 
-  // Create gallery items from props - prioritize user gallery data
-  const galleryItems = [
-    // Add images from gallery prop (user data) - prioritize this
-    ...gallery.map((item) => ({
-      id: item.id,
-      src: item.url,
-      url: item.url, // For MediaModal compatibility
-      alt: `Gallery ${item.id}`,
-      category: item.category,
-      type: item.type,
-      aspectRatio: "aspect-square" as const,
-    })),
-    // Add images from images prop (fallback) - only if no user gallery
-    ...(hasUserGallery
-      ? []
-      : images.map((image, index) => ({
-          id: `image-${index}`,
-          src: image,
-          url: image, // For MediaModal compatibility
-          alt: `Gallery Image ${index + 1}`,
-          category: "during" as const,
-          type: "PHOTO" as const,
-          aspectRatio: "aspect-square" as const,
-        }))),
-    // Add videos from videos prop (fallback) - only if no user gallery
-    // Note: These are just placeholder videos with thumbnails, not real video URLs
-    ...(hasUserGallery
-      ? []
-      : videos.map((video) => ({
-          id: video.id,
-          src: video.thumbnail, // Thumbnail for display
-          url: video.thumbnail, // Using thumbnail as URL since no real video URL is provided
-          alt: video.title,
-          category: video.category,
-          type: "VIDEO" as const,
-          aspectRatio: "aspect-square" as const,
-        }))),
-  ];
+  // Create gallery items from props - ONLY use user gallery data
+  const galleryItems = gallery.map((item) => ({
+    id: item.id,
+    src: item.url,
+    url: item.url, // For MediaModal compatibility
+    alt: `Gallery ${item.id}`,
+    category: item.category,
+    type: item.type,
+    aspectRatio: "aspect-square" as const,
+  }));
 
-  // If no gallery data provided, use default fallback
-  const defaultGalleryItems = [
-    {
-      id: "default-1",
-      src: galleryImage1,
-      url: galleryImage1, // For MediaModal compatibility
-      alt: "Engagement ring ceremony",
-      category: "before" as const,
-      type: "PHOTO" as const,
-      aspectRatio: "aspect-[3/4]" as const,
-    },
-  ];
-
-  const finalGalleryItems = galleryItems.length > 0 ? galleryItems : defaultGalleryItems;
+  // Use user gallery items if available, otherwise empty array (no fallback to template images)
+  const finalGalleryItems = galleryItems;
 
   // Filter items based on active category
   const filteredItems =
@@ -227,92 +181,120 @@ export const GallerySection = (props: GallerySectionProps) => {
           </p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex flex-wrap text-black/80 justify-center gap-2 mb-12">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => handleCategoryChange(category.id as GalleryCategory)}
-              className={`px-6 py-3 rounded-full text-black/80 font-medium transition-all duration-300 ${
-                activeCategory === category.id
-                  ? `${styles.bgAccent} text-black/80 shadow-lg`
-                  : `${styles.textMuted} hover:text-black/80 hover:shadow-md`
-              }`}
-            >
-              {category.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Dynamic Gallery Grid */}
-        <div className="grid grid-cols-3 gap-6 md:gap-8">
-          {paginatedItems.map((item, index) => (
-            <div
-              key={item.id}
-              className={`transition-all duration-1000 ${
-                isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-              }`}
-              style={{
-                transitionDelay: `${index * 200}ms`,
-                transform:
-                  index === 0
-                    ? `scale(${gallery1Scale})`
-                    : index === filteredItems.length - 1
-                      ? `scale(${gallery2Scale})`
-                      : "scale(1)",
-              }}
-            >
-              <div
-                className="relative group overflow-hidden rounded-lg shadow-soft hover:shadow-elegant transition-all duration-300 cursor-pointer"
-                onClick={() => handleMediaClick(item, index)}
+        {/* Tab Navigation - Only show if there are gallery items */}
+        {finalGalleryItems.length > 0 && (
+          <div className="flex flex-wrap text-black/80 justify-center gap-2 mb-12">
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => handleCategoryChange(category.id as GalleryCategory)}
+                className={`px-6 py-3 rounded-full text-black/80 font-medium transition-all duration-300 ${
+                  activeCategory === category.id
+                    ? `${styles.bgAccent} text-black/80 shadow-lg`
+                    : `${styles.textMuted} hover:text-black/80 hover:shadow-md`
+                }`}
               >
-                <div className={`${item.aspectRatio} overflow-hidden`}>
-                  {"type" in item && item.type === "VIDEO" ? (
-                    <div className="w-full h-full flex items-center justify-center bg-black cursor-pointer">
-                      <video className="w-full h-full object-cover">
-                        <source src={item.url} type="video/mp4" />
-                      </video>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center">
-                          <svg
-                            className="w-8 h-8 text-white ml-1"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
+                {category.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Empty State - Show when no gallery items */}
+        {finalGalleryItems.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="text-center max-w-md">
+              <svg
+                className="w-24 h-24 mx-auto mb-6 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <h3 className="font-serif text-2xl font-semibold text-black/80 mb-3">
+                No Gallery Media Yet
+              </h3>
+              <p className="text-black/60 text-lg">
+                Photos and videos will appear here once they are uploaded to the gallery.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-6 md:gap-8">
+            {paginatedItems.map((item, index) => (
+              <div
+                key={item.id}
+                className={`transition-all duration-1000 ${
+                  isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                }`}
+                style={{
+                  transitionDelay: `${index * 200}ms`,
+                  transform:
+                    index === 0
+                      ? `scale(${gallery1Scale})`
+                      : index === filteredItems.length - 1
+                        ? `scale(${gallery2Scale})`
+                        : "scale(1)",
+                }}
+              >
+                <div
+                  className="relative group overflow-hidden rounded-lg shadow-soft hover:shadow-elegant transition-all duration-300 cursor-pointer"
+                  onClick={() => handleMediaClick(item, index)}
+                >
+                  <div className={`${item.aspectRatio} overflow-hidden`}>
+                    {"type" in item && item.type === "VIDEO" ? (
+                      <div className="w-full h-full flex items-center justify-center bg-black cursor-pointer">
+                        <video className="w-full h-full object-cover">
+                          <source src={item.url} type="video/mp4" />
+                        </video>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center">
+                            <svg
+                              className="w-8 h-8 text-white ml-1"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ) : (
-                    <Image
-                      src={item.src}
-                      alt={item.alt}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      width={600}
-                      height={400}
-                    />
-                  )}
-                </div>
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                    ) : (
+                      <Image
+                        src={item.src}
+                        alt={item.alt}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        width={600}
+                        height={400}
+                      />
+                    )}
+                  </div>
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
 
-                {/* Category Badge */}
-                <div className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {item.category === "before"
-                    ? "Before Wedding"
-                    : item.category === "during"
-                      ? "During Wedding"
-                      : item.category === "after"
-                        ? "After Wedding"
-                        : ""}
+                  {/* Category Badge */}
+                  <div className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {item.category === "before"
+                      ? "Before Wedding"
+                      : item.category === "during"
+                        ? "During Wedding"
+                        : item.category === "after"
+                          ? "After Wedding"
+                          : ""}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Pagination Controls */}
-        {totalPages > 1 && (
+        {finalGalleryItems.length > 0 && totalPages > 1 && (
           <div className="flex flex-col items-center mt-16 space-y-4">
             {/* Page Numbers */}
             <div className="flex items-center space-x-2">

@@ -21,6 +21,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 
 interface StreamConfig {
   id: string;
@@ -42,6 +43,7 @@ interface Viewer {
 
 const LiveStreaming = () => {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamConfigs, setStreamConfigs] = useState<StreamConfig[]>([]);
   const [viewers, setViewers] = useState<Viewer[]>([]);
@@ -113,6 +115,10 @@ const LiveStreaming = () => {
       if (!isStreaming) {
         const response = await fetch("/api/streams/start", {
           method: "POST",
+          credentials: "include",
+          headers: {
+            "x-csrf-token": csrfToken || "",
+          },
         });
 
         if (response.ok) {
@@ -125,6 +131,10 @@ const LiveStreaming = () => {
       } else {
         const response = await fetch("/api/streams/stop", {
           method: "POST",
+          credentials: "include",
+          headers: {
+            "x-csrf-token": csrfToken || "",
+          },
         });
 
         if (response.ok) {
@@ -148,8 +158,10 @@ const LiveStreaming = () => {
       setIsLoading(true);
       const response = await fetch(`/api/streams/${streamId}`, {
         method: "PATCH",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify({ isActive: !currentlyActive }),
       });
@@ -175,6 +187,10 @@ const LiveStreaming = () => {
       setIsLoading(true);
       const response = await fetch(`/api/streams/${streamId}`, {
         method: "DELETE",
+        credentials: "include",
+        headers: {
+          "x-csrf-token": csrfToken || "",
+        },
       });
 
       if (response.ok) {
@@ -206,8 +222,10 @@ const LiveStreaming = () => {
       setIsLoading(true);
       const response = await fetch("/api/streams", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify(newStream),
       });
@@ -241,8 +259,10 @@ const LiveStreaming = () => {
       setIsLoading(true);
       const response = await fetch(`/api/streams/${editingStream.id}`, {
         method: "PATCH",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify(newStream),
       });

@@ -89,10 +89,10 @@ const nextConfig: NextConfig = {
         // Apply security headers to all routes
         source: "/:path*",
         headers: [
-          // Prevent clickjacking attacks
+          // Prevent clickjacking attacks (allow same-origin for preview modal)
           {
             key: "X-Frame-Options",
-            value: "DENY",
+            value: "SAMEORIGIN",
           },
           // Prevent MIME type sniffing
           {
@@ -129,7 +129,7 @@ const nextConfig: NextConfig = {
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
-              "frame-ancestors 'none'",
+              "frame-ancestors 'self'",
               "upgrade-insecure-requests",
             ].join("; "),
           },

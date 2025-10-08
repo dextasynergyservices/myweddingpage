@@ -390,7 +390,6 @@
 
 .heroTitle {
   font-family: var(--bloom-font-heading);
-  font-size: 3.75rem;
   font-weight: 700;
   color: white !important;
   margin-bottom: 1.5rem;
@@ -413,7 +412,6 @@
 
 .heroDate {
   font-family: var(--bloom-font-heading);
-  font-size: 1.5rem;
   color: white !important;
   font-weight: 500;
 }

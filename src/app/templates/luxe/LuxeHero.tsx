@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Heart } from "lucide-react";
+import { Heart, MapPin, Calendar } from "lucide-react";
 import { LiveStreamHero } from "@/components/LiveStreamHero";
+import { formatWeddingDate } from "@/lib/dateUtils";
 import styles from "@/styles/templates/luxe.module.css";
 import Image from "next/image";
 
@@ -86,47 +87,25 @@ export default function Hero(props: HeroProps) {
   // Extract data from props (prioritize direct props over weddingData object)
   const brideName = props.brideName || props.weddingData?.brideName || "Bride";
   const groomName = props.groomName || props.weddingData?.groomName || "Groom";
-  const venue = props.venue || props.weddingData?.venue || "Venue";
+  const venue = props.venue || props.weddingData?.venue || "";
   // const _description =
   //   props.description ||
   //   props.weddingData?.welcomeMessage ||
   //   "Join us as we celebrate our love story and begin our journey together as one.";
-  const dateValue = props.weddingDate || props.weddingData?.weddingDate || "Date";
+  const dateValue = props.weddingDate || props.weddingData?.weddingDate;
 
-  // Check if the date is already formatted (contains month name like "October")
-  const isAlreadyFormatted =
-    typeof dateValue === "string" &&
-    (dateValue.includes("January") ||
-      dateValue.includes("February") ||
-      dateValue.includes("March") ||
-      dateValue.includes("April") ||
-      dateValue.includes("May") ||
-      dateValue.includes("June") ||
-      dateValue.includes("July") ||
-      dateValue.includes("August") ||
-      dateValue.includes("September") ||
-      dateValue.includes("October") ||
-      dateValue.includes("November") ||
-      dateValue.includes("December"));
-
-  const weddingDate = isAlreadyFormatted
-    ? dateValue
-    : dateValue && dateValue !== "Date"
-      ? new Date(dateValue).toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-          year: "numeric",
-        })
-      : "Date";
+  // Use timezone-agnostic date formatting
+  const weddingDate = formatWeddingDate(dateValue);
   const heroImage =
     props.heroImage ||
     "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=800";
   const [imageScale, setImageScale] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = useCallback(() => {
-    if (imageRef.current) {
+    if (imageRef.current && !isMobile) {
       const rect = imageRef.current.getBoundingClientRect();
       const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
 
@@ -136,11 +115,18 @@ export default function Hero(props: HeroProps) {
         setImageScale(1 + rate * 0.001);
       }
     }
-  }, []);
+  }, [isMobile]);
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [handleScroll]);
 
   const handleScrollToStory = () => {
@@ -228,9 +214,30 @@ export default function Hero(props: HeroProps) {
           <p className="font-['Playfair_Display'] text-xl md:text-2xl lg:text-5xl mb-4 tracking-wide text-rose-700">
             Together Forever
           </p>
-          <p className="font-['Inter'] text-lg md:text-xl text-rose-600 mb-8">
-            {weddingDate} • {venue}
-          </p>
+
+          {/* Date - icon above text on mobile */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 mb-4">
+            <Calendar className="w-5 h-5 md:w-6 md:h-6 text-rose-600" />
+            <p className="font-['Inter'] text-lg md:text-xl text-rose-600 text-center">
+              {weddingDate}
+            </p>
+          </div>
+
+          {/* Venue - icon above text on mobile for long venues */}
+          {venue && (
+            <div className="flex flex-col items-center justify-center mb-8 text-rose-600 max-w-full px-4">
+              <MapPin className="w-5 h-5 md:w-6 md:h-6 mb-2 md:hidden" />
+              <div className="hidden md:flex items-center gap-3">
+                <MapPin className="w-5 h-5 md:w-6 md:h-6" />
+                <p className="font-['Inter'] text-lg md:text-xl text-center md:text-left break-words max-w-full">
+                  {venue}
+                </p>
+              </div>
+              <p className="md:hidden font-['Inter'] text-lg md:text-xl text-center break-words max-w-full">
+                {venue}
+              </p>
+            </div>
+          )}
           <div className="animate-pulse">
             <button
               className="font-['Inter'] text-sm md:text-lg tracking-widest uppercase bg-white/20 backdrop-blur-sm border border-rose-200/30 px-8 py-3 rounded-lg hover:bg-white/30 transition-all duration-1000 text-rose-700"

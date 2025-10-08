@@ -5,6 +5,7 @@ import { Gift, Mail, X, User, Edit, Trash2, ChevronDown, Link, CreditCard } from
 import { useTheme } from "@/contexts/ThemeContext";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 
 type GiftItem = {
   id: string;
@@ -53,6 +54,7 @@ interface GiftRegistrationProps {
 
 const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps) => {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [activeTab, setActiveTab] = useState<"registry" | "cash" | "received" | "comments">(
     initialSubTab
   );
@@ -154,8 +156,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
     try {
       const response = await fetch("/api/comments", {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify({ id, approved: !comments.find((w) => w.id === id)?.approved }),
       });
@@ -195,8 +199,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
     try {
       const response = await fetch("/api/gifts", {
         method: "DELETE",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify({ id }),
       });
@@ -215,8 +221,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
     try {
       const response = await fetch("/api/bank-details", {
         method: "DELETE",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify({ id }),
       });
@@ -248,6 +256,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
 
           const uploadResponse = await fetch("/api/upload-image", {
             method: "POST",
+            credentials: "include",
+            headers: {
+              "x-csrf-token": csrfToken || "",
+            },
             body: formData,
           });
 
@@ -282,8 +294,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
 
       const response = await fetch(endpoint, {
         method,
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify(
           isUpdate
@@ -330,8 +344,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
     try {
       const response = await fetch("/api/bank-details", {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify(editAccount),
       });
@@ -386,8 +402,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
 
       const response = await fetch("/api/gifts", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify(newGift),
       });
@@ -412,8 +430,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
     try {
       const response = await fetch("/api/bank-details", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify(newAccount),
       });
@@ -475,8 +495,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
     try {
       const response = await fetch("/api/received-gifts/thank-all", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify({ message: thankAllMessage }),
       });

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useCSRFToken } from "@/hooks/useCSRFToken";
 import TemplatePreviewModal from "@/components/TemplatePreviewModal";
 import TemplateSelection from "@/components/dashboard/PageBuilderComponent/TemplateFetch";
 import TemplateEditor from "@/components/dashboard/PageBuilderComponent/TemplateEditor";
@@ -13,6 +14,7 @@ interface WeddingPageBuilderProps {
 
 const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
   const { isDarkMode } = useTheme();
+  const { token: csrfToken } = useCSRFToken();
   const [isSelect, setIsSelect] = useState(false);
   const [, setTemplates] = useState<Template[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
@@ -121,7 +123,11 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
       // Save to backend using the new API
       const response = await fetch("/api/template-sections/edit", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "x-csrf-token": csrfToken || "",
+        },
         body: JSON.stringify({
           templateId: selectedTemplate.id,
           sectionId,

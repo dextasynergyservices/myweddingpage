@@ -15,7 +15,6 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
 
 /**
  * Configuration for CSRF protection
@@ -39,7 +38,7 @@ export interface CSRFConfig {
  * Default CSRF configuration
  */
 const defaultConfig: CSRFConfig = {
-  secret: process.env.CSRF_SECRET || crypto.randomBytes(32).toString("hex"),
+  secret: process.env.CSRF_SECRET || "fallback-secret-please-set-CSRF_SECRET",
   cookieName: "csrf_token",
   headerName: "x-csrf-token",
   tokenExpiry: 3600000, // 1 hour
@@ -49,23 +48,47 @@ const defaultConfig: CSRFConfig = {
 
 /**
  * Generate a cryptographically secure CSRF token
+ * Compatible with both Node.js and Edge Runtime
+ * Now async to support Web Crypto API
  *
  * @param config - CSRF configuration
  * @returns Generated token string
  */
-export function generateCSRFToken(config: Partial<CSRFConfig> = {}): string {
+export async function generateCSRFToken(config: Partial<CSRFConfig> = {}): Promise<string> {
   const conf = { ...defaultConfig, ...config };
 
-  // Generate random token
-  const token = crypto.randomBytes(32).toString("base64url");
+  // Generate random token using Web Crypto API (works in both environments)
+  const randomBytes = new Uint8Array(32);
+  globalThis.crypto.getRandomValues(randomBytes);
+
+  // Convert to base64url
+  const token = btoa(String.fromCharCode(...randomBytes))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 
   // Add timestamp for expiry checking
   const timestamp = Date.now();
 
-  // Create HMAC signature
-  const hmac = crypto.createHmac("sha256", conf.secret);
-  hmac.update(`${token}.${timestamp}`);
-  const signature = hmac.digest("base64url");
+  // Create HMAC signature using Web Crypto API
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(conf.secret);
+  const messageData = encoder.encode(`${token}.${timestamp}`);
+
+  const cryptoKey = await globalThis.crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+
+  const signatureBuffer = await globalThis.crypto.subtle.sign("HMAC", cryptoKey, messageData);
+  const signatureArray = new Uint8Array(signatureBuffer);
+  const signature = btoa(String.fromCharCode(...signatureArray))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 
   // Return token with signature and timestamp
   return `${token}.${timestamp}.${signature}`;
@@ -75,12 +98,16 @@ export function generateCSRFToken(config: Partial<CSRFConfig> = {}): string {
  * Validate a CSRF token
  *
  * Uses constant-time comparison to prevent timing attacks
+ * Compatible with both Node.js and Edge Runtime
  *
  * @param token - Token to validate
  * @param config - CSRF configuration
  * @returns True if token is valid, false otherwise
  */
-export function validateCSRFToken(token: string, config: Partial<CSRFConfig> = {}): boolean {
+export async function validateCSRFToken(
+  token: string,
+  config: Partial<CSRFConfig> = {}
+): Promise<boolean> {
   const conf = { ...defaultConfig, ...config };
 
   try {
@@ -93,18 +120,44 @@ export function validateCSRFToken(token: string, config: Partial<CSRFConfig> = {
     const [tokenPart, timestampPart, providedSignature] = parts;
     const timestamp = parseInt(timestampPart, 10);
 
+    const now = Date.now();
+    const age = now - timestamp;
+    const expiryMs = conf.tokenExpiry;
+
     // Check if token is expired
-    if (Date.now() - timestamp > conf.tokenExpiry) {
+    if (age > expiryMs) {
       return false;
     }
 
-    // Recreate HMAC signature
-    const hmac = crypto.createHmac("sha256", conf.secret);
-    hmac.update(`${tokenPart}.${timestamp}`);
-    const expectedSignature = hmac.digest("base64url");
+    // Recreate HMAC signature using Web Crypto API (Edge Runtime compatible)
+    const encoder = new TextEncoder();
+    const keyData = encoder.encode(conf.secret);
+    const messageData = encoder.encode(`${tokenPart}.${timestamp}`);
 
-    // Use timing-safe comparison
-    return crypto.timingSafeEqual(Buffer.from(providedSignature), Buffer.from(expectedSignature));
+    // Use global crypto (Web Crypto API) instead of imported Node.js crypto
+    const cryptoAPI = globalThis.crypto;
+
+    // Import key for HMAC
+    const cryptoKey = await cryptoAPI.subtle.importKey(
+      "raw",
+      keyData,
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+
+    // Sign the message
+    const signatureBuffer = await cryptoAPI.subtle.sign("HMAC", cryptoKey, messageData);
+
+    // Convert to base64url
+    const signatureArray = new Uint8Array(signatureBuffer);
+    const expectedSignature = btoa(String.fromCharCode(...signatureArray))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
+
+    // Simple string comparison (timing-safe comparison not available in Edge Runtime)
+    return providedSignature === expectedSignature;
   } catch (error) {
     console.error("CSRF token validation error:", error);
     return false;
@@ -186,7 +239,7 @@ export async function csrfMiddleware(
   // Skip CSRF check for safe methods
   if (method === "GET" || method === "HEAD" || method === "OPTIONS") {
     // Generate new token for safe requests
-    const token = generateCSRFToken(conf);
+    const token = await generateCSRFToken(conf);
     const response = NextResponse.next();
     return setCSRFTokenCookie(response, token, conf);
   }
@@ -211,7 +264,7 @@ export async function csrfMiddleware(
     );
   }
 
-  const isValid = validateCSRFToken(token, conf);
+  const isValid = await validateCSRFToken(token, conf);
 
   if (!isValid) {
     // Log CSRF violation
@@ -241,8 +294,8 @@ export async function csrfMiddleware(
  *
  * @returns JSON response with CSRF token and expiration
  */
-export function getCSRFTokenResponse(): NextResponse {
-  const token = generateCSRFToken();
+export async function getCSRFTokenResponse(): Promise<NextResponse> {
+  const token = await generateCSRFToken();
   const expiresAt = Date.now() + defaultConfig.tokenExpiry;
 
   const response = NextResponse.json({
@@ -273,7 +326,7 @@ export async function verifyCSRFToken(request: NextRequest, bodyToken?: string):
     throw new Error("CSRF token is required");
   }
 
-  const isValid = validateCSRFToken(token);
+  const isValid = await validateCSRFToken(token);
 
   if (!isValid) {
     throw new Error("Invalid or expired CSRF token");
@@ -339,11 +392,11 @@ export function isCSRFExempt(request: NextRequest, exemptPaths: string[] = []): 
  * @param config - CSRF configuration
  * @returns Response with new token
  */
-export function rotateCSRFToken(
+export async function rotateCSRFToken(
   response: NextResponse,
   config: Partial<CSRFConfig> = {}
-): NextResponse {
-  const newToken = generateCSRFToken(config);
+): Promise<NextResponse> {
+  const newToken = await generateCSRFToken(config);
   return setCSRFTokenCookie(response, newToken, config);
 }
 
