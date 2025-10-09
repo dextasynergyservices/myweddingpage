@@ -25,6 +25,64 @@ body {
   overflow-x: hidden;
 }
 
+/* Smooth scrolling for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Keyboard navigation focus indicators */
+*:focus-visible {
+  outline: 2px solid #ab862b;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Improve focus visibility for buttons */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #ab862b;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(171, 134, 43, 0.1);
+}
+
+/* Skip to content link for keyboard users */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: #ab862b;
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets on mobile */
+  button,
+  a,
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Remove hover effects on touch devices */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Better momentum scrolling on iOS */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* Video Player Slider Styles */
 .slider {
   -webkit-appearance: none;

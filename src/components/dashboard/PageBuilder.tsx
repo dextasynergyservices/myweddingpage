@@ -6,16 +6,24 @@ import { useCSRFToken } from "@/hooks/useCSRFToken";
 import TemplatePreviewModal from "@/components/TemplatePreviewModal";
 import TemplateSelection from "@/components/dashboard/PageBuilderComponent/TemplateFetch";
 import TemplateEditor from "@/components/dashboard/PageBuilderComponent/TemplateEditor";
+import { CustomizationTab } from "@/components/dashboard/PageBuilderComponent/CustomizationTab";
 import { Template, UserTemplate, UserPlan, WeddingPage } from "@/types/wedding";
+import type { UserCustomization } from "@/types/customization";
 import Link from "next/link";
+
 interface WeddingPageBuilderProps {
   setActiveTab?: (tab: string) => void;
 }
 
+type PageBuilderTab = "choose" | "customize" | "edit";
+
 const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
   const { isDarkMode } = useTheme();
   const { token: csrfToken } = useCSRFToken();
+  // Keep isSelect for backward compatibility with TemplatePreviewModal
   const [isSelect, setIsSelect] = useState(false);
+  // New 3-tab system for UI navigation
+  const [activeTab, setActiveBuilderTab] = useState<PageBuilderTab>("choose");
   const [, setTemplates] = useState<Template[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [userTemplate, setUserTemplate] = useState<UserTemplate | null>(null);
@@ -24,6 +32,36 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [editedSections, setEditedSections] = useState<string[]>([]);
+  // User data for preview
+  const [gallery, setGallery] = useState<
+    Array<{
+      id: string;
+      url: string;
+      title?: string;
+      category?: string;
+    }>
+  >([]);
+  const [gifts, setGifts] = useState<
+    Array<{
+      id: string;
+      item: string;
+      name?: string;
+      description?: string;
+      link?: string;
+      price: string;
+      image: string;
+      purchased: boolean;
+    }>
+  >([]);
+  const [guests, setGuests] = useState<
+    Array<{
+      id: string;
+      name: string;
+      email?: string;
+      phone?: string;
+      rsvp?: "yes" | "no" | "pending";
+    }>
+  >([]);
 
   // Fetch user data and templates
   useEffect(() => {
@@ -45,11 +83,13 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
           // templateData.template may be undefined; normalize to null for state
           setSelectedTemplate((templateData && templateData.template) || null);
           if (templateData && templateData.template) {
-            setIsSelect(true); // Switch to customize mode if template is selected
+            setActiveBuilderTab("edit"); // Switch to edit mode if template is selected
+            setIsSelect(false); // Sync: edit mode = not selecting
           }
         } else {
           setSelectedTemplate(null);
-          setIsSelect(false); // Switch to choose template mode if no template selected
+          setActiveBuilderTab("choose"); // Switch to choose template mode if no template selected
+          setIsSelect(true); // Sync: choose mode = selecting
         }
 
         // Fetch wedding page if published. The API returns a wrapper object
@@ -58,10 +98,14 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
         const weddingPageResponse = await fetch("/api/wedding-data");
         if (weddingPageResponse.ok) {
           const weddingPageData = await weddingPageResponse.json();
-          // API shape: { weddingPage: {...}, ... } — use the inner weddingPage when present
+          // API shape: { weddingPage: {...}, gallery: [], gifts: [], guests: [] }
           setWeddingPage(
             (weddingPageData && weddingPageData.weddingPage) || weddingPageData || null
           );
+          // Extract user data
+          setGallery(weddingPageData?.gallery || []);
+          setGifts(weddingPageData?.gifts || []);
+          setGuests(weddingPageData?.guests || []);
         }
 
         // Fetch available templates
@@ -93,14 +137,16 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
       // template deleted or not set: clear selection
       setUserTemplate(null);
       setSelectedTemplate(null);
-      setIsSelect(false);
+      setActiveBuilderTab("choose");
+      setIsSelect(true); // Sync: back to selecting
       return;
     }
 
     setUserTemplate(userTemplateData);
     // template may be undefined on some shapes; normalize to null
     setSelectedTemplate(userTemplateData.template ?? null);
-    setIsSelect(true);
+    setActiveBuilderTab("edit");
+    setIsSelect(false); // Sync: edit mode = not selecting
   };
 
   const handleContentUpdate = async (sectionId: string, content: Record<string, unknown>) => {
@@ -181,21 +227,26 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
           Wedding Page Builder
         </h1>
         <p className={`text-sm md:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-          {isSelect
-            ? "Customize your selected template"
-            : "Choose a template for your wedding page"}
+          {activeTab === "choose"
+            ? "Choose a template for your wedding page"
+            : activeTab === "customize"
+              ? "Personalize colors and fonts"
+              : "Edit your wedding content"}
         </p>
       </div>
 
-      {/* Mode Toggle */}
+      {/* 3-Tab Navigation */}
       <div className="mb-6">
         <div
-          className={`p-1 rounded-lg inline-flex gap-4 ${isDarkMode ? "bg-slate-700" : "bg-slate-200"}`}
+          className={`p-1 rounded-lg inline-flex gap-2 ${isDarkMode ? "bg-slate-700" : "bg-slate-200"}`}
         >
           <button
-            onClick={() => setIsSelect(false)}
+            onClick={() => {
+              setActiveBuilderTab("choose");
+              setIsSelect(true); // Sync: choosing = selecting
+            }}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              !isSelect
+              activeTab === "choose"
                 ? "bg-white text-slate-900 shadow"
                 : isDarkMode
                   ? "text-slate-300 hover:text-white"
@@ -205,19 +256,40 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
             Choose Template
           </button>
           <button
-            onClick={() => setIsSelect(true)}
+            onClick={() => {
+              setActiveBuilderTab("customize");
+              setIsSelect(false); // Sync: customizing = not selecting
+            }}
             disabled={!selectedTemplate}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               !selectedTemplate
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : !isSelect
-                  ? "bg-black text-white shadow hover:bg-black"
+                : activeTab === "customize"
+                  ? "bg-white text-slate-900 shadow"
                   : isDarkMode
                     ? "text-slate-300 hover:text-white"
                     : "text-slate-600 hover:text-slate-900"
             }`}
           >
             Customize
+          </button>
+          <button
+            onClick={() => {
+              setActiveBuilderTab("edit");
+              setIsSelect(false); // Sync: editing = not selecting
+            }}
+            disabled={!selectedTemplate}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              !selectedTemplate
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : activeTab === "edit"
+                  ? "bg-white text-slate-900 shadow"
+                  : isDarkMode
+                    ? "text-slate-300 hover:text-white"
+                    : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            Edit Content
           </button>
         </div>
       </div>
@@ -257,7 +329,7 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
 
       {/* Content */}
       <div className="flex-1 overflow-auto">
-        {!isSelect ? (
+        {activeTab === "choose" ? (
           <TemplateSelection
             // Cast the callback argument to match our internal handler type
             onUserTemplateSelected={(userTemplate) =>
@@ -267,34 +339,115 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
             // Provide a safe userTemplate only when it includes a templates
             userTemplate={safeUserTemplate}
           />
-        ) : selectedTemplate ? (
-          <TemplateEditor
-            userTemplate={userTemplate}
-            selectedTemplate={selectedTemplate}
-            weddingPage={weddingPage}
-            userPlan={userPlan}
-            onTemplateUpdate={(template) => setSelectedTemplate(template)}
-            onContentUpdate={handleContentUpdate}
-            editedSections={editedSections}
-            onWeddingPageUpdate={(wp) => setWeddingPage(wp)}
-            onUserTemplateUpdate={(ut) => setUserTemplate(ut)}
-            setActiveTab={setActiveTab}
-          />
-        ) : (
-          <div
-            className={`rounded-xl p-8 text-center ${isDarkMode ? "bg-slate-800" : "bg-slate-100"}`}
-          >
-            <p className={isDarkMode ? "text-slate-400" : "text-slate-600"}>
-              No template selected. Please choose a template to begin customizing.
-            </p>
-            <button
-              onClick={() => setIsSelect(true)}
-              className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+        ) : activeTab === "customize" ? (
+          selectedTemplate ? (
+            <CustomizationTab
+              templateId={userTemplate?.id ?? ""}
+              initialCustomization={userTemplate?.colorScheme as UserCustomization | undefined}
+              selectedTemplate={selectedTemplate}
+              userTemplate={
+                userTemplate
+                  ? {
+                      content: userTemplate.content as Record<string, Record<string, unknown>>,
+                    }
+                  : undefined
+              }
+              weddingPage={weddingPage ?? undefined}
+              userPlan={userPlan ?? undefined}
+              gallery={gallery}
+              gifts={gifts}
+              guests={guests}
+              onSave={async (customization) => {
+                try {
+                  const response = await fetch("/api/user/templates/customize", {
+                    method: "PUT",
+                    credentials: "include",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "x-csrf-token": csrfToken || "",
+                    },
+                    body: JSON.stringify({
+                      templateId: selectedTemplate?.id, // Use selectedTemplate.id, not userTemplate.id
+                      customization,
+                    }),
+                  });
+
+                  if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || "Failed to save customization");
+                  }
+
+                  const data = await response.json();
+                  console.log("Customization saved successfully:", data);
+
+                  // Update local state with saved customization
+                  if (data.userTemplate) {
+                    setUserTemplate((prev) => ({
+                      ...prev,
+                      ...data.userTemplate,
+                    }));
+                  }
+                } catch (error) {
+                  console.error("Error saving customization:", error);
+                  throw error;
+                }
+              }}
+              onPreview={() => {
+                // Preview is already live, so this is a no-op
+                console.log("Preview is live");
+              }}
+            />
+          ) : (
+            <div
+              className={`rounded-xl p-8 text-center ${isDarkMode ? "bg-slate-800" : "bg-slate-100"}`}
             >
-              Choose Template
-            </button>
-          </div>
-        )}
+              <p className={isDarkMode ? "text-slate-400" : "text-slate-600"}>
+                No template selected. Please choose a template to customize.
+              </p>
+              <button
+                onClick={() => {
+                  setActiveBuilderTab("choose");
+                  setIsSelect(true); // Sync: back to selecting
+                }}
+                className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              >
+                Choose Template
+              </button>
+            </div>
+          )
+        ) : activeTab === "edit" ? (
+          selectedTemplate ? (
+            <TemplateEditor
+              userTemplate={userTemplate}
+              selectedTemplate={selectedTemplate}
+              weddingPage={weddingPage}
+              userPlan={userPlan}
+              onTemplateUpdate={(template) => setSelectedTemplate(template)}
+              onContentUpdate={handleContentUpdate}
+              editedSections={editedSections}
+              onWeddingPageUpdate={(wp) => setWeddingPage(wp)}
+              onUserTemplateUpdate={(ut) => setUserTemplate(ut)}
+              setActiveTab={setActiveTab}
+            />
+          ) : (
+            <div
+              className={`rounded-xl p-8 text-center ${isDarkMode ? "bg-slate-800" : "bg-slate-100"}`}
+            >
+              <p className={isDarkMode ? "text-slate-400" : "text-slate-600"}>
+                No template selected. Please choose a template to begin editing.
+              </p>
+              <button
+                onClick={() => {
+                  setActiveBuilderTab("choose");
+                  setIsSelect(true); // Sync: back to selecting
+                }}
+                className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              >
+                Choose Template
+              </button>
+            </div>
+          )
+        ) : null}
       </div>
 
       {/* Template Preview Modal */}
@@ -307,7 +460,7 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
           weddingPage={weddingPage ?? undefined}
           userPlan={userPlan ?? undefined}
           onSelectTemplate={handleTemplateSelect}
-          isSelect={isSelect} // pass current mode: false = Choose Template (static preview), true = Customize (dynamic preview)
+          isSelect={isSelect} // Use the actual isSelect state (synced with activeTab)
         />
       )}
     </div>
