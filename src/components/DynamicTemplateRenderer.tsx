@@ -219,13 +219,43 @@ const DynamicTemplateRendererComponent = ({
       )}
 
       {sectionsToRender.map((section) => {
-        const Component = componentMap[section.layout as ComponentType];
+        // Smart layout resolution:
+        // 1. If layout is already in componentMap (like "vows_hero"), use it directly
+        // 2. If layout is uppercase (like "HERO"), convert to template_prefix format
+        // 3. Otherwise, try as-is
+
+        let componentKey: ComponentType;
+
+        // Check if it's already a valid component key
+        if (componentMap[section.layout as ComponentType]) {
+          componentKey = section.layout as ComponentType;
+        }
+        // Check if it's an uppercase database layout (HERO, STORY, etc.)
+        else if (section.layout === section.layout.toUpperCase()) {
+          // Convert uppercase layout to lowercase with template prefix
+          const templatePrefix = template.name.toLowerCase(); // "Vows" -> "vows"
+          const layoutName = section.layout.toLowerCase(); // "HERO" -> "hero"
+
+          // Map REGISTRY -> gift, WISHES -> guest
+          const normalizedLayout =
+            layoutName === "registry" ? "gift" : layoutName === "wishes" ? "guest" : layoutName;
+
+          componentKey = `${templatePrefix}_${normalizedLayout}` as ComponentType;
+        }
+        // Use as-is (fallback)
+        else {
+          componentKey = section.layout as ComponentType;
+        }
+
+        const Component = componentMap[componentKey];
         // Use flexible typing to accommodate different component prop structures
         const RenderComponent = Component as React.ComponentType<Record<string, unknown>>;
 
         if (!Component) {
           if (process.env.NODE_ENV === "development") {
-            console.warn(`Component layout ${section.layout} not found in componentMap`);
+            console.warn(
+              `Component layout ${section.layout} (mapped to ${componentKey}) not found in componentMap`
+            );
           }
           return null;
         }

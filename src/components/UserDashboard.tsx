@@ -28,6 +28,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [planName, setPlanName] = useState<string | null>(null);
   const [, setHasTemplate] = useState<boolean>(false);
   const { isDarkMode } = useTheme();
@@ -454,6 +455,8 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
           showAIAssistant={showAIAssistant}
           setShowAIAssistant={setShowAIAssistant}
           logout={logout}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
 
         <div className="flex-1 flex">

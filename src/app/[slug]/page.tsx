@@ -3,6 +3,7 @@ import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
 import WeddingViewIncrementer from "@/components/WeddingViewIncrementer";
 import WeddingPageHeader from "@/components/WeddingPageHeader";
 import WeddingPageFooter from "@/components/WeddingPageFooter";
+import PublicPageCustomization from "@/components/PublicPageCustomization";
 import { JSX } from "react";
 
 export const dynamic = "force-dynamic";
@@ -51,6 +52,9 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
 
     return (
       <div className="min-h-screen bg-white">
+        {/* Apply user's customization (colors/fonts) to the entire page */}
+        <PublicPageCustomization customization={userTemplate?.colorScheme} slug={slug} />
+
         {/* Wedding Page Header */}
         <WeddingPageHeader
           brideName={userData.brideName}
