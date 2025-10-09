@@ -6,6 +6,9 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useCSRFToken } from "@/hooks/useCSRFToken";
 import { ColorScheme } from "@/lib/component-registry";
 import { SectionType } from "@/generated/prisma";
+import { injectCSSVariables, removeCSSVariables } from "@/lib/css-variable-injection";
+import { loadFontsFromScheme } from "@/lib/font-utils";
+import type { FontScheme } from "@/types/customization";
 import {
   Eye,
   Save,
@@ -180,6 +183,45 @@ const TemplateEditor = ({
 
     fetchSectionStatus();
   }, [selectedTemplate, userTemplate]);
+
+  // Inject CSS variables for preview modal when customization exists
+  useEffect(() => {
+    if (!showPreviewModal || !userTemplate?.colorScheme) return;
+
+    const customization = userTemplate.colorScheme as {
+      colors?: {
+        primary: string;
+        secondary: string;
+        accent: string;
+        background: string;
+        text: string;
+        buttonPrimary: string;
+        buttonPrimaryText: string;
+        buttonPrimaryHover: string;
+        buttonSecondary: string;
+        buttonSecondaryText: string;
+        buttonSecondaryHover: string;
+      };
+      fonts?: { heading: string; body: string; script: string };
+    };
+
+    if (!customization.colors || !customization.fonts) return;
+
+    // Load fonts
+    loadFontsFromScheme(customization.fonts as FontScheme);
+
+    // Inject CSS variables into the preview container
+    const containerId = "template-editor-preview";
+    const element = document.getElementById(containerId);
+    if (element) {
+      injectCSSVariables(containerId, customization.colors, customization.fonts as FontScheme);
+    }
+
+    // Cleanup on unmount or when modal closes
+    return () => {
+      removeCSSVariables(containerId);
+    };
+  }, [showPreviewModal, userTemplate?.colorScheme]);
 
   if (!selectedTemplate) {
     return (
@@ -819,7 +861,7 @@ const TemplateEditor = ({
             </motion.button>
           </div>
 
-          <div className="h-[calc(100%-4rem)] overflow-auto">
+          <div id="template-editor-preview" className="h-[calc(100%-4rem)] overflow-auto">
             <DynamicTemplateRenderer
               template={{
                 ...selectedTemplate,
