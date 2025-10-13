@@ -5,14 +5,13 @@ import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 import twilio from "twilio";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID || "",
-  process.env.TWILIO_AUTH_TOKEN || ""
-);
-
 // Send notification (Email or WhatsApp)
 export async function POST(request: NextRequest) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const twilioClient = twilio(
+    process.env.TWILIO_ACCOUNT_SID || "",
+    process.env.TWILIO_AUTH_TOKEN || ""
+  );
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
