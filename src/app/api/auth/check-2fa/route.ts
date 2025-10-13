@@ -7,51 +7,59 @@
  * - Only returns whether 2FA is required, no sensitive data
  */
 
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
+import withTiming from "@/lib/withTiming";
 
 export async function POST(req: Request) {
-  try {
-    const { emailOrPhone } = await req.json();
+  const nextReq = req as NextRequest;
+  return withTiming(
+    nextReq,
+    async () => {
+      try {
+        const { emailOrPhone } = await req.json();
 
-    if (!emailOrPhone) {
-      return NextResponse.json({ error: "Email or phone required" }, { status: 400 });
-    }
+        if (!emailOrPhone) {
+          return NextResponse.json({ error: "Email or phone required" }, { status: 400 });
+        }
 
-    // Find user by email or phone
-    const user = await prisma.user.findFirst({
-      where: {
-        OR: [{ email: emailOrPhone }, { whatsapp: emailOrPhone }],
-      },
-      select: {
-        id: true,
-        twoFactorSecret: {
-          select: {
-            enabled: true,
+        // Find user by email or phone
+        const user = await prisma.user.findFirst({
+          where: {
+            OR: [{ email: emailOrPhone }, { whatsapp: emailOrPhone }],
           },
-        },
-        twoFactorMethod: true, // Get user's preferred 2FA method
-      },
-    });
+          select: {
+            id: true,
+            twoFactorSecret: {
+              select: {
+                enabled: true,
+              },
+            },
+            twoFactorMethod: true, // Get user's preferred 2FA method
+          },
+        });
 
-    if (!user) {
-      // Don't reveal if user exists - return false
-      return NextResponse.json({
-        requires2FA: false,
-      });
-    }
+        if (!user) {
+          // Don't reveal if user exists - return false
+          return NextResponse.json({
+            requires2FA: false,
+          });
+        }
 
-    const requires2FA = user.twoFactorSecret?.enabled ?? false;
-    const method = user.twoFactorMethod || "totp"; // Default to TOTP
+        const requires2FA = user.twoFactorSecret?.enabled ?? false;
+        const method = user.twoFactorMethod || "totp"; // Default to TOTP
 
-    return NextResponse.json({
-      requires2FA,
-      userId: requires2FA ? user.id : undefined, // Only return userId if 2FA is needed
-      method: requires2FA ? method : undefined, // Return preferred method if 2FA enabled
-    });
-  } catch (error) {
-    console.error("Check 2FA error:", error);
+        return NextResponse.json({
+          requires2FA,
+          userId: requires2FA ? user.id : undefined, // Only return userId if 2FA is needed
+          method: requires2FA ? method : undefined, // Return preferred method if 2FA enabled
+        });
+      } catch (error) {
+        console.error("Check 2FA error:", error);
 
-    return NextResponse.json({ error: "Failed to check 2FA status" }, { status: 500 });
-  }
+        return NextResponse.json({ error: "Failed to check 2FA status" }, { status: 500 });
+      }
+    },
+    { sampleRate: 1, eventType: "TWO_FA_CHECK" }
+  );
 }

@@ -49,14 +49,19 @@ export default function AccountLockoutsPage() {
 
   const fetchLockouts = async () => {
     try {
-      const response = await fetch("/api/admin/lockouts");
+      const response = await fetch("/api/admin/lockouts", { credentials: "include" });
       if (response.ok) {
         const data = await response.json();
         setLockouts(data.lockouts || []);
         setStats(data.stats || null);
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Failed to fetch lockouts:", response.status, errorData);
+        toast.error(errorData.error || "Failed to fetch account lockouts");
       }
     } catch (error) {
       console.error("Error fetching lockouts:", error);
+      toast.error("Failed to fetch account lockouts");
     } finally {
       setLoading(false);
     }

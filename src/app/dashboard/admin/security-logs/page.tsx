@@ -61,7 +61,7 @@ export default function SecurityLogsPage() {
 
   const fetchSecurityLogs = async () => {
     try {
-      const response = await fetch("/api/admin/security-logs");
+      const response = await fetch("/api/admin/security-logs", { credentials: "include" });
       if (response.ok) {
         const data = await response.json();
         setLogs(data.logs || []);

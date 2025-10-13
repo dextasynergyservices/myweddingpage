@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Key Diagnostic</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #1a1a2e;
+            color: white;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .diagnostic-card {
+            background: #16213e;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 2px solid #0f3460;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .status.checking {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .status.success {
+            background: #28a745;
+            color: white;
+        }
+
+        .status.error {
+            background: #dc3545;
+            color: white;
+        }
+
+        .status.warning {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        pre {
+            background: #0f1419;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #0f3460;
+        }
+
+        .check-item:last-child {
+            border-bottom: none;
+        }
+
+        .icon {
+            font-size: 20px;
+        }
+
+        .solution {
+            background: #1e3a5f;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .solution h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .solution ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .solution code {
+            background: #0f1419;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 API Key Diagnostic Tool</h1>
+        <p class="subtitle">Let's figure out what's wrong with your YouTube API key</p>
+
+        <div class="diagnostic-card">
+            <h2>Step 1: Check API Key Configuration</h2>
+            <div id="configCheck">
+                <span class="status checking">⏳ Checking...</span>
+            </div>
+        </div>
+
+        <div class="diagnostic-card">
+            <h2>Step 2: Test API Connection</h2>
+            <button onclick="testAPI()" id="testBtn">Run Diagnostic Test</button>
+            <div id="testResult" style="margin-top: 20px;"></div>
+        </div>
+
+        <div class="diagnostic-card" id="solutionCard" style="display: none;">
+            <h2>💡 Solution</h2>
+            <div id="solutionContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Check config on load
+        window.addEventListener('load', checkConfig);
+
+        async function checkConfig() {
+            const configDiv = document.getElementById('configCheck');
+
+            try {
+                const response = await fetch('/api/youtube-stats?videoId=test');
+                const data = await response.json();
+
+                if (data.mock === true) {
+                    configDiv.innerHTML = `
+                        <span class="status error">❌ API Key Not Detected</span>
+                        <p style="margin-top: 10px;">The server is returning mock data, which means YOUTUBE_API_KEY is not configured in .env.local</p>
+                        <div class="solution">
+                            <h3>Fix: Add API Key</h3>
+                            <ol>
+                                <li>Open <code>.env.local</code> file</li>
+                                <li>Add: <code>YOUTUBE_API_KEY=your_key_here</code></li>
+                                <li>Save file</li>
+                                <li>Restart server: <code>Ctrl+C</code> then <code>pnpm dev</code></li>
+                            </ol>
+                        </div>
+                    `;
+                } else if (data.error && data.error.includes('not found')) {
+                    configDiv.innerHTML = `
+                        <span class="status success">✅ API Key Configured</span>
+                        <p style="margin-top: 10px; color: #28a745;">YouTube API key is detected and working! The error is just because "test" is not a valid video ID.</p>
+                    `;
+                } else if (response.status === 403 || data.error?.includes('403')) {
+                    configDiv.innerHTML = `
+                        <span class="status error">❌ API Key Restrictions Issue</span>
+                        <p style="margin-top: 10px;">Your API key has restrictions that are blocking requests.</p>
+                        ${showRestrictionsSolution()}
+                    `;
+                } else if (data.error) {
+                    configDiv.innerHTML = `
+                        <span class="status warning">⚠️ API Key Issue</span>
+                        <p style="margin-top: 10px;">Error: ${data.error}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    configDiv.innerHTML = `
+                        <span class="status success">✅ API Key Working!</span>
+                        <p style="margin-top: 10px; color: #28a745;">Your YouTube API is configured correctly!</p>
+                    `;
+                }
+            } catch (error) {
+                configDiv.innerHTML = `
+                    <span class="status error">❌ Connection Error</span>
+                    <p style="margin-top: 10px;">Cannot connect to API: ${error.message}</p>
+                    <p style="margin-top: 10px; color: #aaa;">Make sure the server is running on http://localhost:3000</p>
+                `;
+            }
+        }
+
+        async function testAPI() {
+            const testBtn = document.getElementById('testBtn');
+            const resultDiv = document.getElementById('testResult');
+            const solutionCard = document.getElementById('solutionCard');
+
+            testBtn.disabled = true;
+            resultDiv.innerHTML = '<span class="status checking">⏳ Testing with real video ID...</span>';
+
+            // Use a known good video
+            const videoId = 'dQw4w9WgXcQ';
+
+            try {
+                const response = await fetch(`/api/youtube-stats?videoId=${videoId}`);
+                const data = await response.json();
+
+                if (data.mock === true) {
+                    resultDiv.innerHTML = `
+                        <span class="status error">❌ Still Using Mock Data</span>
+                        <p style="margin-top: 10px;">API key not working. Check Step 1 above.</p>
+                    `;
+                    solutionCard.style.display = 'none';
+
+                } else if (response.status === 403 || data.error?.includes('403') || data.error?.includes('API key')) {
+                    resultDiv.innerHTML = `
+                        <span class="status error">❌ API Key Restrictions Blocking Request</span>
+                        <p style="margin-top: 10px;"><strong>Error:</strong> ${data.error || 'Forbidden (403)'}</p>
+                        <p style="margin-top: 10px;">This is the most common issue - your API key has restrictions that prevent it from working.</p>
+                    `;
+
+                    solutionCard.style.display = 'block';
+                    document.getElementById('solutionContent').innerHTML = showRestrictionsSolution();
+
+                } else if (data.error?.includes('quota')) {
+                    resultDiv.innerHTML = `
+                        <span class="status error">❌ API Quota Exceeded</span>
+                        <p style="margin-top: 10px;">You've used up your YouTube API quota for today.</p>
+                        <div class="solution">
+                            <h3>Options:</h3>
+                            <ol>
+                                <li>Wait until tomorrow (quota resets at midnight Pacific Time)</li>
+                                <li>Request quota increase in Google Cloud Console</li>
+                                <li>Use mock data (app still works, just not real viewer counts)</li>
+                            </ol>
+                        </div>
+                    `;
+                    solutionCard.style.display = 'none';
+
+                } else if (data.error) {
+                    resultDiv.innerHTML = `
+                        <span class="status warning">⚠️ API Error</span>
+                        <p style="margin-top: 10px;"><strong>Error:</strong> ${data.error}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    solutionCard.style.display = 'none';
+
+                } else {
+                    // Success!
+                    resultDiv.innerHTML = `
+                        <span class="status success">✅ API Test Successful!</span>
+                        <p style="margin-top: 10px; color: #28a745;"><strong>Great news!</strong> Your YouTube API is working perfectly!</p>
+                        <div style="background: #0f1419; padding: 20px; border-radius: 10px; margin-top: 15px;">
+                            <div class="check-item">
+                                <span class="icon">📹</span>
+                                <div>
+                                    <strong>Video Title:</strong> ${data.title || 'N/A'}
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <span class="icon">👁️</span>
+                                <div>
+                                    <strong>Views:</strong> ${(data.viewCount || 0).toLocaleString()}
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <span class="icon">👍</span>
+                                <div>
+                                    <strong>Likes:</strong> ${(data.likeCount || 0).toLocaleString()}
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <span class="icon">🎯</span>
+                                <div>
+                                    <strong>Status:</strong> ${data.status}
+                                </div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 20px; color: #28a745;">✅ You can now use the livestream feature with real YouTube data!</p>
+                    `;
+                    solutionCard.style.display = 'none';
+                }
+
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <span class="status error">❌ Test Failed</span>
+                    <p style="margin-top: 10px;"><strong>Error:</strong> ${error.message}</p>
+                    <p style="margin-top: 10px; color: #aaa;">This might be a network error or server issue.</p>
+                `;
+                solutionCard.style.display = 'none';
+            } finally {
+                testBtn.disabled = false;
+            }
+        }
+
+        function showRestrictionsSolution() {
+            return `
+                <div class="solution">
+                    <h3>🔓 How to Fix API Key Restrictions:</h3>
+                    <ol>
+                        <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank" style="color: #667eea;">Google Cloud Console</a></li>
+                        <li>Click on your API key</li>
+                        <li>Under <strong>"Application restrictions"</strong>:
+                            <ul style="margin: 10px 0;">
+                                <li>Select <code>None</code> (for testing)</li>
+                                <li>OR add: <code>http://localhost:3000/*</code> and <code>http://localhost:*</code></li>
+                            </ul>
+                        </li>
+                        <li>Under <strong>"API restrictions"</strong>:
+                            <ul style="margin: 10px 0;">
+                                <li>Keep ONLY: <code>YouTube Data API v3</code></li>
+                                <li>Remove all other APIs if selected</li>
+                            </ul>
+                        </li>
+                        <li>Click <strong>"Save"</strong></li>
+                        <li><strong>Wait 2-3 minutes</strong> for changes to take effect</li>
+                        <li>Click the "Run Diagnostic Test" button above again</li>
+                    </ol>
+
+                    <p style="margin-top: 15px; padding: 15px; background: #0f1419; border-radius: 8px; border-left: 4px solid #ffc107;">
+                        <strong>⚠️ Tip:</strong> Remove ALL restrictions first to test. Add them back later once it's working!
+                    </p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
