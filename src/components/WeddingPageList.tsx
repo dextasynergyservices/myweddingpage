@@ -279,14 +279,17 @@ const WeddingPageList = () => {
                             {wedding.excerpt}
                           </p>
                           <div className="flex flex-wrap gap-2">
-                            {wedding.tags.map((tag) => (
+                            {/* {wedding.tags.map((tag) => (
                               <span
                                 key={tag}
                                 className={`text-xs px-2 py-1 rounded-full ${tagBgClass}`}
                               >
                                 {tag}
                               </span>
-                            ))}
+                            ))} */}
+                            <span className={`text-xs px-5 py-3 rounded-full ${tagBgClass}`}>
+                              {wedding.location}
+                            </span>
                           </div>
                         </div>
                       </motion.div>
