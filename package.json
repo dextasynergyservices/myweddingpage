@@ -51,6 +51,7 @@
     "@upstash/redis": "^1.35.3",
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
+    "check-disk-space": "^3.4.0",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
@@ -121,8 +122,5 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
     "typescript": "^5"
-  },
-  "optionalDependencies": {
-    "check-disk-space": "^2.2.0"
   }
 }
