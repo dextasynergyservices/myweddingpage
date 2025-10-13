@@ -8,6 +8,7 @@ import { useEffect, useState, useCallback } from "react";
 import RenewalModal from "@/components/dashboard/RenewalModal";
 import ContactUpgradeModal from "@/components/dashboard/ContactUpgradeModal";
 import TwoFactorPrompt from "@/components/TwoFactorPrompt";
+import ShowRawIpsToggle from "@/app/dashboard/admin/account/ShowRawIpsToggle";
 import toast from "react-hot-toast";
 import PWAStatus from "@/components/pwa/PWAStatus";
 import { NotificationPermission } from "@/components/pwa";
@@ -420,6 +421,10 @@ const OverviewContent = ({
                   )}
                 </p>
               </div>
+            </div>
+            <div className="mt-3">
+              {/* Admin-only: allow toggling whether admins can view raw IPs in analytics */}
+              <ShowRawIpsToggle />
             </div>
             {graceDaysLeft > 0 && (
               <button

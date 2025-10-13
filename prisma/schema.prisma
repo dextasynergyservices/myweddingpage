@@ -72,6 +72,7 @@ model User {
   weddingDate       DateTime?
   password String?
   role              UserRole      @default(USER)
+  showRawIps        Boolean       @default(false)
   planId            String?
   plan              Plan?         @relation(fields: [planId], references: [id])
   subscription_start DateTime?
@@ -115,6 +116,7 @@ model User {
   userTemplates     UserTemplate[]
   galleryMedias GalleryMedia[]
   pushSubscriptions PushSubscription[]
+  guestNotifications GuestNotification[]
 }
 
 model Plan {
@@ -128,6 +130,7 @@ model Plan {
   max_tabs    Int
   gradient     String?
   popular      Boolean?
+  prints       String?
   created_at  DateTime @default(now())
 
   users       User[]
@@ -252,6 +255,7 @@ model WeddingPage {
   template          Template  @relation(fields: [templateId], references: [id])
   mediaUploads      MediaUpload[]
   comments          Comment[]
+  pageViews         PageView[]
 }
 
 model MediaUpload {
@@ -496,6 +500,12 @@ model Stream {
   updatedAt   DateTime @updatedAt
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Phase 2 relations
+  reactions       Reaction[]
+  guestbookEntries GuestbookEntry[]
+  activityEvents  ActivityEvent[]
+  summary         StreamSummary?
 }
 
 model GalleryMedia {
@@ -527,6 +537,7 @@ enum SecurityEventType {
   SESSION_HIJACK_ATTEMPT
   BRUTE_FORCE_DETECTED
   API_ABUSE
+  TWO_FA_CHECK
   TWO_FA_METHOD_CHANGED
   TWO_FA_EMAIL_CODE_SENT
   TWO_FA_EMAIL_SEND_FAILED
@@ -667,4 +678,116 @@ model PushSubscription {
   @@unique([userId, endpoint])
   @@index([userId])
   @@index([endpoint])
+}
+
+// Live Reaction for YouTube Stream
+model Reaction {
+  id          String   @id @default(cuid())
+  streamId    String
+  stream      Stream   @relation(fields: [streamId], references: [id], onDelete: Cascade)
+  type        String   // heart, clap, fire, tada
+  guestName   String?  // Optional guest name
+  createdAt   DateTime @default(now())
+
+  @@index([streamId])
+  @@index([createdAt])
+  @@index([type])
+}
+
+// Virtual Guestbook
+model GuestbookEntry {
+  id          String   @id @default(cuid())
+  streamId    String
+  stream      Stream   @relation(fields: [streamId], references: [id], onDelete: Cascade)
+  message     String
+  guestName   String?  // Optional
+  createdAt   DateTime @default(now())
+
+  @@index([streamId])
+  @@index([createdAt])
+}
+
+//  Activity Feed Events
+model ActivityEvent {
+  id          String   @id @default(cuid())
+  streamId    String
+  stream      Stream   @relation(fields: [streamId], references: [id], onDelete: Cascade)
+  type        String   // guest_joined, reaction_sent, guestbook_posted
+  count       Int      @default(1) // For batch events like "5 people joined"
+  metadata    Json?    // Additional data if needed
+  createdAt   DateTime @default(now())
+
+  @@index([streamId])
+  @@index([createdAt])
+  @@index([type])
+}
+
+//  Guest Notifications
+model GuestNotification {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guestName       String
+  guestEmail      String?
+  guestPhone      String?  // For WhatsApp
+  message         String
+  scheduledFor    DateTime?
+  sentAt          DateTime?
+  deliveryStatus  String   @default("pending") // pending, sent, failed
+  notificationType String  // email, whatsapp
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([deliveryStatus])
+  @@index([scheduledFor])
+  @@index([sentAt])
+}
+
+// Stream Summary
+model StreamSummary {
+  id              String   @id @default(cuid())
+  streamId        String   @unique
+  stream          Stream   @relation(fields: [streamId], references: [id], onDelete: Cascade)
+  totalViewers    Int      @default(0)
+  peakViewers     Int      @default(0)
+  totalReactions  Int      @default(0)
+  totalGuestbook  Int      @default(0)
+  streamDuration  Int?     // in minutes
+  startedAt       DateTime?
+  endedAt         DateTime?
+  reactionBreakdown Json?  // {heart: 50, clap: 30, fire: 20, tada: 10}
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([streamId])
+}
+
+// PageView events for precise analytics
+model PageView {
+  id            String   @id @default(cuid())
+  weddingPageId String
+  weddingPage   WeddingPage @relation(fields: [weddingPageId], references: [id], onDelete: Cascade)
+  ipAddress     String?
+  userAgent     String?
+  createdAt     DateTime @default(now())
+
+  @@index([weddingPageId])
+  @@index([createdAt])
+}
+
+// Aggregated system metrics for fast admin metrics retrieval
+model SystemMetric {
+  id              String   @id @default(cuid())
+  windowMinutes   Int      // aggregation window, e.g., 60
+  timestamp       DateTime @default(now()) // end of window
+  avgResponseMs   Int?     // average response time in ms
+  p50ResponseMs   Int?
+  p95ResponseMs   Int?
+  throughputPerMin Int?   // requests per minute
+  errorRatePct    Float?   // percentage
+  totalRequests   Int?
+
+  @@index([windowMinutes])
+  @@index([timestamp])
 }

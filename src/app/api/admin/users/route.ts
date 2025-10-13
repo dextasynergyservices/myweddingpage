@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   try {
     // Check admin authentication
     const adminCheck = await requireAdmin();
-    if (adminCheck instanceof NextResponse) {
+    if (adminCheck) {
       return adminCheck;
     }
 
@@ -71,7 +71,6 @@ export async function GET(request: Request) {
     // Format users for response
     const formattedUsers = users.map((user) => {
       const lockout = lockoutMap.get(user.id);
-
       return {
         id: user.id,
         name:
@@ -83,13 +82,42 @@ export async function GET(request: Request) {
         twoFactorEnabled: user.twoFactorSecret?.enabled || false,
         emailVerified: user.emailVerified,
         createdAt: user.created_at.toISOString(),
-        lastLoginAt: null, // Not tracked in current schema
+        // lastLoginAt: we attempt to derive from SecurityLog (LOGIN_SUCCESS) if present
+        lastLoginAt: null as string | null,
         accountLockedUntil: lockout?.lockedUntil || null,
         failedLoginAttempts: lockout?.attemptCount || 0,
         weddingPagesCount: user._count.weddingPages,
         paymentsCount: user._count.payments,
       };
     });
+
+    // Try to populate lastLoginAt by reading latest LOGIN_SUCCESS events from SecurityLog
+    try {
+      if (userIds.length > 0) {
+        const loginEvents = await prisma.securityLog.findMany({
+          where: { eventType: "LOGIN_SUCCESS", userId: { in: userIds } },
+          select: { userId: true, timestamp: true },
+          orderBy: { timestamp: "desc" },
+        });
+
+        const lastMap = new Map<string, Date>();
+        loginEvents.forEach((ev) => {
+          if (ev.userId && ev.timestamp && !lastMap.has(ev.userId))
+            lastMap.set(ev.userId, ev.timestamp);
+        });
+
+        // Create a new array to avoid mutating existing objects
+        for (let i = 0; i < formattedUsers.length; i++) {
+          const u = formattedUsers[i];
+          if (u && u.id && lastMap.has(u.id)) {
+            formattedUsers[i] = { ...u, lastLoginAt: lastMap.get(u.id)!.toISOString() };
+          }
+        }
+      }
+    } catch (e) {
+      // Non-fatal: if SecurityLog table missing or query fails, we still return users with null lastLoginAt
+      console.warn("Could not populate lastLoginAt from SecurityLog:", e);
+    }
 
     return NextResponse.json({
       success: true,

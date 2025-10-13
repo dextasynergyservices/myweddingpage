@@ -59,7 +59,8 @@ export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({
       {/* Help Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 left-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-gray-800 text-white shadow-lg transition-transform hover:scale-110 active:scale-95 dark:bg-gray-700"
+        // Hidden on small screens to avoid overlap with mobile UI (e.g., reCAPTCHA / floating actions)
+        className="hidden md:fixed md:bottom-6 md:right-6 md:z-40 md:flex h-12 w-12 items-center justify-center rounded-full bg-gray-800 text-white shadow-lg transition-transform hover:scale-110 active:scale-95 dark:bg-gray-700"
         title="Keyboard Shortcuts (Press ?)"
         aria-label="Show keyboard shortcuts"
       >

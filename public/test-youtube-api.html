@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube API Test - Phase 1 Livestream</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result.success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            display: block;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            display: block;
+        }
+
+        .result.loading {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            display: block;
+        }
+
+        .result h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .result.success h3 { color: #28a745; }
+        .result.error h3 { color: #dc3545; }
+        .result.loading h3 { color: #ffc107; }
+
+        .result pre {
+            background: rgba(0,0,0,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .badge.success { background: #28a745; color: white; }
+        .badge.warning { background: #ffc107; color: #333; }
+        .badge.danger { background: #dc3545; color: white; }
+
+        .examples {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+
+        .examples h4 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .examples code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 YouTube API Tester</h1>
+        <p class="subtitle">Test your YouTube Data API integration for Phase 1 Livestream</p>
+
+        <div class="input-group">
+            <label for="videoId">YouTube Video ID or URL</label>
+            <input
+                type="text"
+                id="videoId"
+                placeholder="dQw4w9WgXcQ or https://youtube.com/watch?v=dQw4w9WgXcQ"
+                value="dQw4w9WgXcQ"
+            >
+        </div>
+
+        <button onclick="testAPI()" id="testBtn">🚀 Test API</button>
+
+        <div class="examples">
+            <h4>📋 Example Video IDs to Test:</h4>
+            <p><strong>Regular Video:</strong> <code>dQw4w9WgXcQ</code></p>
+            <p><strong>Any YouTube URL works</strong> - We'll extract the ID automatically</p>
+        </div>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function extractVideoId(input) {
+            // If it's already just an ID
+            if (input.length === 11 && !input.includes('/') && !input.includes('?')) {
+                return input;
+            }
+
+            // Extract from various YouTube URL formats
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=)([^&]+)/,
+                /(?:youtube\.com\/embed\/)([^?]+)/,
+                /(?:youtu\.be\/)([^?]+)/,
+                /(?:youtube\.com\/v\/)([^?]+)/,
+            ];
+
+            for (const pattern of patterns) {
+                const match = input.match(pattern);
+                if (match) return match[1];
+            }
+
+            return input; // Return as-is if no pattern matches
+        }
+
+        async function testAPI() {
+            const input = document.getElementById('videoId').value.trim();
+            const resultDiv = document.getElementById('result');
+            const btn = document.getElementById('testBtn');
+
+            if (!input) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '<h3>❌ Error</h3><p>Please enter a YouTube video ID or URL</p>';
+                return;
+            }
+
+            const videoId = extractVideoId(input);
+
+            // Show loading
+            resultDiv.className = 'result loading';
+            resultDiv.innerHTML = '<h3>⏳ Testing...</h3><p>Fetching data from YouTube API...</p>';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`/api/youtube-stats?videoId=${videoId}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'API request failed');
+                }
+
+                // Success!
+                const isMock = data.mock === true;
+                const isLive = data.isLive || data.status === 'live';
+
+                let html = `
+                    <h3>✅ API Test Successful!</h3>
+                    ${isMock ? '<span class="badge warning">⚠️ Using Mock Data (API key not configured)</span>' : '<span class="badge success">✅ Real YouTube Data</span>'}
+                    ${isLive ? '<span class="badge success">🔴 LIVE</span>' : '<span class="badge">📹 Video</span>'}
+
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">${data.concurrentViewers || data.viewerCount || 0}</div>
+                            <div class="stat-label">${isLive ? 'Live Viewers' : 'Total Views'}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${data.likeCount || 0}</div>
+                            <div class="stat-label">Likes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${data.health || 'N/A'}</div>
+                            <div class="stat-label">Health</div>
+                        </div>
+                    </div>
+                `;
+
+                if (data.title) {
+                    html += `<p style="margin-top: 15px;"><strong>Title:</strong> ${data.title}</p>`;
+                }
+
+                html += `
+                    <details style="margin-top: 15px;">
+                        <summary style="cursor: pointer; color: #667eea; font-weight: 600;">View Full Response</summary>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </details>
+                `;
+
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = html;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h3>❌ API Test Failed</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p style="margin-top: 10px; font-size: 13px; color: #666;">
+                        <strong>Possible causes:</strong><br>
+                        • YouTube API key not configured in .env.local<br>
+                        • Invalid video ID<br>
+                        • API quota exceeded<br>
+                        • Network error<br>
+                        • Server not running
+                    </p>
+                `;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Allow Enter key to trigger test
+        document.getElementById('videoId').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') testAPI();
+        });
+    </script>
+</body>
+</html>

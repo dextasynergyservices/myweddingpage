@@ -195,9 +195,8 @@ export async function GET(req: NextRequest, { params }: { params: { slug: string
     // Return the weddingPage with an explicit views field
     const weddingPageWithViews = {
       ...weddingPage,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      views: viewsToReturn,
+
+  views: viewsToReturn,
     } as typeof weddingPage & { views: number };
 
     const responseData = {

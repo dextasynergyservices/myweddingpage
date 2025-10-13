@@ -14,6 +14,11 @@ import {
   X,
   LogOut,
   ChevronDown,
+  Heart,
+  Monitor,
+  BarChart3,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { ToastProvider } from "@/components/ToastProvider";
@@ -31,10 +36,34 @@ const adminNavItems = [
     description: "System statistics and metrics",
   },
   {
+    name: "Wedding Analytics",
+    href: "/dashboard/admin/wedding-analytics",
+    icon: Heart,
+    description: "Wedding page performance data",
+  },
+  {
+    name: "System Monitoring",
+    href: "/dashboard/admin/system-monitoring",
+    icon: Monitor,
+    description: "Monitor system health and performance",
+  },
+  {
+    name: "Business Intelligence",
+    href: "/dashboard/admin/business-intelligence",
+    icon: BarChart3,
+    description: "Revenue tracking and growth analytics",
+  },
+  {
     name: "Security Logs",
     href: "/dashboard/admin/security-logs",
     icon: Shield,
     description: "View security events",
+  },
+  {
+    name: "Raw IP Audit",
+    href: "/dashboard/admin/audit/show-raw-ips",
+    icon: Users,
+    description: "Which admins can view raw IPs",
   },
   {
     name: "User Management",
@@ -63,19 +92,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const { data: session, status } = useSession();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("admin-sidebar-collapsed") === "true";
+    }
+    return false;
+  });
 
   useEffect(() => {
-    if (status === "loading") return; // Wait for session to load
-
-    if (status === "unauthenticated") {
-      router.push("/auth/login?callbackUrl=/dashboard/admin");
-      return;
+    if (typeof window !== "undefined") {
+      localStorage.setItem("admin-sidebar-collapsed", isSidebarCollapsed.toString());
     }
-
-    if (session?.user?.role !== "ADMIN") {
-      router.push("/dashboard?error=unauthorized");
-    }
-  }, [session, status, router]);
+  }, [isSidebarCollapsed]);
 
   const handleLogout = async () => {
     const { signOut } = await import("next-auth/react");
@@ -143,6 +171,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 </p>
               </div>
             </div>
+
+            {/* Desktop sidebar collapse button */}
+            <button
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="hidden lg:block rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {isSidebarCollapsed ? (
+                <ChevronRight className="h-5 w-5" />
+              ) : (
+                <ChevronLeft className="h-5 w-5" />
+              )}
+            </button>
           </div>
 
           {/* User menu */}
@@ -206,9 +247,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="flex">
         {/* Sidebar - Desktop */}
         <aside
-          className={`hidden lg:block w-64 border-r ${
+          className={`hidden lg:block border-r ${
             isDarkMode ? "border-gray-800" : "border-gray-200"
-          } min-h-[calc(100vh-4rem)] sticky top-16`}
+          } min-h-[calc(100vh-4rem)] sticky top-16 transition-all duration-300 ${
+            isSidebarCollapsed ? "w-20" : "w-64"
+          }`}
         >
           <nav className="p-4 space-y-2">
             {adminNavItems.map((item) => {
@@ -227,15 +270,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                       : isDarkMode
                         ? "text-gray-300 hover:bg-gray-800"
                         : "text-gray-700 hover:bg-gray-100"
-                  }`}
+                  } ${isSidebarCollapsed ? "justify-center px-2" : ""}`}
+                  title={isSidebarCollapsed ? item.name : ""}
                 >
                   <Icon className="h-5 w-5" />
-                  <div className="flex-1">
-                    <p className="font-medium">{item.name}</p>
-                    <p className={`text-xs ${isActive ? "text-white/80" : "text-gray-500"}`}>
-                      {item.description}
-                    </p>
-                  </div>
+                  {!isSidebarCollapsed && (
+                    <div className="flex-1">
+                      <p className="font-medium">{item.name}</p>
+                      <p className={`text-xs ${isActive ? "text-white/80" : "text-gray-500"}`}>
+                        {item.description}
+                      </p>
+                    </div>
+                  )}
                 </motion.button>
               );
             })}

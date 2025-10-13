@@ -28,6 +28,10 @@ export default withAuth(
       }
     }
 
+    // NOTE: session ping experiment removed to avoid auth redirect loops. We intentionally
+    // do not attempt to update Session.lastAccessedAt here so that existing auth behavior
+    // remains unchanged.
+
     return NextResponse.next();
   },
   {

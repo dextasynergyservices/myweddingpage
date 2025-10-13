@@ -888,10 +888,12 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
           </div>
         </div>
 
-        {/* Floating Customize Button */}
+        {/* Floating Customize Button - moved to bottom-left on mobile to avoid reCAPTCHA overlap */}
         <button
           onClick={() => setShowMobileSheet(true)}
-          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-transform hover:scale-110 active:scale-95"
+          aria-label="Open customization panel"
+          title="Customize"
+          className="fixed bottom-6 left-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gray-800 text-white shadow-lg transition-transform hover:scale-110 active:scale-95"
         >
           <Palette className="h-6 w-6" />
         </button>

@@ -84,6 +84,8 @@ export async function POST(req: NextRequest) {
     }
 
     const userAgent = req.headers.get("user-agent") ?? "";
+    const { getClientIp } = await import("@/lib/ip-utils");
+    const clientIp = getClientIp(req);
     const botRegex =
       /bot|crawler|spider|curl|slurp|bingpreview|facebookexternalhit|facebookcatalog|twitterbot|discordbot|whatsapp|pinterest|whatsapp|telegrambot/i;
     const isBot = botRegex.test(userAgent);
@@ -106,14 +108,24 @@ export async function POST(req: NextRequest) {
 
     if (!isBot && !seenCookie && !slugCookie) {
       try {
-        await prisma.$executeRaw`UPDATE "WeddingPage" SET views = COALESCE(views, 0) + 1 WHERE id = ${weddingPage.id}`;
-        const refreshed = await prisma.weddingPage.findUnique({
-          where: { id: weddingPage.id },
-          select: { views: true },
+        // Transactionally insert PageView and increment aggregate views
+        const txRes = await prisma.$transaction(async (tx) => {
+          await tx.pageView.create({
+            data: {
+              weddingPageId: weddingPage.id,
+              ipAddress: clientIp ?? undefined,
+              userAgent: userAgent || undefined,
+            },
+          });
+          await tx.$executeRaw`UPDATE "WeddingPage" SET views = COALESCE(views, 0) + 1 WHERE id = ${weddingPage.id}`;
+          return tx.weddingPage.findUnique({
+            where: { id: weddingPage.id },
+            select: { views: true },
+          });
         });
-        updatedViews = refreshed?.views ?? null;
+        updatedViews = txRes?.views ?? null;
       } catch (err) {
-        console.error("Failed to increment wedding page views:", err);
+        console.error("Failed to increment wedding page views and record PageView:", err);
       }
     }
 
