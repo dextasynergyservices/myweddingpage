@@ -66,9 +66,10 @@ export async function GET() {
     if (!checkDiskSpace) {
       try {
         // dynamic import avoids using require() which is disallowed by ESLint
-        // @ts-expect-error - module may not have type declarations available
         const mod = await import("check-disk-space");
-        checkDiskSpace = (mod.default as typeof checkDiskSpace) || (mod as typeof checkDiskSpace);
+        checkDiskSpace =
+          (mod.default as unknown as typeof checkDiskSpace) ||
+          (mod as unknown as typeof checkDiskSpace);
       } catch {
         checkDiskSpace = null;
       }
