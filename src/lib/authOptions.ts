@@ -14,6 +14,8 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
+    maxAge: parseInt(process.env.SESSION_MAX_AGE || "2592000", 10), // 30 days default
+    updateAge: 24 * 60 * 60, // Refresh session every 24 hours
   },
   callbacks: {
     async jwt({ token, user }: { token: JWT; user?: User }) {
@@ -46,7 +48,17 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email ?? "";
         token.name = user.name ?? "";
         token.role = existingUser?.role ?? "USER";
+        // token is a JWT - add custom property via type assertion to avoid TS issues
+        (token as JWT & { showRawIps: boolean }).showRawIps =
+          (existingUser as { showRawIps?: boolean })?.showRawIps ?? false;
       }
+
+      // Add expiration if not present (for new tokens)
+      if (!token.exp) {
+        const maxAge = parseInt(process.env.SESSION_MAX_AGE || "2592000", 10);
+        token.exp = Math.floor(Date.now() / 1000) + maxAge;
+      }
+
       console.log("JWT callback - final token:", token);
       return token;
     },
@@ -58,6 +70,9 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email as string;
         session.user.name = token.name as string;
         session.user.role = token.role as string;
+        // expose showRawIps flag to the session
+        // @ts-expect-error - token may have custom properties added in jwt callback
+        session.user.showRawIps = Boolean((token as JWT & { showRawIps?: boolean }).showRawIps);
       }
 
       console.log("Session callback - final session:", session);

@@ -20,6 +20,7 @@ type Plan = {
   max_photos: number;
   max_videos: number;
   max_tabs: number;
+  prints?: string;
   gradient?: string;
   popular?: boolean;
   features?: string[];
@@ -77,6 +78,7 @@ const HomePackages = () => {
           features: [
             "Custom wedding page",
             "RSVP management",
+            plan.prints ? `${plan.prints} printed` : "No prints",
             `${plan.max_photos}+ photos`,
             `${plan.max_videos}+ videos`,
             `${plan.max_tabs}+ custom sections`,

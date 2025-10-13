@@ -65,7 +65,7 @@ export default function RateLimitsPage() {
 
   const fetchRateLimits = async () => {
     try {
-      const response = await fetch("/api/admin/rate-limits");
+      const response = await fetch("/api/admin/rate-limits", { credentials: "include" });
       if (response.ok) {
         const data = await response.json();
         setLimits(data.limits || []);
@@ -134,6 +134,17 @@ export default function RateLimitsPage() {
 
   return (
     <div className="space-y-6">
+      {/* Informational banner: when Redis isn't available data may be mocked */}
+      {stats && stats.redisLimits === 0 && (
+        <div
+          className={`rounded-lg p-3 ${isDarkMode ? "bg-yellow-900/20 border border-yellow-800 text-yellow-200" : "bg-yellow-50 border border-yellow-200 text-yellow-800"}`}
+        >
+          <p className="text-sm">
+            Redis backend not detected — rate limit data may be mocked or estimated in this
+            environment. For accurate live metrics enable Redis and restart the monitor.
+          </p>
+        </div>
+      )}
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>

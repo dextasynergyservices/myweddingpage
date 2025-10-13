@@ -43,6 +43,8 @@ export default function UserManagementPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showRoleDialog, setShowRoleDialog] = useState(false);
+  const [userToToggleRole, setUserToToggleRole] = useState<User | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
@@ -58,7 +60,7 @@ export default function UserManagementPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/admin/users");
+      const response = await fetch("/api/admin/users", { credentials: "include" });
       if (response.ok) {
         const data = await response.json();
         setUsers(data.users || []);
@@ -86,12 +88,17 @@ export default function UserManagementPage() {
     setCurrentPage(1); // Reset to first page when filtering
   };
 
-  const handleToggleRole = async (userId: string, currentRole: string) => {
-    if (!confirm(`Are you sure you want to change this user's role?`)) return;
+  const handleToggleRole = (user: User) => {
+    setUserToToggleRole(user);
+    setShowRoleDialog(true);
+  };
+
+  const confirmToggleRole = async () => {
+    if (!userToToggleRole) return;
 
     setActionLoading(true);
     try {
-      const response = await fetch(`/api/admin/users/${userId}/role`, {
+      const response = await fetch(`/api/admin/users/${userToToggleRole.id}/role`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -99,13 +106,15 @@ export default function UserManagementPage() {
           "x-csrf-token": csrfToken || "",
         },
         body: JSON.stringify({
-          role: currentRole === "ADMIN" ? "USER" : "ADMIN",
+          role: userToToggleRole.role === "ADMIN" ? "USER" : "ADMIN",
         }),
       });
 
       if (response.ok) {
         await fetchUsers();
         toast.success("User role updated successfully");
+        setShowRoleDialog(false);
+        setUserToToggleRole(null);
       } else {
         toast.error("Failed to update user role");
       }
@@ -529,7 +538,7 @@ export default function UserManagementPage() {
                           <Eye className="h-4 w-4" />
                         </button>
                         <button
-                          onClick={() => handleToggleRole(user.id, user.role)}
+                          onClick={() => handleToggleRole(user)}
                           disabled={actionLoading}
                           className={`rounded-lg p-2 transition-colors ${
                             isDarkMode
@@ -793,7 +802,7 @@ export default function UserManagementPage() {
               {/* Actions */}
               <div className="flex items-center gap-2 pt-3 border-t ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}">
                 <button
-                  onClick={() => handleToggleRole(user.id, user.role)}
+                  onClick={() => handleToggleRole(user)}
                   disabled={actionLoading}
                   className={`flex-1 flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                     isDarkMode
@@ -1007,6 +1016,83 @@ export default function UserManagementPage() {
                         : "Never"}
                     </p>
                   </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Role Toggle Confirmation Dialog */}
+      <AnimatePresence>
+        {showRoleDialog && userToToggleRole && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            onClick={() => setShowRoleDialog(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className={`w-full max-w-md rounded-xl border p-6 ${
+                isDarkMode ? "border-gray-800 bg-gray-900" : "border-gray-200 bg-white"
+              }`}
+            >
+              <div className="text-center">
+                <div
+                  className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full ${
+                    isDarkMode ? "bg-purple-900/30" : "bg-purple-100"
+                  }`}
+                >
+                  <UserCog
+                    className={`h-6 w-6 ${isDarkMode ? "text-purple-400" : "text-purple-600"}`}
+                  />
+                </div>
+                <h3
+                  className={`mt-4 text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                >
+                  Change User Role
+                </h3>
+                <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  Are you sure you want to change{" "}
+                  <span className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                    {userToToggleRole.name || userToToggleRole.email}
+                  </span>{" "}
+                  from{" "}
+                  <span className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                    {userToToggleRole.role}
+                  </span>{" "}
+                  to{" "}
+                  <span className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                    {userToToggleRole.role === "ADMIN" ? "USER" : "ADMIN"}
+                  </span>
+                  ?
+                </p>
+                <div className="mt-6 flex gap-3">
+                  <button
+                    onClick={() => setShowRoleDialog(false)}
+                    className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                      isDarkMode
+                        ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmToggleRole}
+                    disabled={actionLoading}
+                    className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                      isDarkMode
+                        ? "bg-[#ab862b] text-white hover:bg-[#9a7527]"
+                        : "bg-[#ab862b] text-white hover:bg-[#9a7527]"
+                    } ${actionLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    {actionLoading ? "Updating..." : "Confirm Change"}
+                  </button>
                 </div>
               </div>
             </motion.div>

@@ -5,6 +5,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/auth";
 import { checkLockoutStatus } from "@/lib/account-lockout";
+import { logSecurityEvent } from "@/lib/security-logger";
+import { SecurityEventType, SecuritySeverity } from "@/generated/prisma";
 
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -48,8 +50,6 @@ const authOptions: NextAuthOptions = {
 
         if (!user) {
           // Track failed login attempt
-          // Note: We can't use handleFailedLogin here as it requires NextRequest
-          // Instead, directly track the attempt
           await prisma.loginAttempt.create({
             data: {
               email: credentials.emailOrPhone,
@@ -102,22 +102,14 @@ const authOptions: NextAuthOptions = {
 
         const has2FA = twoFactorSecret?.enabled ?? false;
 
-        // If 2FA is enabled, we need to verify it
-        // NOTE: NextAuth doesn't support multi-step auth natively
-        // So we'll handle 2FA verification in the JWT callback
-        // The client must call /api/auth/2fa/verify before calling signIn
-
         if (has2FA) {
-          // Check if 2FA token was provided in credentials
           const twoFactorToken = (credentials as Record<string, string>).twoFactorToken;
           const isBackupCode = (credentials as Record<string, string>).isBackupCode === "true";
 
           if (!twoFactorToken) {
-            // 2FA required but not provided
             throw new Error("2FA_REQUIRED");
           }
 
-          // Verify 2FA token
           const { verify2FAToken, verifyAndConsumeBackupCode } = await import("@/lib/two-factor");
           const { verifyEmailCode } = await import("@/lib/email-two-factor");
 
@@ -125,21 +117,17 @@ const authOptions: NextAuthOptions = {
           let errorMessage = "";
 
           if (isBackupCode) {
-            // Backup code verification (works for both TOTP and Email methods)
             const result = await verifyAndConsumeBackupCode(user.id, twoFactorToken);
             isVerified = result.success;
             errorMessage = result.error || "";
           } else {
-            // Check user's preferred 2FA method
             const userMethod = user.twoFactorMethod || "totp";
 
             if (userMethod === "email") {
-              // Verify email 2FA code
               const result = await verifyEmailCode(user.id, twoFactorToken);
               isVerified = result.valid;
               errorMessage = result.error || "";
             } else {
-              // Verify TOTP token
               const result = await verify2FAToken(user.id, twoFactorToken);
               isVerified = result.success;
               errorMessage = result.error || "";
@@ -147,7 +135,6 @@ const authOptions: NextAuthOptions = {
           }
 
           if (!isVerified) {
-            // Track failed 2FA attempt
             await prisma.loginAttempt.create({
               data: {
                 userId: user.id,
@@ -162,7 +149,6 @@ const authOptions: NextAuthOptions = {
           }
         }
 
-        // Track successful login and clear lockouts
         await prisma.loginAttempt.create({
           data: {
             userId: user.id,
@@ -172,7 +158,29 @@ const authOptions: NextAuthOptions = {
           },
         });
 
-        // Clear any existing lockouts
+        try {
+          const userAgent = reqHeaders?.get?.("user-agent") || "unknown";
+          // Log security event (non-blocking)
+          void logSecurityEvent({
+            eventType: SecurityEventType.LOGIN_SUCCESS,
+            severity: SecuritySeverity.LOW,
+            userId: user.id,
+            ipAddress: ip || "unknown",
+            userAgent,
+            endpoint: "/api/auth/credentials",
+            method: "POST",
+            statusCode: 200,
+            message: `Successful credentials login for ${user.email}`,
+            metadata: { provider: "credentials" },
+          }).catch(() => {});
+
+          // Note: we persist login events to SecurityLog; the User model currently does not
+          // include a `lastLoginAt` column so we avoid updating the user record here.
+          // Admin UI derives lastLoginAt from SecurityLog entries.
+        } catch {
+          // non-fatal
+        }
+
         const { clearLockout } = await import("@/lib/account-lockout");
         await clearLockout(credentials.emailOrPhone, ip);
 
@@ -185,21 +193,18 @@ const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: parseInt(process.env.SESSION_MAX_AGE || "2592000", 10),
+    updateAge: 24 * 60 * 60,
+  },
   callbacks: {
     async redirect({ url, baseUrl }) {
-      // If the URL is a sign in, check the user's role and redirect accordingly
-      // This will be called after successful sign in
-
-      // If url is a callback URL from the sign in page
       if (url.startsWith(baseUrl)) {
         return url;
-      }
-      // If it's a relative URL
-      else if (url.startsWith("/")) {
+      } else if (url.startsWith("/")) {
         return `${baseUrl}${url}`;
       }
-      // Default to base URL
       return baseUrl;
     },
     async session({ session, token }) {
@@ -209,10 +214,9 @@ const authOptions: NextAuthOptions = {
         session.user.name = token.name ?? null;
         session.user.whatsapp = token.whatsapp ?? null;
         session.user.role = token.role ?? null;
-
-        // Note: Session security tracking (IP/user agent monitoring) should be
-        // done in middleware or API routes where request headers are available.
-        // NextAuth JWT callbacks don't have access to request context.
+        // @ts-expect-error - token may include custom properties added at runtime
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        session.user.showRawIps = Boolean((token as any)?.showRawIps);
       }
       return session;
     },
@@ -224,11 +228,42 @@ const authOptions: NextAuthOptions = {
         token.whatsapp = user.whatsapp ?? undefined;
         token.role = user.role ?? undefined;
       }
+      if (!token.exp) {
+        const maxAge = parseInt(process.env.SESSION_MAX_AGE || "2592000", 10);
+        token.exp = Math.floor(Date.now() / 1000) + maxAge;
+      }
       return token;
     },
   },
   pages: {
     signIn: "/login",
+  },
+  events: {
+    // Allow `any` here because NextAuth provides provider-specific shapes
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async signIn(params: { user: any; account: any; profile?: any }) {
+      const { user, account } = params;
+      try {
+        // Log security event (best-effort)
+        void logSecurityEvent({
+          eventType: SecurityEventType.LOGIN_SUCCESS,
+          severity: SecuritySeverity.LOW,
+          userId: user?.id,
+          ipAddress: "unknown",
+          userAgent: "unknown",
+          endpoint: account?.provider ? `/auth/${account.provider}` : "/auth",
+          method: "POST",
+          statusCode: 200,
+          message: `Successful sign in via ${account?.provider ?? "provider"}`,
+          metadata: { provider: account?.provider, providerAccountId: account?.providerAccountId },
+        }).catch(() => {});
+
+        // Note: the User model doesn't currently have `lastLoginAt`. We rely on SecurityLog
+        // entries for last-login information, so avoid updating the user record here.
+      } catch {
+        // ignore logging failures
+      }
+    },
   },
 };
 

@@ -112,7 +112,7 @@ export async function GET() {
         : 0;
 
     // Get login and security event counts for chart
-    const loginCounts = await prisma.$queryRaw<Array<{ date: Date; count: bigint }>>`
+    const loginCounts = await prisma.$queryRaw<Array<{ date: string; count: number }>>`
       SELECT
         DATE(timestamp) as date,
         COUNT(*) as count
@@ -123,7 +123,7 @@ export async function GET() {
       ORDER BY date ASC
     `;
 
-    const eventCounts = await prisma.$queryRaw<Array<{ date: Date; count: bigint }>>`
+    const eventCounts = await prisma.$queryRaw<Array<{ date: string; count: number }>>`
       SELECT
         DATE(timestamp) as date,
         COUNT(*) as count
@@ -135,13 +135,9 @@ export async function GET() {
     `;
 
     // Create a map of dates to counts
-    const loginMap = new Map(
-      loginCounts.map((item) => [item.date.toISOString().split("T")[0], Number(item.count)])
-    );
+    const loginMap = new Map(loginCounts.map((item) => [item.date, item.count]));
 
-    const eventMap = new Map(
-      eventCounts.map((item) => [item.date.toISOString().split("T")[0], Number(item.count)])
-    );
+    const eventMap = new Map(eventCounts.map((item) => [item.date, item.count]));
 
     // Generate chart data for last 7 days
     const chartData = [];

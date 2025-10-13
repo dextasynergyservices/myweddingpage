@@ -24,7 +24,8 @@
     "admin:list": "tsx scripts/admin-manager.ts list",
     "admin:check": "tsx scripts/admin-manager.ts check",
     "generate:icons": "node scripts/generate-icons.js",
-    "generate:vapid": "node scripts/generate-vapid-keys.js"
+    "generate:vapid": "node scripts/generate-vapid-keys.js",
+    "inspect:timings": "pnpm tsx scripts/inspect-timings.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -39,6 +40,12 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@sendgrid/mail": "^8.1.5",
     "@tanstack/react-query": "^5.85.3",
+    "@tiptap/extension-color": "^3.6.6",
+    "@tiptap/extension-link": "^3.6.6",
+    "@tiptap/extension-text-style": "^3.6.6",
+    "@tiptap/extension-underline": "^3.6.6",
+    "@tiptap/react": "^3.6.6",
+    "@tiptap/starter-kit": "^3.6.6",
     "@types/react-google-recaptcha": "^2.1.9",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
@@ -49,6 +56,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.6",
+    "html2canvas": "^1.4.1",
     "isomorphic-dompurify": "^2.28.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.525.0",
@@ -113,5 +121,8 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
     "typescript": "^5"
+  },
+  "optionalDependencies": {
+    "check-disk-space": "^2.2.0"
   }
 }

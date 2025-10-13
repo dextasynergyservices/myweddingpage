@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/middleware/admin";
 
 /**
@@ -11,8 +11,11 @@ export async function GET() {
     // Check admin authentication
     const adminCheck = await requireAdmin();
     if (adminCheck instanceof NextResponse) {
+      console.log("Admin check failed:", adminCheck.status, await adminCheck.json());
       return adminCheck;
     }
+
+    console.log("Fetching lockouts...");
 
     // Fetch all lockouts
     const lockouts = await prisma.accountLockout.findMany({
@@ -22,12 +25,22 @@ export async function GET() {
       take: 100, // Limit to last 100
     });
 
-    // Calculate stats
-    const activeLockouts = lockouts.filter(
-      (l) => !l.unlocked && new Date(l.lockedUntil) > new Date()
-    ).length;
+    console.log("Found lockouts:", lockouts.length);
 
-    const unlockedLockouts = lockouts.filter((l) => l.unlocked).length;
+    // Calculate stats
+    let activeLockouts = 0;
+    let unlockedLockouts = 0;
+    try {
+      activeLockouts = lockouts.filter(
+        (l) => !l.unlocked && new Date(l.lockedUntil) > new Date()
+      ).length;
+
+      unlockedLockouts = lockouts.filter((l) => l.unlocked).length;
+    } catch (statsError) {
+      console.error("Error calculating stats:", statsError);
+      activeLockouts = 0;
+      unlockedLockouts = 0;
+    }
 
     // Generate chart data for last 7 days
     const chartData = [];
@@ -40,8 +53,12 @@ export async function GET() {
       const dayName = days[date.getDay()];
 
       const count = lockouts.filter((l) => {
-        const lockoutDate = new Date(l.lockedAt).toISOString().split("T")[0];
-        return lockoutDate === dateStr;
+        try {
+          const lockoutDate = new Date(l.lockedAt).toISOString().split("T")[0];
+          return lockoutDate === dateStr;
+        } catch {
+          return false;
+        }
       }).length;
 
       chartData.push({
@@ -56,6 +73,8 @@ export async function GET() {
       unlockedLockouts,
       chartData,
     };
+
+    console.log("Returning stats:", stats);
 
     return NextResponse.json({
       success: true,
