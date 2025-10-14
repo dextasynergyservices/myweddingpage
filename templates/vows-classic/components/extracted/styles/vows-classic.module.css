@@ -1,0 +1,10 @@
+.heroSection {
+  background-size: cover;
+  background-position: center;
+}
+
+.containerWedding {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
