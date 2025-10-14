@@ -1,0 +1,185 @@
+{
+  "name": "Vows Classic",
+  "slug": "vows-classic",
+  "description": "A classic, timeless wedding template with elegant typography and romantic styling.",
+  "categoryId": "cc4b45c4-9a45-4bf8-85d9-192144d43c87",
+  "planIds": [
+    "c883dbff-0982-43fd-8621-d4e8bcd2e48f",
+    "5caaccb9-6e14-4a53-a49a-177de72b0ccf"
+  ],
+  "thumbnail": "assets/thumb-vows.png",
+  "heroImage": "assets/hero-wedding.jpg",
+  "colorSchemes": [
+    {
+      "name": "Classic Gold",
+      "primary": "#D4AF37",
+      "secondary": "#8B4513",
+      "accent": "#F5F5DC",
+      "background": "#FFFFFF",
+      "text": "#2C2C2C",
+      "description": "Timeless gold and cream elegance"
+    },
+    {
+      "name": "Romantic Rose",
+      "primary": "#E91E63",
+      "secondary": "#C2185B",
+      "accent": "#F8BBD9",
+      "background": "#FFF8F8",
+      "text": "#2C2C2C",
+      "description": "Soft rose and pink romance"
+    }
+  ],
+  "layout_data": {
+    "fontFamily": "serif",
+    "layout": "classic_centered",
+    "spacing": "comfortable",
+    "animations": "subtle"
+  },
+  "sections": [
+    {
+      "type": "HERO",
+      "layout": "vows_hero",
+      "order": 1,
+      "components": {
+        "title": "{groomName} & {brideName}",
+        "subtitle": "{weddingDate}",
+        "venue": "{venue}",
+        "description": "{welcomeMessage}",
+        "heroImage": "assets/hero-wedding.jpg",
+        "style": "classic_script",
+        "layout_type": "centered_overlay",
+        "elements": [
+          "couple_names",
+          "date",
+          "venue",
+          "cta_button"
+        ]
+      }
+    },
+    {
+      "type": "STORY",
+      "layout": "vows_story",
+      "order": 2,
+      "components": {
+        "title": "Our Story",
+        "content": "{storyContent}",
+        "storyImage1": "assets/story-image-1.jpg",
+        "storyImage2": "assets/story-image-2.jpg",
+        "milestones": [
+          {
+            "date": "March 2018",
+            "title": "How We Met",
+            "description": "First meeting at a coffee shop."
+          }
+        ],
+        "style": "timeline_vertical",
+        "layout_type": "alternating_images",
+        "elements": [
+          "story_text",
+          "milestone_images",
+          "timeline_dates"
+        ]
+      }
+    },
+    {
+      "type": "GALLERY",
+      "layout": "vows_gallery",
+      "order": 3,
+      "components": {
+        "title": "Gallery",
+        "description": "Capturing the beautiful moments of our journey together",
+        "gallery": [
+          {
+            "id": "vows-image-0",
+            "url": "assets/gallery-1.jpg",
+            "type": "PHOTO",
+            "category": "during",
+            "createdAt": "2025-10-13T00:00:00.000Z"
+          },
+          {
+            "id": "vows-image-1",
+            "url": "assets/gallery-2.jpg",
+            "type": "PHOTO",
+            "category": "during",
+            "createdAt": "2025-10-13T00:00:00.000Z"
+          }
+        ],
+        "images": [
+          "assets/gallery-1.jpg",
+          "assets/gallery-2.jpg"
+        ],
+        "videos": [],
+        "categories": [
+          "all",
+          "before",
+          "during",
+          "after"
+        ],
+        "style": "grid_classic",
+        "layout_type": "masonry",
+        "elements": [
+          "image_grid",
+          "category_filters",
+          "lightbox"
+        ]
+      }
+    },
+    {
+      "type": "REGISTRY",
+      "layout": "vows_gift",
+      "order": 4,
+      "components": {
+        "title": "Gift Registry",
+        "description": "Your presence at our wedding is the greatest gift of all",
+        "gifts": [
+          {
+            "id": "vows-gift-1",
+            "name": "Dining Table Set",
+            "description": "Beautiful oak dining table",
+            "price": "₦1,200,000",
+            "image": "https://images.pexels.com/photos/271897/pexels-photo-271897.jpeg"
+          }
+        ],
+        "cashGiftEnabled": true,
+        "bankDetails": [
+          {
+            "id": "vows-bank-1",
+            "bankName": "First Bank",
+            "accountName": "Sarah & Michael Wedding Fund",
+            "accountNumber": "1234567890"
+          }
+        ]
+      }
+    },
+    {
+      "type": "WISHES",
+      "layout": "vows_guest",
+      "order": 5,
+      "components": {
+        "title": "Well Wishes",
+        "description": "Share your love, memories, and well wishes for our special day",
+        "existingMessages": [
+          {
+            "id": "vows-guest-1",
+            "name": "Emily Rodriguez",
+            "message": "So excited to celebrate with you both!",
+            "timestamp": "2 days ago"
+          }
+        ],
+        "allowNewMessages": true
+      }
+    }
+  ],
+  "assets": [
+    "assets/hero-wedding.jpg",
+    "assets/thumb-vows.png",
+    "assets/story-image-1.jpg",
+    "assets/story-image-2.jpg",
+    "assets/gallery-1.jpg",
+    "assets/gallery-2.jpg"
+  ],
+  "componentsZip": "components.zip",
+  "categoryIds": [
+    "3e44f777-32a8-4182-80d5-d66ace42ce70"
+  ]
+}
