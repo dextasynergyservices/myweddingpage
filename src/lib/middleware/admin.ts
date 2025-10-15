@@ -166,14 +166,74 @@ export async function logAdminAction(
     return;
   }
 
-  await logSecurityEvent({
+  // Ensure metadata.admin is always present and normalize resource keys
+  const normalized: Record<string, unknown> = { ...(details || {}) };
+
+  // Normalize plan keys if present in different shapes
+  try {
+    // helpers to pull string-like values safely from unknown shapes
+    const getStringLike = (
+      obj: Record<string, unknown> | undefined,
+      k: string
+    ): string | undefined => {
+      if (!obj) return undefined;
+      const v = obj[k];
+      if (v === undefined || v === null) return undefined;
+      if (typeof v === "string") return v;
+      if (typeof v === "number") return String(v);
+      if (typeof v === "object") {
+        const o = v as Record<string, unknown>;
+        if (typeof o.id === "string") return o.id;
+        if (typeof o.name === "string") return o.name;
+      }
+      return undefined;
+    };
+
+    const getNested = (
+      obj: Record<string, unknown> | undefined,
+      path: string[]
+    ): string | undefined => {
+      let cur: unknown = obj;
+      for (const p of path) {
+        if (!cur || typeof cur !== "object") return undefined;
+        cur = (cur as Record<string, unknown>)[p];
+      }
+      if (typeof cur === "string") return cur;
+      if (typeof cur === "number") return String(cur);
+      return undefined;
+    };
+
+    const planId =
+      getStringLike(details, "planId") ||
+      getStringLike(details, "plan_id") ||
+      getNested(details, ["plan", "id"]);
+    const planName =
+      getStringLike(details, "planName") ||
+      getStringLike(details, "name") ||
+      getNested(details, ["plan", "name"]);
+
+    if (planId) normalized.planId = planId;
+    if (planName) normalized.planName = planName;
+  } catch {
+    // ignore normalization errors
+  }
+
+  normalized.admin = normalized.admin || {
+    id: adminSession.user.id,
+    email: adminSession.user.email || null,
+    role: adminSession.user.role || null,
+  };
+
+  const created = await logSecurityEvent({
     eventType: "ADMIN_ACTION",
     severity: "MEDIUM",
     userId: adminSession.user.id,
     ipAddress: "server",
     message: action,
-    metadata: details,
+    metadata: normalized,
   });
+
+  return created;
 }
 
 const adminMiddleware = {

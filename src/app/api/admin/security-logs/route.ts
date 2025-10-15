@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { requireAdmin } from "@/lib/middleware/admin";
 import {
   querySecurityLogs,
   getSecurityStats,
@@ -26,10 +26,9 @@ import {
 export async function GET(request: NextRequest) {
   try {
     // Check admin authentication
-    const session = await getServerSession();
-
-    if (!session || session.user?.role !== "ADMIN") {
-      return NextResponse.json({ error: "Unauthorized - Admin access required" }, { status: 403 });
+    const adminCheck = await requireAdmin();
+    if (adminCheck) {
+      return adminCheck;
     }
 
     const { searchParams } = request.nextUrl;
@@ -78,7 +77,23 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get("endDate")
       ? new Date(searchParams.get("endDate")!)
       : undefined;
-    const limit = parseInt(searchParams.get("limit") || "100");
+    const limit = parseInt(searchParams.get("limit") || "100", 10);
+    const after = searchParams.get("after") || undefined; // cursor encoded as base64 JSON { t: timestamp, id: id }
+    let afterTimestamp: string | undefined;
+    let afterId: string | undefined;
+    if (after) {
+      try {
+        const decoded = JSON.parse(Buffer.from(after, "base64").toString("utf8"));
+        afterTimestamp = decoded.t;
+        afterId = decoded.id;
+      } catch {
+        // ignore invalid cursor
+      }
+    }
+    const messageContains = searchParams.get("messageContains") || undefined;
+    const metadataContains = searchParams.get("metadataContains") || undefined;
+    const offsetParam = searchParams.get("offset");
+    const offset = offsetParam ? Math.max(0, parseInt(offsetParam, 10)) : undefined;
 
     const logs = await querySecurityLogs({
       eventType,
@@ -88,9 +103,90 @@ export async function GET(request: NextRequest) {
       startDate,
       endDate,
       limit,
+      offset: afterTimestamp || afterId ? undefined : offset,
+      afterTimestamp,
+      afterId,
+      messageContains,
+      metadataContains,
     });
 
-    return NextResponse.json({ logs, count: logs.length });
+    // compute total count for pagination when requested
+    const metadataKey = searchParams.get("metadataKey") || undefined;
+    const metadataValue = searchParams.get("metadataValue") || undefined;
+    const { countSecurityLogs } = await import("../../../../lib/security-logger");
+    const totalCount = await countSecurityLogs({
+      eventType,
+      severity,
+      userId,
+      ipAddress,
+      startDate,
+      endDate,
+      messageContains,
+      metadataKey: metadataKey || undefined,
+      metadataValue: metadataValue || undefined,
+    });
+
+    const totalPages = Math.max(1, Math.ceil(totalCount / Math.max(1, limit)));
+
+    // next cursor: use last item timestamp and id
+    let nextCursor: string | null = null;
+    if (logs.length > 0) {
+      const last = logs[logs.length - 1] as Record<string, unknown>;
+      try {
+        // timestamp may be string|number|Date or unknown shape coming from raw SQL
+        const tsVal = last.timestamp as unknown;
+        let iso: string | null = null;
+        if (typeof tsVal === "string" || typeof tsVal === "number") {
+          const d = new Date(tsVal as string | number);
+          if (!isNaN(d.getTime())) iso = d.toISOString();
+        } else if (tsVal instanceof Date) {
+          iso = tsVal.toISOString();
+        } else if (typeof last.createdAt === "string" || typeof last.createdAt === "number") {
+          const d = new Date(last.createdAt as string | number);
+          if (!isNaN(d.getTime())) iso = d.toISOString();
+        }
+
+        if (iso) {
+          const cur = { t: iso, id: String(last.id ?? "") };
+          nextCursor = Buffer.from(JSON.stringify(cur), "utf8").toString("base64");
+        } else {
+          nextCursor = null;
+        }
+      } catch {
+        nextCursor = null;
+      }
+    }
+
+    // Normalize logs: expose metadata.action (if present) as top-level `action` for client convenience
+    const normalizedLogs = (logs || []).map((l: Record<string, unknown>) => {
+      try {
+        const meta = (l.metadata as Record<string, unknown>) || {};
+        let action = undefined as string | undefined;
+        if (meta && typeof meta === "object" && typeof meta["action"] === "string") {
+          action = String(meta["action"]);
+        } else if (typeof l.message === "string") {
+          const m = (l.message as string).toUpperCase();
+          if (m.startsWith("PLAN_CREATED")) action = "PLAN_CREATED";
+          else if (m.startsWith("PLAN_UPDATED")) action = "PLAN_UPDATED";
+          else if (m.startsWith("PLAN_DELETED")) action = "PLAN_DELETED";
+          else if (m.includes("LOGIN") && (m.includes("FAIL") || m.includes("FAILURE")))
+            action = "LOGIN_FAILED";
+          else if (m.includes("LOGIN") && (m.includes("SUCCESS") || m.includes("SUCCEED")))
+            action = "LOGIN_SUCCESS";
+        }
+        return { ...l, action };
+      } catch {
+        return l;
+      }
+    });
+
+    return NextResponse.json({
+      logs: normalizedLogs,
+      count: logs.length,
+      totalCount,
+      totalPages,
+      nextCursor,
+    });
   } catch (error) {
     console.error("Failed to query security logs:", error);
     return NextResponse.json({ error: "Failed to query security logs" }, { status: 500 });
@@ -109,10 +205,9 @@ export async function GET(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     // Check admin authentication
-    const session = await getServerSession();
-
-    if (!session || session.user?.role !== "ADMIN") {
-      return NextResponse.json({ error: "Unauthorized - Admin access required" }, { status: 403 });
+    const adminCheck = await requireAdmin();
+    if (adminCheck) {
+      return adminCheck;
     }
 
     const body = await request.json();

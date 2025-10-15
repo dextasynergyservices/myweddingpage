@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { PageSkeleton } from "@/components/admin/LoadingSkeleton";
+import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 
 interface User {
   id: string;
@@ -46,6 +47,8 @@ export default function UserManagementPage() {
   const [showRoleDialog, setShowRoleDialog] = useState(false);
   const [userToToggleRole, setUserToToggleRole] = useState<User | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; email: string } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
 
@@ -126,9 +129,13 @@ export default function UserManagementPage() {
     }
   };
 
-  const handleReset2FA = async (userId: string) => {
-    if (!confirm("Are you sure you want to reset this user's 2FA?")) return;
+  const handleReset2FA = (userId: string) => {
+    setDeleteTarget({ id: userId, email: "reset-2fa" });
+    // reuse ConfirmDeleteModal with a custom message for 2FA reset
+    setConfirmDeleteOpen(true);
+  };
 
+  const confirmReset2FA = async (userId: string) => {
     setActionLoading(true);
     try {
       const response = await fetch(`/api/admin/users/${userId}/reset-2fa`, {
@@ -150,6 +157,8 @@ export default function UserManagementPage() {
       toast.error("Failed to reset 2FA");
     } finally {
       setActionLoading(false);
+      setConfirmDeleteOpen(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -178,10 +187,13 @@ export default function UserManagementPage() {
     }
   };
 
-  const handleDeleteUser = async (userId: string, userEmail: string) => {
-    if (!confirm(`Are you sure you want to delete ${userEmail}? This action cannot be undone.`))
-      return;
+  const handleDeleteUser = (userId: string, userEmail: string) => {
+    setDeleteTarget({ id: userId, email: userEmail });
+    setConfirmDeleteOpen(true);
+  };
 
+  const confirmDeleteUser = async (userId: string | undefined) => {
+    if (!userId) return;
     setActionLoading(true);
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
@@ -204,6 +216,8 @@ export default function UserManagementPage() {
       toast.error("Failed to delete user");
     } finally {
       setActionLoading(false);
+      setConfirmDeleteOpen(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -1099,6 +1113,29 @@ export default function UserManagementPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Shared Confirm Delete / Reset modal */}
+      <ConfirmDeleteModal
+        isOpen={confirmDeleteOpen}
+        onClose={() => {
+          setConfirmDeleteOpen(false);
+          setDeleteTarget(null);
+        }}
+        onConfirm={async () => {
+          if (!deleteTarget) return;
+          // special-case reset-2fa flow where email is 'reset-2fa'
+          if (deleteTarget.email === "reset-2fa") {
+            await confirmReset2FA(deleteTarget.id);
+            return;
+          }
+          await confirmDeleteUser(deleteTarget.id);
+        }}
+        title={deleteTarget && deleteTarget.email === "reset-2fa" ? "Reset 2FA" : "Confirm Delete"}
+        message={
+          deleteTarget && deleteTarget.email === "reset-2fa"
+            ? "Are you sure you want to reset this user's 2FA?"
+            : `Are you sure you want to delete ${deleteTarget?.email}? This action cannot be undone.`
+        }
+      />
     </div>
   );
 }
