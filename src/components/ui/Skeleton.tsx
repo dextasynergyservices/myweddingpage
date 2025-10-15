@@ -23,13 +23,7 @@ function SkeletonBase({
   );
 }
 
-export default function Skeleton({
-  className = "",
-  lines = 1,
-}: {
-  className?: string;
-  lines?: number;
-}) {
+export function Skeleton({ className = "", lines = 1 }: { className?: string; lines?: number }) {
   return (
     <div className={`animate-pulse ${className}`} aria-hidden>
       {Array.from({ length: lines }).map((_, i) => (
@@ -59,6 +53,25 @@ export const SkeletonCard: React.FC<{ className?: string }> = ({ className = "" 
   <div className={`p-4 border border-gray-200 dark:border-gray-700 rounded-lg ${className}`}>
     <SkeletonBase width="100%" height={160} className="mb-4 rounded-lg" />
     <SkeletonBase width="60%" height={16} className="mb-2 rounded" />
+    <SkeletonText lines={2} />
+  </div>
+);
+
+// Small helper components used as placeholders in the customization UI
+export const SkeletonColorPicker: React.FC<{ className?: string }> = ({ className = "" }) => (
+  <div className={`space-y-2 ${className}`}>
+    <SkeletonBase width="100%" height={24} className="rounded" />
+    <div className="flex space-x-2">
+      <SkeletonBase width={40} height={40} className="rounded-full" />
+      <SkeletonBase width={40} height={40} className="rounded-full" />
+      <SkeletonBase width={40} height={40} className="rounded-full" />
+    </div>
+  </div>
+);
+
+export const SkeletonFontPicker: React.FC<{ className?: string }> = ({ className = "" }) => (
+  <div className={`space-y-2 ${className}`}>
+    <SkeletonBase width="100%" height={40} className="rounded" />
     <SkeletonText lines={2} />
   </div>
 );
