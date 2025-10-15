@@ -1,0 +1,70 @@
+{
+  "name": "Vows Classic (Sample)",
+  "slug": "vows-classic-sample",
+  "description": "Sample package scaffold for designers — replace assets and components before uploading.",
+  "categoryId": "cc4b45c4-9a45-4bf8-85d9-192144d43c87",
+  "planIds": ["<PLAN_ID_DELIGHT>", "<PLAN_ID_DARLING>"],
+  "thumbnail": "assets/thumb-vows.png",
+  "heroImage": "assets/hero-wedding.jpg",
+  "colorSchemes": [
+    {
+      "name": "Classic Gold",
+      "primary": "#D4AF37",
+      "secondary": "#8B4513",
+      "accent": "#F5F5DC",
+      "background": "#FFFFFF",
+      "text": "#2C2C2C",
+      "description": "Timeless gold and cream elegance"
+    }
+  ],
+  "layout_data": {
+    "fontFamily": "serif",
+    "layout": "classic_centered",
+    "spacing": "comfortable",
+    "animations": "subtle"
+  },
+  "sections": [
+    {
+      "type": "HERO",
+      "layout": "vows_hero",
+      "order": 1,
+      "components": {
+        "title": "{groomName} & {brideName}",
+        "subtitle": "{weddingDate}",
+        "heroImage": "assets/hero-wedding.jpg",
+        "style": "classic_script"
+      }
+    },
+    {
+      "type": "STORY",
+      "layout": "vows_story",
+      "order": 2,
+      "components": {
+        "title": "Our Story",
+        "content": "{storyContent}",
+        "storyImage1": "assets/story-image-1.jpg",
+        "storyImage2": "assets/story-image-2.jpg",
+        "style": "timeline_vertical"
+      }
+    },
+    {
+      "type": "GALLERY",
+      "layout": "vows_gallery",
+      "order": 3,
+      "components": {
+        "title": "Gallery",
+        "images": ["assets/gallery-1.jpg", "assets/gallery-2.jpg"],
+        "style": "grid_classic"
+      }
+    }
+  ],
+  "assets": [
+    "assets/hero-wedding.jpg",
+    "assets/thumb-vows.png",
+    "assets/story-image-1.jpg",
+    "assets/story-image-2.jpg",
+    "assets/gallery-1.jpg",
+    "assets/gallery-2.jpg"
+  ],
+  "componentsZip": "components.zip"
+}

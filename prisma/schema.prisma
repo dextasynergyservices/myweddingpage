@@ -168,6 +168,7 @@ model Template {
   previewData  Json?
   isActive      Boolean  @default(true)
   created_at    DateTime @default(now())
+  thumbnailPublicId String?
 
   weddingPages  WeddingPage[]
   planTemplate  PlanTemplate[]
@@ -197,6 +198,30 @@ model TemplateCategory {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   templates   Template[]
+}
+
+enum GCStatus {
+  pending
+  success
+  failed
+}
+
+// RemoteMediaGC stores records of remote media (e.g., Cloudinary public ids)
+// that need to be deleted. A cron job will attempt deletion and update status.
+model RemoteMediaGC {
+  id           String    @id @default(uuid())
+  publicId     String
+  resourceType String    @default("image")
+  source       String?   // e.g., "thumbnail"
+  templateId   String?   // optional link back to template
+  status       GCStatus  @default(pending)
+  attempts     Int       @default(0)
+  lastError    String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([status])
+  @@index([templateId])
 }
 
 model PlanTemplate {
@@ -790,4 +815,15 @@ model SystemMetric {
 
   @@index([windowMinutes])
   @@index([timestamp])
+}
+
+// Persist admin UI selections for cross-device/session reporting
+model AdminSelection {
+  id        String   @id @default(uuid())
+  adminId   String   @unique
+  data      Json
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
 }

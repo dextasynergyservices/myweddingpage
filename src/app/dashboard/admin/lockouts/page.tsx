@@ -7,6 +7,7 @@ import { useCSRFToken } from "@/hooks/useCSRFToken";
 import { Lock, Unlock, AlertCircle, Clock, Shield, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { PageSkeleton } from "@/components/admin/LoadingSkeleton";
+import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 interface AccountLockout {
@@ -42,6 +43,8 @@ export default function AccountLockoutsPage() {
   const [filter, setFilter] = useState<"all" | "active" | "unlocked">("all");
   const [currentPage, setCurrentPage] = useState(1);
   const lockoutsPerPage = 10;
+  const [unlockModalOpen, setUnlockModalOpen] = useState(false);
+  const [unlockTarget, setUnlockTarget] = useState<{ id: string; email: string } | null>(null);
 
   useEffect(() => {
     fetchLockouts();
@@ -67,11 +70,15 @@ export default function AccountLockoutsPage() {
     }
   };
 
-  const handleUnlock = async (id: string, email: string) => {
-    if (!confirm(`Unlock account for ${email}?`)) return;
+  const handleUnlock = (id: string, email: string) => {
+    setUnlockTarget({ id, email });
+    setUnlockModalOpen(true);
+  };
 
+  const confirmUnlock = async () => {
+    if (!unlockTarget) return;
     try {
-      const response = await fetch(`/api/admin/lockouts/${id}/unlock`, {
+      const response = await fetch(`/api/admin/lockouts/${unlockTarget.id}/unlock`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -88,6 +95,9 @@ export default function AccountLockoutsPage() {
     } catch (error) {
       console.error("Error unlocking account:", error);
       toast.error("Failed to unlock account");
+    } finally {
+      setUnlockModalOpen(false);
+      setUnlockTarget(null);
     }
   };
 
@@ -467,17 +477,19 @@ export default function AccountLockoutsPage() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         {isActive && (
-                          <button
-                            onClick={() => handleUnlock(lockout.id, lockout.email)}
-                            className={`rounded-lg p-2 transition-colors ${
-                              isDarkMode
-                                ? "hover:bg-gray-800 text-green-400"
-                                : "hover:bg-green-100 text-green-600"
-                            }`}
-                            title="Unlock Account"
-                          >
-                            <Unlock className="h-4 w-4" />
-                          </button>
+                          <>
+                            <button
+                              onClick={() => handleUnlock(lockout.id, lockout.email)}
+                              className={`rounded-lg p-2 transition-colors ${
+                                isDarkMode
+                                  ? "hover:bg-gray-800 text-green-400"
+                                  : "hover:bg-green-100 text-green-600"
+                              }`}
+                              title="Unlock Account"
+                            >
+                              <Unlock className="h-4 w-4" />
+                            </button>
+                          </>
                         )}
                       </td>
                     </motion.tr>
@@ -708,6 +720,36 @@ export default function AccountLockoutsPage() {
           </div>
         )}
       </div>
+      {/* Unlock confirmation modal */}
+      <LockoutsPageModalWrapper
+        isOpen={unlockModalOpen}
+        onClose={() => {
+          setUnlockModalOpen(false);
+          setUnlockTarget(null);
+        }}
+        onConfirm={confirmUnlock}
+        email={unlockTarget?.email ?? null}
+      />
     </div>
   );
 }
+
+// Unlock confirmation modal
+function LockoutsPageModalWrapper(props: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => Promise<void> | void;
+  email?: string | null;
+}) {
+  return (
+    <ConfirmDeleteModal
+      isOpen={props.isOpen}
+      onClose={props.onClose}
+      onConfirm={props.onConfirm}
+      title={`Unlock account${props.email ? ` — ${props.email}` : ""}`}
+      message={`Are you sure you want to unlock this account${props.email ? ` (${props.email})` : ""}?`}
+    />
+  );
+}
+
+export { LockoutsPageModalWrapper as UnlockConfirmModal };

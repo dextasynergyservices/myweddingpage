@@ -135,3 +135,23 @@ a:focus-visible {
   background: #9a7426;
   transform: scale(1.1);
 }
+
+/* Small success badge animation */
+@keyframes success-badge-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-success-badge {
+  animation: success-badge-pop 420ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
