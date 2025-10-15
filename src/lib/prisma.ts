@@ -25,11 +25,7 @@ export const prisma =
   new PrismaClient({
     datasources: {
       db: {
-        // Sanitize DATABASE_URL to avoid accidental surrounding quotes/whitespace
-        url:
-          typeof process.env.DATABASE_URL === "string"
-            ? process.env.DATABASE_URL.trim().replace(/^"|"$/g, "")
-            : process.env.DATABASE_URL,
+        url: process.env.DATABASE_URL, // runtime env
       },
     },
     log: ["query"], // useful for debugging
