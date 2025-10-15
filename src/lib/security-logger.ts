@@ -43,6 +43,62 @@ export interface SecurityLogEntry {
  */
 export async function logSecurityEvent(entry: SecurityLogEntry) {
   try {
+    // Derive canonical action and friendly message to store alongside raw metadata.
+    const deriveCanonicalAction = (e: SecurityLogEntry) => {
+      // Prefer explicit metadata.action when present
+      const metaAction = e.metadata && (e.metadata as Record<string, unknown>).action;
+      if (metaAction && typeof metaAction === "string") {
+        const s = metaAction.toUpperCase();
+        if (s.includes("LOGIN") && (s.includes("FAIL") || s.includes("FAILURE")))
+          return "LOGIN_FAILED";
+        if (s.includes("LOGIN") && (s.includes("SUCCESS") || s.includes("SUCCEED")))
+          return "LOGIN_SUCCESS";
+        if (s.includes("RATE") && s.includes("LIMIT")) return "RATE_LIMIT_EXCEEDED";
+        if (
+          (s.includes("ACCOUNT") && (s.includes("LOCK") || s.includes("LOCKED"))) ||
+          s.includes("LOCKOUT")
+        )
+          return "ACCOUNT_LOCKED";
+        if (s.startsWith("PLAN_CREATED")) return "PLAN_CREATED";
+        if (s.startsWith("PLAN_UPDATED")) return "PLAN_UPDATED";
+        if (s.startsWith("PLAN_DELETED")) return "PLAN_DELETED";
+        return s.replace(/\s+/g, "_");
+      }
+
+      const m = e.message ? String(e.message).toUpperCase() : "";
+      if (m.startsWith("PLAN_CREATED")) return "PLAN_CREATED";
+      if (m.startsWith("PLAN_UPDATED")) return "PLAN_UPDATED";
+      if (m.startsWith("PLAN_DELETED")) return "PLAN_DELETED";
+      if (m.includes("LOGIN") && (m.includes("FAIL") || m.includes("FAILURE")))
+        return "LOGIN_FAILED";
+      if (m.includes("LOGIN") && (m.includes("SUCCESS") || m.includes("SUCCEED")))
+        return "LOGIN_SUCCESS";
+      if (m.includes("RATE") && m.includes("LIMIT")) return "RATE_LIMIT_EXCEEDED";
+      if (
+        (m.includes("ACCOUNT") && (m.includes("LOCK") || m.includes("LOCKED"))) ||
+        m.includes("LOCKOUT") ||
+        m.includes("LOCK")
+      )
+        return "ACCOUNT_LOCKED";
+      return "";
+    };
+
+    const deriveFriendlyMessage = (msg?: string) => {
+      if (!msg) return undefined;
+      const s = String(msg);
+      if (s.startsWith("PLAN_CREATED")) return "Plan created";
+      if (s.startsWith("PLAN_UPDATED")) return "Plan updated";
+      if (s.startsWith("PLAN_DELETED")) return "Plan deleted";
+      if (s.startsWith("LOGIN_SUCCESS")) return "Login succeeded";
+      if (s.startsWith("LOGIN_FAILURE") || s.startsWith("LOGIN_FAILED")) return "Login failed";
+      return undefined;
+    };
+
+    const normalizedMetadata: Record<string, unknown> = { ...(entry.metadata || {}) };
+    const canonical = deriveCanonicalAction(entry);
+    if (canonical) normalizedMetadata.action = canonical;
+    const friendly = deriveFriendlyMessage(entry.message);
+    if (friendly) normalizedMetadata.friendlyMessage = friendly;
     const logEntry = await prisma.securityLog.create({
       data: {
         eventType: entry.eventType,
@@ -54,7 +110,7 @@ export async function logSecurityEvent(entry: SecurityLogEntry) {
         method: entry.method,
         statusCode: entry.statusCode,
         message: entry.message,
-        metadata: (entry.metadata || {}) as Prisma.InputJsonValue,
+        metadata: normalizedMetadata as Prisma.InputJsonValue,
       },
     });
 
@@ -344,6 +400,15 @@ export async function querySecurityLogs(options: {
   startDate?: Date;
   endDate?: Date;
   limit?: number;
+  offset?: number;
+  // Cursor-based pagination: return entries after this cursor (timestamp string and id)
+  afterTimestamp?: string;
+  afterId?: string;
+  messageContains?: string;
+  metadataContains?: string; // simple substring match on JSON stringified metadata
+  // precise JSONB match (key/value) for Postgres
+  metadataKey?: string;
+  metadataValue?: string;
 }) {
   try {
     const where: Record<string, unknown> = {};
@@ -375,14 +440,193 @@ export async function querySecurityLogs(options: {
       where.timestamp = timestampFilter;
     }
 
+    // build raw filters for message and metadata substring matches
+    const messageFilter = options.messageContains
+      ? { contains: options.messageContains }
+      : undefined;
+    const metadataFilter = options.metadataContains
+      ? { contains: options.metadataContains }
+      : undefined;
+
+    // Prisma where (use a flexible shape to avoid explicit any)
+    const prismaWhere: Record<string, unknown> = { ...where };
+    if (messageFilter) prismaWhere.message = messageFilter;
+    if (metadataFilter) prismaWhere.metadata = metadataFilter;
+
+    // If caller requested precise JSONB key/value matching, use raw SQL for Postgres JSONB ->>
+    if (options.metadataKey && typeof options.metadataValue === "string") {
+      // Build WHERE SQL and params based on provided filters
+      const whereClauses: string[] = [];
+      const params: unknown[] = [];
+      let idx = 1;
+
+      if (options.eventType) {
+        whereClauses.push(`"eventType" = $${idx++}`);
+        params.push(options.eventType);
+      }
+      if (options.severity) {
+        whereClauses.push(`"severity" = $${idx++}`);
+        params.push(options.severity);
+      }
+      if (options.userId) {
+        whereClauses.push(`"userId" = $${idx++}`);
+        params.push(options.userId);
+      }
+      if (options.ipAddress) {
+        whereClauses.push(`"ipAddress" = $${idx++}`);
+        params.push(options.ipAddress);
+      }
+      if (options.startDate) {
+        whereClauses.push(`"timestamp" >= $${idx++}`);
+        params.push(options.startDate.toISOString());
+      }
+      if (options.endDate) {
+        whereClauses.push(`"timestamp" <= $${idx++}`);
+        params.push(options.endDate.toISOString());
+      }
+      if (options.messageContains) {
+        whereClauses.push(`"message" ILIKE $${idx++}`);
+        params.push(`%${options.messageContains}%`);
+      }
+
+      // JSONB exact match using ->> to extract text value
+      whereClauses.push(`"metadata" ->> $${idx++} = $${idx++}`);
+      params.push(options.metadataKey, options.metadataValue);
+
+      const whereSQL = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : "";
+      const limit = options.limit || 100;
+      // cursor-based: if afterTimestamp/afterId provided, add compound comparison
+      if (options.afterTimestamp && options.afterId) {
+        whereClauses.push(
+          `( "timestamp" < $${idx} OR ("timestamp" = $${idx} AND "id" < $${idx + 1}) )`
+        );
+        params.push(options.afterTimestamp, options.afterId);
+        idx += 2;
+      }
+
+      const offset = options.offset || 0;
+
+      const sql = `SELECT * FROM "SecurityLog" ${whereSQL} ORDER BY "timestamp" DESC, "id" DESC LIMIT ${limit} OFFSET ${offset}`;
+
+      // Use parameterized raw query
+      // prisma.$queryRaw requires parameters to be passed separately to avoid injection
+      // $queryRawUnsafe could be used but we pass params to $queryRaw via Prisma.join is complex; we use $queryRawUnsafe with placeholders and params
+      // Use $queryRawUnsafe with runtime params; assert unknown[] -> any[] for return
+      const rows = await prisma.$queryRawUnsafe(sql, ...params);
+      return rows as unknown as Record<string, unknown>[];
+    }
+
+    // Cursor-based where clause for Prisma when afterTimestamp/afterId provided
+    if (options.afterTimestamp && options.afterId) {
+      const afterDate = new Date(options.afterTimestamp);
+      // combine original where with cursor condition
+      const cursorCond: Record<string, unknown> = {
+        OR: [
+          { timestamp: { lt: afterDate } },
+          { AND: [{ timestamp: afterDate }, { id: { lt: options.afterId } }] },
+        ],
+      };
+
+      const finalWhere = { AND: [prismaWhere, cursorCond] };
+
+      return await prisma.securityLog.findMany({
+        where: finalWhere as never,
+        orderBy: [{ timestamp: "desc" }, { id: "desc" }],
+        take: options.limit || 100,
+      });
+    }
+
     return await prisma.securityLog.findMany({
-      where: where as never,
+      where: prismaWhere as never,
       orderBy: { timestamp: "desc" },
       take: options.limit || 100,
+      skip: options.offset || 0,
     });
   } catch (error) {
     console.error("Failed to query security logs:", error);
     return [];
+  }
+}
+
+/**
+ * Count security logs for given filters. Uses JSONB exact match when metadataKey/metadataValue provided.
+ */
+export async function countSecurityLogs(options: {
+  eventType?: SecurityEventType;
+  severity?: SecuritySeverity;
+  userId?: string;
+  ipAddress?: string;
+  startDate?: Date;
+  endDate?: Date;
+  messageContains?: string;
+  metadataKey?: string;
+  metadataValue?: string;
+}) {
+  try {
+    // If metadataKey provided, use raw SQL count with JSONB ->> operator
+    if (options.metadataKey && typeof options.metadataValue === "string") {
+      const whereClauses: string[] = [];
+      const params: unknown[] = [];
+      let idx = 1;
+
+      if (options.eventType) {
+        whereClauses.push(`"eventType" = $${idx++}`);
+        params.push(options.eventType);
+      }
+      if (options.severity) {
+        whereClauses.push(`"severity" = $${idx++}`);
+        params.push(options.severity);
+      }
+      if (options.userId) {
+        whereClauses.push(`"userId" = $${idx++}`);
+        params.push(options.userId);
+      }
+      if (options.ipAddress) {
+        whereClauses.push(`"ipAddress" = $${idx++}`);
+        params.push(options.ipAddress);
+      }
+      if (options.startDate) {
+        whereClauses.push(`"timestamp" >= $${idx++}`);
+        params.push(options.startDate.toISOString());
+      }
+      if (options.endDate) {
+        whereClauses.push(`"timestamp" <= $${idx++}`);
+        params.push(options.endDate.toISOString());
+      }
+      if (options.messageContains) {
+        whereClauses.push(`"message" ILIKE $${idx++}`);
+        params.push(`%${options.messageContains}%`);
+      }
+
+      whereClauses.push(`"metadata" ->> $${idx++} = $${idx++}`);
+      params.push(options.metadataKey, options.metadataValue);
+
+      const whereSQL = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : "";
+      const sql = `SELECT COUNT(*)::int AS cnt FROM "SecurityLog" ${whereSQL}`;
+      const res = await prisma.$queryRawUnsafe(sql, ...params);
+      return Number((res as unknown as Array<Record<string, unknown>>)[0]?.cnt || 0);
+    }
+
+    // Fallback to Prisma count using metadata substring if provided
+    const where: Record<string, unknown> = {};
+    if (options.eventType) where.eventType = options.eventType;
+    if (options.severity) where.severity = options.severity;
+    if (options.userId) where.userId = options.userId;
+    if (options.ipAddress) where.ipAddress = options.ipAddress;
+    if (options.startDate || options.endDate) {
+      // timestamp filter shape for Prisma
+      (where as Record<string, unknown>).timestamp = {} as Record<string, unknown>;
+      if (options.startDate) (where.timestamp as Record<string, unknown>).gte = options.startDate;
+      if (options.endDate) (where.timestamp as Record<string, unknown>).lte = options.endDate;
+    }
+    if (options.messageContains) where.message = { contains: options.messageContains };
+    // Note: no metadata exact match here
+
+    const cnt = await prisma.securityLog.count({ where });
+    return cnt;
+  } catch (err) {
+    console.error("Failed to count security logs:", err);
+    return 0;
   }
 }
 

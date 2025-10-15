@@ -1,0 +1,38 @@
+name: "Post-merge: Template sync"
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  sync-templates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm prisma generate
+
+      - name: Run post-merge integration script
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TEMPLATE_GITHUB_TOKEN: ${{ secrets.TEMPLATE_GITHUB_TOKEN }}
+          TEMPLATE_GITHUB_OWNER: ${{ secrets.TEMPLATE_GITHUB_OWNER }}
+          TEMPLATE_GITHUB_REPO: ${{ secrets.TEMPLATE_GITHUB_REPO }}
+          TEMPLATE_WEBHOOK_SECRET: ${{ secrets.TEMPLATE_WEBHOOK_SECRET }}
+        run: pnpm tsx scripts/integration-post-merge.ts

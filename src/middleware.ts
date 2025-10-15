@@ -28,6 +28,15 @@ export default withAuth(
       }
     }
 
+    // Add restrictive Content-Security-Policy for preview pages to harden iframe previews
+    if (req.nextUrl.pathname.startsWith("/admin/templates/preview")) {
+      // CSP: allow same-origin scripts/styles and allow same-origin framing (so iframe previews work);
+      // keep images restricted to self or data:, and connections to self only.
+      const csp =
+        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self';";
+      return NextResponse.next({ headers: { "Content-Security-Policy": csp } });
+    }
+
     // NOTE: session ping experiment removed to avoid auth redirect loops. We intentionally
     // do not attempt to update Session.lastAccessedAt here so that existing auth behavior
     // remains unchanged.

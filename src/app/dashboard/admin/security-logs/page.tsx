@@ -20,7 +20,7 @@ import { PageSkeleton } from "@/components/admin/LoadingSkeleton";
 
 interface SecurityLog {
   id: string;
-  action: string;
+  action?: string;
   userId: string | null;
   userEmail: string | null;
   ipAddress: string;
@@ -36,7 +36,10 @@ type ActionFilter =
   | "LOGIN_SUCCESS"
   | "LOGIN_FAILED"
   | "RATE_LIMIT_EXCEEDED"
-  | "ACCOUNT_LOCKED";
+  | "ACCOUNT_LOCKED"
+  | "PLAN_CREATED"
+  | "PLAN_UPDATED"
+  | "PLAN_DELETED";
 
 export default function SecurityLogsPage() {
   const { isDarkMode } = useTheme();
@@ -73,6 +76,8 @@ export default function SecurityLogsPage() {
     }
   };
 
+  // Server now provides a top-level `action` on logs (or in metadata). Use it when available.
+
   const filterLogs = () => {
     let filtered = [...logs];
 
@@ -81,10 +86,10 @@ export default function SecurityLogsPage() {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (log) =>
-          log.message.toLowerCase().includes(query) ||
+          (log.message || "").toLowerCase().includes(query) ||
           log.userEmail?.toLowerCase().includes(query) ||
-          log.ipAddress.toLowerCase().includes(query) ||
-          log.action.toLowerCase().includes(query)
+          (log.ipAddress || "").toLowerCase().includes(query) ||
+          (log.action || "").toLowerCase().includes(query)
       );
     }
 
@@ -93,9 +98,30 @@ export default function SecurityLogsPage() {
       filtered = filtered.filter((log) => log.severity === severityFilter);
     }
 
-    // Action filter
+    // Action filter: prefer server-provided action; fallback to message checks
     if (actionFilter !== "ALL") {
-      filtered = filtered.filter((log) => log.action === actionFilter);
+      filtered = filtered.filter((log) => {
+        const act = (log.action || "").toUpperCase();
+        if (act) return act === actionFilter;
+        // fallback: inspect message start
+        const m = (log.message || "").toUpperCase();
+        if (actionFilter === "PLAN_CREATED") return m.startsWith("PLAN_CREATED");
+        if (actionFilter === "PLAN_UPDATED") return m.startsWith("PLAN_UPDATED");
+        if (actionFilter === "PLAN_DELETED") return m.startsWith("PLAN_DELETED");
+        if (actionFilter === "LOGIN_FAILED")
+          return m.includes("LOGIN") && (m.includes("FAIL") || m.includes("FAILURE"));
+        if (actionFilter === "LOGIN_SUCCESS")
+          return m.includes("LOGIN") && (m.includes("SUCCESS") || m.includes("SUCCEED"));
+        if (actionFilter === "RATE_LIMIT_EXCEEDED")
+          return m.includes("RATE") && m.includes("LIMIT");
+        if (actionFilter === "ACCOUNT_LOCKED")
+          return (
+            (m.includes("ACCOUNT") && m.includes("LOCK")) ||
+            m.includes("LOCKOUT") ||
+            m.includes("LOCKED")
+          );
+        return false;
+      });
     }
 
     setFilteredLogs(filtered);
@@ -164,6 +190,32 @@ export default function SecurityLogsPage() {
         return isDarkMode
           ? "bg-gray-800 text-gray-400 border-gray-700"
           : "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  const formatAction = (action?: string | null) => {
+    if (!action) return "-";
+    try {
+      return String(action).replace(/_/g, " ");
+    } catch {
+      return String(action);
+    }
+  };
+
+  const friendlyMessage = (msg?: string | null) => {
+    if (!msg) return "-";
+    const s = String(msg);
+    if (s.startsWith("PLAN_CREATED")) return "Plan created";
+    if (s.startsWith("PLAN_UPDATED")) return "Plan updated";
+    if (s.startsWith("PLAN_DELETED")) return "Plan deleted";
+    if (s.startsWith("USER_LOCKED")) return "User locked";
+    if (s.startsWith("LOGIN_SUCCESS")) return "Login succeeded";
+    if (s.startsWith("LOGIN_FAILURE") || s.startsWith("LOGIN_FAILED")) return "Login failed";
+    // Fallback: make underscore-separated tokens nicer
+    try {
+      return s.replace(/_/g, " ");
+    } catch {
+      return s;
     }
   };
 
@@ -311,7 +363,10 @@ export default function SecurityLogsPage() {
                   <option value="LOGIN_SUCCESS">Login Success</option>
                   <option value="LOGIN_FAILED">Login Failed</option>
                   <option value="RATE_LIMIT_EXCEEDED">Rate Limit Exceeded</option>
-                  <option value="ACCOUNT_LOCKED">Account Locked</option>
+                  <option value="ACCOUNT_LOCKED">Account lockouts</option>
+                  <option value="PLAN_CREATED">Plan created</option>
+                  <option value="PLAN_UPDATED">Plan updated</option>
+                  <option value="PLAN_DELETED">Plan deleted</option>
                 </select>
               </div>
             </motion.div>
@@ -427,7 +482,7 @@ export default function SecurityLogsPage() {
                         isDarkMode ? "text-gray-300" : "text-gray-900"
                       }`}
                     >
-                      {log.action.replace(/_/g, " ")}
+                      {formatAction(log.action)}
                     </td>
                     <td
                       className={`whitespace-nowrap px-6 py-4 text-sm hidden md:table-cell ${
@@ -446,7 +501,7 @@ export default function SecurityLogsPage() {
                     <td
                       className={`px-6 py-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
                     >
-                      {log.message}
+                      {friendlyMessage(log.message)}
                     </td>
                   </motion.tr>
                 ))
@@ -561,7 +616,7 @@ export default function SecurityLogsPage() {
                   <p
                     className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
                   >
-                    {log.action.replace(/_/g, " ")}
+                    {formatAction(log.action)}
                   </p>
                 </div>
 
@@ -570,7 +625,7 @@ export default function SecurityLogsPage() {
                     Message
                   </p>
                   <p className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
-                    {log.message}
+                    {friendlyMessage(log.message)}
                   </p>
                 </div>
 
