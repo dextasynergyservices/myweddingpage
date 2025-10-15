@@ -5,16 +5,21 @@ function SkeletonBase({
   width,
   height,
   animation = "pulse",
+  variant = "rectangular",
 }: {
   className?: string;
   width?: string | number;
   height?: string | number;
   animation?: "pulse" | "wave" | "none";
+  variant?: "rectangular" | "text" | "circular";
 }) {
   const animationStyles = animation === "pulse" ? "animate-pulse" : "";
+  const shapeClass =
+    variant === "circular" ? "rounded-full" : variant === "text" ? "rounded" : "rounded-lg";
+
   return (
     <div
-      className={`${animationStyles} bg-gray-200 dark:bg-gray-700 rounded ${className}`}
+      className={`${animationStyles} bg-gray-200 dark:bg-gray-700 ${shapeClass} ${className}`}
       style={{
         width: typeof width === "number" ? `${width}px` : width,
         height: typeof height === "number" ? `${height}px` : height,
@@ -23,11 +28,31 @@ function SkeletonBase({
   );
 }
 
-export function Skeleton({ className = "", lines = 1 }: { className?: string; lines?: number }) {
+export function Skeleton({
+  className = "",
+  lines = 1,
+  variant,
+  width,
+  height,
+}: {
+  className?: string;
+  lines?: number;
+  variant?: "rectangular" | "text" | "circular";
+  width?: string | number;
+  height?: string | number;
+}) {
   return (
     <div className={`animate-pulse ${className}`} aria-hidden>
       {Array.from({ length: lines }).map((_, i) => (
-        <div key={i} className="h-4 bg-gray-200 dark:bg-gray-800 rounded my-2" />
+        <SkeletonBase
+          key={i}
+          className={i === lines - 1 ? "my-0" : "my-2"}
+          width={width}
+          height={height || (variant === "text" ? 16 : undefined)}
+          variant={
+            variant === "text" ? "text" : variant === "circular" ? "circular" : "rectangular"
+          }
+        />
       ))}
     </div>
   );
