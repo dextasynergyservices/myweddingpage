@@ -1,0 +1,44 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches: ["develop", "main"]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: Install dependencies
+        run: pnpm install
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Setup environment
+        # Map secret into an env var and write .env safely. If secret is not available (fork PRs),
+        # fall back to a local SQLite file URL so Prisma doesn't fail parsing.
+        env:
+          DB_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          cp .env.example .env
+          if [ -n "$DB_URL" ]; then
+            echo "DATABASE_URL=$DB_URL" >> .env
+          else
+            echo "DATABASE_URL=file:./.prisma/dev.db" >> .env
+          fi
+          echo "NEXT_PUBLIC_APP_URL=http://localhost:3000" >> .env
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
+      - name: Build
+        run: pnpm build

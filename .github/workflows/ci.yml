@@ -118,14 +118,17 @@ jobs:
       - name: Setup environment
         run: |
           cp .env.example .env
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
           echo "NEXT_PUBLIC_APP_URL=http://localhost:3000" >> .env
 
       - name: Generate Prisma Client
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: pnpm prisma generate
 
       - name: Type checking
         run: pnpm typecheck
 
       - name: Build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: pnpm build
