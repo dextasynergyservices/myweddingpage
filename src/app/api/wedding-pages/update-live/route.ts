@@ -146,10 +146,11 @@ export async function POST(req: Request) {
                   section.storyItems
                 );
                 // Handle nested object structure (stored in UserTemplate)
-                const firstStoryItem =
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  (section.storyItems as any)[0] ||
-                  (section.storyItems as any)["0"];
+                const storyItemsObj = section.storyItems as Record<
+                  string,
+                  { image?: string }
+                >;
+                const firstStoryItem = storyItemsObj[0] || storyItemsObj["0"];
                 if (firstStoryItem && firstStoryItem.image) {
                   storyImage = firstStoryItem.image as string;
                   console.log(
@@ -221,10 +222,11 @@ export async function POST(req: Request) {
                 `update-live - Found storyItems object in section ${sectionId}:`,
                 section.storyItems
               );
-              const firstStoryItem =
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (section.storyItems as any)[0] ||
-                (section.storyItems as any)["0"];
+              const storyItemsObj = section.storyItems as Record<
+                string,
+                { image?: string }
+              >;
+              const firstStoryItem = storyItemsObj[0] || storyItemsObj["0"];
               if (firstStoryItem && firstStoryItem.image) {
                 storyImage = firstStoryItem.image as string;
                 console.log(
@@ -252,9 +254,11 @@ export async function POST(req: Request) {
                 `update-live - Found stories object in section ${sectionId}:`,
                 section.stories
               );
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const firstStory =
-                (section.stories as any)[0] || (section.stories as any)["0"];
+              const storiesObj = section.stories as Record<
+                string,
+                { image?: string }
+              >;
+              const firstStory = storiesObj[0] || storiesObj["0"];
               if (firstStory && firstStory.image) {
                 storyImage = firstStory.image as string;
                 console.log(
