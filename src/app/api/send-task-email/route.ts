@@ -10,13 +10,23 @@ export async function POST(request: Request) {
     console.log("Send task email request:", { to, subject, hasHtml: !!html });
 
     if (!to || !subject || !html) {
-      console.error("Missing required fields:", { to: !!to, subject: !!subject, html: !!html });
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      console.error("Missing required fields:", {
+        to: !!to,
+        subject: !!subject,
+        html: !!html,
+      });
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
     if (!process.env.RESEND_API_KEY) {
       console.error("RESEND_API_KEY is not configured");
-      return NextResponse.json({ error: "Email service not configured" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Email service not configured" },
+        { status: 500 }
+      );
     }
 
     console.log("Attempting to send email via Resend...");

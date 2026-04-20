@@ -51,7 +51,9 @@ export default function LiveStreamViewer({
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{streamName}</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            {streamName}
+          </h1>
           <div className="flex items-center justify-center gap-4 text-gray-600 dark:text-gray-300">
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
@@ -78,7 +80,12 @@ export default function LiveStreamViewer({
                 src={embedUrl}
                 width="100%"
                 height="100%"
-                style={{ position: "absolute", top: 0, left: 0, border: "none" }}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  border: "none",
+                }}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
@@ -86,7 +93,9 @@ export default function LiveStreamViewer({
 
             {/* Reactions */}
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Send Your Reactions ❤️</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Send Your Reactions ❤️
+              </h3>
               <ReactionButtons streamId={streamId} isGuest={true} />
             </div>
 

@@ -13,7 +13,10 @@ async function handle(req: NextRequest) {
   const githubRepo = repo || process.env.TEMPLATE_GITHUB_REPO;
   const githubToken = process.env.TEMPLATE_GITHUB_TOKEN;
   if (!githubToken || !githubOwner || !githubRepo)
-    return NextResponse.json({ error: "Server not configured for GitHub access" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server not configured for GitHub access" },
+      { status: 500 }
+    );
 
   let parsedOwner = String(githubOwner);
   let parsedRepo = String(githubRepo);
@@ -36,7 +39,8 @@ async function handle(req: NextRequest) {
   }
 
   if (!prNumber && typeof number === "number") prNumber = number;
-  if (!prNumber) return NextResponse.json({ error: "PR number not found" }, { status: 400 });
+  if (!prNumber)
+    return NextResponse.json({ error: "PR number not found" }, { status: 400 });
 
   try {
     const headers = {
@@ -52,7 +56,8 @@ async function handle(req: NextRequest) {
       )}/pulls/${prNumber}`,
       { method: "GET", headers }
     );
-    if (!prRes.ok) throw new Error(`GitHub API error ${prRes.status} ${prRes.statusText}`);
+    if (!prRes.ok)
+      throw new Error(`GitHub API error ${prRes.status} ${prRes.statusText}`);
     const pr = await prRes.json();
 
     // fetch check suites (commit SHA)

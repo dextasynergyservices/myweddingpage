@@ -11,7 +11,10 @@ let vapidConfigured = false;
 function ensureVapidConfigured() {
   if (vapidConfigured) return;
 
-  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  if (
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY &&
+    process.env.VAPID_PRIVATE_KEY
+  ) {
     webPush.setVapidDetails(
       process.env.VAPID_SUBJECT || "mailto:support@myweddingpage.com",
       process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
@@ -192,7 +195,8 @@ export async function GET(request: NextRequest) {
     for (const user of gracePeriodUsers) {
       if (user.pushSubscriptions.length > 0 && user.gracePeriodEnd) {
         const daysLeft = Math.ceil(
-          (user.gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+          (user.gracePeriodEnd.getTime() - now.getTime()) /
+            (1000 * 60 * 60 * 24)
         );
 
         await sendNotification(user, {

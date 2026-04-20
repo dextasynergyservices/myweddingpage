@@ -1,7 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Gift, Mail, X, User, Edit, Trash2, ChevronDown, Link, CreditCard } from "lucide-react";
+import {
+  Gift,
+  Mail,
+  X,
+  User,
+  Edit,
+  Trash2,
+  ChevronDown,
+  Link,
+  CreditCard,
+} from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
@@ -52,12 +62,14 @@ interface GiftRegistrationProps {
   initialSubTab?: "registry" | "cash" | "received" | "comments";
 }
 
-const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps) => {
+const GiftRegistration = ({
+  initialSubTab = "registry",
+}: GiftRegistrationProps) => {
   const { isDarkMode } = useTheme();
   const { token: csrfToken } = useCSRFToken();
-  const [activeTab, setActiveTab] = useState<"registry" | "cash" | "received" | "comments">(
-    initialSubTab
-  );
+  const [activeTab, setActiveTab] = useState<
+    "registry" | "cash" | "received" | "comments"
+  >(initialSubTab);
 
   // State for data from database
   const [gifts, setGifts] = useState<GiftItem[]>([]);
@@ -129,12 +141,13 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
           throw new Error("Failed to fetch data");
         }
 
-        const [giftsData, cashData, receivedData, commentsData] = await Promise.all([
-          giftsRes.json(),
-          cashRes.json(),
-          receivedRes.json(),
-          comments.json(),
-        ]);
+        const [giftsData, cashData, receivedData, commentsData] =
+          await Promise.all([
+            giftsRes.json(),
+            cashRes.json(),
+            receivedRes.json(),
+            comments.json(),
+          ]);
 
         setGifts(giftsData);
         setCashGifts(cashData);
@@ -161,13 +174,20 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
           "Content-Type": "application/json",
           "x-csrf-token": csrfToken || "",
         },
-        body: JSON.stringify({ id, approved: !comments.find((w) => w.id === id)?.approved }),
+        body: JSON.stringify({
+          id,
+          approved: !comments.find((w) => w.id === id)?.approved,
+        }),
       });
 
       if (!response.ok) throw new Error("Failed to update approval status");
 
       const updatedComment = await response.json();
-      setComments(comments.map((comment) => (comment.id === id ? updatedComment : comment)));
+      setComments(
+        comments.map((comment) =>
+          comment.id === id ? updatedComment : comment
+        )
+      );
       toast.success("Comment approval status updated");
     } catch (error) {
       console.error("Failed to toggle approval:", error);
@@ -175,7 +195,11 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
     }
   };
 
-  const confirmDelete = (type: "gift" | "account", id: string, name?: string) => {
+  const confirmDelete = (
+    type: "gift" | "account",
+    id: string,
+    name?: string
+  ) => {
     setItemToDelete({ type, id, name });
     setIsDeleteConfirmOpen(true);
   };
@@ -274,7 +298,9 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
         } catch (uploadError) {
           console.error("Image upload error:", uploadError);
           toast.error(
-            uploadError instanceof Error ? uploadError.message : "Failed to upload image",
+            uploadError instanceof Error
+              ? uploadError.message
+              : "Failed to upload image",
             { id: toastId }
           );
           return; // Exit the function if image upload fails
@@ -314,13 +340,17 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || `Failed to ${isUpdate ? "update" : "add"} gift`);
+        throw new Error(
+          errorData.error || `Failed to ${isUpdate ? "update" : "add"} gift`
+        );
       }
 
       const resultGift = await response.json();
 
       if (isUpdate) {
-        setGifts(gifts.map((gift) => (gift.id === resultGift.id ? resultGift : gift)));
+        setGifts(
+          gifts.map((gift) => (gift.id === resultGift.id ? resultGift : gift))
+        );
         toast.success("Gift updated successfully");
       } else {
         setGifts([...gifts, resultGift]);
@@ -356,7 +386,9 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
 
       const updatedAccount = await response.json();
       setCashGifts(
-        cashGifts.map((account) => (account.id === updatedAccount.id ? updatedAccount : account))
+        cashGifts.map((account) =>
+          account.id === updatedAccount.id ? updatedAccount : account
+        )
       );
       setIsCashEditModalOpen(false);
       toast.success("Account updated successfully");
@@ -481,7 +513,9 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
       if (!response.ok) throw new Error("Failed to send thank you");
 
       const updatedGift = await response.json();
-      setReceivedGifts(receivedGifts.map((g) => (g.id === updatedGift.id ? updatedGift : g)));
+      setReceivedGifts(
+        receivedGifts.map((g) => (g.id === updatedGift.id ? updatedGift : g))
+      );
       setIsThankYouOpen(false);
       toast.success("Thank you message sent");
     } catch (error) {
@@ -522,10 +556,14 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
   };
 
   return (
-    <div className={`max-w-6xl mx-auto p-4 md:p-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+    <div
+      className={`max-w-6xl mx-auto p-4 md:p-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+    >
       {/* Header */}
       <div className="mb-6 md:mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2">Our Gift Registry</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2">
+          Our Gift Registry
+        </h1>
         <p className="text-center text-sm md:text-base text-muted-foreground">
           Help us start our new life together with these special gifts
         </p>
@@ -538,7 +576,9 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-3 py-2 text-sm md:text-base md:px-4 md:py-2 font-medium whitespace-nowrap ${
-              activeTab === tab ? "border-b-2 border-primary text-primary" : "text-muted-foreground"
+              activeTab === tab
+                ? "border-b-2 border-primary text-primary"
+                : "text-muted-foreground"
             }`}
           >
             {tab === "registry"
@@ -610,7 +650,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
       {!isLoading && activeTab === "registry" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {gifts.map((gift) => (
-            <div key={gift.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+            <div
+              key={gift.id}
+              className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+            >
               <div className="flex justify-between items-start">
                 <h3 className="font-medium">{gift.name}</h3>
                 {gift.purchased && (
@@ -628,7 +671,9 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
                   height={100}
                 />
               )}
-              <p className="text-sm text-muted-foreground mt-1">{gift.description}</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {gift.description}
+              </p>
               <p className="font-bold mt-2">₦{gift.price.toFixed(2)}</p>
               {gift.link && (
                 <a
@@ -680,7 +725,9 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
                     <Edit size={16} />
                   </button>
                   <button
-                    onClick={() => confirmDelete("account", account.id, account.bankName)}
+                    onClick={() =>
+                      confirmDelete("account", account.id, account.bankName)
+                    }
                     className="text-red-500"
                   >
                     <Trash2 size={16} />
@@ -697,7 +744,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
       {!isLoading && activeTab === "received" && (
         <div className="space-y-4">
           {receivedGifts.map((gift) => (
-            <div key={gift.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+            <div
+              key={gift.id}
+              className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+            >
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
                   <User size={20} />
@@ -725,12 +775,17 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
                     ) : (
                       <p className="flex items-center gap-1 text-sm">
                         <span className="font-medium">
-                          ₦{gift.amount ? formatNumberWithCommas(gift.amount) : "0.00"}
+                          ₦
+                          {gift.amount
+                            ? formatNumberWithCommas(gift.amount)
+                            : "0.00"}
                         </span>
                       </p>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{gift.message}</p>
+                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                    {gift.message}
+                  </p>
                   <div className="flex justify-between items-center mt-3">
                     <span className="text-xs text-muted-foreground">
                       {new Date(gift.date).toLocaleDateString()}
@@ -758,7 +813,10 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
       {!isLoading && activeTab === "comments" && (
         <div className="space-y-4">
           {comments.map((wish) => (
-            <div key={wish.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+            <div
+              key={wish.id}
+              className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+            >
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-transparent flex items-center justify-center flex-shrink-0">
                   <User size={20} />
@@ -791,7 +849,9 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
                       </span>
                     </label>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{wish.message}</p>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
+                    {wish.message}
+                  </p>
                   <div className="flex justify-between items-center mt-3">
                     <span className="text-xs text-muted-foreground">
                       {new Date(wish.date).toLocaleDateString()}
@@ -827,22 +887,32 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
             >
               <X size={20} />
             </button>
-            <h2 className="text-xl font-bold mb-4">{editGift.id ? "Edit Gift" : "Add New Gift"}</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {editGift.id ? "Edit Gift" : "Add New Gift"}
+            </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Gift Name</label>
+                <label className="block text-sm font-medium mb-1">
+                  Gift Name
+                </label>
                 <input
                   type="text"
                   value={editGift.name}
-                  onChange={(e) => setEditGift({ ...editGift, name: e.target.value })}
+                  onChange={(e) =>
+                    setEditGift({ ...editGift, name: e.target.value })
+                  }
                   className="w-full p-2 rounded border"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
+                <label className="block text-sm font-medium mb-1">
+                  Description
+                </label>
                 <textarea
                   value={editGift.description}
-                  onChange={(e) => setEditGift({ ...editGift, description: e.target.value })}
+                  onChange={(e) =>
+                    setEditGift({ ...editGift, description: e.target.value })
+                  }
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -852,23 +922,32 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
                   type="number"
                   value={editGift.price}
                   onChange={(e) =>
-                    setEditGift({ ...editGift, price: parseFloat(e.target.value) || 0 })
+                    setEditGift({
+                      ...editGift,
+                      price: parseFloat(e.target.value) || 0,
+                    })
                   }
                   className="w-full p-2 rounded border"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Link (optional)</label>
+                <label className="block text-sm font-medium mb-1">
+                  Link (optional)
+                </label>
                 <input
                   type="url"
                   value={editGift.link || ""}
-                  onChange={(e) => setEditGift({ ...editGift, link: e.target.value })}
+                  onChange={(e) =>
+                    setEditGift({ ...editGift, link: e.target.value })
+                  }
                   className="w-full p-2 rounded border"
                   placeholder="https://example.com/product"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Image (optional)</label>
+                <label className="block text-sm font-medium mb-1">
+                  Image (optional)
+                </label>
                 {editGift.image && (
                   <div className="mb-2">
                     <Image
@@ -879,7 +958,9 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
                       height={100}
                     />
                     <button
-                      onClick={() => setEditGift({ ...editGift, image: undefined })}
+                      onClick={() =>
+                        setEditGift({ ...editGift, image: undefined })
+                      }
                       className="text-red-500 text-xs mt-1"
                     >
                       Remove image
@@ -889,11 +970,15 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => e.target.files?.[0] && setImageFile(e.target.files[0])}
+                  onChange={(e) =>
+                    e.target.files?.[0] && setImageFile(e.target.files[0])
+                  }
                   className="w-full p-2 rounded border"
                 />
                 {imageFile && (
-                  <p className="text-sm text-gray-500 mt-1">Selected: {imageFile.name}</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Selected: {imageFile.name}
+                  </p>
                 )}
               </div>
               <div className="flex justify-end gap-3 pt-4">
@@ -938,7 +1023,9 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
             <h2 className="text-xl font-bold mb-4">Add Gift from Link</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Product URL</label>
+                <label className="block text-sm font-medium mb-1">
+                  Product URL
+                </label>
                 <input
                   type="url"
                   value={newGiftLink}
@@ -948,15 +1035,21 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Image (optional)</label>
+                <label className="block text-sm font-medium mb-1">
+                  Image (optional)
+                </label>
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => e.target.files?.[0] && setImageFile(e.target.files[0])}
+                  onChange={(e) =>
+                    e.target.files?.[0] && setImageFile(e.target.files[0])
+                  }
                   className="w-full p-2 rounded border"
                 />
                 {imageFile && (
-                  <p className="text-sm text-gray-500 mt-1">Selected: {imageFile.name}</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Selected: {imageFile.name}
+                  </p>
                 )}
               </div>
               <div className="flex justify-end gap-3 pt-4">
@@ -998,30 +1091,46 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
             <h2 className="text-xl font-bold mb-4">Edit Account</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Bank Name</label>
+                <label className="block text-sm font-medium mb-1">
+                  Bank Name
+                </label>
                 <input
                   type="text"
                   value={editAccount.bankName}
-                  onChange={(e) => setEditAccount({ ...editAccount, bankName: e.target.value })}
+                  onChange={(e) =>
+                    setEditAccount({ ...editAccount, bankName: e.target.value })
+                  }
                   className="w-full p-2 rounded border"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Account Name</label>
+                <label className="block text-sm font-medium mb-1">
+                  Account Name
+                </label>
                 <input
                   type="text"
                   value={editAccount.accountName}
-                  onChange={(e) => setEditAccount({ ...editAccount, accountName: e.target.value })}
+                  onChange={(e) =>
+                    setEditAccount({
+                      ...editAccount,
+                      accountName: e.target.value,
+                    })
+                  }
                   className="w-full p-2 rounded border"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Account Number</label>
+                <label className="block text-sm font-medium mb-1">
+                  Account Number
+                </label>
                 <input
                   type="text"
                   value={editAccount.accountNumber}
                   onChange={(e) =>
-                    setEditAccount({ ...editAccount, accountNumber: e.target.value })
+                    setEditAccount({
+                      ...editAccount,
+                      accountNumber: e.target.value,
+                    })
                   }
                   className="w-full p-2 rounded border"
                 />
@@ -1060,29 +1169,47 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
             <h2 className="text-xl font-bold mb-4">Add Bank Account</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Bank Name</label>
+                <label className="block text-sm font-medium mb-1">
+                  Bank Name
+                </label>
                 <input
                   type="text"
                   value={newAccount.bankName}
-                  onChange={(e) => setNewAccount({ ...newAccount, bankName: e.target.value })}
+                  onChange={(e) =>
+                    setNewAccount({ ...newAccount, bankName: e.target.value })
+                  }
                   className="w-full p-2 rounded border"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Account Name</label>
+                <label className="block text-sm font-medium mb-1">
+                  Account Name
+                </label>
                 <input
                   type="text"
                   value={newAccount.accountName}
-                  onChange={(e) => setNewAccount({ ...newAccount, accountName: e.target.value })}
+                  onChange={(e) =>
+                    setNewAccount({
+                      ...newAccount,
+                      accountName: e.target.value,
+                    })
+                  }
                   className="w-full p-2 rounded border"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Account Number</label>
+                <label className="block text-sm font-medium mb-1">
+                  Account Number
+                </label>
                 <input
                   type="text"
                   value={newAccount.accountNumber}
-                  onChange={(e) => setNewAccount({ ...newAccount, accountNumber: e.target.value })}
+                  onChange={(e) =>
+                    setNewAccount({
+                      ...newAccount,
+                      accountNumber: e.target.value,
+                    })
+                  }
                   className="w-full p-2 rounded border"
                 />
               </div>
@@ -1120,7 +1247,9 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
             <h2 className="text-xl font-bold mb-4">Thank You Message</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">To: {currentRecipient}</label>
+                <label className="block text-sm font-medium mb-1">
+                  To: {currentRecipient}
+                </label>
                 <textarea
                   value={thankYouMessage}
                   onChange={(e) => setThankYouMessage(e.target.value)}
@@ -1163,7 +1292,8 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
             <div className="space-y-4">
               <div>
                 <p className="text-sm mb-2">
-                  This message will be sent to all gift givers who haven&#39;t been thanked yet.
+                  This message will be sent to all gift givers who haven&#39;t
+                  been thanked yet.
                 </p>
                 <textarea
                   value={thankAllMessage}
@@ -1206,8 +1336,8 @@ const GiftRegistration = ({ initialSubTab = "registry" }: GiftRegistrationProps)
             <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
             <p className="mb-6">
               Are you sure you want to delete{" "}
-              {itemToDelete.name ? `"${itemToDelete.name}"` : "this item"}? This action cannot be
-              undone.
+              {itemToDelete.name ? `"${itemToDelete.name}"` : "this item"}? This
+              action cannot be undone.
             </p>
             <div className="flex justify-end gap-3">
               <button

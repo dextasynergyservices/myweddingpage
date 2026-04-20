@@ -40,7 +40,8 @@ export async function processRenewal({
       where: { userId, planId },
       orderBy: { createdAt: "desc" },
     });
-    if (!subscription) throw new Error("No subscription found for this user and plan");
+    if (!subscription)
+      throw new Error("No subscription found for this user and plan");
     console.log("[processRenewal] Subscription found:", subscription);
 
     const now = new Date();
@@ -48,7 +49,9 @@ export async function processRenewal({
 
     // Extend from current expiry if still active, otherwise from now
     const startDate = currentExpiry > now ? currentExpiry : now;
-    const newExpiry = new Date(startDate.getTime() + option.duration * 24 * 60 * 60 * 1000);
+    const newExpiry = new Date(
+      startDate.getTime() + option.duration * 24 * 60 * 60 * 1000
+    );
 
     // 3️⃣ Update subscription, user, and record payment in a transaction
     const result = await prisma.$transaction(async (tx) => {
@@ -106,7 +109,11 @@ export async function processRenewal({
       console.error("[processRenewal] sendRenewalEmail failed:", err);
     }
 
-    return { user: result.updatedUser, newExpiry, paymentRecord: result.paymentRecord };
+    return {
+      user: result.updatedUser,
+      newExpiry,
+      paymentRecord: result.paymentRecord,
+    };
   } catch (err) {
     console.error("[processRenewal] Error:", err);
     throw err;

@@ -48,7 +48,9 @@ export function injectCSSVariables(
   fonts: FontScheme
 ): void {
   const styleId = `wedding-customization-${containerId}`;
-  let styleElement = document.getElementById(styleId) as HTMLStyleElement | null;
+  let styleElement = document.getElementById(
+    styleId
+  ) as HTMLStyleElement | null;
 
   if (!styleElement) {
     styleElement = document.createElement("style");
@@ -177,7 +179,9 @@ export function applyGlobalCustomization(
   cacheKey?: string
 ): void {
   const styleId = `wedding-global-customization${cacheKey ? `-${cacheKey}` : ""}`;
-  let styleElement = document.getElementById(styleId) as HTMLStyleElement | null;
+  let styleElement = document.getElementById(
+    styleId
+  ) as HTMLStyleElement | null;
 
   if (!styleElement) {
     styleElement = document.createElement("style");

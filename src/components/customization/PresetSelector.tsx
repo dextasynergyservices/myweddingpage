@@ -9,7 +9,11 @@ import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Filter, Sparkles, X } from "lucide-react";
 import { PresetTheme, TemplateType } from "@/types/customization";
-import { getPresetsByTemplate, getPopularPresets, ALL_PRESETS } from "@/lib/theme-presets";
+import {
+  getPresetsByTemplate,
+  getPopularPresets,
+  ALL_PRESETS,
+} from "@/lib/theme-presets";
 import { useTheme } from "@/contexts/ThemeContext";
 import PresetCard from "./PresetCard";
 
@@ -64,10 +68,26 @@ export const PresetSelector: React.FC<PresetSelectorProps> = ({
   const filterOptions: { value: FilterType; label: string; count: number }[] = [
     { value: "all", label: "All Themes", count: ALL_PRESETS.length },
     { value: "popular", label: "Popular", count: getPopularPresets().length },
-    { value: "elegance", label: "Elegance", count: getPresetsByTemplate("elegance").length },
-    { value: "bloom", label: "Bloom", count: getPresetsByTemplate("bloom").length },
-    { value: "luxe", label: "Luxe", count: getPresetsByTemplate("luxe").length },
-    { value: "vows", label: "Vows", count: getPresetsByTemplate("vows").length },
+    {
+      value: "elegance",
+      label: "Elegance",
+      count: getPresetsByTemplate("elegance").length,
+    },
+    {
+      value: "bloom",
+      label: "Bloom",
+      count: getPresetsByTemplate("bloom").length,
+    },
+    {
+      value: "luxe",
+      label: "Luxe",
+      count: getPresetsByTemplate("luxe").length,
+    },
+    {
+      value: "vows",
+      label: "Vows",
+      count: getPresetsByTemplate("vows").length,
+    },
   ];
 
   return (
@@ -81,8 +101,11 @@ export const PresetSelector: React.FC<PresetSelectorProps> = ({
         >
           Choose Your Theme
         </h2>
-        <p className={`text-sm md:text-base ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}>
-          Select a professionally designed color and font combination for your wedding page
+        <p
+          className={`text-sm md:text-base ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}
+        >
+          Select a professionally designed color and font combination for your
+          wedding page
         </p>
       </div>
 
@@ -140,7 +163,9 @@ export const PresetSelector: React.FC<PresetSelectorProps> = ({
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  {option.value === "popular" && <Sparkles className="w-4 h-4" />}
+                  {option.value === "popular" && (
+                    <Sparkles className="w-4 h-4" />
+                  )}
                   {option.label}
                   <span
                     className={`text-xs px-1.5 py-0.5 rounded-full ${
@@ -162,7 +187,9 @@ export const PresetSelector: React.FC<PresetSelectorProps> = ({
 
       {/* Results Count */}
       <div className="mb-4">
-        <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}>
+        <p
+          className={`text-sm ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}
+        >
           {filteredPresets.length === 0 ? (
             <span>No themes found</span>
           ) : (
@@ -191,7 +218,9 @@ export const PresetSelector: React.FC<PresetSelectorProps> = ({
             >
               No themes found
             </h3>
-            <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}>
+            <p
+              className={`text-sm ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}
+            >
               Try adjusting your search or filter
             </p>
           </motion.div>

@@ -41,7 +41,9 @@ async function main() {
   console.log("Upserted template id:", template.id);
 
   // Recreate sections
-  await prisma.templateSection.deleteMany({ where: { templateId: template.id } });
+  await prisma.templateSection.deleteMany({
+    where: { templateId: template.id },
+  });
   const sec = await prisma.templateSection.create({
     data: {
       templateId: template.id,

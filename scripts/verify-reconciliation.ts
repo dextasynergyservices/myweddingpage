@@ -18,7 +18,12 @@
         SELECT "weddingPageId", COUNT(*) as c FROM "PageView" GROUP BY "weddingPageId"
       ) pv ON pv."weddingPageId" = wp.id
       WHERE wp.views IS DISTINCT FROM COALESCE(pv.c,0)
-    `)) as Array<{ id: string; slug: string; aggregate_views: number; pageview_count: number }>;
+    `)) as Array<{
+      id: string;
+      slug: string;
+      aggregate_views: number;
+      pageview_count: number;
+    }>;
 
     if (!rows || rows.length === 0) {
       console.log("OK: All WeddingPage.views match PageView counts");
@@ -28,7 +33,9 @@
 
     console.error("MISMATCHES FOUND:");
     rows.forEach((r) =>
-      console.error(`${r.slug} : aggregate=${r.aggregate_views} pageview_count=${r.pageview_count}`)
+      console.error(
+        `${r.slug} : aggregate=${r.aggregate_views} pageview_count=${r.pageview_count}`
+      )
     );
     await prisma.$disconnect();
     process.exit(2);

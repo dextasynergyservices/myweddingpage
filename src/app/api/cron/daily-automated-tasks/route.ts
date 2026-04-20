@@ -13,7 +13,10 @@ export async function GET(request: NextRequest) {
 
     if (!cronSecret) {
       console.error("CRON_SECRET environment variable not set");
-      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 }
+      );
     }
 
     if (authHeader !== `Bearer ${cronSecret}`) {
@@ -27,8 +30,14 @@ export async function GET(request: NextRequest) {
     // Execute all four automated tasks
     const cronJobs = [
       { name: "Task Reminder", path: "/api/cron/task-reminder" },
-      { name: "Wedding Date Reminders", path: "/api/cron/wedding-date-reminders" },
-      { name: "Wedding Congratulations", path: "/api/cron/wedding-congratulations" },
+      {
+        name: "Wedding Date Reminders",
+        path: "/api/cron/wedding-date-reminders",
+      },
+      {
+        name: "Wedding Congratulations",
+        path: "/api/cron/wedding-congratulations",
+      },
       { name: "Expiration Manager", path: "/api/cron/expiration-manager" },
     ];
 

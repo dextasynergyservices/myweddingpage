@@ -92,7 +92,9 @@ export async function GET() {
       }),
 
       // Daily stats for the last 7 days
-      prisma.$queryRaw<Array<{ date: Date; users: bigint; logins: bigint; events: bigint }>>`
+      prisma.$queryRaw<
+        Array<{ date: Date; users: bigint; logins: bigint; events: bigint }>
+      >`
         SELECT
           DATE(created_at) as date,
           COUNT(*) as users,
@@ -112,7 +114,9 @@ export async function GET() {
         : 0;
 
     // Get login and security event counts for chart
-    const loginCounts = await prisma.$queryRaw<Array<{ date: string; count: number }>>`
+    const loginCounts = await prisma.$queryRaw<
+      Array<{ date: string; count: number }>
+    >`
       SELECT
         DATE(timestamp) as date,
         COUNT(*) as count
@@ -123,7 +127,9 @@ export async function GET() {
       ORDER BY date ASC
     `;
 
-    const eventCounts = await prisma.$queryRaw<Array<{ date: string; count: number }>>`
+    const eventCounts = await prisma.$queryRaw<
+      Array<{ date: string; count: number }>
+    >`
       SELECT
         DATE(timestamp) as date,
         COUNT(*) as count
@@ -135,9 +141,13 @@ export async function GET() {
     `;
 
     // Create a map of dates to counts
-    const loginMap = new Map(loginCounts.map((item) => [item.date, item.count]));
+    const loginMap = new Map(
+      loginCounts.map((item) => [item.date, item.count])
+    );
 
-    const eventMap = new Map(eventCounts.map((item) => [item.date, item.count]));
+    const eventMap = new Map(
+      eventCounts.map((item) => [item.date, item.count])
+    );
 
     // Generate chart data for last 7 days
     const chartData = [];
@@ -150,7 +160,9 @@ export async function GET() {
       const dayName = days[date.getDay()];
 
       // Find user registrations for this day
-      const dayUsers = dailyStats.find((stat) => stat.date.toISOString().split("T")[0] === dateStr);
+      const dayUsers = dailyStats.find(
+        (stat) => stat.date.toISOString().split("T")[0] === dateStr
+      );
 
       chartData.push({
         name: dayName,

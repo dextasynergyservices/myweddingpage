@@ -21,7 +21,11 @@ export function getMessage(key: string, locale = "en"): string {
   const messages = MESSAGES[locale] ?? MESSAGES["en"];
   let cur: unknown = messages;
   for (const p of parts) {
-    if (cur && typeof cur === "object" && p in (cur as Record<string, unknown>)) {
+    if (
+      cur &&
+      typeof cur === "object" &&
+      p in (cur as Record<string, unknown>)
+    ) {
       cur = (cur as Record<string, unknown>)[p];
     } else {
       // fallback to english
@@ -36,7 +40,11 @@ function getMessageFallback(key: string): string {
   const parts = key.split(".");
   let cur: unknown = MESSAGES["en"];
   for (const p of parts) {
-    if (cur && typeof cur === "object" && p in (cur as Record<string, unknown>)) {
+    if (
+      cur &&
+      typeof cur === "object" &&
+      p in (cur as Record<string, unknown>)
+    ) {
       cur = (cur as Record<string, unknown>)[p];
     } else {
       return key; // final fallback: return key itself

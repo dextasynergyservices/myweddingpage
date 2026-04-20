@@ -36,7 +36,9 @@ const AIPhotoCuration = () => {
         isDarkMode ? "bg-slate-900 text-white" : "bg-white text-gray-800"
       }`}
     >
-      <h1 className="text-3xl font-bold mb-6 text-center">AI-Powered Wedding Album Curation</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">
+        AI-Powered Wedding Album Curation
+      </h1>
 
       {/* Album selection */}
       <div className="flex justify-center space-x-4 mb-6">

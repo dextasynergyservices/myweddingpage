@@ -68,9 +68,13 @@ export async function GET() {
     });
 
     const scenario2Results = usersForReminders.map((user) => {
-      const gracePeriodEnd = user.gracePeriodEnd ? new Date(user.gracePeriodEnd) : null;
+      const gracePeriodEnd = user.gracePeriodEnd
+        ? new Date(user.gracePeriodEnd)
+        : null;
       const daysLeft = gracePeriodEnd
-        ? Math.ceil((gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        ? Math.ceil(
+            (gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+          )
         : null;
 
       return {
@@ -81,7 +85,10 @@ export async function GET() {
         willReceiveEmail: daysLeft && [3, 2, 1].includes(daysLeft),
         gracePeriodEnd: user.gracePeriodEnd,
         activePagesCount: user.weddingPages.length,
-        activePages: user.weddingPages.map((p) => ({ slug: p.slug, title: p.title })),
+        activePages: user.weddingPages.map((p) => ({
+          slug: p.slug,
+          title: p.title,
+        })),
       };
     });
 
@@ -109,7 +116,8 @@ export async function GET() {
       gracePeriodEnd: user.gracePeriodEnd,
       daysOverdue: user.gracePeriodEnd
         ? Math.floor(
-            (now.getTime() - new Date(user.gracePeriodEnd).getTime()) / (1000 * 60 * 60 * 24)
+            (now.getTime() - new Date(user.gracePeriodEnd).getTime()) /
+              (1000 * 60 * 60 * 24)
           )
         : null,
       activePages: user.weddingPages.filter((p) => !p.deleted_at).length,
@@ -137,9 +145,13 @@ export async function GET() {
       timestamp: now.toISOString(),
       summary: {
         totalUsersInGracePeriod: usersWithDeletedPages.length,
-        usersWhoShouldReceiveEmails: scenario2Results.filter((r) => r.willReceiveEmail).length,
+        usersWhoShouldReceiveEmails: scenario2Results.filter(
+          (r) => r.willReceiveEmail
+        ).length,
         usersWithOrphanedFlags: scenario3Results.length,
-        usersWithNoActivePages: scenario1Results.filter((r) => r.activePages === 0).length,
+        usersWithNoActivePages: scenario1Results.filter(
+          (r) => r.activePages === 0
+        ).length,
       },
       status: {
         fixWorking:
@@ -153,7 +165,8 @@ export async function GET() {
       },
       scenarios: {
         scenario1_usersWithDeletedPagesButInGracePeriod: {
-          description: "Users who have grace period flag but all pages deleted (SHOULD BE EMPTY)",
+          description:
+            "Users who have grace period flag but all pages deleted (SHOULD BE EMPTY)",
           count: scenario1Results.filter((r) => r.activePages === 0).length,
           users: scenario1Results.filter((r) => r.activePages === 0),
         },
@@ -163,7 +176,8 @@ export async function GET() {
           users: scenario2Results.filter((r) => r.willReceiveEmail),
         },
         scenario3_orphanedFlags: {
-          description: "Users with grace period ended but flags not reset (SHOULD BE EMPTY)",
+          description:
+            "Users with grace period ended but flags not reset (SHOULD BE EMPTY)",
           count: scenario3Results.length,
           users: scenario3Results,
         },

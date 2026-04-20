@@ -110,7 +110,10 @@ export async function GET(request: Request) {
         for (let i = 0; i < formattedUsers.length; i++) {
           const u = formattedUsers[i];
           if (u && u.id && lastMap.has(u.id)) {
-            formattedUsers[i] = { ...u, lastLoginAt: lastMap.get(u.id)!.toISOString() };
+            formattedUsers[i] = {
+              ...u,
+              lastLoginAt: lastMap.get(u.id)!.toISOString(),
+            };
           }
         }
       }

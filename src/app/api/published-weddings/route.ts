@@ -48,7 +48,10 @@ async function getThumbnailUrl(
         canvaAccessToken,
         options
       );
-      console.log("Canva thumbnail generated successfully:", canvaResult.thumbnailUrl);
+      console.log(
+        "Canva thumbnail generated successfully:",
+        canvaResult.thumbnailUrl
+      );
       return canvaResult.thumbnailUrl;
     } catch (error) {
       console.warn("Canva thumbnail generation failed, using fallback:", error);
@@ -86,20 +89,28 @@ function extractStyleFromSearchTerms(searchTerms: string[]): string {
     "bohemian",
     "classic",
   ];
-  const foundStyle = searchTerms.find((term) => styles.includes(term.toLowerCase()));
+  const foundStyle = searchTerms.find((term) =>
+    styles.includes(term.toLowerCase())
+  );
   return foundStyle || "elegant";
 }
 
 // Helper function to extract search terms from wedding data
-function extractSearchTerms(weddingPage: WeddingData, user: UserData): string[] {
+function extractSearchTerms(
+  weddingPage: WeddingData,
+  user: UserData
+): string[] {
   const terms: string[] = ["wedding"];
 
   // Add bride and groom names
-  if (user.brideName && user.brideName.trim()) terms.push(user.brideName.trim());
-  if (user.groomName && user.groomName.trim()) terms.push(user.groomName.trim());
+  if (user.brideName && user.brideName.trim())
+    terms.push(user.brideName.trim());
+  if (user.groomName && user.groomName.trim())
+    terms.push(user.groomName.trim());
 
   // Add venue/location
-  if (weddingPage.venue && weddingPage.venue.trim()) terms.push(weddingPage.venue.trim());
+  if (weddingPage.venue && weddingPage.venue.trim())
+    terms.push(weddingPage.venue.trim());
 
   // Add color theme
   if (weddingPage.color_theme && weddingPage.color_theme.trim())
@@ -133,7 +144,9 @@ function extractSearchTerms(weddingPage: WeddingData, user: UserData): string[] 
           "bohemian",
           "classic",
         ];
-        const foundStyles = weddingStyles.filter((style) => aiDataStr.includes(style));
+        const foundStyles = weddingStyles.filter((style) =>
+          aiDataStr.includes(style)
+        );
         terms.push(...foundStyles);
 
         // Look for locations/venues
@@ -148,7 +161,9 @@ function extractSearchTerms(weddingPage: WeddingData, user: UserData): string[] 
           "barn",
           "rooftop",
         ];
-        const foundLocations = locations.filter((loc) => aiDataStr.includes(loc));
+        const foundLocations = locations.filter((loc) =>
+          aiDataStr.includes(loc)
+        );
         terms.push(...foundLocations);
       }
     } catch (error) {
@@ -193,7 +208,11 @@ export async function GET() {
     const transformedWeddings = await Promise.all(
       publishedWeddings.map(async (wedding) => {
         const searchTerms = extractSearchTerms(wedding, wedding.user);
-        const thumbnailUrl = await getThumbnailUrl(searchTerms, wedding, wedding.user);
+        const thumbnailUrl = await getThumbnailUrl(
+          searchTerms,
+          wedding,
+          wedding.user
+        );
 
         // Create title from bride and groom names
         const title =
@@ -207,7 +226,8 @@ export async function GET() {
           : new Date(wedding.created_at).toISOString().split("T")[0];
 
         // Create excerpt from welcome message or AI data
-        let excerpt = wedding.welcomeMessage || "A beautiful wedding celebration";
+        let excerpt =
+          wedding.welcomeMessage || "A beautiful wedding celebration";
         if (!excerpt || excerpt.trim() === "") {
           // Try to extract meaningful text from ai_data
           if (
@@ -219,7 +239,13 @@ export async function GET() {
             try {
               // Look for common text fields in ai_data
               const aiData = wedding.ai_data as Record<string, unknown>;
-              const textFields = ["description", "story", "about", "summary", "content"];
+              const textFields = [
+                "description",
+                "story",
+                "about",
+                "summary",
+                "content",
+              ];
 
               for (const field of textFields) {
                 if (

@@ -7,7 +7,9 @@ import { LOCALE_COOKIE_NAME, DEFAULT_LOCALE } from "@/config/i18n";
 export default getRequestConfig(async (params: any) => {
   const headers = params?.headers;
   const cookieHeader = headers?.get("cookie") ?? "";
-  const match = cookieHeader.match(new RegExp(`(?:^|; )${LOCALE_COOKIE_NAME}=([^;]+)`));
+  const match = cookieHeader.match(
+    new RegExp(`(?:^|; )${LOCALE_COOKIE_NAME}=([^;]+)`)
+  );
   const locale = match ? decodeURIComponent(match[1]) : DEFAULT_LOCALE;
 
   const messages = (await import(`../../messages/${locale}.json`)).default;

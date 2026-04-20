@@ -13,7 +13,9 @@ export async function DELETE(req: Request) {
 
     const { templateId } = await req.json();
 
-    const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
@@ -28,12 +30,18 @@ export async function DELETE(req: Request) {
     });
 
     if (!userTemplate) {
-      return NextResponse.json({ error: "Template not found for user" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Template not found for user" },
+        { status: 404 }
+      );
     }
 
     // Only allow deletion if it is the selected template
     if (!userTemplate.isSelected) {
-      return NextResponse.json({ error: "Template is not selected" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Template is not selected" },
+        { status: 400 }
+      );
     }
 
     await prisma.userTemplate.delete({ where: { id: userTemplate.id } });
@@ -41,6 +49,9 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to delete user template:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

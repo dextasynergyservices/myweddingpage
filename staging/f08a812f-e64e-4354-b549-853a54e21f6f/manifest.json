@@ -3,7 +3,10 @@
   "slug": "vows-classic",
   "description": "A classic, timeless wedding template with elegant typography and romantic styling.",
   "categoryId": "cc4b45c4-9a45-4bf8-85d9-192144d43c87",
-  "planIds": ["c883dbff-0982-43fd-8621-d4e8bcd2e48f", "5caaccb9-6e14-4a53-a49a-177de72b0ccf"],
+  "planIds": [
+    "c883dbff-0982-43fd-8621-d4e8bcd2e48f",
+    "5caaccb9-6e14-4a53-a49a-177de72b0ccf"
+  ],
   "thumbnail": "assets/thumb-vows.png",
   "heroImage": "assets/hero-wedding.jpg",
   "colorSchemes": [

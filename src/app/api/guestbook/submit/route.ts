@@ -8,7 +8,10 @@ export async function POST(request: NextRequest) {
 
     // Validation
     if (!streamId || !message) {
-      return NextResponse.json({ error: "Stream ID and message are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Stream ID and message are required" },
+        { status: 400 }
+      );
     }
 
     // Validate message length (max 500 characters)
@@ -52,6 +55,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error submitting guestbook entry:", error);
-    return NextResponse.json({ error: "Failed to submit guestbook entry" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to submit guestbook entry" },
+      { status: 500 }
+    );
   }
 }

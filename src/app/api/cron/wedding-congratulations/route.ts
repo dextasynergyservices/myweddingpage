@@ -73,7 +73,11 @@ export async function GET(request: NextRequest) {
         weddingDate: {
           in: [tomorrow, today],
         },
-        AND: [{ email: { not: null } }, { brideName: { not: null } }, { groomName: { not: null } }],
+        AND: [
+          { email: { not: null } },
+          { brideName: { not: null } },
+          { groomName: { not: null } },
+        ],
       },
       select: {
         id: true,
@@ -147,13 +151,20 @@ export async function GET(request: NextRequest) {
 
         if (isWeddingDay) {
           results.weddingDayMessages++;
-          console.log(`Sent wedding day congratulations to ${user.groomName} & ${user.brideName}`);
+          console.log(
+            `Sent wedding day congratulations to ${user.groomName} & ${user.brideName}`
+          );
         } else {
           results.preWeddingMessages++;
-          console.log(`Sent pre-wedding message to ${user.groomName} & ${user.brideName}`);
+          console.log(
+            `Sent pre-wedding message to ${user.groomName} & ${user.brideName}`
+          );
         }
       } catch (error) {
-        console.error(`Error processing wedding congratulations for user ${user.id}:`, error);
+        console.error(
+          `Error processing wedding congratulations for user ${user.id}:`,
+          error
+        );
         results.errors.push(`Failed to process user ${user.id}: ${error}`);
       }
     }

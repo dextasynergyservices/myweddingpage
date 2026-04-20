@@ -8,7 +8,10 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { trackUploadStart, trackUploadComplete } from "@/lib/upload-monitor";
-import { useUploadProgress, UploadProgress } from "@/components/ui/UploadProgress";
+import {
+  useUploadProgress,
+  UploadProgress,
+} from "@/components/ui/UploadProgress";
 import {
   uploadToCloudinaryWithProgress,
   uploadToApiWithProgress,
@@ -16,7 +19,11 @@ import {
 import { useCSRFToken } from "@/hooks/useCSRFToken";
 
 // Image compression utility (quality-preserving approach)
-const compressImage = (file: File, maxSizeBytes: number, quality: number = 0.9): Promise<File> => {
+const compressImage = (
+  file: File,
+  maxSizeBytes: number,
+  quality: number = 0.9
+): Promise<File> => {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -52,7 +59,9 @@ const compressImage = (file: File, maxSizeBytes: number, quality: number = 0.9):
           const ratio = Math.min(maxDimension / width, maxDimension / height);
           width = Math.floor(width * ratio);
           height = Math.floor(height * ratio);
-          console.log(`Reducing dimensions: ${originalDimensions} → ${width}x${height}`);
+          console.log(
+            `Reducing dimensions: ${originalDimensions} → ${width}x${height}`
+          );
         }
       }
 
@@ -83,7 +92,9 @@ const compressImage = (file: File, maxSizeBytes: number, quality: number = 0.9):
                 type: file.type,
                 lastModified: file.lastModified,
               });
-              compressImage(compressedFile, maxSizeBytes, newQuality).then(resolve).catch(reject);
+              compressImage(compressedFile, maxSizeBytes, newQuality)
+                .then(resolve)
+                .catch(reject);
             } else {
               // Quality would be too low - reject for external tools
               reject(new Error("QUALITY_TOO_LOW_FOR_TARGET"));
@@ -131,7 +142,11 @@ const compressVideo = (file: File, maxSizeBytes: number): Promise<File> => {
 
       // If we need to compress more than 60%, it might be too aggressive
       if (compressionRatio < 0.4) {
-        reject(new Error("Compression would severely impact quality. Please use external tools."));
+        reject(
+          new Error(
+            "Compression would severely impact quality. Please use external tools."
+          )
+        );
         return;
       }
 
@@ -144,7 +159,9 @@ const compressVideo = (file: File, maxSizeBytes: number): Promise<File> => {
         const scale = Math.min(1920 / width, 1080 / height, 0.85);
         width = Math.floor(width * scale);
         height = Math.floor(height * scale);
-        console.log(`Scaling video: ${video.videoWidth}x${video.videoHeight} → ${width}x${height}`);
+        console.log(
+          `Scaling video: ${video.videoWidth}x${video.videoHeight} → ${width}x${height}`
+        );
       }
 
       canvas.width = width;
@@ -171,7 +188,9 @@ const compressVideo = (file: File, maxSizeBytes: number): Promise<File> => {
         500000 // Min 0.5 Mbps for watchable quality
       );
 
-      console.log(`Using final bitrate: ${(finalBitrate / 1000000).toFixed(1)} Mbps`);
+      console.log(
+        `Using final bitrate: ${(finalBitrate / 1000000).toFixed(1)} Mbps`
+      );
 
       const mediaRecorder = new MediaRecorder(canvasStream, {
         mimeType,
@@ -200,10 +219,14 @@ const compressVideo = (file: File, maxSizeBytes: number): Promise<File> => {
           return;
         }
 
-        const compressedFile = new File([compressedBlob], file.name.replace(/\.[^/.]+$/, ".webm"), {
-          type: mimeType,
-          lastModified: file.lastModified,
-        });
+        const compressedFile = new File(
+          [compressedBlob],
+          file.name.replace(/\.[^/.]+$/, ".webm"),
+          {
+            type: mimeType,
+            lastModified: file.lastModified,
+          }
+        );
 
         resolve(compressedFile);
       };
@@ -276,8 +299,14 @@ const Gallery = () => {
   const { token: csrfToken } = useCSRFToken();
 
   // Upload progress tracking
-  const { uploads, addUpload, updateProgress, setUploadSuccess, setUploadError, removeUpload } =
-    useUploadProgress();
+  const {
+    uploads,
+    addUpload,
+    updateProgress,
+    setUploadSuccess,
+    setUploadError,
+    removeUpload,
+  } = useUploadProgress();
 
   // Fetch user's media and plan limits
   useEffect(() => {
@@ -340,7 +369,9 @@ const Gallery = () => {
           );
           const compressedFile = await compressImage(file, maxSizeBytes);
           const originalSizeMB = (file.size / 1024 / 1024).toFixed(1);
-          const compressedSizeMB = (compressedFile.size / 1024 / 1024).toFixed(1);
+          const compressedSizeMB = (compressedFile.size / 1024 / 1024).toFixed(
+            1
+          );
 
           // Check if compression was successful enough
           if (compressedFile.size > maxSizeBytes) {
@@ -431,9 +462,13 @@ const Gallery = () => {
 
           const compressedFile = await compressVideo(file, maxSizeBytes);
           const originalSizeMB = (file.size / 1024 / 1024).toFixed(1);
-          const compressedSizeMB = (compressedFile.size / 1024 / 1024).toFixed(1);
+          const compressedSizeMB = (compressedFile.size / 1024 / 1024).toFixed(
+            1
+          );
 
-          console.log(`Compressed video ${file.name}: ${originalSizeMB}MB → ${compressedSizeMB}MB`);
+          console.log(
+            `Compressed video ${file.name}: ${originalSizeMB}MB → ${compressedSizeMB}MB`
+          );
           toast.dismiss(loadingToast);
           toast.success(
             `✅ Compressed "${file.name}": ${originalSizeMB}MB → ${compressedSizeMB}MB\n` +
@@ -533,48 +568,66 @@ const Gallery = () => {
 
         try {
           // Use our progress-tracked upload for the batch
-          const response = await uploadToApiWithProgress("/api/gallery-upload", uploadData, {
-            uploadType: "gallery-batch",
-            onProgress: (loaded, total, percentage, speed) => {
-              // Distribute progress across all files equally
-              const progressPerFile = percentage / filesToUpload.length;
-              filesToUpload.forEach((file) => {
-                updateProgress(file.name, (file.size * progressPerFile) / 100, speed);
-              });
-            },
-            onSuccess: (result) => {
-              console.log("Fallback batch upload successful:", result);
-              // Mark all files as successful
-              filesToUpload.forEach((file) => {
-                setUploadSuccess(file.name);
+          const response = await uploadToApiWithProgress(
+            "/api/gallery-upload",
+            uploadData,
+            {
+              uploadType: "gallery-batch",
+              onProgress: (loaded, total, percentage, speed) => {
+                // Distribute progress across all files equally
+                const progressPerFile = percentage / filesToUpload.length;
+                filesToUpload.forEach((file) => {
+                  updateProgress(
+                    file.name,
+                    (file.size * progressPerFile) / 100,
+                    speed
+                  );
+                });
+              },
+              onSuccess: (result) => {
+                console.log("Fallback batch upload successful:", result);
+                // Mark all files as successful
+                filesToUpload.forEach((file) => {
+                  setUploadSuccess(file.name);
 
-                // Track analytics for each file
-                const trackingData = trackUploadStart(
-                  "gallery-fallback",
-                  file.name,
-                  file.size,
-                  session?.user?.id || ""
-                );
-                trackUploadComplete(trackingData, true, "batch-upload-success");
-              });
-            },
-            onError: (error) => {
-              console.error("Fallback batch upload failed:", error);
-              // Mark all files as failed
-              filesToUpload.forEach((file) => {
-                setUploadError(file.name, error);
+                  // Track analytics for each file
+                  const trackingData = trackUploadStart(
+                    "gallery-fallback",
+                    file.name,
+                    file.size,
+                    session?.user?.id || ""
+                  );
+                  trackUploadComplete(
+                    trackingData,
+                    true,
+                    "batch-upload-success"
+                  );
+                });
+              },
+              onError: (error) => {
+                console.error("Fallback batch upload failed:", error);
+                // Mark all files as failed
+                filesToUpload.forEach((file) => {
+                  setUploadError(file.name, error);
 
-                // Track analytics for each file
-                const trackingData = trackUploadStart(
-                  "gallery-fallback",
-                  file.name,
-                  file.size,
-                  session?.user?.id || ""
-                );
-                trackUploadComplete(trackingData, false, undefined, undefined, error);
-              });
-            },
-          });
+                  // Track analytics for each file
+                  const trackingData = trackUploadStart(
+                    "gallery-fallback",
+                    file.name,
+                    file.size,
+                    session?.user?.id || ""
+                  );
+                  trackUploadComplete(
+                    trackingData,
+                    false,
+                    undefined,
+                    undefined,
+                    error
+                  );
+                });
+              },
+            }
+          );
 
           if (response) {
             const newMedia = Array.isArray(response) ? response : [response];
@@ -624,45 +677,63 @@ const Gallery = () => {
           const resourceType = uploadType === "VIDEO" ? "video" : "image";
 
           // Upload with progress tracking
-          const cloudinaryResult = await uploadToCloudinaryWithProgress(file, uploadPreset, {
-            cloudName,
-            folder: "wedding-gallery",
-            resourceType: resourceType === "video" ? "video" : "auto",
-            onProgress: (loaded, total, percentage, speed) => {
-              updateProgress(file.name, loaded, speed);
-            },
-            onSuccess: (result) => {
-              console.log(`Upload successful for ${file.name}:`, result);
-              setUploadSuccess(file.name);
+          const cloudinaryResult = await uploadToCloudinaryWithProgress(
+            file,
+            uploadPreset,
+            {
+              cloudName,
+              folder: "wedding-gallery",
+              resourceType: resourceType === "video" ? "video" : "auto",
+              onProgress: (loaded, total, percentage, speed) => {
+                updateProgress(file.name, loaded, speed);
+              },
+              onSuccess: (result) => {
+                console.log(`Upload successful for ${file.name}:`, result);
+                setUploadSuccess(file.name);
 
-              // Track analytics
-              const trackingData = trackUploadStart(
-                "gallery",
-                file.name,
-                file.size,
-                session?.user?.id || ""
-              );
-              const uploadResult = result as { secure_url: string };
-              trackUploadComplete(trackingData, true, uploadResult.secure_url);
-            },
-            onError: (error) => {
-              console.error(`Failed to upload ${file.name}:`, error);
-              setUploadError(file.name, error);
+                // Track analytics
+                const trackingData = trackUploadStart(
+                  "gallery",
+                  file.name,
+                  file.size,
+                  session?.user?.id || ""
+                );
+                const uploadResult = result as { secure_url: string };
+                trackUploadComplete(
+                  trackingData,
+                  true,
+                  uploadResult.secure_url
+                );
+              },
+              onError: (error) => {
+                console.error(`Failed to upload ${file.name}:`, error);
+                setUploadError(file.name, error);
 
-              // Track analytics
-              const trackingData = trackUploadStart(
-                "gallery",
-                file.name,
-                file.size,
-                session?.user?.id || ""
-              );
-              trackUploadComplete(trackingData, false, undefined, undefined, error);
-            },
-          });
+                // Track analytics
+                const trackingData = trackUploadStart(
+                  "gallery",
+                  file.name,
+                  file.size,
+                  session?.user?.id || ""
+                );
+                trackUploadComplete(
+                  trackingData,
+                  false,
+                  undefined,
+                  undefined,
+                  error
+                );
+              },
+            }
+          );
 
           uploadedFiles.push({
-            secure_url: (cloudinaryResult as { secure_url: string; public_id: string }).secure_url,
-            public_id: (cloudinaryResult as { secure_url: string; public_id: string }).public_id,
+            secure_url: (
+              cloudinaryResult as { secure_url: string; public_id: string }
+            ).secure_url,
+            public_id: (
+              cloudinaryResult as { secure_url: string; public_id: string }
+            ).public_id,
           });
         } catch (fileError) {
           console.error(`Failed to upload ${file.name}:`, fileError);
@@ -721,7 +792,9 @@ const Gallery = () => {
     } catch (error) {
       console.error("Error uploading:", error);
       // Show user-friendly error message
-      alert(`Upload failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+      alert(
+        `Upload failed: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     } finally {
       setLoading(false);
       // Safely reset the form if it exists
@@ -761,11 +834,16 @@ const Gallery = () => {
       } else {
         // Get the error details
         const errorData = await response.text();
-        console.error(`Delete failed with status ${response.status}:`, errorData);
+        console.error(
+          `Delete failed with status ${response.status}:`,
+          errorData
+        );
 
         try {
           const errorJson = JSON.parse(errorData);
-          toast.error(`Failed to delete media: ${errorJson.error || "Unknown error"}`);
+          toast.error(
+            `Failed to delete media: ${errorJson.error || "Unknown error"}`
+          );
         } catch {
           toast.error(`Failed to delete media: HTTP ${response.status}`);
         }
@@ -779,7 +857,8 @@ const Gallery = () => {
   };
 
   const filteredMedia = media.filter((item) => {
-    const categoryMatch = selectedTab === "all" || item.category === selectedTab;
+    const categoryMatch =
+      selectedTab === "all" || item.category === selectedTab;
     const typeMatch = selectedType === "all" || item.type === selectedType;
     return categoryMatch && typeMatch;
   });
@@ -790,14 +869,18 @@ const Gallery = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+        <h1
+          className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+        >
           Wedding Gallery
         </h1>
         <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
           Browse and upload your wedding photos and videos by category.
         </p>
         {/* Upload limits info */}
-        <div className={`mt-4 text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+        <div
+          className={`mt-4 text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+        >
           <p>
             Photos: {uploadCount.photos} / {maxLimits.photos}
           </p>
@@ -833,7 +916,9 @@ const Gallery = () => {
                 selectedType === "all"
                   ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-transparent shadow-md"
                   : `${
-                      isDarkMode ? "text-slate-300 border-slate-600" : "text-black border-slate-300"
+                      isDarkMode
+                        ? "text-slate-300 border-slate-600"
+                        : "text-black border-slate-300"
                     } hover:bg-gradient-to-r hover:from-indigo-600 hover:to-purple-600 hover:text-white hover:border-transparent hover:cursor-pointer`
               }`}
         >
@@ -846,7 +931,9 @@ const Gallery = () => {
                 selectedType === "PHOTO"
                   ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-transparent shadow-md"
                   : `${
-                      isDarkMode ? "text-slate-300 border-slate-600" : "text-black border-slate-300"
+                      isDarkMode
+                        ? "text-slate-300 border-slate-600"
+                        : "text-black border-slate-300"
                     } hover:bg-gradient-to-r hover:from-indigo-600 hover:to-purple-600 hover:text-white hover:border-transparent hover:cursor-pointer`
               }`}
         >
@@ -859,7 +946,9 @@ const Gallery = () => {
                 selectedType === "VIDEO"
                   ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-transparent shadow-md"
                   : `${
-                      isDarkMode ? "text-slate-300 border-slate-600" : "text-black border-slate-300"
+                      isDarkMode
+                        ? "text-slate-300 border-slate-600"
+                        : "text-black border-slate-300"
                     } hover:bg-gradient-to-r hover:from-indigo-600 hover:to-purple-600 hover:text-white hover:border-transparent hover:cursor-pointer`
               }`}
         >
@@ -961,7 +1050,11 @@ const Gallery = () => {
           }
           className="flex items-center gap-2 px-6 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:opacity-90 transition disabled:opacity-50 hover:cursor-pointer"
         >
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+          {loading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Upload className="h-4 w-4" />
+          )}
           Upload
         </button>
       </form>

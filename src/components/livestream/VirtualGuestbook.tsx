@@ -25,7 +25,9 @@ export default function VirtualGuestbook({ streamId }: VirtualGuestbookProps) {
   useEffect(() => {
     const fetchEntries = async () => {
       try {
-        const response = await fetch(`/api/guestbook/entries?streamId=${streamId}&limit=50`);
+        const response = await fetch(
+          `/api/guestbook/entries?streamId=${streamId}&limit=50`
+        );
         if (response.ok) {
           const data = await response.json();
           setEntries(data.entries || []);
@@ -86,7 +88,9 @@ export default function VirtualGuestbook({ streamId }: VirtualGuestbookProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col">
-      <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">✍️ Virtual Guestbook</h3>
+      <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+        ✍️ Virtual Guestbook
+      </h3>
 
       {/* Submit Form */}
       <form onSubmit={handleSubmit} className="mb-6 space-y-3">
@@ -116,7 +120,9 @@ export default function VirtualGuestbook({ streamId }: VirtualGuestbookProps) {
             maxLength={500}
           />
           <div className="flex justify-between items-center mt-1">
-            <span className="text-xs text-gray-500">{message.length}/500 characters</span>
+            <span className="text-xs text-gray-500">
+              {message.length}/500 characters
+            </span>
           </div>
         </div>
 
@@ -137,7 +143,9 @@ export default function VirtualGuestbook({ streamId }: VirtualGuestbookProps) {
       {/* Messages Feed */}
       <div className="flex-1 overflow-y-auto space-y-3">
         {entries.length === 0 ? (
-          <p className="text-center text-gray-500 py-8">Be the first to leave a message! 💬</p>
+          <p className="text-center text-gray-500 py-8">
+            Be the first to leave a message! 💬
+          </p>
         ) : (
           entries.map((entry, index) => (
             <motion.div
@@ -147,9 +155,13 @@ export default function VirtualGuestbook({ streamId }: VirtualGuestbookProps) {
               transition={{ delay: index * 0.05 }}
               className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg"
             >
-              <p className="text-sm text-gray-700 dark:text-gray-200 mb-2">{entry.message}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-200 mb-2">
+                {entry.message}
+              </p>
               <div className="flex justify-between items-center text-xs text-gray-500">
-                <span className="font-medium">{entry.guestName || "Anonymous Guest"}</span>
+                <span className="font-medium">
+                  {entry.guestName || "Anonymous Guest"}
+                </span>
                 <span>
                   {new Date(entry.createdAt).toLocaleDateString("en-US", {
                     month: "short",

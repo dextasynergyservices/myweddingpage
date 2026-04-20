@@ -50,7 +50,10 @@ export default function CategoriesAdminPage() {
       // attempt to include CSRF token
       let csrfToken: string | null = null;
       try {
-        const t = await fetch("/api/csrf-token", { method: "GET", credentials: "include" });
+        const t = await fetch("/api/csrf-token", {
+          method: "GET",
+          credentials: "include",
+        });
         if (t.ok) {
           const j = await t.json();
           csrfToken = j?.csrfToken || null;
@@ -64,7 +67,10 @@ export default function CategoriesAdminPage() {
           "content-type": "application/json",
           ...(csrfToken ? { "x-csrf-token": csrfToken } : {}),
         },
-        body: JSON.stringify({ name: name.trim(), description: description.trim() || null }),
+        body: JSON.stringify({
+          name: name.trim(),
+          description: description.trim() || null,
+        }),
       });
       if (!res.ok) throw new Error("Create failed");
       const json = await res.json();
@@ -99,7 +105,10 @@ export default function CategoriesAdminPage() {
     try {
       let csrfToken: string | null = null;
       try {
-        const t = await fetch("/api/csrf-token", { method: "GET", credentials: "include" });
+        const t = await fetch("/api/csrf-token", {
+          method: "GET",
+          credentials: "include",
+        });
         if (t.ok) {
           const j = await t.json();
           csrfToken = j?.csrfToken || null;
@@ -147,7 +156,10 @@ export default function CategoriesAdminPage() {
     try {
       let csrfToken: string | null = null;
       try {
-        const t = await fetch("/api/csrf-token", { method: "GET", credentials: "include" });
+        const t = await fetch("/api/csrf-token", {
+          method: "GET",
+          credentials: "include",
+        });
         if (t.ok) {
           const j = await t.json();
           csrfToken = j?.csrfToken || null;
@@ -174,7 +186,11 @@ export default function CategoriesAdminPage() {
           new CustomEvent("template-categories:changed", {
             detail: {
               action: "update",
-              category: { id: activeId, name: editName.trim(), description: editDescription },
+              category: {
+                id: activeId,
+                name: editName.trim(),
+                description: editDescription,
+              },
             },
           })
         );
@@ -232,7 +248,10 @@ export default function CategoriesAdminPage() {
                   <Button variant="outline" onClick={() => onEditRequested(c)}>
                     Edit
                   </Button>
-                  <Button variant="outline" onClick={() => onDeleteRequested(c.id)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => onDeleteRequested(c.id)}
+                  >
                     Delete
                   </Button>
                 </div>
@@ -250,9 +269,17 @@ export default function CategoriesAdminPage() {
         message="Are you sure you want to delete this category? This action cannot be undone."
       />
 
-      <Modal isOpen={editOpen} onClose={() => setEditOpen(false)} title="Edit category">
+      <Modal
+        isOpen={editOpen}
+        onClose={() => setEditOpen(false)}
+        title="Edit category"
+      >
         <div className="grid grid-cols-1 gap-2">
-          <input value={editName} onChange={(e) => setEditName(e.target.value)} className="input" />
+          <input
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            className="input"
+          />
           <input
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
@@ -263,7 +290,11 @@ export default function CategoriesAdminPage() {
           <Button onClick={confirmEdit} data-primary>
             Save
           </Button>
-          <Button variant="outline" className="ml-3" onClick={() => setEditOpen(false)}>
+          <Button
+            variant="outline"
+            className="ml-3"
+            onClick={() => setEditOpen(false)}
+          >
             Cancel
           </Button>
         </div>

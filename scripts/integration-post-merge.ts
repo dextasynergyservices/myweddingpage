@@ -6,7 +6,9 @@ function buildRequest(body: unknown): Request {
   const stream = new Readable();
   stream.push(json);
   stream.push(null);
-  const headers: Record<string, string> = { "content-type": "application/json" };
+  const headers: Record<string, string> = {
+    "content-type": "application/json",
+  };
   // If a webhook secret is configured in the environment, send it so the
   // in-process handler's secret check passes.
   const secret = process.env.TEMPLATE_WEBHOOK_SECRET;

@@ -22,7 +22,13 @@ export async function GET() {
     // Try to find the user's live wedding page first
     let wp = await prisma.weddingPage.findFirst({
       where: { userId: user.id, is_live: true },
-      select: { id: true, slug: true, views: true, is_live: true, deleted_at: true },
+      select: {
+        id: true,
+        slug: true,
+        views: true,
+        is_live: true,
+        deleted_at: true,
+      },
     });
 
     // If no live page exists, fall back to the most recently created wedding page for the user
@@ -32,12 +38,21 @@ export async function GET() {
       wp = await prisma.weddingPage.findFirst({
         where: { userId: user.id },
         orderBy: { created_at: "desc" },
-        select: { id: true, slug: true, views: true, is_live: true, deleted_at: true },
+        select: {
+          id: true,
+          slug: true,
+          views: true,
+          is_live: true,
+          deleted_at: true,
+        },
       });
     }
 
     if (!wp) {
-      console.debug("/api/wedding-views: no wedding page found for user", user.id);
+      console.debug(
+        "/api/wedding-views: no wedding page found for user",
+        user.id
+      );
       return NextResponse.json({ views: 0, weddingPage: null });
     }
 
@@ -46,7 +61,12 @@ export async function GET() {
     );
     return NextResponse.json({
       views: wp.views ?? 0,
-      weddingPage: { id: wp.id, slug: wp.slug, is_live: wp.is_live, deleted_at: wp.deleted_at },
+      weddingPage: {
+        id: wp.id,
+        slug: wp.slug,
+        is_live: wp.is_live,
+        deleted_at: wp.deleted_at,
+      },
     });
   } catch (error) {
     console.error("Error fetching wedding views:", error);
@@ -125,7 +145,10 @@ export async function POST(req: NextRequest) {
         });
         updatedViews = txRes?.views ?? null;
       } catch (err) {
-        console.error("Failed to increment wedding page views and record PageView:", err);
+        console.error(
+          "Failed to increment wedding page views and record PageView:",
+          err
+        );
       }
     }
 
@@ -153,7 +176,10 @@ export async function POST(req: NextRequest) {
 
     return res;
   } catch (error) {
-    console.error("Error incrementing wedding views via /api/wedding-views POST:", error);
+    console.error(
+      "Error incrementing wedding views via /api/wedding-views POST:",
+      error
+    );
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

@@ -2,7 +2,8 @@ import twilio from "twilio";
 
 // Lazy initialization: only create client when actually needed
 function getTwilioClient() {
-  const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
+  const twilioAccountSid =
+    process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
   const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
 
   if (!twilioAccountSid || !twilioAuthToken) {
@@ -17,7 +18,13 @@ function getTwilioClient() {
   }
 }
 
-export async function sendWhatsAppNotification({ to, body }: { to: string; body: string }) {
+export async function sendWhatsAppNotification({
+  to,
+  body,
+}: {
+  to: string;
+  body: string;
+}) {
   try {
     const twilioClient = getTwilioClient();
 

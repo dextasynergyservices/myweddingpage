@@ -24,7 +24,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       templates: templates.map(
-        (template: { id: string; name: string; thumbnail?: { url: string }; tags?: string[] }) => ({
+        (template: {
+          id: string;
+          name: string;
+          thumbnail?: { url: string };
+          tags?: string[];
+        }) => ({
           id: template.id,
           name: template.name,
           thumbnail: template.thumbnail?.url,

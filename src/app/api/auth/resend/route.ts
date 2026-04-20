@@ -17,7 +17,10 @@ export async function POST(req: NextRequest) {
   }
 
   if (user.emailVerified) {
-    return NextResponse.json({ message: "Email already verified" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Email already verified" },
+      { status: 200 }
+    );
   }
 
   const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -31,7 +34,13 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  await sendVerificationEmail(email, code, token, user.brideName ?? "", user.groomName ?? "");
+  await sendVerificationEmail(
+    email,
+    code,
+    token,
+    user.brideName ?? "",
+    user.groomName ?? ""
+  );
 
   return NextResponse.json({ message: "Verification email resent" });
 }

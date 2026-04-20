@@ -3,12 +3,19 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 
-type BackfillEvent = { pageViewId: string; ipAddress?: string | null; userAgent?: string | null };
+type BackfillEvent = {
+  pageViewId: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+};
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || (session as { user?: { role?: string } })?.user?.role !== "ADMIN") {
+    if (
+      !session ||
+      (session as { user?: { role?: string } })?.user?.role !== "ADMIN"
+    ) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -39,7 +46,10 @@ export async function POST(req: NextRequest) {
         await prisma.pageView.update({ where: { id: ev.pageViewId }, data });
         updated++;
       } catch (err) {
-        errors.push({ id: ev.pageViewId, error: String(err instanceof Error ? err.message : err) });
+        errors.push({
+          id: ev.pageViewId,
+          error: String(err instanceof Error ? err.message : err),
+        });
       }
     }
 

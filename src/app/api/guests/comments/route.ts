@@ -10,11 +10,17 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!name || name.trim().length === 0) {
-      return NextResponse.json({ error: "Please enter your name" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Please enter your name" },
+        { status: 400 }
+      );
     }
 
     if (!message || message.trim().length === 0) {
-      return NextResponse.json({ error: "Please enter a message" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Please enter a message" },
+        { status: 400 }
+      );
     }
 
     if (!slug) {
@@ -31,7 +37,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (!weddingPage) {
-      return NextResponse.json({ error: "Wedding page not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Wedding page not found" },
+        { status: 404 }
+      );
     }
 
     // Create the comment in the database
@@ -77,7 +86,10 @@ export async function GET(request: NextRequest) {
     });
 
     if (!weddingPage) {
-      return NextResponse.json({ error: "Wedding page not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Wedding page not found" },
+        { status: 404 }
+      );
     }
 
     // Fetch only approved comments for this wedding page

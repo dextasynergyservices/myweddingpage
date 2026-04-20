@@ -24,7 +24,10 @@ export async function GET(request: NextRequest) {
     const session = await getServerSession();
 
     if (!session || session.user?.role !== "ADMIN") {
-      return NextResponse.json({ error: "Unauthorized - Admin access required" }, { status: 403 });
+      return NextResponse.json(
+        { error: "Unauthorized - Admin access required" },
+        { status: 403 }
+      );
     }
 
     const { searchParams } = request.nextUrl;
@@ -33,15 +36,23 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "20");
 
     if (!identifier) {
-      return NextResponse.json({ error: "identifier parameter required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "identifier parameter required" },
+        { status: 400 }
+      );
     }
 
     switch (action) {
       case "status": {
         // Check if email or IP is locked
-        const [email, ipAddress] = identifier.includes("@") ? [identifier, ""] : ["", identifier];
+        const [email, ipAddress] = identifier.includes("@")
+          ? [identifier, ""]
+          : ["", identifier];
 
-        const status = await checkLockoutStatus(email || identifier, ipAddress || identifier);
+        const status = await checkLockoutStatus(
+          email || identifier,
+          ipAddress || identifier
+        );
 
         return NextResponse.json({ status });
       }
@@ -58,13 +69,19 @@ export async function GET(request: NextRequest) {
 
       default:
         return NextResponse.json(
-          { error: "Invalid action. Use: status, lockout-history, or attempt-history" },
+          {
+            error:
+              "Invalid action. Use: status, lockout-history, or attempt-history",
+          },
           { status: 400 }
         );
     }
   } catch (error) {
     console.error("Failed to query lockout data:", error);
-    return NextResponse.json({ error: "Failed to query lockout data" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to query lockout data" },
+      { status: 500 }
+    );
   }
 }
 
@@ -83,7 +100,10 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession();
 
     if (!session || session.user?.role !== "ADMIN") {
-      return NextResponse.json({ error: "Unauthorized - Admin access required" }, { status: 403 });
+      return NextResponse.json(
+        { error: "Unauthorized - Admin access required" },
+        { status: 403 }
+      );
     }
 
     const body = await request.json();
@@ -96,7 +116,10 @@ export async function POST(request: NextRequest) {
     const result = await unlockAccount(email, session.user.id || "admin");
 
     if (!result) {
-      return NextResponse.json({ error: "Failed to unlock account" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to unlock account" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
@@ -106,6 +129,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Failed to unlock account:", error);
-    return NextResponse.json({ error: "Failed to unlock account" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to unlock account" },
+      { status: 500 }
+    );
   }
 }

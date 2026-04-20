@@ -6,9 +6,18 @@ import { useTheme } from "@/contexts/ThemeContext";
 import AnimatedSection from "@/components/AnimatedSection";
 
 const steps = [
-  { title: "Sign Up", desc: "Create a free account to get started with our platform." },
-  { title: "Customize", desc: "Personalize your profile and settings for a better experience." },
-  { title: "Explore", desc: "Discover tools, resources, and features available to you." },
+  {
+    title: "Sign Up",
+    desc: "Create a free account to get started with our platform.",
+  },
+  {
+    title: "Customize",
+    desc: "Personalize your profile and settings for a better experience.",
+  },
+  {
+    title: "Explore",
+    desc: "Discover tools, resources, and features available to you.",
+  },
   { title: "Enjoy", desc: "Use the platform and enjoy seamless productivity." },
 ];
 
@@ -16,9 +25,13 @@ const HowToSteps = () => {
   const { isDarkMode } = useTheme();
 
   return (
-    <AnimatedSection className={`py-16 px-6 ${isDarkMode ? "bg-[#ab862b]/10" : " bg-gray-50"}`}>
+    <AnimatedSection
+      className={`py-16 px-6 ${isDarkMode ? "bg-[#ab862b]/10" : " bg-gray-50"}`}
+    >
       <div className="max-w-5xl mx-auto text-center">
-        <h2 className={`text-3xl font-bold mb-10 ${isDarkMode ? "text-white" : "text-black"}`}>
+        <h2
+          className={`text-3xl font-bold mb-10 ${isDarkMode ? "text-white" : "text-black"}`}
+        >
           Step-by-Step Guide
         </h2>
         <div className="grid md:grid-cols-4 gap-8">
@@ -32,7 +45,9 @@ const HowToSteps = () => {
             >
               <CheckCircle className="w-10 h-10 text-[#ab862b] mx-auto mb-4" />
               <h3 className="font-semibold text-lg">{step.title}</h3>
-              <p className={` mt-2 ${isDarkMode ? "text-gray-300" : " text-gray-900"}`}>
+              <p
+                className={` mt-2 ${isDarkMode ? "text-gray-300" : " text-gray-900"}`}
+              >
                 {step.desc}
               </p>
             </motion.div>

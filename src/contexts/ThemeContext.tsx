@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -27,9 +33,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // Set theme on client-side only
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const systemPrefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
 
-    const darkMode = savedTheme === "dark" || (!savedTheme && systemPrefersDark);
+    const darkMode =
+      savedTheme === "dark" || (!savedTheme && systemPrefersDark);
     setIsDarkMode(darkMode);
 
     const root = window.document.documentElement;
@@ -54,6 +63,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
   );
 };

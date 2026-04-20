@@ -17,7 +17,10 @@ let vapidConfigured = false;
 function ensureVapidConfigured() {
   if (vapidConfigured) return;
 
-  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  if (
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY &&
+    process.env.VAPID_PRIVATE_KEY
+  ) {
     webPush.setVapidDetails(
       process.env.VAPID_SUBJECT || "mailto:support@myweddingpage.com",
       process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
@@ -57,7 +60,11 @@ export async function sendNotificationToUser(
       include: { pushSubscriptions: true },
     });
 
-    if (!user || !user.pushSubscriptions || user.pushSubscriptions.length === 0) {
+    if (
+      !user ||
+      !user.pushSubscriptions ||
+      user.pushSubscriptions.length === 0
+    ) {
       console.log(`No push subscriptions found for user ${userId}`);
       return { sent: 0, failed: 0 };
     }
@@ -91,7 +98,10 @@ export async function sendNotificationToUser(
         );
         sent++;
       } catch (error: unknown) {
-        console.error(`Failed to send notification to subscription ${subscription.id}:`, error);
+        console.error(
+          `Failed to send notification to subscription ${subscription.id}:`,
+          error
+        );
 
         // Remove invalid subscriptions (404 or 410 status)
         const errorObj = error as { statusCode?: number };
@@ -157,7 +167,8 @@ export function createRSVPNotification(
   guestName: string,
   status: "ATTENDING" | "NOT_ATTENDING" | "MAYBE"
 ): NotificationPayload {
-  const emoji = status === "ATTENDING" ? "🎉" : status === "NOT_ATTENDING" ? "😔" : "🤔";
+  const emoji =
+    status === "ATTENDING" ? "🎉" : status === "NOT_ATTENDING" ? "😔" : "🤔";
   const statusText =
     status === "ATTENDING"
       ? "will attend"
@@ -177,7 +188,9 @@ export function createRSVPNotification(
 /**
  * New guest added notification
  */
-export function createGuestAddedNotification(guestName: string): NotificationPayload {
+export function createGuestAddedNotification(
+  guestName: string
+): NotificationPayload {
   return {
     title: "👥 New Guest Added",
     body: `${guestName} has been added to your guest list`,
@@ -190,7 +203,9 @@ export function createGuestAddedNotification(guestName: string): NotificationPay
 /**
  * Gallery photo uploaded notification
  */
-export function createGalleryNotification(photoCount: number): NotificationPayload {
+export function createGalleryNotification(
+  photoCount: number
+): NotificationPayload {
   return {
     title: "📸 New Photos!",
     body: `${photoCount} ${photoCount === 1 ? "photo" : "photos"} added to your gallery`,
@@ -209,7 +224,12 @@ export function createWeddingReminderNotification(
   groomName: string
 ): NotificationPayload {
   const emoji = daysUntil <= 1 ? "💍" : daysUntil <= 7 ? "🎊" : "📅";
-  const timeText = daysUntil === 0 ? "Today" : daysUntil === 1 ? "Tomorrow" : `${daysUntil} days`;
+  const timeText =
+    daysUntil === 0
+      ? "Today"
+      : daysUntil === 1
+        ? "Tomorrow"
+        : `${daysUntil} days`;
 
   return {
     title: `${emoji} Wedding Day ${daysUntil === 0 ? "is Here!" : "Reminder"}`,
@@ -223,7 +243,9 @@ export function createWeddingReminderNotification(
 /**
  * Incomplete tasks reminder notification
  */
-export function createTaskReminderNotification(incompleteCount: number): NotificationPayload {
+export function createTaskReminderNotification(
+  incompleteCount: number
+): NotificationPayload {
   return {
     title: "📋 Task Reminder",
     body: `You have ${incompleteCount} incomplete ${incompleteCount === 1 ? "task" : "tasks"}. Stay on track!`,

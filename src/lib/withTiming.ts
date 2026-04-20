@@ -27,14 +27,22 @@ export async function withTiming<T>(
   try {
     const durationMs = Number(end - start) / 1_000_000; // high-res ms
 
-    const sampleRate = typeof options?.sampleRate === "number" ? options!.sampleRate : 1;
+    const sampleRate =
+      typeof options?.sampleRate === "number" ? options!.sampleRate : 1;
     if (Math.random() <= sampleRate) {
       // Fire-and-forget: don't await logging to avoid adding latency
-      const entry = createLogFromRequest(request, options?.eventType ?? "API_ABUSE", {
-        metadata: { ...(options?.metadata || {}), responseTime: Math.round(durationMs) },
-        severity: undefined,
-        statusCode: undefined,
-      }) as SecurityLogEntry;
+      const entry = createLogFromRequest(
+        request,
+        options?.eventType ?? "API_ABUSE",
+        {
+          metadata: {
+            ...(options?.metadata || {}),
+            responseTime: Math.round(durationMs),
+          },
+          severity: undefined,
+          statusCode: undefined,
+        }
+      ) as SecurityLogEntry;
 
       // Ensure eventType is set if provided as string/enum
       if (options?.eventType) entry.eventType = options.eventType;

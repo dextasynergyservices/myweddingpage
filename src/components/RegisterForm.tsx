@@ -2,7 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, User, Eye, EyeOff, Calendar, MessageCircleIcon } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  User,
+  Eye,
+  EyeOff,
+  Calendar,
+  MessageCircleIcon,
+} from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useRouter } from "next/navigation";
 import GoogleAuthButton from "@/app/auth/GoogleAuthButton";
@@ -98,7 +106,8 @@ const RegisterForm = () => {
     if (!formData.groomName) errors.groomName = "Groom's name is required.";
     if (!formData.brideName) errors.brideName = "Bride's name is required.";
     if (!formData.email) errors.email = "Email is required.";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Invalid email address.";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      errors.email = "Invalid email address.";
     if (!formData.whatsapp) errors.whatsapp = "WhatsApp number is required.";
     if (!weddingDate) errors.weddingDate = "Wedding date is required.";
     if (!formData.password) errors.password = "Password is required.";
@@ -122,7 +131,10 @@ const RegisterForm = () => {
         (
           window as Window & {
             grecaptcha?: {
-              execute: (siteKey: string, options: { action: string }) => Promise<string>;
+              execute: (
+                siteKey: string,
+                options: { action: string }
+              ) => Promise<string>;
             };
           }
         ).grecaptcha
@@ -131,12 +143,18 @@ const RegisterForm = () => {
           recaptchaToken = await (
             window as unknown as {
               grecaptcha: {
-                execute: (siteKey: string, options: { action: string }) => Promise<string>;
+                execute: (
+                  siteKey: string,
+                  options: { action: string }
+                ) => Promise<string>;
               };
             }
-          ).grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_V3 || "", {
-            action: "register",
-          });
+          ).grecaptcha.execute(
+            process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_V3 || "",
+            {
+              action: "register",
+            }
+          );
         } catch (error) {
           console.error("reCAPTCHA error:", error);
         }
@@ -190,7 +208,11 @@ const RegisterForm = () => {
             toast.error(errorMessage + suggestionMessage, { duration: 6000 });
           }
         } else {
-          toast.error(result.error || result.message || "Registration failed. Please try again.");
+          toast.error(
+            result.error ||
+              result.message ||
+              "Registration failed. Please try again."
+          );
         }
         return;
       }
@@ -232,13 +254,22 @@ const RegisterForm = () => {
             className="flex justify-center mb-6"
           >
             <div className="p-4 bg-white rounded-2xl shadow-lg">
-              <Image src="/logoicon.png" alt="my wedding page" width={60} height={60} />
+              <Image
+                src="/logoicon.png"
+                alt="my wedding page"
+                width={60}
+                height={60}
+              />
             </div>
           </motion.div>
-          <h1 className={`text-2xl font-thin mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>
+          <h1
+            className={`text-2xl font-thin mb-2 ${isDarkMode ? "text-white" : "text-black"}`}
+          >
             Continue to create your Wedding Page
           </h1>
-          <p className={`${isDarkMode ? "text-white/50" : "text-black"} text-md font-light`}>
+          <p
+            className={`${isDarkMode ? "text-white/50" : "text-black"} text-md font-light`}
+          >
             Start your wedding journey today
           </p>
         </div>
@@ -313,7 +344,9 @@ const RegisterForm = () => {
                 placeholder="Enter your email"
                 value={formData.email}
                 className="placeholder:text-sm"
-                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
+                }
                 readOnly={isEmailLocked}
               />
             </div>
@@ -425,9 +458,11 @@ const RegisterForm = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </span>
             </div>
-            <p className={`text-xs mt-2 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-              Password must be at least 8 characters with uppercase, lowercase, number, and special
-              character (@, $, !, %, *, ?, &, #, etc.)
+            <p
+              className={`text-xs mt-2 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
+              Password must be at least 8 characters with uppercase, lowercase,
+              number, and special character (@, $, !, %, *, ?, &, #, etc.)
             </p>
             {formErrors.password && (
               <motion.p
@@ -479,7 +514,9 @@ const RegisterForm = () => {
 
         <GoogleAuthButton />
 
-        <p className={`text-center mt-8 ${isDarkMode ? "text-white/50" : "text-black"}`}>
+        <p
+          className={`text-center mt-8 ${isDarkMode ? "text-white/50" : "text-black"}`}
+        >
           Already have an account?{" "}
           <span className="text-[#ab862b]/80 hover:text-[#ab862b] font-medium cursor-pointer transition-colors duration-200">
             Sign in

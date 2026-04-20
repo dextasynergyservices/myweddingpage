@@ -31,7 +31,11 @@ export async function GET(req: Request) {
   // We'll compute: totalRevenue (sum of amounts), and revenueByMonth for last 6 months.
 
   let totalRevenue = 0;
-  const revenueByMonth: Array<{ month: string; revenue: number; users: number }> = [];
+  const revenueByMonth: Array<{
+    month: string;
+    revenue: number;
+    users: number;
+  }> = [];
 
   try {
     // sum all paid subscriptions (assumes 'status' and 'amount' fields exist on Subscription)
@@ -44,7 +48,10 @@ export async function GET(req: Request) {
     let rawSum = 0;
     if (Array.isArray(sumResult) && sumResult.length > 0) {
       rawSum = Number(sumResult[0].sum ?? sumResult[0].SUM ?? 0) || 0;
-    } else if (sumResult && (sumResult.sum !== undefined || sumResult.SUM !== undefined)) {
+    } else if (
+      sumResult &&
+      (sumResult.sum !== undefined || sumResult.SUM !== undefined)
+    ) {
       rawSum = Number(sumResult.sum ?? sumResult.SUM ?? 0) || 0;
     }
 
@@ -53,11 +60,14 @@ export async function GET(req: Request) {
     } else {
       // try prisma.payment.aggregate
       try {
-        const agg = await (prisma as any).subscription.aggregate({ _sum: { amount: true } });
+        const agg = await (prisma as any).subscription.aggregate({
+          _sum: { amount: true },
+        });
         if (agg && agg._sum && agg._sum.amount != null) {
           // handle Decimal instances returned by Prisma
           const val = agg._sum.amount;
-          totalRevenue = typeof val === "number" ? val : Number(val?.toString?.() ?? val);
+          totalRevenue =
+            typeof val === "number" ? val : Number(val?.toString?.() ?? val);
         }
       } catch {
         // no payment model available or aggregate failed - leave totalRevenue = 0
@@ -66,10 +76,13 @@ export async function GET(req: Request) {
   } catch {
     // raw query failed for some schema setups; attempt prisma.payment.aggregate as fallback
     try {
-      const agg = await (prisma as any).subscription.aggregate({ _sum: { amount: true } });
+      const agg = await (prisma as any).subscription.aggregate({
+        _sum: { amount: true },
+      });
       if (agg && agg._sum && agg._sum.amount != null) {
         const val = agg._sum.amount;
-        totalRevenue = typeof val === "number" ? val : Number(val?.toString?.() ?? val);
+        totalRevenue =
+          typeof val === "number" ? val : Number(val?.toString?.() ?? val);
       }
     } catch {
       // ignore - payments not present
@@ -124,7 +137,8 @@ export async function GET(req: Request) {
         });
         if (agg && agg._sum && agg._sum.amount != null) {
           const val = agg._sum.amount;
-          monthRevenue = typeof val === "number" ? val : Number(val?.toString?.() ?? val);
+          monthRevenue =
+            typeof val === "number" ? val : Number(val?.toString?.() ?? val);
         }
       } catch {
         monthRevenue = 0;
@@ -181,7 +195,8 @@ export async function GET(req: Request) {
   if (revenueByMonth.length >= 2) {
     const first = revenueByMonth[0].revenue;
     const last = revenueByMonth[revenueByMonth.length - 1].revenue;
-    growthRate = first > 0 ? Math.round(((last - first) / Math.max(1, first)) * 100) : 0;
+    growthRate =
+      first > 0 ? Math.round(((last - first) / Math.max(1, first)) * 100) : 0;
   }
 
   // month-over-month growth: compare most recent month to the previous month

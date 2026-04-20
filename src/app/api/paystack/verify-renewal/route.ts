@@ -29,7 +29,16 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { reference, trxref, userId, planId, optionId, groomName, brideName, email } = body;
+    const {
+      reference,
+      trxref,
+      userId,
+      planId,
+      optionId,
+      groomName,
+      brideName,
+      email,
+    } = body;
 
     console.log("[verify-renewal] body:", body);
 
@@ -55,12 +64,15 @@ export async function POST(req: Request) {
     // 1️⃣ Verify payment with Paystack
     let verifyData: PaystackVerifyResponse;
     try {
-      const verifyRes = await fetch(`https://api.paystack.co/transaction/verify/${reference}`, {
-        headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const verifyRes = await fetch(
+        `https://api.paystack.co/transaction/verify/${reference}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       verifyData = await verifyRes.json();
     } catch (err) {
       console.error("[verify-renewal] Paystack verification error:", err);
@@ -97,6 +109,9 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("[verify-renewal] unexpected error:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

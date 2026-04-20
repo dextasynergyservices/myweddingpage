@@ -48,7 +48,10 @@ export default function UserManagementPage() {
   const [userToToggleRole, setUserToToggleRole] = useState<User | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<{ id: string; email: string } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: string;
+    email: string;
+  } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 10;
 
@@ -63,7 +66,9 @@ export default function UserManagementPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/admin/users", { credentials: "include" });
+      const response = await fetch("/api/admin/users", {
+        credentials: "include",
+      });
       if (response.ok) {
         const data = await response.json();
         setUsers(data.users || []);
@@ -101,17 +106,20 @@ export default function UserManagementPage() {
 
     setActionLoading(true);
     try {
-      const response = await fetch(`/api/admin/users/${userToToggleRole.id}/role`, {
-        method: "PATCH",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "x-csrf-token": csrfToken || "",
-        },
-        body: JSON.stringify({
-          role: userToToggleRole.role === "ADMIN" ? "USER" : "ADMIN",
-        }),
-      });
+      const response = await fetch(
+        `/api/admin/users/${userToToggleRole.id}/role`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "x-csrf-token": csrfToken || "",
+          },
+          body: JSON.stringify({
+            role: userToToggleRole.role === "ADMIN" ? "USER" : "ADMIN",
+          }),
+        }
+      );
 
       if (response.ok) {
         await fetchUsers();
@@ -222,7 +230,9 @@ export default function UserManagementPage() {
   };
 
   const isAccountLocked = (user: User) => {
-    return user.accountLockedUntil && new Date(user.accountLockedUntil) > new Date();
+    return (
+      user.accountLockedUntil && new Date(user.accountLockedUntil) > new Date()
+    );
   };
 
   if (loading) {
@@ -239,10 +249,14 @@ export default function UserManagementPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+        <h1
+          className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+        >
           User Management
         </h1>
-        <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+        <p
+          className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+        >
           Manage users, roles, and security settings
         </p>
       </div>
@@ -258,7 +272,9 @@ export default function UserManagementPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 Total Users
               </p>
               <p
@@ -280,7 +296,11 @@ export default function UserManagementPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Admins</p>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
+                Admins
+              </p>
               <p
                 className={`mt-1 text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
               >
@@ -300,7 +320,9 @@ export default function UserManagementPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 2FA Enabled
               </p>
               <p
@@ -322,7 +344,11 @@ export default function UserManagementPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Locked</p>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
+                Locked
+              </p>
               <p
                 className={`mt-1 text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
               >
@@ -425,14 +451,18 @@ export default function UserManagementPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}>
+            <tbody
+              className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}
+            >
               {currentUsers.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
                     <Users
                       className={`mx-auto h-12 w-12 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`}
                     />
-                    <p className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       No users found
                     </p>
                   </td>
@@ -619,8 +649,11 @@ export default function UserManagementPage() {
               isDarkMode ? "border-gray-800" : "border-gray-200"
             }`}
           >
-            <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-              Showing {startIndex + 1} to {Math.min(endIndex, filteredUsers.length)} of{" "}
+            <div
+              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
+              Showing {startIndex + 1} to{" "}
+              {Math.min(endIndex, filteredUsers.length)} of{" "}
               {filteredUsers.length} users
             </div>
             <div className="flex items-center gap-2">
@@ -639,11 +672,15 @@ export default function UserManagementPage() {
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+              <span
+                className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+              >
                 Page {currentPage} of {totalPages}
               </span>
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
                 className={`rounded-lg p-2 transition-colors ${
                   currentPage === totalPages
@@ -677,7 +714,9 @@ export default function UserManagementPage() {
             <Users
               className={`mx-auto h-12 w-12 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`}
             />
-            <p className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+            <p
+              className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
               No users found
             </p>
           </motion.div>
@@ -737,7 +776,9 @@ export default function UserManagementPage() {
               {/* User Details */}
               <div className="space-y-3 mb-4">
                 <div className="flex items-center justify-between">
-                  <span className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  <span
+                    className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                  >
                     Role
                   </span>
                   <span
@@ -756,7 +797,9 @@ export default function UserManagementPage() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  <span
+                    className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                  >
                     Status
                   </span>
                   {isAccountLocked(user) ? (
@@ -793,7 +836,9 @@ export default function UserManagementPage() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  <span
+                    className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                  >
                     2FA
                   </span>
                   {user.twoFactorEnabled ? (
@@ -804,10 +849,14 @@ export default function UserManagementPage() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  <span
+                    className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                  >
                     Joined
                   </span>
-                  <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-900"}`}>
+                  <span
+                    className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-900"}`}
+                  >
                     {new Date(user.createdAt).toLocaleDateString()}
                   </span>
                 </div>
@@ -874,7 +923,9 @@ export default function UserManagementPage() {
         {/* Mobile Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between pt-4">
-            <span className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+            <span
+              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
               Page {currentPage} of {totalPages}
             </span>
             <div className="flex items-center gap-2">
@@ -894,7 +945,9 @@ export default function UserManagementPage() {
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
                 className={`rounded-lg p-2 transition-colors ${
                   currentPage === totalPages
@@ -929,11 +982,15 @@ export default function UserManagementPage() {
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
               className={`w-full max-w-2xl rounded-xl border p-6 ${
-                isDarkMode ? "border-gray-800 bg-gray-900" : "border-gray-200 bg-white"
+                isDarkMode
+                  ? "border-gray-800 bg-gray-900"
+                  : "border-gray-200 bg-white"
               }`}
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                <h2
+                  className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                >
                   User Details
                 </h2>
                 <button
@@ -942,14 +999,18 @@ export default function UserManagementPage() {
                     isDarkMode ? "hover:bg-gray-800" : "hover:bg-gray-100"
                   }`}
                 >
-                  <X className={`h-5 w-5 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`} />
+                  <X
+                    className={`h-5 w-5 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                  />
                 </button>
               </div>
 
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       Name
                     </p>
                     <p
@@ -959,7 +1020,9 @@ export default function UserManagementPage() {
                     </p>
                   </div>
                   <div>
-                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       Email
                     </p>
                     <p
@@ -969,7 +1032,9 @@ export default function UserManagementPage() {
                     </p>
                   </div>
                   <div>
-                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       Role
                     </p>
                     <p
@@ -979,7 +1044,9 @@ export default function UserManagementPage() {
                     </p>
                   </div>
                   <div>
-                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       2FA Status
                     </p>
                     <p
@@ -989,7 +1056,9 @@ export default function UserManagementPage() {
                     </p>
                   </div>
                   <div>
-                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       Email Verified
                     </p>
                     <p
@@ -999,7 +1068,9 @@ export default function UserManagementPage() {
                     </p>
                   </div>
                   <div>
-                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       Failed Login Attempts
                     </p>
                     <p
@@ -1009,7 +1080,9 @@ export default function UserManagementPage() {
                     </p>
                   </div>
                   <div>
-                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       Joined Date
                     </p>
                     <p
@@ -1019,7 +1092,9 @@ export default function UserManagementPage() {
                     </p>
                   </div>
                   <div>
-                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       Last Login
                     </p>
                     <p
@@ -1052,7 +1127,9 @@ export default function UserManagementPage() {
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
               className={`w-full max-w-md rounded-xl border p-6 ${
-                isDarkMode ? "border-gray-800 bg-gray-900" : "border-gray-200 bg-white"
+                isDarkMode
+                  ? "border-gray-800 bg-gray-900"
+                  : "border-gray-200 bg-white"
               }`}
             >
               <div className="text-center">
@@ -1070,17 +1147,25 @@ export default function UserManagementPage() {
                 >
                   Change User Role
                 </h3>
-                <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Are you sure you want to change{" "}
-                  <span className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                  <span
+                    className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                  >
                     {userToToggleRole.name || userToToggleRole.email}
                   </span>{" "}
                   from{" "}
-                  <span className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                  <span
+                    className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                  >
                     {userToToggleRole.role}
                   </span>{" "}
                   to{" "}
-                  <span className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                  <span
+                    className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                  >
                     {userToToggleRole.role === "ADMIN" ? "USER" : "ADMIN"}
                   </span>
                   ?
@@ -1129,7 +1214,11 @@ export default function UserManagementPage() {
           }
           await confirmDeleteUser(deleteTarget.id);
         }}
-        title={deleteTarget && deleteTarget.email === "reset-2fa" ? "Reset 2FA" : "Confirm Delete"}
+        title={
+          deleteTarget && deleteTarget.email === "reset-2fa"
+            ? "Reset 2FA"
+            : "Confirm Delete"
+        }
         message={
           deleteTarget && deleteTarget.email === "reset-2fa"
             ? "Are you sure you want to reset this user's 2FA?"

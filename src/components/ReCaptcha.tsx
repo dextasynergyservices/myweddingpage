@@ -106,7 +106,10 @@ export interface RecaptchaComponentRef {
  *   action="submit_form"
  * />
  */
-export const RecaptchaComponent = forwardRef<RecaptchaComponentRef, RecaptchaComponentProps>(
+export const RecaptchaComponent = forwardRef<
+  RecaptchaComponentRef,
+  RecaptchaComponentProps
+>(
   (
     {
       version = "v3",

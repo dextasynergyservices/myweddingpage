@@ -24,7 +24,9 @@ export async function POST(req: Request) {
     // Guard: prevent changing template if one is already selected and differs
     const existingSelected = await prisma.userTemplate.findFirst({
       where: { userId: user.id, isSelected: true },
-      include: { template: { include: { sections: { orderBy: { order: "asc" } } } } },
+      include: {
+        template: { include: { sections: { orderBy: { order: "asc" } } } },
+      },
     });
 
     if (existingSelected && existingSelected.templateId !== templateId) {
@@ -98,6 +100,9 @@ export async function POST(req: Request) {
     return NextResponse.json(userTemplate);
   } catch (error) {
     console.error("Failed to select template:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

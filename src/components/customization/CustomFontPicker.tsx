@@ -7,19 +7,33 @@
 
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
-import { Type, FileText, Sparkles, Info, ThumbsUp, ThumbsDown } from "lucide-react";
+import {
+  Type,
+  FileText,
+  Sparkles,
+  Info,
+  ThumbsUp,
+  ThumbsDown,
+} from "lucide-react";
 import type { FontScheme } from "@/types/customization";
 import type { FontDefinition } from "@/lib/font-library";
 import { getFontByFamily } from "@/lib/font-library";
 import { FontSelector } from "./FontSelector";
-import { loadFontsFromScheme, getFontPairingScore, validateFontPairing } from "@/lib/font-utils";
+import {
+  loadFontsFromScheme,
+  getFontPairingScore,
+  validateFontPairing,
+} from "@/lib/font-utils";
 
 interface CustomFontPickerProps {
   fonts: FontScheme;
   onChange: (fonts: FontScheme) => void;
 }
 
-export const CustomFontPicker: React.FC<CustomFontPickerProps> = ({ fonts, onChange }) => {
+export const CustomFontPicker: React.FC<CustomFontPickerProps> = ({
+  fonts,
+  onChange,
+}) => {
   // Load fonts when scheme changes
   useEffect(() => {
     loadFontsFromScheme(fonts);
@@ -45,7 +59,9 @@ export const CustomFontPicker: React.FC<CustomFontPickerProps> = ({ fonts, onCha
 
   // Validate pairing
   const pairingValidation =
-    headingFont && bodyFont ? validateFontPairing(headingFont, bodyFont) : { valid: true };
+    headingFont && bodyFont
+      ? validateFontPairing(headingFont, bodyFont)
+      : { valid: true };
 
   return (
     <div className="space-y-6">
@@ -117,10 +133,13 @@ export const CustomFontPicker: React.FC<CustomFontPickerProps> = ({ fonts, onCha
       <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
         <div className="mb-3 flex items-center gap-2">
           <Type className="h-5 w-5 text-primary" />
-          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Heading Font</h4>
+          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            Heading Font
+          </h4>
         </div>
         <p className="mb-4 text-xs text-gray-600 dark:text-gray-400">
-          Used for main titles, section headings (H1-H6). Choose a bold, attention-grabbing font.
+          Used for main titles, section headings (H1-H6). Choose a bold,
+          attention-grabbing font.
         </p>
         <FontSelector
           currentFont={fonts.heading}
@@ -133,16 +152,22 @@ export const CustomFontPicker: React.FC<CustomFontPickerProps> = ({ fonts, onCha
         {/* Heading Preview */}
         {headingFont && (
           <div className="mt-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
-            <p className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">Preview:</p>
+            <p className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+              Preview:
+            </p>
             <h1
               className="text-4xl font-bold text-gray-900 dark:text-gray-100"
-              style={{ fontFamily: `"${headingFont.family}", ${headingFont.fallback}` }}
+              style={{
+                fontFamily: `"${headingFont.family}", ${headingFont.fallback}`,
+              }}
             >
               Our Wedding Day
             </h1>
             <h2
               className="mt-2 text-2xl font-semibold text-gray-800 dark:text-gray-200"
-              style={{ fontFamily: `"${headingFont.family}", ${headingFont.fallback}` }}
+              style={{
+                fontFamily: `"${headingFont.family}", ${headingFont.fallback}`,
+              }}
             >
               Join Us for a Celebration of Love
             </h2>
@@ -154,7 +179,9 @@ export const CustomFontPicker: React.FC<CustomFontPickerProps> = ({ fonts, onCha
       <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
         <div className="mb-3 flex items-center gap-2">
           <FileText className="h-5 w-5 text-primary" />
-          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Body Font</h4>
+          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            Body Font
+          </h4>
         </div>
         <p className="mb-4 text-xs text-gray-600 dark:text-gray-400">
           Used for paragraphs and main content. Choose a highly readable font.
@@ -170,14 +197,18 @@ export const CustomFontPicker: React.FC<CustomFontPickerProps> = ({ fonts, onCha
         {/* Body Preview */}
         {bodyFont && (
           <div className="mt-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
-            <p className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">Preview:</p>
+            <p className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+              Preview:
+            </p>
             <p
               className="text-base leading-relaxed text-gray-700 dark:text-gray-300"
-              style={{ fontFamily: `"${bodyFont.family}", ${bodyFont.fallback}` }}
+              style={{
+                fontFamily: `"${bodyFont.family}", ${bodyFont.fallback}`,
+              }}
             >
-              We are thrilled to invite you to celebrate our special day. Join us for an evening
-              filled with love, laughter, and unforgettable memories as we begin our journey
-              together as husband and wife.
+              We are thrilled to invite you to celebrate our special day. Join
+              us for an evening filled with love, laughter, and unforgettable
+              memories as we begin our journey together as husband and wife.
             </p>
           </div>
         )}
@@ -187,10 +218,13 @@ export const CustomFontPicker: React.FC<CustomFontPickerProps> = ({ fonts, onCha
       <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
         <div className="mb-3 flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-primary" />
-          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Accent Font</h4>
+          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            Accent Font
+          </h4>
         </div>
         <p className="mb-4 text-xs text-gray-600 dark:text-gray-400">
-          Used for decorative text, quotes, or special highlights. Script fonts work beautifully.
+          Used for decorative text, quotes, or special highlights. Script fonts
+          work beautifully.
         </p>
         <FontSelector
           currentFont={fonts.script}
@@ -203,16 +237,22 @@ export const CustomFontPicker: React.FC<CustomFontPickerProps> = ({ fonts, onCha
         {/* Accent Preview */}
         {accentFont && (
           <div className="mt-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
-            <p className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">Preview:</p>
+            <p className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+              Preview:
+            </p>
             <p
               className="text-center text-3xl text-gray-900 dark:text-gray-100"
-              style={{ fontFamily: `"${accentFont.family}", ${accentFont.fallback}` }}
+              style={{
+                fontFamily: `"${accentFont.family}", ${accentFont.fallback}`,
+              }}
             >
               Forever & Always
             </p>
             <p
               className="mt-2 text-center text-2xl text-gray-800 dark:text-gray-200"
-              style={{ fontFamily: `"${accentFont.family}", ${accentFont.fallback}` }}
+              style={{
+                fontFamily: `"${accentFont.family}", ${accentFont.fallback}`,
+              }}
             >
               Together at Last
             </p>

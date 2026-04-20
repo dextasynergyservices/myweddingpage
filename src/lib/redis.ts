@@ -76,7 +76,10 @@ export const redisRateLimit = {
    * Increment rate limit counter for a key
    * @returns Current count and TTL in seconds, or null if Redis unavailable
    */
-  async increment(key: string, windowMs: number): Promise<{ count: number; ttl: number } | null> {
+  async increment(
+    key: string,
+    windowMs: number
+  ): Promise<{ count: number; ttl: number } | null> {
     const client = getRedisClient();
     if (!client) return null;
 
@@ -193,7 +196,11 @@ export const redisCache = {
   /**
    * Set a value in Redis with optional TTL
    */
-  async set(key: string, value: unknown, ttlSeconds?: number): Promise<boolean> {
+  async set(
+    key: string,
+    value: unknown,
+    ttlSeconds?: number
+  ): Promise<boolean> {
     const client = getRedisClient();
     if (!client) return false;
 

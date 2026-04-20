@@ -55,7 +55,8 @@ const OurStory: React.FC<OurStoryProps> = (props) => {
         story:
           props.ourStory?.content ||
           "It was a beautiful autumn day when our paths first crossed at a local coffee shop. James was reading a book about photography, and Emma couldn't help but notice the stunning sunset photo on the cover. A simple 'That's a beautiful shot' sparked a conversation that lasted for hours.",
-        image: props.storyImage || props.ourStory?.imageUrl || defaultCoupleStory1,
+        image:
+          props.storyImage || props.ourStory?.imageUrl || defaultCoupleStory1,
       },
       {
         title: "The Proposal",
@@ -116,8 +117,12 @@ const OurStory: React.FC<OurStoryProps> = (props) => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <h2 className="font-serif md:text-5xl text-2xl font-bold text-gray-900 mb-6">{title}</h2>
-          <p className="font-sans text-xl text-gray-600 max-w-3xl mx-auto">{description}</p>
+          <h2 className="font-serif md:text-5xl text-2xl font-bold text-gray-900 mb-6">
+            {title}
+          </h2>
+          <p className="font-sans text-xl text-gray-600 max-w-3xl mx-auto">
+            {description}
+          </p>
         </div>
 
         <div className={`grid md:grid-cols-2 gap-12 max-w-6xl mx-auto`}>
@@ -132,7 +137,11 @@ const OurStory: React.FC<OurStoryProps> = (props) => {
               <div className="relative h-80 overflow-hidden group">
                 <Image
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  src={typeof story.image === "string" ? story.image : (story.image as any).src}
+                  src={
+                    typeof story.image === "string"
+                      ? story.image
+                      : (story.image as any).src
+                  }
                   alt={story.title}
                   width={600}
                   height={400}
@@ -146,13 +155,17 @@ const OurStory: React.FC<OurStoryProps> = (props) => {
 
               <div className="p-8">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-serif text-2xl font-semibold text-rose-600">{story.title}</h3>
+                  <h3 className="font-serif text-2xl font-semibold text-rose-600">
+                    {story.title}
+                  </h3>
                   <span className="font-sans text-sm font-medium text-rose-500 bg-rose-100 px-3 py-1 rounded-full">
                     {story.date}
                   </span>
                 </div>
 
-                <p className="font-sans text-gray-600 leading-relaxed">{story.story}</p>
+                <p className="font-sans text-gray-600 leading-relaxed">
+                  {story.story}
+                </p>
               </div>
             </div>
           ))}

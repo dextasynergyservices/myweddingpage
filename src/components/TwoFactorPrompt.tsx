@@ -15,7 +15,9 @@ interface TwoFactorPromptProps {
   onEnableClick?: () => void;
 }
 
-export default function TwoFactorPrompt({ onEnableClick }: TwoFactorPromptProps) {
+export default function TwoFactorPrompt({
+  onEnableClick,
+}: TwoFactorPromptProps) {
   const [is2FAEnabled, setIs2FAEnabled] = useState<boolean | null>(null);
   const [isDismissed, setIsDismissed] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -81,8 +83,9 @@ export default function TwoFactorPrompt({ onEnableClick }: TwoFactorPromptProps)
             Secure Your Account with Two-Factor Authentication
           </h3>
           <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-            Add an extra layer of security to your wedding page. Enable 2FA to protect your account
-            from unauthorized access, even if someone gets your password.
+            Add an extra layer of security to your wedding page. Enable 2FA to
+            protect your account from unauthorized access, even if someone gets
+            your password.
           </p>
 
           {/* Benefits */}

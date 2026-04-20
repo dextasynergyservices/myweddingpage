@@ -39,7 +39,9 @@ const ContactInfo = () => {
                 >
                   Email Us
                 </h3>
-                <p className={`${isDarkMode ? "text-white/50" : "text-black"} mb-2`}>
+                <p
+                  className={`${isDarkMode ? "text-white/50" : "text-black"} mb-2`}
+                >
                   Send us an email anytime
                 </p>
                 <a
@@ -75,7 +77,9 @@ const ContactInfo = () => {
                 >
                   Call Us
                 </h3>
-                <p className={`${isDarkMode ? "text-white/50" : "text-black"} mb-2`}>
+                <p
+                  className={`${isDarkMode ? "text-white/50" : "text-black"} mb-2`}
+                >
                   Mon-Fri from 10am to 6pm (WAT)
                 </p>
                 <a
@@ -169,7 +173,9 @@ const ContactInfo = () => {
         >
           <div className="flex items-center gap-4 mb-6">
             <Clock className="h-6 w-6 text-[#ab862b]/80" />
-            <h3 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+            <h3
+              className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
+            >
               Business Hours
             </h3>
           </div>
@@ -180,10 +186,14 @@ const ContactInfo = () => {
               { day: "Sunday", hours: "Closed" },
             ].map((schedule, index) => (
               <div key={index} className="flex justify-between items-center">
-                <span className={`${isDarkMode ? "text-white/50" : "text-black/50"}`}>
+                <span
+                  className={`${isDarkMode ? "text-white/50" : "text-black/50"}`}
+                >
                   {schedule.day}
                 </span>
-                <span className={`font-medium ${isDarkMode ? "text-white/50" : "text-black/50"}`}>
+                <span
+                  className={`font-medium ${isDarkMode ? "text-white/50" : "text-black/50"}`}
+                >
                   {schedule.hours}
                 </span>
               </div>
@@ -202,13 +212,18 @@ const ContactInfo = () => {
             isDarkMode ? "border-[#ab862b]/20" : "border-black/20"
           } p-8 text-center`}
         >
-          <Heart className="h-12 w-12 text-[#ab862b]/80 mx-auto mb-4" fill="currentColor" />
+          <Heart
+            className="h-12 w-12 text-[#ab862b]/80 mx-auto mb-4"
+            fill="currentColor"
+          />
           <h3
             className={`text-xl font-semibold mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
           >
             Need Quick Answers?
           </h3>
-          <p className={`${isDarkMode ? "text-white/50" : "text-black/50"} mb-4`}>
+          <p
+            className={`${isDarkMode ? "text-white/50" : "text-black/50"} mb-4`}
+          >
             Check out our frequently asked questions for instant help.
           </p>
           <ViewFaqButton />

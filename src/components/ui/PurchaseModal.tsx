@@ -61,7 +61,11 @@ export default function PurchaseModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) {
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.phone.trim()
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -80,7 +84,9 @@ export default function PurchaseModal({
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -108,7 +114,12 @@ export default function PurchaseModal({
   if (!gift) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`Purchase ${gift.name}`} size="lg">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`Purchase ${gift.name}`}
+      size="lg"
+    >
       <div className="space-y-6">
         {/* Gift Information */}
         <div className="flex flex-col md:flex-row gap-6">
@@ -125,11 +136,15 @@ export default function PurchaseModal({
             <div className="mt-4">
               <h4 className="font-semibold text-lg">{gift.item}</h4>
               {gift.description && (
-                <p className={`text-sm mt-2 ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>
+                <p
+                  className={`text-sm mt-2 ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}
+                >
                   {gift.description}
                 </p>
               )}
-              <p className="mt-2 font-medium text-lg">Price: {formatCurrency(gift.price)}</p>
+              <p className="mt-2 font-medium text-lg">
+                Price: {formatCurrency(gift.price)}
+              </p>
               {gift.link && (
                 <a
                   className="text-indigo-600 hover:underline mt-2 block"
@@ -151,7 +166,9 @@ export default function PurchaseModal({
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
               </div>
             ) : bankDetails.length === 0 ? (
-              <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
+              >
                 No bank details available.
               </p>
             ) : (
@@ -160,7 +177,9 @@ export default function PurchaseModal({
                   <div
                     key={bank.id}
                     className={`p-4 rounded-lg border ${
-                      isDarkMode ? "bg-slate-700 border-slate-600" : "bg-slate-50 border-slate-200"
+                      isDarkMode
+                        ? "bg-slate-700 border-slate-600"
+                        : "bg-slate-50 border-slate-200"
                     }`}
                   >
                     <p
@@ -184,7 +203,9 @@ export default function PurchaseModal({
                         </span>
                       </p>
                       <button
-                        onClick={() => handleCopy(bank.accountName, `accountName-${bank.id}`)}
+                        onClick={() =>
+                          handleCopy(bank.accountName, `accountName-${bank.id}`)
+                        }
                         className={`p-1 rounded hover:bg-opacity-20 transition-colors ${
                           isDarkMode ? "hover:bg-white" : "hover:bg-slate-200"
                         }`}
@@ -215,7 +236,12 @@ export default function PurchaseModal({
                         </span>
                       </p>
                       <button
-                        onClick={() => handleCopy(bank.accountNumber, `accountNumber-${bank.id}`)}
+                        onClick={() =>
+                          handleCopy(
+                            bank.accountNumber,
+                            `accountNumber-${bank.id}`
+                          )
+                        }
                         className={`p-1 rounded hover:bg-opacity-20 transition-colors ${
                           isDarkMode ? "hover:bg-white" : "hover:bg-slate-200"
                         }`}
@@ -237,7 +263,9 @@ export default function PurchaseModal({
 
         {/* Purchase Form */}
         <div className="border-t pt-6">
-          <h4 className="font-semibold mb-4 text-lg">Let us know you got us a Gift!</h4>
+          <h4 className="font-semibold mb-4 text-lg">
+            Let us know you got us a Gift!
+          </h4>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>

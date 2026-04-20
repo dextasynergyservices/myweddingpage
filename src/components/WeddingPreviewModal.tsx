@@ -132,7 +132,8 @@ export default function WeddingPreviewModal({
         <div className="absolute bottom-0 left-0 right-0 bg-gray-50 px-6 py-3 border-t border-gray-200">
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-600">
-              This wedding page is no longer live and is shown for preview purposes only.
+              This wedding page is no longer live and is shown for preview
+              purposes only.
             </p>
             <div className="flex space-x-3">
               <button

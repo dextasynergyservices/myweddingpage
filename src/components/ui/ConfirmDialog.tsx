@@ -84,14 +84,20 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
               {/* Icon */}
               <div className="mb-4 flex items-center gap-3">
-                <div className={`rounded-full bg-gray-100 p-3 dark:bg-gray-700 ${styles.icon}`}>
+                <div
+                  className={`rounded-full bg-gray-100 p-3 dark:bg-gray-700 ${styles.icon}`}
+                >
                   <AlertTriangle className="h-6 w-6" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  {title}
+                </h3>
               </div>
 
               {/* Message */}
-              <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">{message}</p>
+              <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
+                {message}
+              </p>
 
               {/* Actions */}
               <div className="flex gap-3">

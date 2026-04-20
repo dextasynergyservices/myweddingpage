@@ -49,7 +49,9 @@ export default function SearchableMultiSelect({
     window.setTimeout(() => setAnnouncement(""), 2000);
   };
 
-  const filtered = options.filter((o) => o.name.toLowerCase().includes(query.toLowerCase()));
+  const filtered = options.filter((o) =>
+    o.name.toLowerCase().includes(query.toLowerCase())
+  );
 
   useEffect(() => {
     // reset focused index when filtered list changes
@@ -61,7 +63,8 @@ export default function SearchableMultiSelect({
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setFocusedIndex((i) => Math.min(i + 1, filtered.length - 1));
-      const el = optionsRef.current[Math.min(focusedIndex + 1, filtered.length - 1)];
+      const el =
+        optionsRef.current[Math.min(focusedIndex + 1, filtered.length - 1)];
       el?.focus();
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
@@ -70,7 +73,8 @@ export default function SearchableMultiSelect({
       el?.focus();
     } else if (e.key === "Enter") {
       e.preventDefault();
-      if (focusedIndex >= 0 && focusedIndex < filtered.length) toggle(filtered[focusedIndex].id);
+      if (focusedIndex >= 0 && focusedIndex < filtered.length)
+        toggle(filtered[focusedIndex].id);
     } else if (e.key === "Escape") {
       setOpen(false);
     }
@@ -87,7 +91,9 @@ export default function SearchableMultiSelect({
         aria-haspopup="listbox"
         aria-label={ariaLabel}
       >
-        {value.length === 0 && <div className="text-sm text-gray-500">{placeholder}</div>}
+        {value.length === 0 && (
+          <div className="text-sm text-gray-500">{placeholder}</div>
+        )}
         {value.map((id) => {
           const opt = options.find((o) => o.id === id);
           return (
@@ -128,7 +134,9 @@ export default function SearchableMultiSelect({
           className="absolute z-50 mt-1 w-full bg-white border rounded shadow max-h-60 overflow-auto"
           role="listbox"
         >
-          {filtered.length === 0 && <div className="p-2 text-sm text-gray-500">No results</div>}
+          {filtered.length === 0 && (
+            <div className="p-2 text-sm text-gray-500">No results</div>
+          )}
           {filtered.map((o, idx) => (
             <button
               key={o.id}
@@ -147,7 +155,9 @@ export default function SearchableMultiSelect({
               className={`w-full text-left px-3 py-2 hover:bg-slate-100 flex items-center justify-between ${value.includes(o.id) ? "bg-slate-50" : ""} ${focusedIndex === idx ? "outline outline-1 outline-blue-300" : ""}`}
             >
               <span className="text-sm">{o.name}</span>
-              {value.includes(o.id) && <span className="text-xs text-green-600">Selected</span>}
+              {value.includes(o.id) && (
+                <span className="text-xs text-green-600">Selected</span>
+              )}
             </button>
           ))}
         </div>

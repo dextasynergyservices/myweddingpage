@@ -31,7 +31,10 @@ export async function POST(req: Request) {
     const { email, id: userId } = session.user;
 
     if (!email) {
-      return NextResponse.json({ error: "Email required for 2FA setup" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Email required for 2FA setup" },
+        { status: 400 }
+      );
     }
 
     // Generate secret and QR code
@@ -79,7 +82,8 @@ export async function POST(req: Request) {
       success: true,
       qrCode: qrCodeDataUrl,
       backupCodes: formattedCodes,
-      message: "2FA setup successful. Save your backup codes in a secure location.",
+      message:
+        "2FA setup successful. Save your backup codes in a secure location.",
     });
   } catch (error) {
     console.error("2FA setup error:", error);

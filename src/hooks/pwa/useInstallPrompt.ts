@@ -25,7 +25,8 @@ export interface UseInstallPromptReturn {
  * }
  */
 export function useInstallPrompt(): UseInstallPromptReturn {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
 
@@ -33,9 +34,12 @@ export function useInstallPrompt(): UseInstallPromptReturn {
     // Check if already installed
     const checkInstalled = () => {
       // Check display mode
-      const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
+      const isStandalone = window.matchMedia(
+        "(display-mode: standalone)"
+      ).matches;
       // Check iOS standalone mode
-      const isIOSStandalone = (window.navigator as { standalone?: boolean }).standalone === true;
+      const isIOSStandalone =
+        (window.navigator as { standalone?: boolean }).standalone === true;
 
       setIsInstalled(isStandalone || isIOSStandalone);
     };
@@ -61,7 +65,10 @@ export function useInstallPrompt(): UseInstallPromptReturn {
     window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
       window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);

@@ -80,7 +80,8 @@ const WeddingHero = (props: WeddingHeroProps) => {
 
   // Use timezone-agnostic date formatting
   const weddingDate = formatWeddingDate(dateValue);
-  const heroImage = props.heroImage || "/templates/bloom/assets/wedding-hero.jpg";
+  const heroImage =
+    props.heroImage || "/templates/bloom/assets/wedding-hero.jpg";
 
   const handleScrollToStory = () => {
     const storySection = document.getElementById("bloom-story");
@@ -142,7 +143,9 @@ const WeddingHero = (props: WeddingHeroProps) => {
       <div className="absolute inset-0 bg-black/50"></div>
 
       {/* Content */}
-      <div className={`${styles.heroContent} relative z-10 text-center px-4 max-w-4xl mx-auto`}>
+      <div
+        className={`${styles.heroContent} relative z-10 text-center px-4 max-w-4xl mx-auto`}
+      >
         <div className={`${styles.animateFadeInUp}`}>
           <h1
             className={`${styles.heroTitle} ${styles.textWhite} text-white font-heading text-3xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 leading-tight`}
@@ -228,13 +231,17 @@ const WeddingHero = (props: WeddingHeroProps) => {
         <div
           className={`${styles.floatingHeart} absolute top-20 left-10 opacity-30 ${styles.animateRomanticFloat}`}
         >
-          <Heart className={`${styles.floatingHeartIcon} ${styles.textWhite} text-white w-8 h-8`} />
+          <Heart
+            className={`${styles.floatingHeartIcon} ${styles.textWhite} text-white w-8 h-8`}
+          />
         </div>
         <div
           className={`${styles.floatingHeart} absolute bottom-32 right-16 opacity-20 ${styles.animateRomanticFloat}`}
           style={{ animationDelay: "1s" }}
         >
-          <Heart className={`${styles.floatingHeartIcon} ${styles.textWhite} text-white w-6 h-6`} />
+          <Heart
+            className={`${styles.floatingHeartIcon} ${styles.textWhite} text-white w-6 h-6`}
+          />
         </div>
         <div
           className={`${styles.floatingHeart} absolute top-40 right-20 opacity-25 ${styles.animateRomanticFloat}`}

@@ -170,7 +170,10 @@ export default function GiftRegistry(props: GiftRegistryProps) {
         const rect = imageRef.getBoundingClientRect();
         const scrollProgress = Math.max(
           0,
-          Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + rect.height))
+          Math.min(
+            1,
+            (window.innerHeight - rect.top) / (window.innerHeight + rect.height)
+          )
         );
         const scale = 1 + scrollProgress * 0.1;
         setImageScales((prev) => ({ ...prev, [index]: scale }));
@@ -201,12 +204,14 @@ export default function GiftRegistry(props: GiftRegistryProps) {
           <h2 className="text-2xl md:text-5xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent mb-6">
             {title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">{description}</p>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+            {description}
+          </p>
           <div className="flex items-center justify-center gap-2 text-gray-500">
             <Gift className="w-5 h-5" />
             <span>
-              Your presence is the greatest gift, but if you&apos;d like to give something
-              special...
+              Your presence is the greatest gift, but if you&apos;d like to give
+              something special...
             </span>
           </div>
         </div>
@@ -247,7 +252,9 @@ export default function GiftRegistry(props: GiftRegistryProps) {
               </div>
 
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-2">{gift.item}</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                  {gift.item}
+                </h3>
                 <p className="text-gray-600 mb-4 text-sm">{gift.description}</p>
 
                 <div className="flex items-center justify-between mb-4">
@@ -276,7 +283,9 @@ export default function GiftRegistry(props: GiftRegistryProps) {
           className={`text-center mt-16 transition-all duration-1000 delay-300 transform ${isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}
         >
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 max-w-2xl mx-auto shadow-lg">
-            <h3 className="text-2xl font-bold text-gray-800 mb-4">Prefer to Give Cash?</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              Prefer to Give Cash?
+            </h3>
             <button
               onClick={() => setCashGiftOpen(true)}
               className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-3 rounded-xl font-medium hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-105"
