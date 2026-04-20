@@ -13,7 +13,10 @@ async function main() {
     );
   }
   // Map template names to default sections and layouts
-  const defaults: Record<string, Array<{ type: string; layout: string; components: any }>> = {
+  const defaults: Record<
+    string,
+    Array<{ type: string; layout: string; components: any }>
+  > = {
     Rustic: [
       {
         type: "HERO",
@@ -27,11 +30,23 @@ async function main() {
       {
         type: "STORY",
         layout: "rustic_story",
-        components: { title: "Our Story", text: "{welcomeMessage}", content: "{welcomeMessage}" },
+        components: {
+          title: "Our Story",
+          text: "{welcomeMessage}",
+          content: "{welcomeMessage}",
+        },
       },
       { type: "GALLERY", layout: "rustic_gallery", components: { images: [] } },
-      { type: "REGISTRY", layout: "rustic_gift", components: { content: "Browse our registry" } },
-      { type: "WISHES", layout: "rustic_guest", components: { content: "Leave your wishes" } },
+      {
+        type: "REGISTRY",
+        layout: "rustic_gift",
+        components: { content: "Browse our registry" },
+      },
+      {
+        type: "WISHES",
+        layout: "rustic_guest",
+        components: { content: "Leave your wishes" },
+      },
     ],
     Vintage: [
       {
@@ -46,11 +61,27 @@ async function main() {
       {
         type: "STORY",
         layout: "vintage_story",
-        components: { title: "Our Story", text: "{welcomeMessage}", content: "{welcomeMessage}" },
+        components: {
+          title: "Our Story",
+          text: "{welcomeMessage}",
+          content: "{welcomeMessage}",
+        },
       },
-      { type: "GALLERY", layout: "vintage_gallery", components: { images: [] } },
-      { type: "REGISTRY", layout: "vintage_gift", components: { content: "Browse our registry" } },
-      { type: "WISHES", layout: "vintage_guest", components: { content: "Leave your wishes" } },
+      {
+        type: "GALLERY",
+        layout: "vintage_gallery",
+        components: { images: [] },
+      },
+      {
+        type: "REGISTRY",
+        layout: "vintage_gift",
+        components: { content: "Browse our registry" },
+      },
+      {
+        type: "WISHES",
+        layout: "vintage_guest",
+        components: { content: "Leave your wishes" },
+      },
     ],
     Modern: [
       {
@@ -65,11 +96,23 @@ async function main() {
       {
         type: "STORY",
         layout: "modern_story",
-        components: { title: "Our Story", text: "{welcomeMessage}", content: "{welcomeMessage}" },
+        components: {
+          title: "Our Story",
+          text: "{welcomeMessage}",
+          content: "{welcomeMessage}",
+        },
       },
       { type: "GALLERY", layout: "modern_gallery", components: { images: [] } },
-      { type: "REGISTRY", layout: "modern_gift", components: { content: "Browse our registry" } },
-      { type: "WISHES", layout: "modern_guest", components: { content: "Leave your wishes" } },
+      {
+        type: "REGISTRY",
+        layout: "modern_gift",
+        components: { content: "Browse our registry" },
+      },
+      {
+        type: "WISHES",
+        layout: "modern_guest",
+        components: { content: "Leave your wishes" },
+      },
     ],
     Luxury: [
       {
@@ -84,11 +127,23 @@ async function main() {
       {
         type: "STORY",
         layout: "luxury_story",
-        components: { title: "Our Story", text: "{welcomeMessage}", content: "{welcomeMessage}" },
+        components: {
+          title: "Our Story",
+          text: "{welcomeMessage}",
+          content: "{welcomeMessage}",
+        },
       },
       { type: "GALLERY", layout: "luxury_gallery", components: { images: [] } },
-      { type: "REGISTRY", layout: "luxury_gift", components: { content: "Browse our registry" } },
-      { type: "WISHES", layout: "luxury_guest", components: { content: "Leave your wishes" } },
+      {
+        type: "REGISTRY",
+        layout: "luxury_gift",
+        components: { content: "Browse our registry" },
+      },
+      {
+        type: "WISHES",
+        layout: "luxury_guest",
+        components: { content: "Leave your wishes" },
+      },
     ],
   };
 
@@ -98,7 +153,9 @@ async function main() {
 
   // Ensure at least three plan-linked templates exist with distinct layouts
   async function ensureCategory(name: string) {
-    const existing = await prisma.templateCategory.findFirst({ where: { name } });
+    const existing = await prisma.templateCategory.findFirst({
+      where: { name },
+    });
     if (existing) return existing.id;
     const created = await prisma.templateCategory.create({
       data: { name, description: `${name} templates` },
@@ -215,11 +272,14 @@ async function main() {
     if (tpl.sections.length > 0) continue;
 
     const key =
-      Object.keys(defaults).find((k) => tpl.name.toLowerCase().includes(k.toLowerCase())) ||
-      "Modern";
+      Object.keys(defaults).find((k) =>
+        tpl.name.toLowerCase().includes(k.toLowerCase())
+      ) || "Modern";
     const items = defaults[key];
 
-    console.log(`Seeding sections for template ${tpl.name} using preset ${key}`);
+    console.log(
+      `Seeding sections for template ${tpl.name} using preset ${key}`
+    );
 
     let order = 1;
     for (const def of items) {

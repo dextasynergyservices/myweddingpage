@@ -15,9 +15,15 @@ export async function GET() {
       const tokenData = JSON.parse(fs.readFileSync(tokenFile, "utf8"));
       console.log("Token data keys:", Object.keys(tokenData));
       console.log("Token length:", tokenData.accessToken?.length || 0);
-      console.log("Token starts with:", tokenData.accessToken?.substring(0, 20) || "N/A");
+      console.log(
+        "Token starts with:",
+        tokenData.accessToken?.substring(0, 20) || "N/A"
+      );
       console.log("Expires at:", tokenData.expiresAt);
-      console.log("Is expired:", tokenData.expiresAt ? Date.now() > tokenData.expiresAt : false);
+      console.log(
+        "Is expired:",
+        tokenData.expiresAt ? Date.now() > tokenData.expiresAt : false
+      );
     }
 
     const accessToken = TokenStore.getAccessToken();

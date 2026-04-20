@@ -21,7 +21,9 @@ export async function GET() {
     for (const task of tasks) {
       const dueDate = new Date(task.dueDate!);
       const today = new Date();
-      const diffDays = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      const diffDays = Math.ceil(
+        (dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+      );
 
       if ([7, 3, 0].includes(diffDays)) {
         const assigneeName = task.assignedTo || "Team Member";
@@ -37,7 +39,9 @@ export async function GET() {
             html: `
               <p>Hello ${assigneeName},</p>
               <p>Your assigned task <strong>"${task.title}"</strong> is due ${
-                diffDays === 0 ? "<strong>today</strong>" : `in <strong>${diffDays} days</strong>`
+                diffDays === 0
+                  ? "<strong>today</strong>"
+                  : `in <strong>${diffDays} days</strong>`
               }.</p>
               <p>Due date: ${dueDate.toLocaleDateString()}</p>
               ${task.userId ? `<p><a href="${process.env.NEXT_PUBLIC_APP_URL}/tasks/${task.id}">View Task Details</a></p>` : ""}
@@ -59,6 +63,9 @@ export async function GET() {
     return NextResponse.json({ success: true, tasksProcessed: tasks.length });
   } catch (error) {
     console.error("Error in reminders cron job:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

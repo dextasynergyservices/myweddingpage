@@ -44,7 +44,8 @@ const GiftRegistry = (props: GiftRegistryProps) => {
   // Extract data from props with fallbacks
   const title = props.title || "Gift Registry";
   const description =
-    props.description || "Help us build our home together with these thoughtfully chosen items";
+    props.description ||
+    "Help us build our home together with these thoughtfully chosen items";
   // Extract gifts data from props (prioritize gifts over giftRegistry for consistency with API)
   const gifts = props.gifts || props.giftRegistry || [];
 
@@ -146,10 +147,16 @@ const GiftRegistry = (props: GiftRegistryProps) => {
       className={`${styles.sectionPadding} ${styles.gradientSoft} py-16 relative overflow-hidden`}
     >
       {/* Background Elements */}
-      <div className={`${styles.floatingElement} absolute top-20 left-16 opacity-10`}>
-        <Gift className={`w-28 h-28 text-accent ${styles.animateRomanticFloat}`} />
+      <div
+        className={`${styles.floatingElement} absolute top-20 left-16 opacity-10`}
+      >
+        <Gift
+          className={`w-28 h-28 text-accent ${styles.animateRomanticFloat}`}
+        />
       </div>
-      <div className={`${styles.floatingElement} absolute bottom-32 right-20 opacity-10`}>
+      <div
+        className={`${styles.floatingElement} absolute bottom-32 right-20 opacity-10`}
+      >
         <Heart
           className={`w-20 h-20 text-primary ${styles.animateRomanticFloat}`}
           style={{ animationDelay: "1s" }}
@@ -164,11 +171,19 @@ const GiftRegistry = (props: GiftRegistryProps) => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <h2 className={`${styles.fontHeading} text-2xl md:text-5xl font-bold text-black mb-6`}>
+          <h2
+            className={`${styles.fontHeading} text-2xl md:text-5xl font-bold text-black mb-6`}
+          >
             {title}
           </h2>
-          <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
-          <p className={`text-xl text-black/80 max-w-3xl mx-auto leading-relaxed`}>{description}</p>
+          <div
+            className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}
+          ></div>
+          <p
+            className={`text-xl text-black/80 max-w-3xl mx-auto leading-relaxed`}
+          >
+            {description}
+          </p>
         </div>
 
         {/* Gift Cards */}
@@ -201,8 +216,14 @@ const GiftRegistry = (props: GiftRegistryProps) => {
                       <div
                         className={`${styles.giftPurchasedContent} text-center text-primary-foreground`}
                       >
-                        <Check className={`${styles.giftPurchasedIcon} w-12 h-12 mx-auto mb-2`} />
-                        <p className={`${styles.giftPurchasedText} font-semibold`}>Thank You!</p>
+                        <Check
+                          className={`${styles.giftPurchasedIcon} w-12 h-12 mx-auto mb-2`}
+                        />
+                        <p
+                          className={`${styles.giftPurchasedText} font-semibold`}
+                        >
+                          Thank You!
+                        </p>
                       </div>
                     </div>
                   )}
@@ -215,7 +236,9 @@ const GiftRegistry = (props: GiftRegistryProps) => {
                   >
                     {gift.item}
                   </h3>
-                  <p className={`${styles.textMuted} mb-4 leading-relaxed text-sm sm:text-base`}>
+                  <p
+                    className={`${styles.textMuted} mb-4 leading-relaxed text-sm sm:text-base`}
+                  >
                     {gift.description}
                   </p>
 
@@ -232,7 +255,9 @@ const GiftRegistry = (props: GiftRegistryProps) => {
                         disabled
                         className={`${styles.giftPurchasedButton} bg-[hsl(340,75%,55%)] text-white opacity-60 w-full sm:w-auto`}
                       >
-                        <Check className={`${styles.giftButtonIcon} w-4 h-4 mr-2`} />
+                        <Check
+                          className={`${styles.giftButtonIcon} w-4 h-4 mr-2`}
+                        />
                         Already Purchased
                       </Button>
                     ) : (
@@ -264,13 +289,18 @@ const GiftRegistry = (props: GiftRegistryProps) => {
           <div
             className={`${styles.bgCard} p-8 ${styles.roundedLg} ${styles.shadowSoft} max-w-2xl mx-auto`}
           >
-            <Gift className={`text-[hsl(340,75%,55%)] w-12 h-12 text-primary mx-auto mb-4`} />
-            <h3 className={`${styles.fontHeading} text-2xl font-semibold text-black/80 mb-4`}>
+            <Gift
+              className={`text-[hsl(340,75%,55%)] w-12 h-12 text-primary mx-auto mb-4`}
+            />
+            <h3
+              className={`${styles.fontHeading} text-2xl font-semibold text-black/80 mb-4`}
+            >
               Other Ways to Give
             </h3>
             <p className={`text-black/80 mb-6 leading-relaxed`}>
-              We&apos;re also registered at Target and Williams Sonoma. You can find our registries
-              online or contribute to our honeymoon fund if you prefer.
+              We&apos;re also registered at Target and Williams Sonoma. You can
+              find our registries online or contribute to our honeymoon fund if
+              you prefer.
             </p>
             <div
               className={`text-[hsl(340,75%,55%)] flex flex-col sm:flex-row gap-4 justify-center`}
@@ -281,7 +311,9 @@ const GiftRegistry = (props: GiftRegistryProps) => {
                 className={`${styles.giftInfoButton} bg-[hsl(340,75%,55%)] text-white group`}
               >
                 Gift Cash
-                <Heart className={`${styles.giftButtonIcon} w-4 h-4 ml-2 text-primary`} />
+                <Heart
+                  className={`${styles.giftButtonIcon} w-4 h-4 ml-2 text-primary`}
+                />
               </Button>
             </div>
           </div>

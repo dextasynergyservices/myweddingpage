@@ -86,7 +86,11 @@ export async function GET(request: NextRequest) {
         weddingDate: {
           in: [threeDaysAhead, oneDayAhead, today],
         },
-        AND: [{ email: { not: null } }, { brideName: { not: null } }, { groomName: { not: null } }],
+        AND: [
+          { email: { not: null } },
+          { brideName: { not: null } },
+          { groomName: { not: null } },
+        ],
       },
       select: {
         id: true,
@@ -161,12 +165,15 @@ export async function GET(request: NextRequest) {
                 <h3 style="color: #0369a1; margin-top: 0;">Wedding Details</h3>
                 <p><strong>Couple:</strong> ${user.groomName} & ${user.brideName}</p>
                 <p><strong>Email:</strong> ${user.email}</p>
-                <p><strong>Wedding Date:</strong> ${weddingDate.toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}</p>
+                <p><strong>Wedding Date:</strong> ${weddingDate.toLocaleDateString(
+                  "en-US",
+                  {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )}</p>
                 <p><strong>Days Until Wedding:</strong> ${daysDiff === 0 ? "TODAY!" : `${daysDiff} day${daysDiff !== 1 ? "s" : ""}`}</p>
                 <p><strong>Page:</strong> ${pageInfo}</p>
               </div>
@@ -198,7 +205,10 @@ export async function GET(request: NextRequest) {
           `Sent ${reminderType} wedding reminder for ${user.groomName} & ${user.brideName}`
         );
       } catch (error) {
-        console.error(`Error processing wedding reminder for user ${user.id}:`, error);
+        console.error(
+          `Error processing wedding reminder for user ${user.id}:`,
+          error
+        );
         results.errors.push(`Failed to process user ${user.id}: ${error}`);
       }
     }

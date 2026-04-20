@@ -93,7 +93,9 @@ export async function GET(req: Request) {
       (weddingPage?.ai_data as Record<string, unknown> | undefined) ??
       (weddingPage?.layout_data as Record<string, unknown> | undefined) ??
       {};
-    const utContent = (selectedUserTemplate?.content as Record<string, unknown> | undefined) ?? {};
+    const utContent =
+      (selectedUserTemplate?.content as Record<string, unknown> | undefined) ??
+      {};
 
     // Convert form data structure to component structure for story sections
     const convertStoryDataForComponent = (content: Record<string, unknown>) => {
@@ -182,13 +184,19 @@ export async function GET(req: Request) {
         "Groom",
       weddingDate:
         (user.weddingDate && formatWeddingDate(user.weddingDate)) ||
-        (wpAi?.weddingDate && formatWeddingDate(new Date(wpAi.weddingDate as string))) ||
-        (wpAi?.wedding_date && formatWeddingDate(new Date(wpAi.wedding_date as string))) ||
-        (utContent?.weddingDate && formatWeddingDate(new Date(utContent.weddingDate as string))) ||
+        (wpAi?.weddingDate &&
+          formatWeddingDate(new Date(wpAi.weddingDate as string))) ||
+        (wpAi?.wedding_date &&
+          formatWeddingDate(new Date(wpAi.wedding_date as string))) ||
+        (utContent?.weddingDate &&
+          formatWeddingDate(new Date(utContent.weddingDate as string))) ||
         null,
       venue: weddingPage?.venue || wpAi?.venue || utContent?.venue || null,
       welcomeMessage:
-        weddingPage?.welcomeMessage || wpAi?.welcomeMessage || utContent?.welcomeMessage || null,
+        weddingPage?.welcomeMessage ||
+        wpAi?.welcomeMessage ||
+        utContent?.welcomeMessage ||
+        null,
       // Include hero image for hero components
       heroImage: weddingPage?.hero_image || null,
       // Include story image for story components
@@ -229,7 +237,8 @@ export async function GET(req: Request) {
 
     // safe-access previewData which can be Json
     const selectedPreviewData: Record<string, unknown> =
-      (selectedTemplate as { previewData?: Record<string, unknown> } | null)?.previewData ?? {};
+      (selectedTemplate as { previewData?: Record<string, unknown> } | null)
+        ?.previewData ?? {};
 
     const ourStory = {
       content:
@@ -248,7 +257,10 @@ export async function GET(req: Request) {
       ? {
           ...weddingPage,
           // Prefer the freshly selected views value when available
-          views: latestWeddingPageViews ?? (weddingPage as { views?: number })?.views ?? 0,
+          views:
+            latestWeddingPageViews ??
+            (weddingPage as { views?: number })?.views ??
+            0,
         }
       : null;
 
@@ -288,12 +300,16 @@ export async function GET(req: Request) {
       sections: utContent,
       userData: responseData.userData,
       // Log weddingPage.views explicitly to help debug dashboard fetches
-      weddingPageViews: (weddingPageWithViews as { views?: number } | null)?.views,
+      weddingPageViews: (weddingPageWithViews as { views?: number } | null)
+        ?.views,
     });
 
     return NextResponse.json(responseData);
   } catch (error) {
     console.error("Error fetching wedding data:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

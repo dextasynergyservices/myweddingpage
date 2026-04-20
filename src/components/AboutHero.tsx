@@ -32,8 +32,9 @@ const AboutHeroSection = () => {
           isDarkMode ? "text-slate-400" : "text-slate-600"
         }`}
       >
-        We believe every love story deserves to be celebrated beautifully. Our platform was born
-        from the desire to make wedding planning effortless and magical for couples everywhere.
+        We believe every love story deserves to be celebrated beautifully. Our
+        platform was born from the desire to make wedding planning effortless
+        and magical for couples everywhere.
       </p>
     </AnimatedSection>
   );

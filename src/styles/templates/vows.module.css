@@ -56,8 +56,16 @@
     hsl(var(--vows-background)) 0%,
     hsl(var(--vows-muted)) 100%
   );
-  --vows-gradient-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.7) 100%);
-  --vows-gradient-fade: linear-gradient(180deg, transparent 0%, hsl(var(--vows-background)) 100%);
+  --vows-gradient-overlay: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  --vows-gradient-fade: linear-gradient(
+    180deg,
+    transparent 0%,
+    hsl(var(--vows-background)) 100%
+  );
 
   /* Shadows */
   --vows-shadow-elegant: 0 8px 32px -8px hsl(var(--vows-foreground) / 0.1);

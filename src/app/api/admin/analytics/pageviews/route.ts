@@ -67,7 +67,10 @@ export async function GET(req: NextRequest) {
 
     const where: Record<string, unknown> = {};
     if (slug) {
-      const page = await prisma.weddingPage.findUnique({ where: { slug }, select: { id: true } });
+      const page = await prisma.weddingPage.findUnique({
+        where: { slug },
+        select: { id: true },
+      });
       if (!page) return NextResponse.json({ items: [], nextCursor: null });
       where.weddingPageId = page.id;
     }
@@ -103,14 +106,20 @@ export async function GET(req: NextRequest) {
           slug: page?.slug ?? null,
           title: page?.title ?? null,
           userAgent: r.userAgent ?? null,
-          ipAddress: anonymize ? hashIp(r.ipAddress ?? undefined) : (r.ipAddress ?? null),
+          ipAddress: anonymize
+            ? hashIp(r.ipAddress ?? undefined)
+            : (r.ipAddress ?? null),
           createdAt: r.createdAt,
         };
       })
     );
 
     const nextCursor = items.length ? items[items.length - 1].id : null;
-    return NextResponse.json({ items, nextCursor: hasMore ? nextCursor : null, anonymize });
+    return NextResponse.json({
+      items,
+      nextCursor: hasMore ? nextCursor : null,
+      anonymize,
+    });
   } catch (err) {
     console.error("/api/admin/analytics/pageviews error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

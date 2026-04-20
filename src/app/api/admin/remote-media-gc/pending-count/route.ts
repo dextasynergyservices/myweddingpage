@@ -12,10 +12,15 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const pending = await prisma.remoteMediaGC.count({ where: { status: "pending" } });
+    const pending = await prisma.remoteMediaGC.count({
+      where: { status: "pending" },
+    });
     return NextResponse.json({ pending });
   } catch (err) {
     console.error("Failed to fetch pending remote media gc count:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

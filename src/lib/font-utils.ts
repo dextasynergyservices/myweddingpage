@@ -44,7 +44,9 @@ export const loadGoogleFonts = (fonts: FontDefinition[]): Promise<void> => {
     }
 
     // Check if fonts are already loaded
-    const existingLink = document.querySelector('link[data-font-loader="custom"]');
+    const existingLink = document.querySelector(
+      'link[data-font-loader="custom"]'
+    );
     if (existingLink) {
       existingLink.remove();
     }
@@ -87,7 +89,9 @@ export const loadGoogleFonts = (fonts: FontDefinition[]): Promise<void> => {
 /**
  * Load fonts from FontScheme (async version with preloading)
  */
-export const loadFontsFromScheme = async (scheme: FontScheme): Promise<void> => {
+export const loadFontsFromScheme = async (
+  scheme: FontScheme
+): Promise<void> => {
   const fonts: FontDefinition[] = [];
 
   // Get font definitions
@@ -100,7 +104,9 @@ export const loadFontsFromScheme = async (scheme: FontScheme): Promise<void> => 
   if (scriptFont) fonts.push(scriptFont);
 
   // Load unique fonts
-  const uniqueFonts = Array.from(new Map(fonts.map((font) => [font.family, font])).values());
+  const uniqueFonts = Array.from(
+    new Map(fonts.map((font) => [font.family, font])).values()
+  );
 
   await loadGoogleFonts(uniqueFonts);
 
@@ -121,7 +127,9 @@ export const preloadFont = async (font: FontDefinition): Promise<void> => {
   const url = buildGoogleFontsUrl([font]);
 
   // Check if already loaded
-  const existing = document.querySelector(`link[href="${url}"]`) as HTMLLinkElement;
+  const existing = document.querySelector(
+    `link[href="${url}"]`
+  ) as HTMLLinkElement;
   if (existing) {
     loadedFonts.add(font.family);
     return;
@@ -365,8 +373,12 @@ export const waitForFontsToLoad = (fonts: FontDefinition[]): Promise<void> => {
 /**
  * Get loaded fonts count
  */
-export const getLoadedFontsCount = async (fonts: FontDefinition[]): Promise<number> => {
-  const results = await Promise.all(fonts.map((font) => isFontLoaded(font.family)));
+export const getLoadedFontsCount = async (
+  fonts: FontDefinition[]
+): Promise<number> => {
+  const results = await Promise.all(
+    fonts.map((font) => isFontLoaded(font.family))
+  );
   return results.filter((loaded) => loaded).length;
 };
 
@@ -402,7 +414,10 @@ export const getRecommendedWeight = (
   switch (useCase) {
     case "heading":
       // Prefer bold weights (600-900)
-      return weights.find((w) => ["700", "800", "900"].includes(w)) || weights[weights.length - 1];
+      return (
+        weights.find((w) => ["700", "800", "900"].includes(w)) ||
+        weights[weights.length - 1]
+      );
 
     case "body":
       // Prefer normal weights (400-500)

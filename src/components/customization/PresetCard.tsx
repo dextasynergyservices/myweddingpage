@@ -137,7 +137,9 @@ export const PresetCard: React.FC<PresetCardProps> = ({
         {/* Font Preview */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs">
-            <span className={`font-medium ${isDarkMode ? "text-slate-500" : "text-gray-500"}`}>
+            <span
+              className={`font-medium ${isDarkMode ? "text-slate-500" : "text-gray-500"}`}
+            >
               Heading:
             </span>
             <span
@@ -148,7 +150,9 @@ export const PresetCard: React.FC<PresetCardProps> = ({
             </span>
           </div>
           <div className="flex items-center justify-between text-xs">
-            <span className={`font-medium ${isDarkMode ? "text-slate-500" : "text-gray-500"}`}>
+            <span
+              className={`font-medium ${isDarkMode ? "text-slate-500" : "text-gray-500"}`}
+            >
               Body:
             </span>
             <span
@@ -159,7 +163,9 @@ export const PresetCard: React.FC<PresetCardProps> = ({
             </span>
           </div>
           <div className="flex items-center justify-between text-xs">
-            <span className={`font-medium ${isDarkMode ? "text-slate-500" : "text-gray-500"}`}>
+            <span
+              className={`font-medium ${isDarkMode ? "text-slate-500" : "text-gray-500"}`}
+            >
               Script:
             </span>
             <span

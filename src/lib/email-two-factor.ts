@@ -126,7 +126,10 @@ export async function get2FAMethod(userId: string): Promise<"totp" | "email"> {
  * @param userId - User's ID
  * @param method - "totp" or "email"
  */
-export async function set2FAMethod(userId: string, method: "totp" | "email"): Promise<void> {
+export async function set2FAMethod(
+  userId: string,
+  method: "totp" | "email"
+): Promise<void> {
   await prisma.user.update({
     where: { id: userId },
     data: { twoFactorMethod: method },

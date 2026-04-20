@@ -3,7 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { v2 as cloudinary, UploadApiOptions } from "cloudinary";
 import { trackUploadStart, trackUploadComplete } from "@/lib/upload-monitor";
-import { createUserAwareRateLimit, rateLimitConfigs, addRateLimitHeaders } from "@/lib/rate-limit";
+import {
+  createUserAwareRateLimit,
+  rateLimitConfigs,
+  addRateLimitHeaders,
+} from "@/lib/rate-limit";
 import { validateFile } from "@/lib/file-validation";
 
 // Configure Cloudinary
@@ -62,13 +66,20 @@ export async function POST(request: Request) {
     }
 
     // Start tracking the upload
-    trackingData = trackUploadStart(uploadType, file.name, file.size, session.user.id);
+    trackingData = trackUploadStart(
+      uploadType,
+      file.name,
+      file.size,
+      session.user.id
+    );
 
     // Validate file type
     const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
     if (!validTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: "Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed" },
+        {
+          error: "Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed",
+        },
         { status: 400 }
       );
     }
@@ -83,7 +94,12 @@ export async function POST(request: Request) {
     }
 
     // Advanced file validation with magic number verification
-    const validationResult = await validateFile(file, file.name, file.type, session.user.id);
+    const validationResult = await validateFile(
+      file,
+      file.name,
+      file.type,
+      session.user.id
+    );
 
     if (!validationResult.valid) {
       return NextResponse.json(
@@ -191,16 +207,23 @@ export async function POST(request: Request) {
     } catch (uploadError) {
       console.error("Cloudinary upload error details:", {
         error: uploadError,
-        message: uploadError instanceof Error ? uploadError.message : String(uploadError),
+        message:
+          uploadError instanceof Error
+            ? uploadError.message
+            : String(uploadError),
         stack: uploadError instanceof Error ? uploadError.stack : undefined,
         uploadType,
         userId: session.user.id,
         fileName: file.name,
         fileSize: file.size,
         cloudinaryConfig: {
-          cloud_name: process.env.CLOUDINARY_CLOUD_NAME ? "✅ Set" : "❌ Missing",
+          cloud_name: process.env.CLOUDINARY_CLOUD_NAME
+            ? "✅ Set"
+            : "❌ Missing",
           api_key: process.env.CLOUDINARY_API_KEY ? "✅ Set" : "❌ Missing",
-          api_secret: process.env.CLOUDINARY_API_SECRET ? "✅ Set" : "❌ Missing",
+          api_secret: process.env.CLOUDINARY_API_SECRET
+            ? "✅ Set"
+            : "❌ Missing",
         },
       });
 
@@ -217,14 +240,18 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error: "Failed to upload to Cloudinary",
-          details: uploadError instanceof Error ? uploadError.message : String(uploadError),
+          details:
+            uploadError instanceof Error
+              ? uploadError.message
+              : String(uploadError),
           uploadType,
           fileName: file.name,
           fileSize: file.size,
           troubleshooting: {
             checkCloudinaryConfig:
               "Verify CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET are set",
-            checkFileFormat: "Ensure file is a valid image format (JPEG, PNG, GIF, WebP)",
+            checkFileFormat:
+              "Ensure file is a valid image format (JPEG, PNG, GIF, WebP)",
             checkFileSize: "Ensure file is under 10MB",
             checkNetwork: "Verify network connection to Cloudinary",
           },

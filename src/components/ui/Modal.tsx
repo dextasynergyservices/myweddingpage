@@ -56,13 +56,17 @@ export default function Modal({
         const root = document.querySelector('[role="dialog"]');
         if (!root) return;
         // prefer element with data-primary attribute
-        const primary = root.querySelector<HTMLElement>("[data-primary]") as HTMLElement | null;
+        const primary = root.querySelector<HTMLElement>(
+          "[data-primary]"
+        ) as HTMLElement | null;
         if (primary && autoFocusPrimary) {
           primary.focus();
           return;
         }
         // otherwise focus the first focusable button
-        const btn = root.querySelector<HTMLElement>('button, [tabindex]:not([tabindex="-1"])');
+        const btn = root.querySelector<HTMLElement>(
+          'button, [tabindex]:not([tabindex="-1"])'
+        );
         if (btn) btn.focus();
       } catch {
         // ignore
@@ -78,7 +82,9 @@ export default function Modal({
       if (e.key !== "Enter") return;
       const root = document.querySelector('[role="dialog"]');
       if (!root) return;
-      const primary = root.querySelector<HTMLElement>("[data-primary]") as HTMLElement | null;
+      const primary = root.querySelector<HTMLElement>(
+        "[data-primary]"
+      ) as HTMLElement | null;
       if (primary) {
         e.preventDefault();
         (primary as HTMLButtonElement).click();
@@ -140,7 +146,10 @@ export default function Modal({
                   >
                     {title && (
                       <div className="flex justify-between items-center mb-4">
-                        <h2 id={titleId} className="text-lg font-semibold text-black">
+                        <h2
+                          id={titleId}
+                          className="text-lg font-semibold text-black"
+                        >
                           {title}
                         </h2>
                         <button

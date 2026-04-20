@@ -3,8 +3,12 @@ import prisma from "@/lib/prisma";
 async function run() {
   try {
     const totalWeddingPages = await prisma.weddingPage.count();
-    const liveWeddingPages = await prisma.weddingPage.count({ where: { is_live: true } });
-    const totalViewsAgg = await prisma.weddingPage.aggregate({ _sum: { views: true } });
+    const liveWeddingPages = await prisma.weddingPage.count({
+      where: { is_live: true },
+    });
+    const totalViewsAgg = await prisma.weddingPage.aggregate({
+      _sum: { views: true },
+    });
     const totalViews = totalViewsAgg._sum.views ?? 0;
     const avgViewsAgg = await prisma.weddingPage.aggregate({
       _avg: { views: true },
@@ -23,7 +27,9 @@ async function run() {
     });
 
     const pageViewCount = await prisma.pageView.count();
-    const pageViewsLast7 = await prisma.pageView.count({ where: { createdAt: { gte: weekAgo } } });
+    const pageViewsLast7 = await prisma.pageView.count({
+      where: { createdAt: { gte: weekAgo } },
+    });
 
     console.log(
       JSON.stringify(

@@ -21,7 +21,11 @@ export async function PUT(req: Request) {
     const { templateId, sectionId, content } = body;
 
     if (!templateId || !sectionId || !content) {
-      console.log("Missing required fields:", { templateId, sectionId, content });
+      console.log("Missing required fields:", {
+        templateId,
+        sectionId,
+        content,
+      });
       return NextResponse.json(
         { error: "Template ID, section ID, and content are required" },
         { status: 400 }
@@ -60,8 +64,10 @@ export async function PUT(req: Request) {
     }
 
     // Update the specific section content
-    const currentContent = (userTemplate.content as Record<string, unknown>) || {};
-    const existingSection = (currentContent[sectionId] as Record<string, unknown>) || {};
+    const currentContent =
+      (userTemplate.content as Record<string, unknown>) || {};
+    const existingSection =
+      (currentContent[sectionId] as Record<string, unknown>) || {};
     const updatedContent = {
       ...currentContent,
       [sectionId]: {
@@ -102,7 +108,10 @@ export async function PUT(req: Request) {
     });
   } catch (error) {
     console.error("Error updating section content:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -149,7 +158,10 @@ export async function GET(req: Request) {
 
     const userTemplate = user.userTemplates[0];
     if (!userTemplate) {
-      return NextResponse.json({ error: "User template not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "User template not found" },
+        { status: 404 }
+      );
     }
 
     const section = userTemplate.template.sections[0];
@@ -157,7 +169,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Section not found" }, { status: 404 });
     }
 
-    const sectionContent = (userTemplate.content as Record<string, unknown>)?.[sectionId] || {};
+    const sectionContent =
+      (userTemplate.content as Record<string, unknown>)?.[sectionId] || {};
 
     return NextResponse.json({
       section,
@@ -165,6 +178,9 @@ export async function GET(req: Request) {
     });
   } catch (error) {
     console.error("Error fetching section content:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

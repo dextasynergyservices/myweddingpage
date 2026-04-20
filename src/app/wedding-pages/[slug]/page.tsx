@@ -12,7 +12,9 @@ type PageProps = {
   };
 };
 
-export default async function WeddingPage({ params }: PageProps): Promise<JSX.Element> {
+export default async function WeddingPage({
+  params,
+}: PageProps): Promise<JSX.Element> {
   const { slug } = await params;
 
   try {
@@ -59,10 +61,13 @@ export default async function WeddingPage({ params }: PageProps): Promise<JSX.El
         {/* Optional: Add a footer with wedding page info */}
         <footer className="bg-gray-50 py-8 mt-16">
           <div className="max-w-4xl mx-auto px-4 text-center text-gray-600">
-            <p className="text-sm">Created with using our wedding page builder</p>
+            <p className="text-sm">
+              Created with using our wedding page builder
+            </p>
             {comments && comments.length > 0 && (
               <p className="text-xs mt-2">
-                {comments.length} guest {comments.length === 1 ? "message" : "messages"}
+                {comments.length} guest{" "}
+                {comments.length === 1 ? "message" : "messages"}
               </p>
             )}
           </div>

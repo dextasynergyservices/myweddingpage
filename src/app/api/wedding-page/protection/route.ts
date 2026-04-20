@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function weddingPageProtectionMiddleware(request: NextRequest, slug: string) {
+export async function weddingPageProtectionMiddleware(
+  request: NextRequest,
+  slug: string
+) {
   try {
     // Find the wedding page
     const weddingPage = await prisma.weddingPage.findUnique({
@@ -20,7 +23,10 @@ export async function weddingPageProtectionMiddleware(request: NextRequest, slug
     });
 
     if (!weddingPage) {
-      return NextResponse.json({ error: "Wedding page not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Wedding page not found" },
+        { status: 404 }
+      );
     }
 
     // Check if page is soft deleted
@@ -38,7 +44,9 @@ export async function weddingPageProtectionMiddleware(request: NextRequest, slug
     const user = weddingPage.user;
 
     // Check subscription status
-    const subscriptionEnd = user.subscription_end ? new Date(user.subscription_end) : null;
+    const subscriptionEnd = user.subscription_end
+      ? new Date(user.subscription_end)
+      : null;
     const isSubscriptionExpired = subscriptionEnd
       ? subscriptionEnd.getTime() <= now.getTime()
       : false;
@@ -87,7 +95,10 @@ export async function weddingPageProtectionMiddleware(request: NextRequest, slug
     );
   } catch (error) {
     console.error("Error in wedding page protection middleware:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -112,7 +123,9 @@ export async function canUserEditWeddingPage(userId: string): Promise<{
     }
 
     const now = new Date();
-    const subscriptionEnd = user.subscription_end ? new Date(user.subscription_end) : null;
+    const subscriptionEnd = user.subscription_end
+      ? new Date(user.subscription_end)
+      : null;
     const isSubscriptionExpired = subscriptionEnd
       ? subscriptionEnd.getTime() <= now.getTime()
       : false;
@@ -175,7 +188,10 @@ export async function GET(request: NextRequest) {
     });
 
     if (!weddingPage) {
-      return NextResponse.json({ error: "Wedding page not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Wedding page not found" },
+        { status: 404 }
+      );
     }
 
     // Check if page is soft deleted
@@ -193,7 +209,9 @@ export async function GET(request: NextRequest) {
     const user = weddingPage.user;
 
     // Check subscription status
-    const subscriptionEnd = user.subscription_end ? new Date(user.subscription_end) : null;
+    const subscriptionEnd = user.subscription_end
+      ? new Date(user.subscription_end)
+      : null;
     const isSubscriptionExpired = subscriptionEnd
       ? subscriptionEnd.getTime() <= now.getTime()
       : false;
@@ -247,6 +265,9 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     console.error("Error checking wedding page protection:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

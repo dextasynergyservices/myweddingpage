@@ -2,7 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Menu, X, Heart, Home, Camera, Gift, MessageCircle } from "lucide-react";
+import {
+  Menu,
+  X,
+  Heart,
+  Home,
+  Camera,
+  Gift,
+  MessageCircle,
+} from "lucide-react";
 import Image from "next/image";
 
 interface WeddingPageHeaderProps {
@@ -117,7 +125,9 @@ export default function WeddingPageHeader({
 
       // Easing function for smooth animation
       const easeInOutCubic = (t: number) => {
-        return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+        return t < 0.5
+          ? 4 * t * t * t
+          : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
       };
 
       const animateScroll = (currentTime: number) => {
@@ -204,7 +214,11 @@ export default function WeddingPageHeader({
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
           >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
           </motion.button>
         </div>
 
@@ -231,7 +245,9 @@ export default function WeddingPageHeader({
                 }`}
               >
                 {getSectionIcon(section.type)}
-                <span className="font-medium">{getSectionTitle(section.type)}</span>
+                <span className="font-medium">
+                  {getSectionTitle(section.type)}
+                </span>
               </motion.button>
             ))}
           </div>

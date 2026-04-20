@@ -34,7 +34,9 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth="max-w-md">
       <div className="py-2">
-        <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">{message}</p>
+        <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+          {message}
+        </p>
 
         <div className="flex gap-2 justify-end">
           <motion.button

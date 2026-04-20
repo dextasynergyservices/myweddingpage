@@ -29,7 +29,10 @@ export async function POST(req: Request) {
     const { optionId, userId, groomName, brideName, email } = await req.json();
 
     if (!optionId) {
-      return NextResponse.json({ error: "optionId is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "optionId is required" },
+        { status: 400 }
+      );
     }
 
     // 1️⃣ Load the renewal option
@@ -75,7 +78,10 @@ export async function POST(req: Request) {
     // 4️⃣ Prepare amount in kobo
     const amountKobo = Math.round(Number(option.price) * 100);
     if (isNaN(amountKobo) || amountKobo <= 0) {
-      return NextResponse.json({ error: "Invalid amount for this option" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid amount for this option" },
+        { status: 400 }
+      );
     }
 
     // 5️⃣ Determine callback URL dynamically with planId
@@ -90,28 +96,31 @@ export async function POST(req: Request) {
     )}/dashboard?renewal=success&planId=${option.planId}&optionId=${option.id}`;
 
     // 6️⃣ Initialize Paystack transaction
-    const initRes = await fetch("https://api.paystack.co/transaction/initialize", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: chargeEmail,
-        amount: amountKobo,
-        callback_url: FRONTEND_SUCCESS_URL,
-        metadata: {
-          type: "renewal",
-          userId: subscription.userId,
-          subscriptionId: subscription.id,
-          planId: option.planId,
-          optionId: option.id,
-          duration: option.duration,
-          groomName: groomName || subscription.groomName,
-          brideName: brideName || subscription.brideName,
+    const initRes = await fetch(
+      "https://api.paystack.co/transaction/initialize",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+          "Content-Type": "application/json",
         },
-      }),
-    });
+        body: JSON.stringify({
+          email: chargeEmail,
+          amount: amountKobo,
+          callback_url: FRONTEND_SUCCESS_URL,
+          metadata: {
+            type: "renewal",
+            userId: subscription.userId,
+            subscriptionId: subscription.id,
+            planId: option.planId,
+            optionId: option.id,
+            duration: option.duration,
+            groomName: groomName || subscription.groomName,
+            brideName: brideName || subscription.brideName,
+          },
+        }),
+      }
+    );
 
     const initJson = await initRes.json();
 
@@ -130,6 +139,9 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("[paystack initialize] unexpected error:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

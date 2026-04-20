@@ -131,8 +131,12 @@ export function rateLimit(config: RateLimitConfig) {
     if (headers) {
       responseHeaders["X-RateLimit-Limit"] = maxRequests.toString();
       responseHeaders["X-RateLimit-Remaining"] = remainingRequests.toString();
-      responseHeaders["X-RateLimit-Reset"] = Math.ceil(resetTime / 1000).toString();
-      responseHeaders["X-RateLimit-Window"] = Math.ceil(windowMs / 1000).toString();
+      responseHeaders["X-RateLimit-Reset"] = Math.ceil(
+        resetTime / 1000
+      ).toString();
+      responseHeaders["X-RateLimit-Window"] = Math.ceil(
+        windowMs / 1000
+      ).toString();
       // Add Redis status indicator
       responseHeaders["X-RateLimit-Backend"] = redisResult ? "redis" : "memory";
     }
@@ -159,8 +163,9 @@ export function rateLimit(config: RateLimitConfig) {
     }
 
     // Store headers for successful requests (to be added by the calling handler)
-    (request as Request & { rateLimitHeaders?: Record<string, string> }).rateLimitHeaders =
-      responseHeaders;
+    (
+      request as Request & { rateLimitHeaders?: Record<string, string> }
+    ).rateLimitHeaders = responseHeaders;
 
     return null; // Continue to actual handler
   };
@@ -195,7 +200,8 @@ export const rateLimitConfigs = {
   upload: {
     maxRequests: 20,
     windowMs: 60 * 60 * 1000, // 1 hour
-    message: "Upload rate limit exceeded. Please wait before uploading more files.",
+    message:
+      "Upload rate limit exceeded. Please wait before uploading more files.",
   },
 
   // Authentication endpoints (stricter)
@@ -248,9 +254,13 @@ export function createUserAwareRateLimit(
 /**
  * Helper to add rate limit headers to successful responses
  */
-export function addRateLimitHeaders(request: Request, response: Response): Response {
-  const headers = (request as Request & { rateLimitHeaders?: Record<string, string> })
-    .rateLimitHeaders;
+export function addRateLimitHeaders(
+  request: Request,
+  response: Response
+): Response {
+  const headers = (
+    request as Request & { rateLimitHeaders?: Record<string, string> }
+  ).rateLimitHeaders;
   if (headers) {
     Object.entries(headers).forEach(([key, value]) => {
       response.headers.set(key, value);

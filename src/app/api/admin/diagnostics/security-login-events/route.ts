@@ -28,6 +28,9 @@ export async function GET() {
     return NextResponse.json({ recent, counts });
   } catch (e) {
     console.error("Diagnostics error:", e);
-    return NextResponse.json({ error: "Failed to load diagnostics" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to load diagnostics" },
+      { status: 500 }
+    );
   }
 }

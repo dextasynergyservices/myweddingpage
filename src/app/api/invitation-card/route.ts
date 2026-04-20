@@ -20,7 +20,10 @@ export async function POST(request: NextRequest) {
     } = body;
 
     if (!streamId) {
-      return NextResponse.json({ error: "Stream ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Stream ID is required" },
+        { status: 400 }
+      );
     }
 
     // Get stream details
@@ -89,6 +92,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error generating invitation card:", error);
-    return NextResponse.json({ error: "Failed to generate invitation card" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to generate invitation card" },
+      { status: 500 }
+    );
   }
 }

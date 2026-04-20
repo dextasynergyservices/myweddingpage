@@ -57,7 +57,9 @@ export async function POST(request: NextRequest) {
 
     // Get request metadata
     const ipAddress =
-      request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
+      request.headers.get("x-forwarded-for") ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
     const userAgent = request.headers.get("user-agent") || "unknown";
 
     // Update method preference
@@ -80,7 +82,10 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error setting 2FA method:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -114,6 +119,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error getting 2FA method:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

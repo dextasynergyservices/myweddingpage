@@ -1,0 +1,350 @@
+{
+  "site": {
+    "title": "My Wedding Page",
+    "tagline": "Jụọ anyị emume"
+  },
+  "nav": {
+    "home": "Ụlọ",
+    "how_to": "Otu esi eme",
+    "packages": "Ngwugwu",
+    "wedding_pages": "Peeji Alụmdi na Nwunye",
+    "contact": "Kpọtụrụ"
+  },
+  "footer": {
+    "copyright": "© {year} My Wedding Page. Ebe niile echekwara.",
+    "privacy": "Amụma Nzuzo",
+    "platform": "Ikpo okwu",
+    "support": "Nkwado"
+  },
+  "locale": {
+    "select_language": "Họrọ asụsụ"
+  },
+  "auth": {
+    "login": "Banye",
+    "logout": "Pụọ",
+    "register": "Debanye aha",
+    "profile": "Nkọwa Onwe",
+    "dashboard": "Dashbọọdụ",
+    "login_page": {
+      "welcome": "Nnọọ Ndewo",
+      "subtitle": "Banye na dashibọọdụ agbamakwụkwọ gị"
+    },
+    "login_form": {
+      "labels": {
+        "email": "Email ma ọ bụ Nọmba WhatsApp",
+        "password": "Okwuntụghe"
+      },
+      "placeholders": {
+        "email": "Tinye email ma ọ bụ nọmba WhatsApp gị",
+        "password": "Tinye okwuntụghe gị"
+      },
+      "forgot_password": "Ị chefuru okwuntụghe?",
+      "sign_in_button": "Banye",
+      "signing_in": "Na-abanye...",
+      "dont_have_account": "Ị nweghị akaụntụ?",
+      "sign_up": "Debanye aha",
+      "two_factor_auth": "Nchọpụta Abụọ",
+      "enter_backup_code": "Tinye otu n'ime koodu ndabere gị",
+      "enter_email_code": "Tinye koodu 6-digit ezigara na email gị",
+      "enter_app_code": "Tinye koodu 6-digit si na app nchọpụta gị",
+      "verify_button": "Kwado",
+      "cancel_button": "Kagbuo",
+      "use_backup_code": "Jiri koodu ndabere",
+      "use_authenticator": "Jiri koodu nchọpụta",
+      "send_email_code": "Zipu Koodu Email",
+      "sending": "Na-ezipu...",
+      "enter_verification_code": "Biko tinye koodu nchọpụta gị",
+      "validation": {
+        "email_required": "Email ma ọ bụ nọmba WhatsApp dị mkpa",
+        "email_invalid": "Tinye email ma ọ bụ nọmba ekwentị ziri ezi",
+        "password_required": "Okwuntụghe dị mkpa"
+      }
+    },
+    "register_form": {
+      "title": "Gaa n'ihu imepụta Ibe Agbamakwụkwọ Gị",
+      "subtitle": "Malite njem agbamakwụkwọ gị taa",
+      "labels": {
+        "groom_name": "Aha Nwoke Lụrụ",
+        "bride_name": "Aha Nwanyị Lụrụ",
+        "email": "Adreesị Email",
+        "whatsapp": "Nọmba WhatsApp",
+        "wedding_date": "Ụbọchị Agbamakwụkwọ",
+        "image": "Tinye Foto maka Webụsaịtị Gị (Nhọrọ)",
+        "password": "Okwuntụghe",
+        "confirm_password": "Kwado Okwuntụghe"
+      },
+      "placeholders": {
+        "groom_name": "Tinye aha nwoke lụrụ",
+        "bride_name": "Tinye aha nwanyị lụrụ",
+        "email": "Tinye email gị",
+        "whatsapp": "Nọmba WhatsApp na koodu obodo dịka: +234",
+        "wedding_date": "Họrọ ụbọchị agbamakwụkwọ",
+        "password": "Mepụta okwuntụghe",
+        "confirm_password": "Kwado okwuntụghe gị"
+      },
+      "validation": {
+        "groom_name_required": "Aha nwoke lụrụ dị mkpa.",
+        "bride_name_required": "Aha nwanyị lụrụ dị mkpa.",
+        "email_required": "Email dị mkpa.",
+        "email_invalid": "Adreesị email na-adịghị mma.",
+        "whatsapp_required": "Nọmba WhatsApp dị mkpa.",
+        "wedding_date_required": "Ụbọchị agbamakwụkwọ dị mkpa.",
+        "password_required": "Okwuntụghe dị mkpa.",
+        "passwords_mismatch": "Okwuntụghe adabaghị."
+      },
+      "password_requirements": "Okwuntụghe ga-abụ opekata mpe mkpụrụedemede 8 nwere nnukwu mkpụrụedemede, obere mkpụrụedemede, ọnụọgụgụ na mkpụrụedemede pụrụ iche (@, $, !, %, *, ?, &, #, wdg)",
+      "continue_button": "Gaa n'ihu",
+      "already_have_account": "Ị nwere akaụntụ?",
+      "sign_in": "Banye",
+      "messages": {
+        "registration_successful": "Ndebanyeaha gara nke ọma! Lelee email gị.",
+        "registration_failed": "Ndebanyeaha dara ada. Biko nwaa ọzọ.",
+        "network_error": "Njehie netwọk. Lelee njikọ gị ma nwaa ọzọ."
+      }
+    }
+  },
+  "actions": {
+    "save": "Chekwaa",
+    "cancel": "Kagbuo",
+    "edit": "Dezie",
+    "delete": "Hichapụ",
+    "search": "Chọọ"
+  },
+  "messages": {
+    "welcome": "Nnọọ na {siteName}",
+    "not_found": "Ahụghị ya",
+    "error": "Enwere njehie"
+  },
+  "legal": {
+    "privacy": "Amụma Nzuzo",
+    "terms": "Usoro Ọrụ"
+  },
+  "pwa": {
+    "online": "Na ntanetị",
+    "offline": "Na-adịghị n'ịntanetị",
+    "installed": "Wụnye",
+    "not_installed": "Emebeghị nke a",
+    "running_as_app": "Na-agba dị ka ngwa",
+    "install_prompt": "Wụnye maka ahụmịhe ka mma",
+    "notifications_on": "Nkwupụta gbakwunyere",
+    "notifications_off": "Nkwupụta gbanyụọ",
+    "subscription_enabled": "Ncheta ndebanye aha arụnyere",
+    "enable_to_get_reminders": "Gbaa ka inweta ncheta",
+    "disable": "Gbanyụọ",
+    "enable": "Bido",
+    "connected_to_internet": "Ejikọrọ na ntanetị",
+    "some_features_limited": "Ụfọdụ atụmatụ nwere oke"
+  },
+  "templateEditor": {
+    "choose_color_scheme": "Họrọ ụkpụrụ agba",
+    "save_template": "Chekwaa Ntụziaka",
+    "saving": "Na-echekwa..."
+  },
+  "terms": {
+    "title": "Usoro na Ọnọdụ",
+    "effective_date": "Ụbọchị mmalite: {date}",
+    "welcome_paragraph": "Nnọọ na Myweddingpage (\"anyị\", \"nke anyị\", ma ọ bụ \"ụmụ anyị\"). Site n'ịnweta ma ọ bụ iji ọrụ anyị, ị kwenyere ịgbaso Usoro na Ọnọdụ ndị a. Biko gụọ ha nke ọma.",
+    "use_of_service": "1. Iji Ọrụ ahụ",
+    "use_of_service_body": "Ị kwenyere iji Myweddingpage naanị maka ebumnuche kwadoro n'okpuru iwu ma soro Usoro ndị a. Dobe ozi ziri ezi mgbe ị na-edebanye ma ọ bụ jiri ngwa.",
+    "payment_policy": "2. Usoro Ịkwụ Ụgwọ na Nkwụghachi",
+    "payment_policy_item1": "A ga-akwụ ụgwọ niile maka atụmatụ ma ọ bụ ọrụ n'oge a kụrụ ha.",
+    "payment_policy_item2_emph": "A gaghị ewere nkwụghachi ego mgbe awa 24 gachara site na oge zụrụ.",
+    "payment_policy_item3": "Ọ bụrụ na ị zutere nsogbu n'ime awa 24 mbụ, biko kpọtụrụ nkwado anyị maka enyemaka na ikpe ekpere maka nkwụghachi ego.",
+    "intellectual_property_title": "3. Ihe Onwunwe Aka",
+    "intellectual_property_body": "Ihe niile dị na saịtị, akara ahia, na ihe onwunwe nke uche metụtara Myweddingpage bụ nke anyị ma ọ bụ nke ndị nyere anyị ikike. E nweghị ikikere iji, detuo ma ọ bụ kesaa ọdịnaya ọ bụla n'enweghị ikike doro anya.",
+    "privacy_title": "4. Nzuzo",
+    "privacy_body": "Ojiji gị nke Myweddingpage na-achịkwa site na Atụmatụ Nzuzo anyị, nke na-akọwa otu anyị si achịkọta, jiri, na chekwaa data gị.",
+    "governing_law_title": "5. Iwu na Ikpe Mkpebi",
+    "governing_law_body": "Usoro ndị a ga-achịkwa ma gụọ na nkwụghachi ọchịchị iwu nke Federal Republic of Nigeria. A ga-edebe ikpe gbasara Usoro ndị a n'okpuru ikike ikpe nke Nigeria.",
+    "international_users_title": "6. Ndị Ọrụ Nọ n'èzí Naịjirịa",
+    "international_users_body": "Ọ bụrụ na ị na-enweta ma ọ bụ jiri Myweddingpage site n'èzí Nigeria, ị kwenyere ịgbaso iwu niile metụtara na mpaghara gị, gụnyere nchebe data na ọrụ ndị na-azọpụta ndị ahịa.",
+    "dispute_resolution_title": "7. Ngwọta Mkparịta ụka na Arbitre",
+    "dispute_resolution_intro": "Iji belata esemokwu ụlọ ikpe ma nye usoro kwekọrọ ekwe maka ngwọta mkparịta ụka:",
+    "dispute_resolution_item1": "Ọ bụrụ na esemokwu apụta, anyị na gị ga-agbalị izute iji dozie ya site n'akwado obiọma ma ọ bụ mediation.",
+    "dispute_resolution_item2": "Ọ bụrụ na mediation dara ma ọ bụ enweghị ike ime n'ime ụbọchị 30, esemokwu ahụ ga-ekpebi site na aribitration dị mkpọrọgwụ n'ịgbaso iwu otu aribitration a ma ama.",
+    "dispute_resolution_item3": "Ebe aribitration ga-adị bụ Lagos, Nigeria, ma ndị òtù nwere ike ịsonye site na anya n'enweghị nsogbu.",
+    "dispute_resolution_item4": "Nkwupụta aribitration ga-abụ ikpe ikpeazụ ma nwee ikike maka akụkụ abụọ.",
+    "dispute_resolution_item5": "Nke a apụtaghị na otu akụkụ enweghị ike ịchọ enyemaka ndị mberede n'ụlọikpe ma ọ bụrụ na ọ dị mkpa.",
+    "limitation_title": "8. Ibelata Ọrụ Anyị",
+    "limitation_body": "N'ókè iwu kwere ka o kwe, anyị agaghị enwe ọrụ maka mmebi ọ bụla na-eso ma ọ bụ ihe atụ dị iche iche site n'iji Myweddingpage.",
+    "changes_title": "9. Mgbanwe na Usoro",
+    "changes_body": "Anyị nwere ikike ịgbanwe ma ọ bụ melite Usoro ndị a n'oge ọ bụla. A ga-ebipụta Usoro emelitere na ngwa ma ọ bụ saịtị, na ọrụ gị gara n'ihu pụtara nkwenye gị.",
+    "contact_title": "10. Kpọtụrụ Anyị",
+    "contact_paragraph": "Maka ajụjụ ma ọ bụ nkwado gbasara Usoro ndị a, biko kpọtụrụ anyị na:",
+    "contact_email_label": "Email",
+    "contact_email_value": "info@myweddingpage.online",
+    "contact_address_label": "Adreesị",
+    "contact_address_value": "147 NTA Road Mgbuoba, Port Harcourt, Rivers State, Nigeria."
+  },
+  "videos": {
+    "title": "Nkuzi Vidiyo",
+    "getting_started": "Ịmalite",
+    "advanced_tips": "Ndụmọdụ Dị Elu"
+  },
+  "stats": {
+    "couples_served": "Ndị Alụmdi na Nwunye Enyerela Aka",
+    "weddings_planned": "Agbamakwụkwọ Ezubere",
+    "love_stories": "Akụkọ Ihụnanya Ekwuru",
+    "gifts_delivered": "Onyinye Enyefere"
+  },
+
+  "cookies": {
+    "label": "Nkọwa kuki"
+  },
+  "preview": {
+    "no_longer_live": "A pịa ibe alụmdi na nwunye a adịbeghị ndụ ọzọ"
+  },
+
+  "home": {
+    "hero": {
+      "title_line1": "Gaa nke ọma",
+      "title_line2": "Njem Alụmdi na Nwunye gị",
+      "subtitle": "Mepụta ahụmịhe alụmdi na nwunye mara mma na ikpo okwu anyị. Ụdị mara mma na arụmọrụ siri ike maka ụbọchị kacha mkpa nke ndụ gị.",
+      "cta_start": "Malite njem gị",
+      "cta_view_pages": "Lee Peeji Alụmdi na Nwunye"
+    },
+    "features": {
+      "title": "Ihe Niile I Chọrọ",
+      "subtitle": "Ngwa ọrụ dị ike emere maka di na nwunye ọgbara ọhụrụ chọrọ ịma mma na ịdị mfe.",
+      "gallery_title": "Gallery Amamihe",
+      "gallery_description": "Nhazi foto AI na nchekwa na-enweghị njedebe na nkekọrịta ozugbo",
+      "gift_title": "Njikwa Onyinye",
+      "gift_description": "Nsochi onyinye dị mfe na akwụkwọ ekele na-akpaghị aka na nyocha",
+      "engagement_title": "Ntinye Ndị Ọbịa",
+      "engagement_description": "Akwụkwọ ndị ọbịa na-emekọrịta ihe na nlekọta oge na nyocha mmetụta",
+      "dashboard_title": "Dashboard Di na Nwunye",
+      "dashboard_description": "Ebe njikwa nghọta na ngwa ọrụ na ngwa ọrụ imekọrịta ihe"
+    },
+    "packages": {
+      "title": "Họrọ Package Gị",
+      "description": "Ọnụ ahịa ngbanwe emebere ka o tolite na mkpa gị, site na emume ndị dị nso ruo nnukwu emume.",
+      "most_popular": "Kacha Ewu Ewu",
+      "get_started": "Malite",
+      "loading": "Na-ebu atụmatụ..."
+    },
+    "find_wedding": {
+      "title": "Chọta Agbamakwụkwọ",
+      "description": "Chọọ emume agbamakwụkwọ ma kesaa ọṅụ ndị di na nwunye gburugburu ụwa.",
+      "no_weddings": "Ahụbeghị ibe agbamakwụkwọ ọ bụla. Bụrụ onye mbụ mepụta otu!",
+      "view_all": "Lee Agbamakwụkwọ Niile"
+    },
+    "testimonials": {
+      "title": "Ndị Di na Nwunye Hụrụ n'anya",
+      "description": "Sonye na ọtụtụ puku ndị di na nwunye ndị mepụtara ahụmịhe agbamakwụkwọ ha zuru oke.",
+      "testimonials": [
+        {
+          "name": "Sarah & Michael",
+          "text": "Ikpo okwu ahụ karịrị ihe anyị na-atụ anya ya. Nhazi ahụ mara mma na ndị ọbịa anyị hụrụ njikọ ahụ n'anya. Ijikwa ihe niile adịghị esiri ike.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Emily & David",
+          "text": "Ọmarịcha elekọta nkọwa na ahụmịhe onye ọrụ. Dashboard mere ka atụmatụ ahụ dị mfe karịa, na nsonaazụ ikpeazụ mara mma nke ukwuu.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Jessica & Ryan",
+          "text": "Ọgbara ọhụrụ, mara mma na ọrụ. Ndị ezinụlọ anyị nwere ike ịgagharị ihe niile n'ụzọ dị mfe, anyị nwetakwara ọtụtụ otuto n'ebe ibe agbamakwụkwọ anyị nọ.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024866/pexels-photo-1024866.jpeg?auto=compress&cs=tinysrgb&w=150"
+        }
+      ]
+    },
+    "wedding_card": {
+      "live": "NDU",
+      "not_live": "ANAGHỊ NDU"
+    }
+  },
+
+  "package": {
+    "modal": {
+      "title_format": "Ngwugwu {name}",
+      "email_label": "Adreesị Email",
+      "email_placeholder": "Tinye email gị",
+      "whatsapp_label": "Nọmba WhatsApp",
+      "whatsapp_placeholder": "Nọmba WhatsApp nwere koodu mba dịka +234",
+      "show_terms": "Gosi Okwu na Okwu ▼",
+      "hide_terms": "Zoo Okwu na Okwu ▲",
+      "agree_terms": "Anabatara m Okwu na Okwu",
+      "pay_now": "Kwụọ Ugbu a",
+      "processing": "Na nhazi...",
+      "errors": {
+        "fill_contact": "Biko jupụta Email na nọmba WhatsApp abụọ.",
+        "agree_terms": "Ị ga-anabata Okwu na Okwu."
+      }
+    }
+  },
+  "contact_upgrade": {
+    "title": "Kpọtụrụ anyị maka nkwalite",
+    "description": "Họrọ nhọrọ n'okpuru iji kpọtụrụ ndị otu ahịa anyị ma kwalite atụmatụ gị.",
+    "whatsapp": "WhatsApp",
+    "call": "Kpọọ",
+    "close": "Mechie"
+  },
+  "no_weddings": {
+    "title": "Enweghị ibe agbamakwụkwọ ka",
+    "description": "Mepụta ibe agbamakwụkwọ mbụ gị iji malite.",
+    "create_button": "Mepụta ibe agbamakwụkwọ"
+  },
+  "how_to": {
+    "hero": {
+      "title": "Otú Esi Eji Myweddingpage.Online",
+      "description": "Soro usoro ndị a dị mfe iji malite ma nweta ihe kacha mma na myweddingpage.",
+      "watch_overview": "Lee Nchịkọta"
+    },
+    "steps": {
+      "title": "Ịmalite",
+      "description": "Soro usoro ndị a dị mfe iji mepụta ibe agbamakwụkwọ gị zuru oke",
+      "step1": {
+        "title": "Họrọ Template Gị",
+        "description": "Chọgharịa template ndị mara mma anyị wee họrọ nke dabara na ụdị gị"
+      },
+      "step2": {
+        "title": "Hazie Ọdịnaya Gị",
+        "description": "Tinye foto gị, akụkọ gị, na nkọwa agbamakwụkwọ gị iji mee ka ọ bụrụ naanị nke gị"
+      },
+      "step3": {
+        "title": "Kekọrịta na Ndị Ọbịa",
+        "description": "Zigara ndị ezinụlọ na ndị enyi gị link ibe agbamakwụkwọ gị maka RSVP na mmelite"
+      }
+    },
+    "faq": {
+      "title": "Ajụjụ Ndị A Na-ajụkarị",
+      "subtitle": "Ihe niile ị chọrọ ịmata banyere ịmepụta ibe agbamakwụkwọ gị",
+      "questions": [
+        {
+          "question": "Ọ bụ n'efu ka a na-eji ikpo okwu ahụ?",
+          "answer": "Ee! Anyị na-enye atụmatụ efu nwere ọtụtụ atụmatụ iji malite."
+        },
+        {
+          "question": "Enwere m ike ịkwalite akaụntụ m emesia?",
+          "answer": "N'ezie! Ị nwere ike ịkwalite mgbe ọ bụla iji mepee atụmatụ ndị ọzọ."
+        },
+        {
+          "question": "Data m ọ dị nchebe?",
+          "answer": "Anyị na-ewere nchekwa nchekwa n'ụzọ dị egwu, na-eji encoding na sava ndị dị nchebe."
+        }
+      ]
+    }
+  },
+
+  "contact": {
+    "form": {
+      "title": "Zigara Anyị Ozi",
+      "name_label": "Aha Gị",
+      "name_placeholder": "Tinye aha gị",
+      "email_label": "Adreesị Email",
+      "email_placeholder": "Tinye email gị",
+      "subject_label": "Isiokwu",
+      "message_label": "Ozi",
+      "message_placeholder": "Gwa anyị otú anyị ga-esi nyere gị aka...",
+      "send_button": "Ziga Ozi",
+      "sending": "Na-eziga Ozi...",
+      "success_message": "✅ Ozi zigara nke ọma!",
+      "error_message": "❌ Enweghị ike iziga ozi",
+      "error_generic": "⚠️ Ihe ụfọdụ gara nke ọma"
+    }
+  }
+}

@@ -44,7 +44,9 @@ const Values = () => {
   return (
     <AnimatedSection className="mb-20">
       <div className="text-center mb-16">
-        <h2 className={`text-4xl font-light mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+        <h2
+          className={`text-4xl font-light mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+        >
           Our Values
         </h2>
         <p
@@ -71,7 +73,9 @@ const Values = () => {
             } p-8 hover:shadow-2xl transition-all duration-300`}
           >
             <div className="flex items-center gap-6">
-              <div className={`p-4 bg-gradient-to-r ${value.color} rounded-2xl flex-shrink-0`}>
+              <div
+                className={`p-4 bg-gradient-to-r ${value.color} rounded-2xl flex-shrink-0`}
+              >
                 <value.icon className="h-8 w-8 text-white" />
               </div>
               <div>

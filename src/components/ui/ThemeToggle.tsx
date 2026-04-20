@@ -25,7 +25,11 @@ const ThemeToggle: React.FC = () => {
         animate={{ rotate: isDarkMode ? 180 : 0 }}
         transition={{ duration: 0.3 }}
       >
-        {isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+        {isDarkMode ? (
+          <Moon className="h-5 w-5" />
+        ) : (
+          <Sun className="h-5 w-5" />
+        )}
       </motion.div>
     </motion.button>
   );

@@ -82,13 +82,19 @@ export async function GET() {
     const selectedTemplate = user.userTemplates[0];
 
     if (!selectedTemplate) {
-      return NextResponse.json({ error: "No template selected" }, { status: 404 });
+      return NextResponse.json(
+        { error: "No template selected" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(selectedTemplate);
   } catch (error) {
     console.error("Failed to fetch user template:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -175,6 +181,9 @@ export async function POST(req: Request) {
     return NextResponse.json(userTemplate);
   } catch (error) {
     console.error("Failed to select template:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

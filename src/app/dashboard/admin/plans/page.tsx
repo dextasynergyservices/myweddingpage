@@ -6,7 +6,12 @@ import { useTheme } from "@/contexts/ThemeContext";
 import Link from "next/link";
 import toast from "react-hot-toast";
 // Plan type for basic plan fields used in this view
-type Plan = { id: string; name?: string; price?: number | string; [key: string]: unknown };
+type Plan = {
+  id: string;
+  name?: string;
+  price?: number | string;
+  [key: string]: unknown;
+};
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 
 export default function PlansPage() {
@@ -41,10 +46,14 @@ export default function PlansPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+        <h1
+          className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+        >
           Plans
         </h1>
-        <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+        <p
+          className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+        >
           Manage subscription plans
         </p>
       </div>
@@ -53,7 +62,10 @@ export default function PlansPage() {
         <Link href="/dashboard/admin/plans/new" className="btn-primary">
           Create plan
         </Link>
-        <Link href="/dashboard/admin/plans/audit" className="ml-2 btn-secondary">
+        <Link
+          href="/dashboard/admin/plans/audit"
+          className="ml-2 btn-secondary"
+        >
           Audit
         </Link>
       </div>
@@ -71,7 +83,13 @@ export default function PlansPage() {
   );
 }
 
-function PlanListItem({ plan, onDeleted }: { plan: Plan; onDeleted?: () => void }) {
+function PlanListItem({
+  plan,
+  onDeleted,
+}: {
+  plan: Plan;
+  onDeleted?: () => void;
+}) {
   const [deleting, setDeleting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -105,10 +123,17 @@ function PlanListItem({ plan, onDeleted }: { plan: Plan; onDeleted?: () => void 
         <p className="text-sm text-gray-500">Price: {String(plan.price)}</p>
       </div>
       <div className="flex gap-2">
-        <Link href={`/dashboard/admin/plans/${plan.id}`} className="btn-secondary">
+        <Link
+          href={`/dashboard/admin/plans/${plan.id}`}
+          className="btn-secondary"
+        >
           Edit
         </Link>
-        <button onClick={() => setIsOpen(true)} disabled={deleting} className="btn-danger">
+        <button
+          onClick={() => setIsOpen(true)}
+          disabled={deleting}
+          className="btn-danger"
+        >
           {deleting ? "Deleting..." : "Delete"}
         </button>
       </div>

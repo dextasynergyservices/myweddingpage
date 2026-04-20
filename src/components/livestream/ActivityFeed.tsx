@@ -23,7 +23,9 @@ export default function ActivityFeed({ streamId }: ActivityFeedProps) {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(`/api/activity-feed?streamId=${streamId}&limit=20`);
+        const response = await fetch(
+          `/api/activity-feed?streamId=${streamId}&limit=20`
+        );
         if (response.ok) {
           const data = await response.json();
           setEvents(data.events || []);
@@ -70,13 +72,17 @@ export default function ActivityFeed({ streamId }: ActivityFeedProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col">
-      <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">📊 Live Activity</h3>
+      <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+        📊 Live Activity
+      </h3>
 
       <div className="flex-1 overflow-y-auto space-y-2">
         {loading ? (
           <p className="text-center text-gray-500 py-8">Loading...</p>
         ) : events.length === 0 ? (
-          <p className="text-center text-gray-500 py-8">No activity yet. Be the first! 👋</p>
+          <p className="text-center text-gray-500 py-8">
+            No activity yet. Be the first! 👋
+          </p>
         ) : (
           events.map((event, index) => (
             <motion.div
@@ -88,8 +94,12 @@ export default function ActivityFeed({ streamId }: ActivityFeedProps) {
             >
               <div className="text-2xl">{event.icon}</div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-700 dark:text-gray-200">{event.message}</p>
-                <p className="text-xs text-gray-500 mt-1">{getTimeAgo(event.timestamp)}</p>
+                <p className="text-sm text-gray-700 dark:text-gray-200">
+                  {event.message}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {getTimeAgo(event.timestamp)}
+                </p>
               </div>
             </motion.div>
           ))

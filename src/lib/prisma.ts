@@ -17,7 +17,9 @@
 // lib/prisma.ts
 import { PrismaClient } from "@/generated/prisma";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
 // Ensure Prisma uses DATABASE_URL at runtime
 export const prisma =

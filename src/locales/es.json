@@ -1,0 +1,350 @@
+{
+  "site": {
+    "title": "Mi página de bodas",
+    "tagline": "Celebra con nosotros"
+  },
+  "nav": {
+    "home": "Inicio",
+    "how_to": "Cómo",
+    "packages": "Paquetes",
+    "wedding_pages": "Páginas de boda",
+    "contact": "Contacto"
+  },
+  "footer": {
+    "copyright": "© {year} Mi página de bodas. Todos los derechos reservados.",
+    "privacy": "Política de privacidad",
+    "platform": "Plataforma",
+    "support": "Soporte"
+  },
+  "locale": {
+    "select_language": "Seleccionar idioma"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "register": "Registrarse",
+    "profile": "Perfil",
+    "dashboard": "Panel",
+    "login_page": {
+      "welcome": "Bienvenido de Vuelta",
+      "subtitle": "Inicia sesión en tu panel de boda"
+    },
+    "login_form": {
+      "labels": {
+        "email": "Email o Número de WhatsApp",
+        "password": "Contraseña"
+      },
+      "placeholders": {
+        "email": "Ingresa tu email o número de WhatsApp",
+        "password": "Ingresa tu contraseña"
+      },
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "sign_in_button": "Iniciar Sesión",
+      "signing_in": "Iniciando Sesión...",
+      "dont_have_account": "¿No tienes una cuenta?",
+      "sign_up": "Registrarse",
+      "two_factor_auth": "Autenticación de Dos Factores",
+      "enter_backup_code": "Ingresa uno de tus códigos de respaldo",
+      "enter_email_code": "Ingresa el código de 6 dígitos enviado a tu email",
+      "enter_app_code": "Ingresa el código de 6 dígitos de tu app autenticadora",
+      "verify_button": "Verificar",
+      "cancel_button": "Cancelar",
+      "use_backup_code": "Usar código de respaldo",
+      "use_authenticator": "Usar código de autenticación",
+      "send_email_code": "Enviar Código por Email",
+      "sending": "Enviando...",
+      "enter_verification_code": "Por favor ingresa tu código de verificación",
+      "validation": {
+        "email_required": "Email o número de WhatsApp requerido",
+        "email_invalid": "Ingresa un email o número de teléfono válido",
+        "password_required": "Contraseña requerida"
+      }
+    },
+    "register_form": {
+      "title": "Continúa para crear tu Página de Boda",
+      "subtitle": "Comienza tu viaje de boda hoy",
+      "labels": {
+        "groom_name": "Nombre del Novio",
+        "bride_name": "Nombre de la Novia",
+        "email": "Dirección de Email",
+        "whatsapp": "Número de WhatsApp",
+        "wedding_date": "Fecha de Boda",
+        "image": "Añade una Imagen para tu Sitio Web (Opcional)",
+        "password": "Contraseña",
+        "confirm_password": "Confirmar Contraseña"
+      },
+      "placeholders": {
+        "groom_name": "Ingresa el nombre del novio",
+        "bride_name": "Ingresa el nombre de la novia",
+        "email": "Ingresa tu email",
+        "whatsapp": "Número de WhatsApp con código de país ej: +234",
+        "wedding_date": "Selecciona fecha de boda",
+        "password": "Crea una contraseña",
+        "confirm_password": "Confirma tu contraseña"
+      },
+      "validation": {
+        "groom_name_required": "El nombre del novio es requerido.",
+        "bride_name_required": "El nombre de la novia es requerido.",
+        "email_required": "El email es requerido.",
+        "email_invalid": "Dirección de email inválida.",
+        "whatsapp_required": "El número de WhatsApp es requerido.",
+        "wedding_date_required": "La fecha de boda es requerida.",
+        "password_required": "La contraseña es requerida.",
+        "passwords_mismatch": "Las contraseñas no coinciden."
+      },
+      "password_requirements": "La contraseña debe tener al menos 8 caracteres con mayúscula, minúscula, número y carácter especial (@, $, !, %, *, ?, &, #, etc.)",
+      "continue_button": "Continuar",
+      "already_have_account": "¿Ya tienes una cuenta?",
+      "sign_in": "Iniciar sesión",
+      "messages": {
+        "registration_successful": "¡Registro exitoso! Revisa tu email.",
+        "registration_failed": "El registro falló. Por favor inténtalo de nuevo.",
+        "network_error": "Error de red. Verifica tu conexión e inténtalo de nuevo."
+      }
+    }
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "search": "Buscar"
+  },
+  "messages": {
+    "welcome": "Bienvenido a {siteName}",
+    "not_found": "No encontrado",
+    "error": "Ocurrió un error"
+  },
+  "legal": {
+    "privacy": "Política de privacidad",
+    "terms": "Términos del servicio"
+  },
+  "pwa": {
+    "online": "En línea",
+    "offline": "Sin conexión",
+    "installed": "Instalado",
+    "not_installed": "No instalado",
+    "running_as_app": "Ejecutándose como aplicación",
+    "install_prompt": "Instalar para una mejor experiencia",
+    "notifications_on": "Notificaciones activadas",
+    "notifications_off": "Notificaciones desactivadas",
+    "subscription_enabled": "Recordatorios de suscripción habilitados",
+    "enable_to_get_reminders": "Habilite para recibir recordatorios",
+    "disable": "Desactivar",
+    "enable": "Activar",
+    "connected_to_internet": "Conectado a internet",
+    "some_features_limited": "Algunas funciones limitadas"
+  },
+  "templateEditor": {
+    "choose_color_scheme": "Elegir esquema de color",
+    "save_template": "Guardar plantilla",
+    "saving": "Guardando..."
+  },
+  "terms": {
+    "title": "Términos y Condiciones",
+    "effective_date": "Fecha de vigencia: {date}",
+    "welcome_paragraph": "Bienvenido a Mi página de bodas (\"nosotros\", \"nuestro\", o \"nos\"). Al acceder o usar nuestros servicios, usted acepta estar sujeto a estos Términos y Condiciones (\"Términos\"). Por favor léalos cuidadosamente.",
+    "use_of_service": "1. Uso del servicio",
+    "use_of_service_body": "Usted acepta usar Mi página de bodas solo para fines legales y de acuerdo con estos Términos. Debe proporcionar información precisa y veraz al registrarse o usar la aplicación.",
+    "payment_policy": "2. Política de pago y reembolso",
+    "payment_policy_item1": "Todos los pagos por planes de suscripción o servicios se deben pagar por adelantado.",
+    "payment_policy_item2_emph": "No se emitirán reembolsos después de 24 horas desde el momento de la compra.",
+    "payment_policy_item3": "Si encuentra problemas dentro de las primeras 24 horas, comuníquese con nuestro soporte para asistencia y posible consideración de reembolso.",
+    "intellectual_property_title": "3. Propiedad Intelectual",
+    "intellectual_property_body": "Todo el contenido, marcas e propiedad intelectual relacionados con Mi página de bodas son de nuestra propiedad o de nuestros licenciantes. No puede usar, reproducir o distribuir ningún contenido sin permiso expreso.",
+    "privacy_title": "4. Privacidad",
+    "privacy_body": "Su uso de Mi página de bodas también está regido por nuestra Política de Privacidad, que explica cómo recopilamos, usamos y protegemos sus datos.",
+    "governing_law_title": "5. Ley aplicable y jurisdicción",
+    "governing_law_body": "Estos Términos se regirán e interpretarán de acuerdo con las leyes de la República Federal de Nigeria. Cualquier disputa que surja de estos Términos será resuelta exclusivamente por los tribunales de Nigeria.",
+    "international_users_title": "6. Usuarios internacionales y cumplimiento",
+    "international_users_body": "Si accede o utiliza Mi página de bodas desde fuera de Nigeria, usted acepta cumplir con todas las leyes aplicables en su jurisdicción, incluidas la protección de datos y la protección al consumidor.",
+    "dispute_resolution_title": "7. Resolución de disputas y arbitraje",
+    "dispute_resolution_intro": "Para reducir litigios y proporcionar un proceso flexible y justo para resolver disputas:",
+    "dispute_resolution_item1": "Si surge una disputa, usted y nosotros acordamos intentar primero resolverla de buena fe mediante negociaciones o mediación.",
+    "dispute_resolution_item2": "Si la mediación falla o no es factible dentro de los 30 días, la disputa se resolverá por arbitraje vinculante según las reglas de una organización de arbitraje reputada.",
+    "dispute_resolution_item3": "El lugar del arbitraje será Lagos, Nigeria, pero las partes pueden participar de forma remota.",
+    "dispute_resolution_item4": "Las decisiones arbitrales serán finales y vinculantes para ambas partes.",
+    "dispute_resolution_item5": "Esta cláusula no impide que cualquiera de las partes solicite medidas provisionales o cautelares ante cualquier tribunal si es necesario.",
+    "limitation_title": "8. Limitación de responsabilidad",
+    "limitation_body": "En la máxima medida permitida por la ley, no seremos responsables por daños indirectos, incidentales, especiales o consecuentes derivados de su uso de Mi página de bodas.",
+    "changes_title": "9. Cambios en los Términos",
+    "changes_body": "Nos reservamos el derecho de actualizar o modificar estos Términos en cualquier momento. Los Términos actualizados se publicarán en la aplicación o el sitio web y su uso continuado constituye aceptación.",
+    "contact_title": "10. Contáctenos",
+    "contact_paragraph": "Para preguntas o soporte sobre estos Términos, contáctenos en:",
+    "contact_email_label": "Email",
+    "contact_email_value": "info@myweddingpage.online",
+    "contact_address_label": "Dirección",
+    "contact_address_value": "147 NTA Road Mgbuoba, Port Harcourt, Rivers State, Nigeria."
+  },
+  "videos": {
+    "title": "Tutoriales en Video",
+    "getting_started": "Primeros Pasos",
+    "advanced_tips": "Consejos Avanzados"
+  },
+  "stats": {
+    "couples_served": "Parejas Atendidas",
+    "weddings_planned": "Bodas Planificadas",
+    "love_stories": "Historias de Amor Contadas",
+    "gifts_delivered": "Regalos Entregados"
+  },
+
+  "cookies": {
+    "label": "Cookies"
+  },
+  "preview": {
+    "no_longer_live": "Esta página de bodas ya no está activa"
+  },
+
+  "home": {
+    "hero": {
+      "title_line1": "Tu perfecto",
+      "title_line2": "viaje de boda",
+      "subtitle": "Cree experiencias de boda impresionantes con nuestra plataforma moderna. Diseño elegante y funcionalidad potente para el día más importante de su vida.",
+      "cta_start": "Comienza tu viaje",
+      "cta_view_pages": "Ver páginas de boda"
+    },
+    "features": {
+      "title": "Todo Lo Que Necesitas",
+      "subtitle": "Herramientas poderosas diseñadas para parejas modernas que quieren elegancia y simplicidad.",
+      "gallery_title": "Galerías Inteligentes",
+      "gallery_description": "Organización de fotos impulsada por IA con almacenamiento ilimitado y compartir instantáneo",
+      "gift_title": "Gestión de Regalos",
+      "gift_description": "Seguimiento de regalos fluido con notas de agradecimiento automatizadas y análisis",
+      "engagement_title": "Compromiso de Invitados",
+      "engagement_description": "Libro de visitas interactivo con moderación en tiempo real y análisis de sentimientos",
+      "dashboard_title": "Panel de Pareja",
+      "dashboard_description": "Centro de control intuitivo con perspectivas y herramientas de colaboración"
+    },
+    "packages": {
+      "title": "Elige tu paquete",
+      "description": "Precios flexibles diseñados para crecer con sus necesidades, desde ceremonias íntimas hasta grandes celebraciones.",
+      "most_popular": "Más popular",
+      "get_started": "Comenzar",
+      "loading": "Cargando planes..."
+    },
+    "find_wedding": {
+      "title": "Encontrar una Boda",
+      "description": "Busca celebraciones de boda y comparte la alegría de parejas de todo el mundo.",
+      "no_weddings": "No se encontraron páginas de boda aún. ¡Sé el primero en crear una!",
+      "view_all": "Ver Todas las Bodas"
+    },
+    "testimonials": {
+      "title": "Amado por Parejas",
+      "description": "Únete a miles de parejas que han creado su experiencia de boda perfecta.",
+      "testimonials": [
+        {
+          "name": "Sarah & Michael",
+          "text": "La plataforma superó nuestras expectativas. El diseño es impresionante y a nuestros invitados les encantaron las características interactivas. Gestionar todo fue sin esfuerzo.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Emily & David",
+          "text": "Increíble atención al detalle y experiencia de usuario. El panel de control hizo que la planificación fuera mucho más fácil, y el resultado final fue absolutamente hermoso.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Jessica & Ryan",
+          "text": "Moderno, elegante y funcional. Nuestras familias pudieron navegar todo fácilmente, y recibimos tantos cumplidos sobre nuestra página de boda.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024866/pexels-photo-1024866.jpeg?auto=compress&cs=tinysrgb&w=150"
+        }
+      ]
+    },
+    "wedding_card": {
+      "live": "EN VIVO",
+      "not_live": "NO EN VIVO"
+    }
+  },
+
+  "package": {
+    "modal": {
+      "title_format": "Paquete {name}",
+      "email_label": "Correo electrónico",
+      "email_placeholder": "Introduce tu correo electrónico",
+      "whatsapp_label": "Número de WhatsApp",
+      "whatsapp_placeholder": "Número de WhatsApp con código de país, ej: +234",
+      "show_terms": "Mostrar términos y condiciones ▼",
+      "hide_terms": "Ocultar términos y condiciones ▲",
+      "agree_terms": "Acepto los Términos y Condiciones",
+      "pay_now": "Pagar ahora",
+      "processing": "Procesando...",
+      "errors": {
+        "fill_contact": "Por favor rellena tanto Email como número de WhatsApp.",
+        "agree_terms": "Debes aceptar los Términos y Condiciones."
+      }
+    }
+  },
+  "contact_upgrade": {
+    "title": "Contáctanos para actualizar",
+    "description": "Elige una opción abajo para contactar a nuestro equipo de ventas y actualizar tu plan.",
+    "whatsapp": "WhatsApp",
+    "call": "Llamar",
+    "close": "Cerrar"
+  },
+  "no_weddings": {
+    "title": "Aún no hay páginas de boda",
+    "description": "Crea tu primera página de boda para comenzar.",
+    "create_button": "Crear página de boda"
+  },
+  "how_to": {
+    "hero": {
+      "title": "Cómo Usar Myweddingpage.Online",
+      "description": "Sigue estos pasos simples para comenzar y aprovechar al máximo myweddingpage.",
+      "watch_overview": "Ver Resumen"
+    },
+    "steps": {
+      "title": "Comenzar",
+      "description": "Sigue estos pasos simples para crear tu página de boda perfecta",
+      "step1": {
+        "title": "Elige Tu Plantilla",
+        "description": "Explora nuestras hermosas plantillas y selecciona la que coincida con tu estilo"
+      },
+      "step2": {
+        "title": "Personaliza Tu Contenido",
+        "description": "Agrega tus fotos, historia y detalles de la boda para hacerla únicamente tuya"
+      },
+      "step3": {
+        "title": "Comparte con Invitados",
+        "description": "Envía el enlace de tu página de boda a familiares y amigos para RSVPs y actualizaciones"
+      }
+    },
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "subtitle": "Todo lo que necesitas saber sobre crear tu página de boda",
+      "questions": [
+        {
+          "question": "¿Es gratis usar la plataforma?",
+          "answer": "¡Sí! Ofrecemos un plan gratuito con muchas funciones para comenzar."
+        },
+        {
+          "question": "¿Puedo actualizar mi cuenta más tarde?",
+          "answer": "¡Absolutamente! Puedes actualizar en cualquier momento para desbloquear más funciones."
+        },
+        {
+          "question": "¿Son seguros mis datos?",
+          "answer": "Tomamos la seguridad en serio, usando encriptación y servidores seguros."
+        }
+      ]
+    }
+  },
+
+  "contact": {
+    "form": {
+      "title": "Envíanos un Mensaje",
+      "name_label": "Tu Nombre",
+      "name_placeholder": "Ingresa tu nombre",
+      "email_label": "Dirección de Email",
+      "email_placeholder": "Ingresa tu email",
+      "subject_label": "Asunto",
+      "message_label": "Mensaje",
+      "message_placeholder": "Cuéntanos cómo podemos ayudarte...",
+      "send_button": "Enviar Mensaje",
+      "sending": "Enviando Mensaje...",
+      "success_message": "✅ ¡Mensaje enviado exitosamente!",
+      "error_message": "❌ Falló al enviar mensaje",
+      "error_generic": "⚠️ Algo salió mal"
+    }
+  }
+}

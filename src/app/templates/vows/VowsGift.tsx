@@ -154,7 +154,9 @@ const GiftRegistry = (props: GiftRegistryProps) => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl text-black mb-6">{title}</h2>
+          <h2 className="font-heading text-5xl md:text-6xl lg:text-7xl text-black mb-6">
+            {title}
+          </h2>
           <div className="w-24 h-px bg-accent mx-auto mb-8" />
           <p className="font-body text-lg md:text-xl text-black/80 max-w-3xl mx-auto leading-relaxed">
             {description}
@@ -166,7 +168,9 @@ const GiftRegistry = (props: GiftRegistryProps) => {
             <div
               key={item.id}
               className={`transition-all duration-1000 ${
-                isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-8"
               }`}
               style={{ transitionDelay: `${400 + index * 100}ms` }}
             >
@@ -189,7 +193,9 @@ const GiftRegistry = (props: GiftRegistryProps) => {
                     </div>
                   </div>
 
-                  <h3 className="font-heading text-xl text-black/80 mb-2">{item.item}</h3>
+                  <h3 className="font-heading text-xl text-black/80 mb-2">
+                    {item.item}
+                  </h3>
 
                   <p className="font-body text-muted-foreground mb-6 leading-relaxed">
                     {item.description}
@@ -214,10 +220,13 @@ const GiftRegistry = (props: GiftRegistryProps) => {
 
         <div className="text-center bg-black/80 rounded-lg shadow-soft w-5/6 mx-auto py-8">
           <div className="elegant-card p-8 md:p-12 max-w-2xl mx-auto">
-            <h3 className="font-heading text-2xl md:text-3xl text-white/70 mb-4">Cash Gifts</h3>
+            <h3 className="font-heading text-2xl md:text-3xl text-white/70 mb-4">
+              Cash Gifts
+            </h3>
             <p className="font-body text-white/70 mb-6 leading-relaxed">
-              If you prefer to give a cash gift, we&apos;ve set up a secure online fund to help us
-              with our honeymoon and future home expenses.
+              If you prefer to give a cash gift, we&apos;ve set up a secure
+              online fund to help us with our honeymoon and future home
+              expenses.
             </p>
             <Button
               onClick={() => setCashGiftOpen(true)}

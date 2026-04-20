@@ -47,7 +47,9 @@ const HomeFindWedding = () => {
         }
       } catch (error) {
         console.error("Error fetching weddings:", error);
-        setError(error instanceof Error ? error.message : "Failed to load weddings");
+        setError(
+          error instanceof Error ? error.message : "Failed to load weddings"
+        );
         // Fallback to empty array
         setFeaturedWeddings([]);
       } finally {
@@ -86,7 +88,9 @@ const HomeFindWedding = () => {
                   : "bg-gradient-to-r from-[#ab862b] to-yellow-500"
               }`}
             >
-              <Sparkles className={`h-12 w-12 ${isDarkMode ? "text-white" : "text-white"}`} />
+              <Sparkles
+                className={`h-12 w-12 ${isDarkMode ? "text-white" : "text-white"}`}
+              />
             </div>
           </motion.div>
 
@@ -103,7 +107,8 @@ const HomeFindWedding = () => {
               isDarkMode ? "text-slate-300" : "text-slate-600"
             }`}
           >
-            Search for wedding celebrations and share in the joy of couples around the world.
+            Search for wedding celebrations and share in the joy of couples
+            around the world.
           </p>
         </AnimatedSection>
 
@@ -128,11 +133,17 @@ const HomeFindWedding = () => {
           </div>
         ) : error ? (
           <div className="text-center py-12">
-            <p className={`text-lg ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}>{error}</p>
+            <p
+              className={`text-lg ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}
+            >
+              {error}
+            </p>
           </div>
         ) : featuredWeddings.length === 0 ? (
           <div className="text-center py-12">
-            <p className={`text-lg ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}>
+            <p
+              className={`text-lg ${isDarkMode ? "text-slate-400" : "text-gray-600"}`}
+            >
               No wedding pages found yet. Be the first to create one!
             </p>
           </div>

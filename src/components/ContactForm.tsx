@@ -41,7 +41,9 @@ const ContactForm = () => {
   }
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -60,7 +62,10 @@ const ContactForm = () => {
         (
           window as Window & {
             grecaptcha?: {
-              execute: (siteKey: string, options: { action: string }) => Promise<string>;
+              execute: (
+                siteKey: string,
+                options: { action: string }
+              ) => Promise<string>;
             };
           }
         ).grecaptcha
@@ -69,12 +74,18 @@ const ContactForm = () => {
           recaptchaToken = await (
             window as unknown as {
               grecaptcha: {
-                execute: (siteKey: string, options: { action: string }) => Promise<string>;
+                execute: (
+                  siteKey: string,
+                  options: { action: string }
+                ) => Promise<string>;
               };
             }
-          ).grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_V3 || "", {
-            action: "contact_submit",
-          });
+          ).grecaptcha.execute(
+            process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_V3 || "",
+            {
+              action: "contact_submit",
+            }
+          );
         } catch (error) {
           console.error("reCAPTCHA error:", error);
         }
@@ -93,7 +104,13 @@ const ContactForm = () => {
 
       if (res.ok) {
         toast.success("✅ Message sent successfully!");
-        setFormData({ name: "", email: "", subject: "", message: "", website: "" });
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+          website: "",
+        });
       } else if (data.errors) {
         setErrors(data.errors);
       } else {
@@ -152,7 +169,9 @@ const ContactForm = () => {
                   } focus:ring-2 focus:outline-none`}
                   placeholder="Enter your name"
                 />
-                {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                )}
               </div>
               <div>
                 <label
@@ -175,7 +194,9 @@ const ContactForm = () => {
                   } focus:ring-2 focus:outline-none`}
                   placeholder="Enter your email"
                 />
-                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
             </div>
 
@@ -198,7 +219,9 @@ const ContactForm = () => {
                     : "bg-white/50 border-black text-slate-900 placeholder-slate-500 focus:border-black focus:bg-white focus:ring-black"
                 } focus:ring-2 focus:outline-none`}
               ></input>
-              {errors.subject && <p className="text-red-500 text-sm mt-1">{errors.subject}</p>}
+              {errors.subject && (
+                <p className="text-red-500 text-sm mt-1">{errors.subject}</p>
+              )}
             </div>
 
             <div>
@@ -222,7 +245,9 @@ const ContactForm = () => {
                 } focus:ring-2 focus:outline-none`}
                 placeholder="Tell us how we can help you..."
               />
-              {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
+              {errors.message && (
+                <p className="text-red-500 text-sm mt-1">{errors.message}</p>
+              )}
             </div>
 
             <div>

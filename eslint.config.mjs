@@ -12,7 +12,15 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   {
-    ignores: ["node_modules", ".next", "dist", "out", "public", "coverage", "src/generated/**"],
+    ignores: [
+      "node_modules",
+      ".next",
+      "dist",
+      "out",
+      "public",
+      "coverage",
+      "src/generated/**",
+    ],
   },
   ...compat.extends(
     "next/core-web-vitals",
@@ -20,6 +28,21 @@ const eslintConfig = [
     "eslint:recommended",
     "plugin:prettier/recommended"
   ),
+  {
+    rules: {
+      "prettier/prettier": [
+        "error",
+        {
+          semi: true,
+          singleQuote: false,
+          trailingComma: "es5",
+          tabWidth: 2,
+          printWidth: 80,
+          endOfLine: "lf",
+        },
+      ],
+    },
+  },
 ];
 
 export default eslintConfig;

@@ -24,7 +24,11 @@ type Preview = {
   componentsValidation?: { hasComponents: boolean; files: string[] };
 };
 
-export default function StagingPreviewClient({ stagingId }: { stagingId: string }) {
+export default function StagingPreviewClient({
+  stagingId,
+}: {
+  stagingId: string;
+}) {
   const [preview, setPreview] = useState<Preview | null>(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<"staging" | "full">("staging");
@@ -48,14 +52,19 @@ export default function StagingPreviewClient({ stagingId }: { stagingId: string 
   useEffect(() => {
     let mounted = true;
     setLoading(true);
-    fetch(`/api/admin/templates/stage?stagingId=${encodeURIComponent(stagingId)}`, {
-      credentials: "include",
-    })
+    fetch(
+      `/api/admin/templates/stage?stagingId=${encodeURIComponent(stagingId)}`,
+      {
+        credentials: "include",
+      }
+    )
       .then((r) => r.json())
       .then((data) => {
         if (!mounted) return;
         if (!data || data.error) {
-          toast.error(`Failed to load staging preview: ${data?.error || "unknown"}`);
+          toast.error(
+            `Failed to load staging preview: ${data?.error || "unknown"}`
+          );
           setLoading(false);
           return;
         }
@@ -77,7 +86,9 @@ export default function StagingPreviewClient({ stagingId }: { stagingId: string 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Preview: {preview.manifest?.name ?? stagingId}</h1>
+        <h1 className="text-2xl font-bold">
+          Preview: {preview.manifest?.name ?? stagingId}
+        </h1>
         <div className="flex gap-2">
           <button
             className={`btn btn-sm ${mode === "staging" ? "btn-active" : ""}`}
@@ -110,7 +121,9 @@ export default function StagingPreviewClient({ stagingId }: { stagingId: string 
       {mode === "staging" && (
         <div>
           <h2 className="text-lg font-semibold mb-2">Manifest</h2>
-          <pre className="p-4 bg-gray-100 rounded">{JSON.stringify(preview.manifest, null, 2)}</pre>
+          <pre className="p-4 bg-gray-100 rounded">
+            {JSON.stringify(preview.manifest, null, 2)}
+          </pre>
 
           {preview.assets?.length > 0 && (
             <div className="mt-4">
@@ -132,7 +145,10 @@ export default function StagingPreviewClient({ stagingId }: { stagingId: string 
           {preview.componentsValidation && (
             <div className="mt-4">
               <h3 className="font-medium">Components validation</h3>
-              <div>Has components: {preview.componentsValidation.hasComponents ? "Yes" : "No"}</div>
+              <div>
+                Has components:{" "}
+                {preview.componentsValidation.hasComponents ? "Yes" : "No"}
+              </div>
             </div>
           )}
         </div>
@@ -146,7 +162,10 @@ export default function StagingPreviewClient({ stagingId }: { stagingId: string 
               The full preview will open in a sandboxed iframe.
             </div>
             <div className="mt-3">
-              <button className="btn btn-primary btn-sm" onClick={() => setIframeOpen(true)}>
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => setIframeOpen(true)}
+              >
                 Open Full Preview
               </button>
             </div>
@@ -281,7 +300,11 @@ export default function StagingPreviewClient({ stagingId }: { stagingId: string 
                   }
                 } catch (err: unknown) {
                   console.error(err);
-                  toast.error((err as Error)?.message || String(err) || "Failed to create PR");
+                  toast.error(
+                    (err as Error)?.message ||
+                      String(err) ||
+                      "Failed to create PR"
+                  );
                 } finally {
                   setCreatingPR(false);
                   if (!prDryRun) setCreatePROpen(false);

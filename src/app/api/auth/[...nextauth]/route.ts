@@ -28,14 +28,19 @@ const authOptions: NextAuthOptions = {
         }
 
         // Get IP address from request
-        type ReqWithHeaders = { headers?: { get?: (key: string) => string | null } };
+        type ReqWithHeaders = {
+          headers?: { get?: (key: string) => string | null };
+        };
         const reqHeaders = (req as ReqWithHeaders)?.headers;
         const forwardedFor = reqHeaders?.get?.("x-forwarded-for");
         const realIp = reqHeaders?.get?.("x-real-ip");
         const ip: string = forwardedFor?.split(",")[0] || realIp || "unknown";
 
         // Check if account is locked
-        const lockoutStatus = await checkLockoutStatus(credentials.emailOrPhone, ip);
+        const lockoutStatus = await checkLockoutStatus(
+          credentials.emailOrPhone,
+          ip
+        );
         if (lockoutStatus.isLocked) {
           throw new Error(
             `Account locked. Try again in ${Math.ceil(lockoutStatus.remainingTime! / 60000)} minutes`
@@ -44,7 +49,10 @@ const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findFirst({
           where: {
-            OR: [{ email: credentials.emailOrPhone }, { whatsapp: credentials.emailOrPhone }],
+            OR: [
+              { email: credentials.emailOrPhone },
+              { whatsapp: credentials.emailOrPhone },
+            ],
           },
         });
 
@@ -74,7 +82,10 @@ const authOptions: NextAuthOptions = {
           throw new Error("User has no password set");
         }
 
-        const isValid = await verifyPassword(credentials.password, user.password);
+        const isValid = await verifyPassword(
+          credentials.password,
+          user.password
+        );
 
         if (!isValid) {
           // Track failed login attempt
@@ -89,7 +100,9 @@ const authOptions: NextAuthOptions = {
           });
 
           // Apply lockout if needed
-          const { applyLockoutIfNeeded } = await import("@/lib/account-lockout");
+          const { applyLockoutIfNeeded } = await import(
+            "@/lib/account-lockout"
+          );
           await applyLockoutIfNeeded(credentials.emailOrPhone, ip);
 
           throw new Error("Invalid credentials");
@@ -103,21 +116,28 @@ const authOptions: NextAuthOptions = {
         const has2FA = twoFactorSecret?.enabled ?? false;
 
         if (has2FA) {
-          const twoFactorToken = (credentials as Record<string, string>).twoFactorToken;
-          const isBackupCode = (credentials as Record<string, string>).isBackupCode === "true";
+          const twoFactorToken = (credentials as Record<string, string>)
+            .twoFactorToken;
+          const isBackupCode =
+            (credentials as Record<string, string>).isBackupCode === "true";
 
           if (!twoFactorToken) {
             throw new Error("2FA_REQUIRED");
           }
 
-          const { verify2FAToken, verifyAndConsumeBackupCode } = await import("@/lib/two-factor");
+          const { verify2FAToken, verifyAndConsumeBackupCode } = await import(
+            "@/lib/two-factor"
+          );
           const { verifyEmailCode } = await import("@/lib/email-two-factor");
 
           let isVerified = false;
           let errorMessage = "";
 
           if (isBackupCode) {
-            const result = await verifyAndConsumeBackupCode(user.id, twoFactorToken);
+            const result = await verifyAndConsumeBackupCode(
+              user.id,
+              twoFactorToken
+            );
             isVerified = result.success;
             errorMessage = result.error || "";
           } else {
@@ -255,7 +275,10 @@ const authOptions: NextAuthOptions = {
           method: "POST",
           statusCode: 200,
           message: `Successful sign in via ${account?.provider ?? "provider"}`,
-          metadata: { provider: account?.provider, providerAccountId: account?.providerAccountId },
+          metadata: {
+            provider: account?.provider,
+            providerAccountId: account?.providerAccountId,
+          },
         }).catch(() => {});
 
         // Note: the User model doesn't currently have `lastLoginAt`. We rely on SecurityLog

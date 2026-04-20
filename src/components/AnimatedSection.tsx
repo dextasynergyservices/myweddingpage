@@ -4,7 +4,13 @@ import { motion, useInView, useAnimation } from "framer-motion";
 interface AnimatedSectionProps {
   children: React.ReactNode;
   className?: string;
-  animation?: "fadeUp" | "fadeDown" | "fadeLeft" | "fadeRight" | "scale" | "stagger";
+  animation?:
+    | "fadeUp"
+    | "fadeDown"
+    | "fadeLeft"
+    | "fadeRight"
+    | "scale"
+    | "stagger";
   delay?: number;
   duration?: number;
 }

@@ -7,7 +7,10 @@ export async function GET(request: NextRequest) {
     const streamId = searchParams.get("streamId");
 
     if (!streamId) {
-      return NextResponse.json({ error: "Stream ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Stream ID is required" },
+        { status: 400 }
+      );
     }
 
     // Get all reactions for this stream
@@ -35,6 +38,9 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching reaction stats:", error);
-    return NextResponse.json({ error: "Failed to fetch reaction stats" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch reaction stats" },
+      { status: 500 }
+    );
   }
 }

@@ -19,7 +19,10 @@ export async function GET(req: NextRequest) {
   });
 
   if (!subscription || subscription.status !== "PAID") {
-    return NextResponse.json({ error: "Invalid or unpaid token." }, { status: 401 });
+    return NextResponse.json(
+      { error: "Invalid or unpaid token." },
+      { status: 401 }
+    );
   }
 
   return NextResponse.json({

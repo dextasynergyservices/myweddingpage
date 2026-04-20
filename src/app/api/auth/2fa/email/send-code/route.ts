@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
         const { email } = body;
 
         if (!email) {
-          return NextResponse.json({ error: "Email is required" }, { status: 400 });
+          return NextResponse.json(
+            { error: "Email is required" },
+            { status: 400 }
+          );
         }
 
         // Find user by email
@@ -51,7 +54,10 @@ export async function POST(request: NextRequest) {
         // Check if 2FA is enabled
         if (!user.twoFactorSecret?.enabled) {
           return NextResponse.json(
-            { error: "Two-factor authentication is not enabled for this account" },
+            {
+              error:
+                "Two-factor authentication is not enabled for this account",
+            },
             { status: 400 }
           );
         }
@@ -59,21 +65,30 @@ export async function POST(request: NextRequest) {
         // Check if user prefers email method
         if (user.twoFactorMethod !== "email") {
           return NextResponse.json(
-            { error: "Email 2FA is not enabled. Please use your authenticator app" },
+            {
+              error:
+                "Email 2FA is not enabled. Please use your authenticator app",
+            },
             { status: 400 }
           );
         }
 
         // Get request metadata
         const ipAddress =
-          request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
+          request.headers.get("x-forwarded-for") ||
+          request.headers.get("x-real-ip") ||
+          "unknown";
         const userAgent = request.headers.get("user-agent") || "unknown";
 
         // Generate and store code
         const code = await createEmailCode(user.id, ipAddress, userAgent);
 
         // Send email
-        const userName = user.groomName || user.brideName || user.email?.split("@")[0] || "User";
+        const userName =
+          user.groomName ||
+          user.brideName ||
+          user.email?.split("@")[0] ||
+          "User";
         const emailResult = await send2FACodeEmail({
           email: user.email!,
           userName,
@@ -114,7 +129,10 @@ export async function POST(request: NextRequest) {
         });
       } catch (error) {
         console.error("Error sending 2FA email code:", error);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json(
+          { error: "Internal server error" },
+          { status: 500 }
+        );
       }
     },
     { sampleRate: 1, eventType: "TWO_FA_EMAIL_CODE_SENT" }

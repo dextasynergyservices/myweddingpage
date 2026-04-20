@@ -8,7 +8,12 @@ import { PageSkeleton } from "@/components/admin/LoadingSkeleton";
 import toast from "react-hot-toast";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 
-type Plan = { id: string; name?: string; price?: number | string; [key: string]: unknown };
+type Plan = {
+  id: string;
+  name?: string;
+  price?: number | string;
+  [key: string]: unknown;
+};
 
 export default function EditPlanPage() {
   const { isDarkMode } = useTheme();
@@ -24,7 +29,9 @@ export default function EditPlanPage() {
     let mounted = true;
     async function load() {
       try {
-        const res = await fetch(`/api/admin/plans/${id}`, { credentials: "include" });
+        const res = await fetch(`/api/admin/plans/${id}`, {
+          credentials: "include",
+        });
         if (!mounted) return;
         if (res.ok) {
           const j = await res.json();
@@ -47,13 +54,18 @@ export default function EditPlanPage() {
 
   return (
     <div>
-      <h1 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+      <h1
+        className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+      >
         Edit Plan
       </h1>
       <div className="mt-4">
         <div className="flex items-start gap-6">
           <div className="flex-1">
-            <PlanForm initial={plan} onSaved={() => router.push("/dashboard/admin/plans")} />
+            <PlanForm
+              initial={plan}
+              onSaved={() => router.push("/dashboard/admin/plans")}
+            />
           </div>
           <div className="w-56">
             <div className="rounded border p-4">
@@ -61,7 +73,10 @@ export default function EditPlanPage() {
               <p className="text-sm text-gray-500 mt-2">
                 Delete this plan. This action is irreversible if allowed.
               </p>
-              <DeletePlanWidget onOpenDelete={() => setIsDeleteOpen(true)} deleting={deleting} />
+              <DeletePlanWidget
+                onOpenDelete={() => setIsDeleteOpen(true)}
+                deleting={deleting}
+              />
             </div>
           </div>
         </div>

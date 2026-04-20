@@ -27,8 +27,10 @@ function CheckRow({ c }: { c: Check }) {
   // mapping to color
   const mapColor = (s: string) => {
     const lower = String(s).toLowerCase();
-    if (lower === "success" || lower === "completed" || lower === "passed") return "text-green-600";
-    if (lower === "failure" || lower === "failed" || lower === "cancelled") return "text-red-600";
+    if (lower === "success" || lower === "completed" || lower === "passed")
+      return "text-green-600";
+    if (lower === "failure" || lower === "failed" || lower === "cancelled")
+      return "text-red-600";
     if (lower === "in_progress" || lower === "pending" || lower === "queued")
       return "text-yellow-600";
     return "text-gray-500";
@@ -41,8 +43,12 @@ function CheckRow({ c }: { c: Check }) {
       <div className="flex items-center gap-3">
         <div className={`${colorClass} w-3 h-3 rounded-full`} aria-hidden />
         <div>
-          <div className="font-medium">{c?.app?.name || c?.name || "check"}</div>
-          <div className="text-xs text-slate-500">Status: {String(c?.status)}</div>
+          <div className="font-medium">
+            {c?.app?.name || c?.name || "check"}
+          </div>
+          <div className="text-xs text-slate-500">
+            Status: {String(c?.status)}
+          </div>
         </div>
       </div>
       <div className={`text-sm ${colorClass}`}>{String(conclusion)}</div>
@@ -107,7 +113,12 @@ export default function PRStatusClient({ prUrl }: { prUrl: string }) {
             {loading ? "Refreshing..." : "Refresh"}
           </button>
           {info?.pr?.html_url && (
-            <a className="btn btn-sm" href={info.pr.html_url} target="_blank" rel="noreferrer">
+            <a
+              className="btn btn-sm"
+              href={info.pr.html_url}
+              target="_blank"
+              rel="noreferrer"
+            >
               Open PR
             </a>
           )}
@@ -135,7 +146,9 @@ export default function PRStatusClient({ prUrl }: { prUrl: string }) {
             ))}
           </div>
         ) : (
-          <div className="text-sm text-slate-500 mt-2">No checks found yet.</div>
+          <div className="text-sm text-slate-500 mt-2">
+            No checks found yet.
+          </div>
         )}
       </div>
     </div>

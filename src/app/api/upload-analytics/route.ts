@@ -53,15 +53,26 @@ export async function GET(request: NextRequest) {
           message: "Upload Analytics API",
           actions: [
             { action: "stats", description: "Get upload statistics" },
-            { action: "failures", description: "Get recent failures", params: "?limit=10" },
-            { action: "export", description: "Export metrics", params: "?format=json|csv" },
+            {
+              action: "failures",
+              description: "Get recent failures",
+              params: "?limit=10",
+            },
+            {
+              action: "export",
+              description: "Export metrics",
+              params: "?format=json|csv",
+            },
             { action: "dashboard", description: "View HTML dashboard" },
           ],
         });
     }
   } catch (error) {
     console.error("Analytics API error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 

@@ -61,7 +61,12 @@ export interface ColorScheme {
 /**
  * Font category for organization
  */
-export type FontCategory = "serif" | "sans-serif" | "script" | "display" | "monospace";
+export type FontCategory =
+  | "serif"
+  | "sans-serif"
+  | "script"
+  | "display"
+  | "monospace";
 
 /**
  * Font weight options

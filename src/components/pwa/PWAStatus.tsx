@@ -51,7 +51,11 @@ export default function PWAStatus({
               : "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
           }`}
         >
-          {isOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
+          {isOnline ? (
+            <Wifi className="h-3 w-3" />
+          ) : (
+            <WifiOff className="h-3 w-3" />
+          )}
           <span>{isOnline ? "Online" : "Offline"}</span>
         </div>
 
@@ -64,7 +68,11 @@ export default function PWAStatus({
                 : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
             }`}
           >
-            {isSubscribed ? <Bell className="h-3 w-3" /> : <BellOff className="h-3 w-3" />}
+            {isSubscribed ? (
+              <Bell className="h-3 w-3" />
+            ) : (
+              <BellOff className="h-3 w-3" />
+            )}
             <span>{isSubscribed ? "Notifications" : "No Notifications"}</span>
           </div>
         )}
@@ -74,13 +82,17 @@ export default function PWAStatus({
 
   return (
     <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-      <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">PWA Status</h3>
+      <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+        PWA Status
+      </h3>
 
       <div className="space-y-3">
         {/* Installation Status */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Download className={`h-5 w-5 ${isPWA ? "text-green-600" : "text-gray-400"}`} />
+            <Download
+              className={`h-5 w-5 ${isPWA ? "text-green-600" : "text-gray-400"}`}
+            />
             <div>
               <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                 {isPWA ? "Installed" : "Not Installed"}
@@ -133,7 +145,9 @@ export default function PWAStatus({
                   {isSubscribed ? "Notifications On" : "Notifications Off"}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {isSubscribed ? "Subscription reminders enabled" : "Enable to get reminders"}
+                  {isSubscribed
+                    ? "Subscription reminders enabled"
+                    : "Enable to get reminders"}
                 </p>
               </div>
             </div>
@@ -157,8 +171,8 @@ export default function PWAStatus({
         {permission === "denied" && (
           <div className="rounded-lg bg-amber-50 p-3 dark:bg-amber-900/20">
             <p className="text-xs text-amber-800 dark:text-amber-200">
-              Notifications blocked. Please enable them in your browser settings to receive
-              subscription reminders.
+              Notifications blocked. Please enable them in your browser settings
+              to receive subscription reminders.
             </p>
           </div>
         )}

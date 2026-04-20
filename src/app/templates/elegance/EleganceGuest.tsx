@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { Heart, MessageCircle, Send } from "lucide-react";
 // import { useToast } from "@/app/templates/elegance/hooks/use-toast";
 import { toast } from "react-hot-toast";
@@ -79,14 +85,29 @@ const Comments: React.FC<CommentsProps> = (props) => {
   const initialComments = useMemo(() => {
     if (slug) {
       // When we have a slug (real wedding page), don't use guests prop - only use API data
-      return props.initialComments || props.guestMessages || props.existingComments || [];
+      return (
+        props.initialComments ||
+        props.guestMessages ||
+        props.existingComments ||
+        []
+      );
     } else {
       // When no slug (preview mode), use all available props
       return (
-        props.initialComments || props.guests || props.guestMessages || props.existingComments || []
+        props.initialComments ||
+        props.guests ||
+        props.guestMessages ||
+        props.existingComments ||
+        []
       );
     }
-  }, [props.initialComments, props.guests, props.guestMessages, props.existingComments, slug]);
+  }, [
+    props.initialComments,
+    props.guests,
+    props.guestMessages,
+    props.existingComments,
+    slug,
+  ]);
 
   // const _placeholder = props.placeholder || {
   //   name: "Your Name",
@@ -119,7 +140,9 @@ const Comments: React.FC<CommentsProps> = (props) => {
 
     setLoadingComments(true);
     try {
-      const response = await fetch(`/api/guests/comments?slug=${encodeURIComponent(slug)}`);
+      const response = await fetch(
+        `/api/guests/comments?slug=${encodeURIComponent(slug)}`
+      );
 
       if (response.ok) {
         const commentsData = await response.json();
@@ -156,7 +179,9 @@ const Comments: React.FC<CommentsProps> = (props) => {
     }
 
     if (!slug) {
-      toast.error("Unable to identify wedding page. Please refresh and try again.");
+      toast.error(
+        "Unable to identify wedding page. Please refresh and try again."
+      );
       return;
     }
 
@@ -188,7 +213,9 @@ const Comments: React.FC<CommentsProps> = (props) => {
 
       if (response.ok) {
         toast.dismiss(loadingToast);
-        toast.success("Thank you for your message! It will be visible after approval.");
+        toast.success(
+          "Thank you for your message! It will be visible after approval."
+        );
         setNewMessage("");
         setGuestName("");
 
@@ -218,8 +245,12 @@ const Comments: React.FC<CommentsProps> = (props) => {
           }`}
         >
           <MessageCircle className="w-12 h-12 mx-auto mb-6 text-rose-600 animate-bounce" />
-          <h2 className="font-serif md:text-5xl text-2xl font-bold text-gray-900 mb-6">{title}</h2>
-          <p className="font-sans text-xl text-gray-600 max-w-3xl mx-auto">{description}</p>
+          <h2 className="font-serif md:text-5xl text-2xl font-bold text-gray-900 mb-6">
+            {title}
+          </h2>
+          <p className="font-sans text-xl text-gray-600 max-w-3xl mx-auto">
+            {description}
+          </p>
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -305,7 +336,9 @@ const Comments: React.FC<CommentsProps> = (props) => {
                   <div
                     key={comment.id}
                     className={`bg-white shadow-lg hover:shadow-xl transition-all duration-500 p-6 rounded-2xl ${
-                      isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                      isVisible
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 translate-y-4"
                     }`}
                     style={{ animationDelay: `${(index + 1) * 100}ms` }}
                   >
@@ -321,10 +354,14 @@ const Comments: React.FC<CommentsProps> = (props) => {
                           <h4 className="font-serif text-lg font-semibold text-gray-900">
                             {comment.name}
                           </h4>
-                          <span className="font-sans text-sm text-gray-600">{formattedDate}</span>
+                          <span className="font-sans text-sm text-gray-600">
+                            {formattedDate}
+                          </span>
                         </div>
 
-                        <p className="font-sans text-gray-600 leading-relaxed">{comment.message}</p>
+                        <p className="font-sans text-gray-600 leading-relaxed">
+                          {comment.message}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -350,19 +387,21 @@ const Comments: React.FC<CommentsProps> = (props) => {
                   </button>
 
                   <div className="flex items-center space-x-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <button
-                        key={page}
-                        onClick={() => handlePageClick(page)}
-                        className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
-                          currentPage === page
-                            ? "bg-rose-600 text-white"
-                            : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    ))}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <button
+                          key={page}
+                          onClick={() => handlePageClick(page)}
+                          className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                            currentPage === page
+                              ? "bg-rose-600 text-white"
+                              : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    )}
                   </div>
 
                   <button
@@ -380,7 +419,8 @@ const Comments: React.FC<CommentsProps> = (props) => {
 
                 {/* Page Info */}
                 <p className="text-sm text-gray-600">
-                  Page {currentPage} of {totalPages} • {comments.length} total comments
+                  Page {currentPage} of {totalPages} • {comments.length} total
+                  comments
                 </p>
               </div>
             )}

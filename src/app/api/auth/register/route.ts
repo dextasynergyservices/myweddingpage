@@ -40,7 +40,11 @@ export async function POST(req: Request) {
 
     // Verify reCAPTCHA v3 (minimum score: 0.6 for registration)
     if (recaptchaToken) {
-      const recaptchaResult = await verifyRecaptchaV3(recaptchaToken, "register", 0.6);
+      const recaptchaResult = await verifyRecaptchaV3(
+        recaptchaToken,
+        "register",
+        0.6
+      );
       if (!recaptchaResult.success) {
         return NextResponse.json(
           { error: "reCAPTCHA verification failed. Please try again." },
@@ -85,7 +89,10 @@ export async function POST(req: Request) {
         field: err.path.join("."),
         message: err.message,
       }));
-      return NextResponse.json({ error: "Validation failed", details: errors }, { status: 400 });
+      return NextResponse.json(
+        { error: "Validation failed", details: errors },
+        { status: 400 }
+      );
     }
 
     // Use validated data from this point
@@ -98,10 +105,15 @@ export async function POST(req: Request) {
       !validatedData.whatsapp ||
       !validatedData.password
     ) {
-      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email: validatedData.email } });
+    const existingUser = await prisma.user.findUnique({
+      where: { email: validatedData.email },
+    });
 
     if (!existingUser || existingUser.status !== "PAID") {
       return NextResponse.json(
@@ -111,12 +123,18 @@ export async function POST(req: Request) {
     }
 
     // Prevent duplicate WhatsApp number usage
-    if (existingUser.whatsapp && existingUser.whatsapp !== validatedData.whatsapp) {
+    if (
+      existingUser.whatsapp &&
+      existingUser.whatsapp !== validatedData.whatsapp
+    ) {
       const phoneExists = await prisma.user.findUnique({
         where: { whatsapp: validatedData.whatsapp },
       });
       if (phoneExists && phoneExists.email !== validatedData.email) {
-        return NextResponse.json({ error: "WhatsApp number already used" }, { status: 409 });
+        return NextResponse.json(
+          { error: "WhatsApp number already used" },
+          { status: 409 }
+        );
       }
     }
 
@@ -147,7 +165,9 @@ export async function POST(req: Request) {
         brideName: validatedData.brideName,
         whatsapp: validatedData.whatsapp,
         password: hashedPassword,
-        weddingDate: validatedData.weddingDate ? new Date(validatedData.weddingDate) : undefined,
+        weddingDate: validatedData.weddingDate
+          ? new Date(validatedData.weddingDate)
+          : undefined,
         image: imageUrl,
         verification_token: token,
         verification_code: code,
@@ -185,6 +205,9 @@ export async function POST(req: Request) {
     });
   } catch (error: unknown) {
     console.error("Registration error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

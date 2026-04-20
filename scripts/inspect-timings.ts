@@ -9,15 +9,23 @@ const prisma = new PrismaClient();
 
 function parseArgs() {
   const args = process.argv.slice(2);
-  const out: { limit: number; sinceMinutes: number; eventType?: string; csv: boolean } = {
+  const out: {
+    limit: number;
+    sinceMinutes: number;
+    eventType?: string;
+    csv: boolean;
+  } = {
     limit: 20,
     sinceMinutes: 60,
     csv: false,
   };
   for (const a of args) {
-    if (a.startsWith("--limit=")) out.limit = Number(a.split("=")[1]) || out.limit;
-    if (a.startsWith("--since=")) out.sinceMinutes = Number(a.split("=")[1]) || out.sinceMinutes;
-    if (a.startsWith("--eventType=")) out.eventType = a.split("=")[1] || undefined;
+    if (a.startsWith("--limit="))
+      out.limit = Number(a.split("=")[1]) || out.limit;
+    if (a.startsWith("--since="))
+      out.sinceMinutes = Number(a.split("=")[1]) || out.sinceMinutes;
+    if (a.startsWith("--eventType="))
+      out.eventType = a.split("=")[1] || undefined;
     if (a === "--csv") out.csv = true;
   }
   return out;
@@ -58,9 +66,15 @@ async function run() {
           md?.timing ??
           md?.duration ??
           (md && md.metrics ? (md.metrics.responseTime ?? null) : null);
-        return { row: r, responseTime: typeof rt === "number" ? rt : null, metadata: md };
+        return {
+          row: r,
+          responseTime: typeof rt === "number" ? rt : null,
+          metadata: md,
+        };
       })
-      .filter((x) => (eventType ? String(x.row.eventType) === eventType : true));
+      .filter((x) =>
+        eventType ? String(x.row.eventType) === eventType : true
+      );
 
     const timings = extracted
       .map((x) => x.responseTime)
@@ -71,10 +85,14 @@ async function run() {
       const p50 = percentile(sorted, 50);
       const p90 = percentile(sorted, 90);
       const p95 = percentile(sorted, 95);
-      console.log(`Found ${timings.length} timed entries (of ${rows.length} rows retrieved)`);
+      console.log(
+        `Found ${timings.length} timed entries (of ${rows.length} rows retrieved)`
+      );
       console.log(`p50=${p50}ms p90=${p90}ms p95=${p95}ms`);
     } else {
-      console.log(`No timing values found in the retrieved logs (checked ${rows.length} rows).`);
+      console.log(
+        `No timing values found in the retrieved logs (checked ${rows.length} rows).`
+      );
     }
 
     if (csv) {

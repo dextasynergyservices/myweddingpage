@@ -49,7 +49,9 @@ export function readAuditEvents(opts?: {
       .map((l) => {
         try {
           const p = JSON.parse(l);
-          return typeof p === "object" && p !== null ? (p as Record<string, unknown>) : null;
+          return typeof p === "object" && p !== null
+            ? (p as Record<string, unknown>)
+            : null;
         } catch {
           return null;
         }
@@ -57,16 +59,23 @@ export function readAuditEvents(opts?: {
       .filter((x): x is Record<string, unknown> => Boolean(x));
 
     // sort descending by timestamp
-    lines.sort((a, b) => new Date(String(b.ts)).getTime() - new Date(String(a.ts)).getTime());
+    lines.sort(
+      (a, b) =>
+        new Date(String(b.ts)).getTime() - new Date(String(a.ts)).getTime()
+    );
 
     let filtered = lines;
     if (opts?.action) {
-      const actions = Array.isArray(opts.action) ? opts.action.map(String) : [String(opts.action)];
+      const actions = Array.isArray(opts.action)
+        ? opts.action.map(String)
+        : [String(opts.action)];
       filtered = filtered.filter((ev) => actions.includes(String(ev.action)));
     }
     if (opts?.stagingId)
       filtered = filtered.filter((ev) =>
-        String(ev.stagingId || ev.staging || "").includes(String(opts.stagingId))
+        String(ev.stagingId || ev.staging || "").includes(
+          String(opts.stagingId)
+        )
       );
     if (opts?.dateFrom) {
       const from = new Date(opts.dateFrom);

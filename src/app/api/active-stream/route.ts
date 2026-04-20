@@ -29,6 +29,9 @@ export async function GET() {
     return NextResponse.json({ activeStream });
   } catch (error) {
     console.error("Error fetching active stream:", error);
-    return NextResponse.json({ error: "Error fetching active stream" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error fetching active stream" },
+      { status: 500 }
+    );
   }
 }

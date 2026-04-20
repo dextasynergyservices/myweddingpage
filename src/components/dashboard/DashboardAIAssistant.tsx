@@ -5,7 +5,10 @@ interface DashboardAIAssistantProps {
   isDarkMode: boolean;
 }
 
-const DashboardAIAssistant = ({ showAIAssistant, isDarkMode }: DashboardAIAssistantProps) => {
+const DashboardAIAssistant = ({
+  showAIAssistant,
+  isDarkMode,
+}: DashboardAIAssistantProps) => {
   return (
     <AnimatePresence>
       {showAIAssistant && (
@@ -15,7 +18,9 @@ const DashboardAIAssistant = ({ showAIAssistant, isDarkMode }: DashboardAIAssist
           exit={{ width: 0, opacity: 0 }}
           transition={{ duration: 0.3 }}
           className={`hidden md:block border-l overflow-hidden ${
-            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+            isDarkMode
+              ? "bg-slate-800 border-slate-700"
+              : "bg-white border-slate-200"
           }`}
         >
           {/* AI Assistant content would go here */}

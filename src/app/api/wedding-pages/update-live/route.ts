@@ -17,7 +17,10 @@ export async function POST(req: Request) {
     const { templateId } = await req.json();
 
     if (!templateId) {
-      return NextResponse.json({ error: "Template ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Template ID is required" },
+        { status: 400 }
+      );
     }
 
     const user = await prisma.user.findUnique({
@@ -40,12 +43,18 @@ export async function POST(req: Request) {
 
     const userTemplate = user.userTemplates[0];
     if (!userTemplate) {
-      return NextResponse.json({ error: "User template not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "User template not found" },
+        { status: 404 }
+      );
     }
 
     const weddingPage = user.weddingPages[0];
     if (!weddingPage) {
-      return NextResponse.json({ error: "No live wedding page found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "No live wedding page found" },
+        { status: 404 }
+      );
     }
 
     // Extract specific fields from userTemplate content
@@ -62,7 +71,10 @@ export async function POST(req: Request) {
         "update-live - extractWeddingPageFields - userContent:",
         JSON.stringify(userContent, null, 2)
       );
-      console.log("update-live - extractWeddingPageFields - content keys:", Object.keys(content));
+      console.log(
+        "update-live - extractWeddingPageFields - content keys:",
+        Object.keys(content)
+      );
 
       // Also check if logo data is at the top level of userContent
       if (userContent && typeof userContent === "object") {
@@ -101,7 +113,8 @@ export async function POST(req: Request) {
             console.log(`update-live - Found hero section: ${sectionId}`);
             heroImage = (section.heroImage as string) || heroImage;
             venue = (section.venue as string) || venue;
-            welcomeMessage = (section.welcomeMessage as string) || welcomeMessage;
+            welcomeMessage =
+              (section.welcomeMessage as string) || welcomeMessage;
             logoUrl = (section.logoUrl as string) || logoUrl;
             logoAlt = (section.logoAlt as string) || logoAlt;
           }
@@ -133,9 +146,11 @@ export async function POST(req: Request) {
                   section.storyItems
                 );
                 // Handle nested object structure (stored in UserTemplate)
-                const firstStoryItem =
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  (section.storyItems as any)[0] || (section.storyItems as any)["0"];
+                const storyItemsObj = section.storyItems as Record<
+                  string,
+                  { image?: string }
+                >;
+                const firstStoryItem = storyItemsObj[0] || storyItemsObj["0"];
                 if (firstStoryItem && firstStoryItem.image) {
                   storyImage = firstStoryItem.image as string;
                   console.log(
@@ -178,11 +193,17 @@ export async function POST(req: Request) {
           // Check for any data in any section (fallback)
           if (!heroImage && section.heroImage) {
             heroImage = section.heroImage as string;
-            console.log(`update-live - Found heroImage in section ${sectionId}:`, heroImage);
+            console.log(
+              `update-live - Found heroImage in section ${sectionId}:`,
+              heroImage
+            );
           }
           if (!storyImage && section.storyImage) {
             storyImage = section.storyImage as string;
-            console.log(`update-live - Found storyImage in section ${sectionId}:`, storyImage);
+            console.log(
+              `update-live - Found storyImage in section ${sectionId}:`,
+              storyImage
+            );
           }
 
           // Check for story images in storyItems (Luxe template) - both array and object structures
@@ -201,9 +222,11 @@ export async function POST(req: Request) {
                 `update-live - Found storyItems object in section ${sectionId}:`,
                 section.storyItems
               );
-              const firstStoryItem =
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (section.storyItems as any)[0] || (section.storyItems as any)["0"];
+              const storyItemsObj = section.storyItems as Record<
+                string,
+                { image?: string }
+              >;
+              const firstStoryItem = storyItemsObj[0] || storyItemsObj["0"];
               if (firstStoryItem && firstStoryItem.image) {
                 storyImage = firstStoryItem.image as string;
                 console.log(
@@ -231,8 +254,11 @@ export async function POST(req: Request) {
                 `update-live - Found stories object in section ${sectionId}:`,
                 section.stories
               );
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const firstStory = (section.stories as any)[0] || (section.stories as any)["0"];
+              const storiesObj = section.stories as Record<
+                string,
+                { image?: string }
+              >;
+              const firstStory = storiesObj[0] || storiesObj["0"];
               if (firstStory && firstStory.image) {
                 storyImage = firstStory.image as string;
                 console.log(
@@ -244,7 +270,10 @@ export async function POST(req: Request) {
           }
           if (!venue && section.venue) {
             venue = section.venue as string;
-            console.log(`update-live - Found venue in section ${sectionId}:`, venue);
+            console.log(
+              `update-live - Found venue in section ${sectionId}:`,
+              venue
+            );
           }
           if (!welcomeMessage && section.welcomeMessage) {
             welcomeMessage = section.welcomeMessage as string;
@@ -257,9 +286,15 @@ export async function POST(req: Request) {
           // Check for logo data with multiple possible field names
           if (!logoUrl) {
             const possibleLogoUrl =
-              section.logoUrl || section.logo_url || section.logoImage || section.logo_image;
+              section.logoUrl ||
+              section.logo_url ||
+              section.logoImage ||
+              section.logo_image;
             const possibleLogoAlt =
-              section.logoAlt || section.logo_alt || section.logoAltText || section.logo_alt_text;
+              section.logoAlt ||
+              section.logo_alt ||
+              section.logoAltText ||
+              section.logo_alt_text;
 
             if (possibleLogoUrl) {
               logoUrl = possibleLogoUrl as string;
@@ -302,7 +337,14 @@ export async function POST(req: Request) {
         }
       }
 
-      const extractedFields = { heroImage, storyImage, venue, welcomeMessage, logoUrl, logoAlt };
+      const extractedFields = {
+        heroImage,
+        storyImage,
+        venue,
+        welcomeMessage,
+        logoUrl,
+        logoAlt,
+      };
       console.log("update-live - Final extracted fields:", extractedFields);
 
       return extractedFields;
@@ -353,7 +395,10 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log("update-live - Wedding page updated successfully:", updatedWeddingPage);
+    console.log(
+      "update-live - Wedding page updated successfully:",
+      updatedWeddingPage
+    );
 
     return NextResponse.json({
       success: true,
@@ -362,6 +407,9 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Error updating live site:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

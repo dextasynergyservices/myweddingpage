@@ -8,7 +8,10 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "20");
 
     if (!streamId) {
-      return NextResponse.json({ error: "Stream ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Stream ID is required" },
+        { status: 400 }
+      );
     }
 
     // Get recent activity events
@@ -42,12 +45,16 @@ export async function GET(request: NextRequest) {
               tada: "🎉",
             }[reactionType] || "❤️";
           message =
-            event.count === 1 ? `Someone sent ${emoji}` : `${event.count} ${emoji} reactions sent`;
+            event.count === 1
+              ? `Someone sent ${emoji}`
+              : `${event.count} ${emoji} reactions sent`;
           icon = emoji;
           break;
         case "guestbook_posted":
           message =
-            event.count === 1 ? "New guestbook message" : `${event.count} new guestbook messages`;
+            event.count === 1
+              ? "New guestbook message"
+              : `${event.count} new guestbook messages`;
           icon = "✍️";
           break;
         default:
@@ -70,7 +77,10 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching activity feed:", error);
-    return NextResponse.json({ error: "Failed to fetch activity feed" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch activity feed" },
+      { status: 500 }
+    );
   }
 }
 
@@ -81,7 +91,10 @@ export async function POST(request: NextRequest) {
     const { streamId } = body;
 
     if (!streamId) {
-      return NextResponse.json({ error: "Stream ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Stream ID is required" },
+        { status: 400 }
+      );
     }
 
     // Create activity event for guest join
@@ -99,6 +112,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error tracking guest join:", error);
-    return NextResponse.json({ error: "Failed to track guest join" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to track guest join" },
+      { status: 500 }
+    );
   }
 }

@@ -41,7 +41,10 @@ export async function POST(request: NextRequest) {
     const { heroImage } = await request.json();
 
     if (!heroImage) {
-      return NextResponse.json({ error: "Hero image URL is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Hero image URL is required" },
+        { status: 400 }
+      );
     }
 
     // Validate the image URL
@@ -62,7 +65,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user || !user.weddingPages.length) {
-      return NextResponse.json({ error: "No wedding page found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "No wedding page found" },
+        { status: 404 }
+      );
     }
 
     const weddingPage = user.weddingPages[0];
@@ -87,7 +93,10 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error saving hero image:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -106,7 +115,10 @@ export async function DELETE() {
     });
 
     if (!user || !user.weddingPages.length) {
-      return NextResponse.json({ error: "No wedding page found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "No wedding page found" },
+        { status: 404 }
+      );
     }
 
     const weddingPage = user.weddingPages[0];
@@ -125,6 +137,9 @@ export async function DELETE() {
     });
   } catch (error) {
     console.error("Error removing hero image:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

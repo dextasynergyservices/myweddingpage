@@ -3,7 +3,13 @@ import { prisma } from "../src/lib/prisma";
 async function main() {
   const rows = await prisma.pageView.findMany({
     where: { OR: [{ ipAddress: null }, { userAgent: null }] },
-    select: { id: true, weddingPageId: true, createdAt: true, ipAddress: true, userAgent: true },
+    select: {
+      id: true,
+      weddingPageId: true,
+      createdAt: true,
+      ipAddress: true,
+      userAgent: true,
+    },
     orderBy: { createdAt: "desc" },
     take: 1000,
   });

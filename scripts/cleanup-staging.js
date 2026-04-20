@@ -25,7 +25,9 @@ function parseArgs() {
 async function run() {
   const args = parseArgs();
   const root =
-    process.env.TEMPLATE_STAGING_ROOT || args.root || path.join(process.cwd(), "staging");
+    process.env.TEMPLATE_STAGING_ROOT ||
+    args.root ||
+    path.join(process.cwd(), "staging");
   const retentionDays = parseInt(
     process.env.TEMPLATE_STAGING_RETENTION_DAYS || args.days || "7",
     10
@@ -59,7 +61,9 @@ async function run() {
     }
   }
 
-  console.log(`Cleanup complete. Removed ${removed} folders older than ${retentionDays} days.`);
+  console.log(
+    `Cleanup complete. Removed ${removed} folders older than ${retentionDays} days.`
+  );
 }
 
 run().catch((err) => {

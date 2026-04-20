@@ -88,7 +88,9 @@ export function formatWeddingDate(
  * @example
  * formatWeddingDateWithDay("2025-10-11") // "Saturday, October 11, 2025"
  */
-export function formatWeddingDateWithDay(dateString: string | undefined | null): string {
+export function formatWeddingDateWithDay(
+  dateString: string | undefined | null
+): string {
   if (!dateString) {
     return "Date to be announced";
   }

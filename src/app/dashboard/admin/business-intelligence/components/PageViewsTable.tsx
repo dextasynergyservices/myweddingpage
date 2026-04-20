@@ -52,12 +52,16 @@ export default function PageViewsTable({ slug }: { slug?: string }) {
       const q = new URLSearchParams();
       if (slug) q.set("slug", slug);
       q.set("limit", "25");
-      const anon = typeof anonymizeOverride === "boolean" ? anonymizeOverride : anonymize;
+      const anon =
+        typeof anonymizeOverride === "boolean" ? anonymizeOverride : anonymize;
       q.set("anonymize", String(anon));
 
-      const res = await fetch(`/api/admin/analytics/pageviews?${q.toString()}`, {
-        credentials: "include",
-      });
+      const res = await fetch(
+        `/api/admin/analytics/pageviews?${q.toString()}`,
+        {
+          credentials: "include",
+        }
+      );
       if (!res.ok) throw new Error("Failed to fetch");
       const json = await res.json();
       setItems(json.items || []);
@@ -80,7 +84,9 @@ export default function PageViewsTable({ slug }: { slug?: string }) {
       // call the existing settings API to update the DB flag
       // include CSRF token if available
       const csrf = getCSRFTokenFromCookie();
-      const headers: Record<string, string> = { "content-type": "application/json" };
+      const headers: Record<string, string> = {
+        "content-type": "application/json",
+      };
       if (csrf) headers["x-csrf-token"] = csrf;
 
       const res = await fetch("/api/user/settings/show-raw-ips", {
@@ -124,9 +130,12 @@ export default function PageViewsTable({ slug }: { slug?: string }) {
       q.set("afterId", nextCursor);
       q.set("anonymize", String(anonymize));
 
-      const res = await fetch(`/api/admin/analytics/pageviews?${q.toString()}`, {
-        credentials: "include",
-      });
+      const res = await fetch(
+        `/api/admin/analytics/pageviews?${q.toString()}`,
+        {
+          credentials: "include",
+        }
+      );
       if (!res.ok) throw new Error("Failed to fetch");
       const json = await res.json();
       setItems((prev) => [...prev, ...(json.items || [])]);
@@ -146,7 +155,9 @@ export default function PageViewsTable({ slug }: { slug?: string }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+        <h4
+          className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+        >
           Recent Page Views
         </h4>
         <div className="flex items-center gap-3">
@@ -160,7 +171,9 @@ export default function PageViewsTable({ slug }: { slug?: string }) {
               }}
               disabled={isAdminSession === false}
             />
-            <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+            <span
+              className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+            >
               Show raw IPs
             </span>
           </label>
@@ -168,7 +181,9 @@ export default function PageViewsTable({ slug }: { slug?: string }) {
             onClick={async () => {
               try {
                 setCsrfRefreshing(true);
-                const r = await fetch("/api/csrf-token", { credentials: "include" });
+                const r = await fetch("/api/csrf-token", {
+                  credentials: "include",
+                });
                 if (!r.ok) throw new Error("Failed to refresh token");
                 toast.success("CSRF token refreshed — try the toggle again");
               } catch (e) {
@@ -206,21 +221,28 @@ export default function PageViewsTable({ slug }: { slug?: string }) {
                 <th className="px-4 py-2 text-left hidden md:table-cell">UA</th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}>
+            <tbody
+              className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}
+            >
               {loading ? (
                 <tr>
                   <td colSpan={4} className="px-4 py-8 text-center">
                     <Activity
                       className={`mx-auto h-8 w-8 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`}
                     />
-                    <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       Loading...
                     </p>
                   </td>
                 </tr>
               ) : items.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-sm text-gray-500">
+                  <td
+                    colSpan={4}
+                    className="px-4 py-8 text-center text-sm text-gray-500"
+                  >
                     No recent page views
                   </td>
                 </tr>
@@ -230,10 +252,16 @@ export default function PageViewsTable({ slug }: { slug?: string }) {
                     key={it.id}
                     className={`hover:bg-gray-50 ${isDarkMode ? "hover:bg-gray-800/40" : ""}`}
                   >
-                    <td className="px-4 py-3 text-sm">{new Date(it.createdAt).toLocaleString()}</td>
                     <td className="px-4 py-3 text-sm">
-                      <div className="font-medium">{it.title ?? it.slug ?? "(unknown)"}</div>
-                      <div className="text-xs text-gray-500">{it.slug ?? "-"}</div>
+                      {new Date(it.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      <div className="font-medium">
+                        {it.title ?? it.slug ?? "(unknown)"}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {it.slug ?? "-"}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-sm hidden sm:table-cell font-mono">
                       {it.ipAddress ?? "-"}
@@ -249,7 +277,9 @@ export default function PageViewsTable({ slug }: { slug?: string }) {
         </div>
 
         <div className="flex items-center justify-between px-4 py-3 border-t">
-          <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+          <div
+            className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+          >
             Showing {items.length} items
           </div>
           <div className="flex items-center gap-2">

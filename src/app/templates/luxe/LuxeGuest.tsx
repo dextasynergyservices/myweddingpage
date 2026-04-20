@@ -80,14 +80,29 @@ export default function Comments(props: CommentsProps) {
   const initialComments = useMemo(() => {
     if (slug) {
       // When we have a slug (real wedding page), don't use guests prop - only use API data
-      return props.initialComments || props.guestMessages || props.existingComments || [];
+      return (
+        props.initialComments ||
+        props.guestMessages ||
+        props.existingComments ||
+        []
+      );
     } else {
       // When no slug (preview mode), use all available props
       return (
-        props.initialComments || props.guests || props.guestMessages || props.existingComments || []
+        props.initialComments ||
+        props.guests ||
+        props.guestMessages ||
+        props.existingComments ||
+        []
       );
     }
-  }, [props.initialComments, props.guests, props.guestMessages, props.existingComments, slug]);
+  }, [
+    props.initialComments,
+    props.guests,
+    props.guestMessages,
+    props.existingComments,
+    slug,
+  ]);
 
   // const _placeholder = props.placeholder || {
   //   name: "Your Name",
@@ -119,7 +134,9 @@ export default function Comments(props: CommentsProps) {
 
     setLoadingComments(true);
     try {
-      const response = await fetch(`/api/guests/comments?slug=${encodeURIComponent(slug)}`);
+      const response = await fetch(
+        `/api/guests/comments?slug=${encodeURIComponent(slug)}`
+      );
 
       if (response.ok) {
         const commentsData = await response.json();
@@ -156,7 +173,9 @@ export default function Comments(props: CommentsProps) {
     }
 
     if (!slug) {
-      toast.error("Unable to identify wedding page. Please refresh and try again.");
+      toast.error(
+        "Unable to identify wedding page. Please refresh and try again."
+      );
       return;
     }
 
@@ -188,7 +207,9 @@ export default function Comments(props: CommentsProps) {
 
       if (response.ok) {
         toast.dismiss(loadingToast);
-        toast.success("Thank you for your message! It will be visible after approval.");
+        toast.success(
+          "Thank you for your message! It will be visible after approval."
+        );
         setNewMessage("");
         setGuestName("");
 
@@ -229,7 +250,9 @@ export default function Comments(props: CommentsProps) {
           >
             {title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">{description}</p>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            {description}
+          </p>
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -306,7 +329,9 @@ export default function Comments(props: CommentsProps) {
                   <div
                     key={comment.id}
                     className={`bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl p-6 transition-all duration-700 transform hover:scale-[1.02] ${
-                      isVisible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
+                      isVisible
+                        ? "translate-y-0 opacity-100"
+                        : "translate-y-12 opacity-0"
                     }`}
                     style={{ transitionDelay: `${400 + index * 150}ms` }}
                   >
@@ -327,10 +352,16 @@ export default function Comments(props: CommentsProps) {
 
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-bold text-gray-800">{comment.name}</h4>
-                          <span className="text-sm text-gray-500">{formattedDate}</span>
+                          <h4 className="font-bold text-gray-800">
+                            {comment.name}
+                          </h4>
+                          <span className="text-sm text-gray-500">
+                            {formattedDate}
+                          </span>
                         </div>
-                        <p className="text-gray-600 leading-relaxed">{comment.message}</p>
+                        <p className="text-gray-600 leading-relaxed">
+                          {comment.message}
+                        </p>
                         <div className="flex items-center gap-2 mt-3">
                           <button className="flex items-center gap-2 text-pink-500 hover:text-pink-600 transition-colors duration-200">
                             <Heart className="w-4 h-4" />
@@ -362,19 +393,21 @@ export default function Comments(props: CommentsProps) {
                   </button>
 
                   <div className="flex items-center space-x-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <button
-                        key={page}
-                        onClick={() => handlePageClick(page)}
-                        className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
-                          currentPage === page
-                            ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white"
-                            : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    ))}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <button
+                          key={page}
+                          onClick={() => handlePageClick(page)}
+                          className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                            currentPage === page
+                              ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white"
+                              : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    )}
                   </div>
 
                   <button
@@ -392,7 +425,8 @@ export default function Comments(props: CommentsProps) {
 
                 {/* Page Info */}
                 <p className="text-sm text-gray-600">
-                  Page {currentPage} of {totalPages} • {comments.length} total comments
+                  Page {currentPage} of {totalPages} • {comments.length} total
+                  comments
                 </p>
               </div>
             )}
@@ -406,8 +440,8 @@ export default function Comments(props: CommentsProps) {
           <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-2xl p-8 max-w-2xl mx-auto shadow-xl">
             <h3 className="text-3xl font-bold mb-4">Thank You!</h3>
             <p className="text-lg opacity-90">
-              Your love and support mean the world to us. We can&apos;t wait to celebrate with all
-              of you on our special day!
+              Your love and support mean the world to us. We can&apos;t wait to
+              celebrate with all of you on our special day!
             </p>
             <div className="mt-6 text-2xl">💕</div>
           </div>

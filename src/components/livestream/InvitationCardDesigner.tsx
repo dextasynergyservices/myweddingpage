@@ -19,7 +19,10 @@ interface Props {
   weddingPageUrl: string;
 }
 
-export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Props) {
+export default function InvitationCardDesigner({
+  streamId,
+  weddingPageUrl,
+}: Props) {
   const { isDarkMode } = useTheme();
   const [cardData, setCardData] = useState<CardData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -81,9 +84,12 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
         const g = parseInt(h.substring(2, 4), 16) / 255;
         const b = parseInt(h.substring(4, 6), 16) / 255;
         // linearized luminance
-        const lr = r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
-        const lg = g <= 0.03928 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
-        const lb = b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+        const lr =
+          r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+        const lg =
+          g <= 0.03928 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+        const lb =
+          b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
         const lum = 0.2126 * lr + 0.7152 * lg + 0.0722 * lb;
         return lum > 0.5 ? "#000000" : "#ffffff";
       } catch {
@@ -121,8 +127,14 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
     const cloneAndInline = (orig: HTMLElement) => {
       const clone = orig.cloneNode(true) as HTMLElement;
 
-      const origNodes = [orig, ...Array.from(orig.querySelectorAll<HTMLElement>("*"))];
-      const cloneNodes = [clone, ...Array.from(clone.querySelectorAll<HTMLElement>("*"))];
+      const origNodes = [
+        orig,
+        ...Array.from(orig.querySelectorAll<HTMLElement>("*")),
+      ];
+      const cloneNodes = [
+        clone,
+        ...Array.from(clone.querySelectorAll<HTMLElement>("*")),
+      ];
 
       for (let i = 0; i < origNodes.length; i++) {
         const o = origNodes[i];
@@ -145,8 +157,13 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
         }
 
         // Preserve input/textarea values
-        if (o instanceof HTMLTextAreaElement && c instanceof HTMLTextAreaElement) c.value = o.value;
-        if (o instanceof HTMLInputElement && c instanceof HTMLInputElement) c.value = o.value;
+        if (
+          o instanceof HTMLTextAreaElement &&
+          c instanceof HTMLTextAreaElement
+        )
+          c.value = o.value;
+        if (o instanceof HTMLInputElement && c instanceof HTMLInputElement)
+          c.value = o.value;
       }
 
       return clone;
@@ -166,7 +183,11 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
     const overrideEl = injectSafeOverrides();
 
     try {
-      const canvas = await html2canvas(cloned, { scale: 2, useCORS: true, backgroundColor: null });
+      const canvas = await html2canvas(cloned, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+      });
       const a = document.createElement("a");
       a.href = canvas.toDataURL("image/png");
       a.download = "wedding-invitation.png";
@@ -183,7 +204,8 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
               const cssText = Array.from(ss.cssRules || [])
                 .map((r: CSSRule) => r.cssText)
                 .join(" ");
-              if (cssText.includes("oklab") || cssText.includes("color-mix")) found = true;
+              if (cssText.includes("oklab") || cssText.includes("color-mix"))
+                found = true;
             } catch {
               // cross-origin or inaccessible
             }
@@ -213,7 +235,11 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
 
       try {
         disableProblematic();
-        const canvas = await html2canvas(el, { scale: 1, useCORS: true, backgroundColor: null });
+        const canvas = await html2canvas(el, {
+          scale: 1,
+          useCORS: true,
+          backgroundColor: null,
+        });
         const a = document.createElement("a");
         a.href = canvas.toDataURL("image/png");
         a.download = "wedding-invitation.png";
@@ -226,7 +252,8 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
     } finally {
       // clean-up: remove injected override and off-screen wrapper
       try {
-        if (overrideEl && overrideEl.parentNode) overrideEl.parentNode.removeChild(overrideEl);
+        if (overrideEl && overrideEl.parentNode)
+          overrideEl.parentNode.removeChild(overrideEl);
       } catch {
         // ignore
       }
@@ -251,7 +278,9 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
       animate={{ opacity: 1, y: 0 }}
       className={`rounded-lg p-6 shadow ${isDarkMode ? "bg-gray-800" : "bg-white"}`}
     >
-      <h3 className={`text-lg font-semibold mb-4 ${isDarkMode ? "text-white" : "text-black"}`}>
+      <h3
+        className={`text-lg font-semibold mb-4 ${isDarkMode ? "text-white" : "text-black"}`}
+      >
         Invitation Card Designer
       </h3>
 
@@ -280,7 +309,11 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
           {weddingCardImage && (
             <div className="mt-2 relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={weddingCardImage} alt="wedding" className="w-full rounded" />
+              <img
+                src={weddingCardImage}
+                alt="wedding"
+                className="w-full rounded"
+              />
               <button
                 onClick={removeImage}
                 className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
@@ -293,7 +326,9 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className={`block text-xs mb-1 ${isDarkMode ? "text-white" : "text-black"}`}>
+            <label
+              className={`block text-xs mb-1 ${isDarkMode ? "text-white" : "text-black"}`}
+            >
               Primary
             </label>
             <input
@@ -304,7 +339,9 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
             />
           </div>
           <div>
-            <label className={`block text-xs mb-1 ${isDarkMode ? "text-white" : "text-black"}`}>
+            <label
+              className={`block text-xs mb-1 ${isDarkMode ? "text-white" : "text-black"}`}
+            >
               Secondary
             </label>
             <input
@@ -372,19 +409,29 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
                 <>
                   <div>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={weddingCardImage} alt="card" className="w-full block rounded-t" />
+                    <img
+                      src={weddingCardImage}
+                      alt="card"
+                      className="w-full block rounded-t"
+                    />
                   </div>
 
                   {/* Details panel below the image so it doesn't cover uploaded artwork */}
                   <div
                     className={`p-4 sm:p-6 text-center ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"}`}
                   >
-                    <h2 className="text-lg sm:text-2xl font-bold">{cardData.coupleName}</h2>
-                    <p className="text-sm sm:text-base">{cardData.weddingDate}</p>
+                    <h2 className="text-lg sm:text-2xl font-bold">
+                      {cardData.coupleName}
+                    </h2>
+                    <p className="text-sm sm:text-base">
+                      {cardData.weddingDate}
+                    </p>
                     <p
                       className="mt-2 text-xs sm:text-sm inline-block px-3 py-1 rounded"
                       style={{
-                        background: isDarkMode ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)",
+                        background: isDarkMode
+                          ? "rgba(255,255,255,0.04)"
+                          : "rgba(0,0,0,0.04)",
                       }}
                     >
                       {cardData.message}
@@ -405,7 +452,9 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
                 <div className="p-6 text-center text-white">
                   <h2 className="text-2xl font-bold">{cardData.coupleName}</h2>
                   <p className="mt-1">{cardData.weddingDate}</p>
-                  <p className="mt-3 text-sm bg-white/20 rounded p-2">{cardData.message}</p>
+                  <p className="mt-3 text-sm bg-white/20 rounded p-2">
+                    {cardData.message}
+                  </p>
                   {cardData.qrCodeUrl && showQRCode && (
                     <div className="mt-4 flex justify-center">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -427,7 +476,10 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
               >
                 Download & Share to WhatsApp
               </button>
-              <button onClick={downloadCard} className="px-3 py-2 rounded bg-blue-600 text-white">
+              <button
+                onClick={downloadCard}
+                className="px-3 py-2 rounded bg-blue-600 text-white"
+              >
                 Download Only
               </button>
             </div>
@@ -436,8 +488,8 @@ export default function InvitationCardDesigner({ streamId, weddingPageUrl }: Pro
               className={`mt-3 p-3 rounded border ${isDarkMode ? "bg-blue-900/10 border-blue-800 text-blue-200" : "bg-blue-50 border-blue-200 text-blue-700"}`}
             >
               <p className="text-xs">
-                Tip: On desktop, download the card then attach it to WhatsApp. On mobile the native
-                share may attach the image automatically.
+                Tip: On desktop, download the card then attach it to WhatsApp.
+                On mobile the native share may attach the image automatically.
               </p>
             </div>
           </div>

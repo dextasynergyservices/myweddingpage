@@ -34,7 +34,10 @@ export async function GET() {
     });
 
     if (!user || !user.planId) {
-      return NextResponse.json({ error: "User plan not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "User plan not found" },
+        { status: 404 }
+      );
     }
 
     // Get templates available for user's plan
@@ -57,6 +60,9 @@ export async function GET() {
     return NextResponse.json(templates);
   } catch (error) {
     console.error("Failed to fetch templates:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
