@@ -1,0 +1,353 @@
+{
+  "site": { "title": "Oju-iwe Igbeyawo Mi", "tagline": "Ṣe ayẹyẹ pẹlu wa" },
+  "preview": {
+    "no_longer_live": "Oju-iwe igbeyawo yii ko si laaye mọ",
+    "close": "Pa",
+    "create_similar": "Ṣẹda oju-iwe to jọra"
+  },
+  "footer": { "platform": "Pẹpẹ", "support": "Atilẹyin" },
+  "cookies": { "label": "Awọn kuki" },
+  "pwa": {
+    "online": "Lori ayelujara",
+    "offline": "Pẹlu aṣiṣe asopọ",
+    "installed": "Ti fi sori ẹrọ",
+    "not_installed": "Kò fi sori ẹrọ",
+    "running_as_app": "Nṣiṣẹ gẹgẹ bi ohun elo",
+    "install_prompt": "Fi sori ẹrọ fun iriri to dara",
+    "notifications_on": "Awọn iwifunni ṣiṣẹ",
+    "notifications_off": "Awọn iwifunni ko ṣiṣẹ",
+    "subscription_enabled": "Awọn iranti iforukọsilẹ ṣiṣẹ",
+    "enable_to_get_reminders": "Mu lati gba iranti",
+    "disable": "Mu kuro",
+    "enable": "Mu ṣiṣẹ",
+    "connected_to_internet": "Ti so mọ ayelujara",
+    "some_features_limited": "Diẹ ninu awọn ẹya to lopin"
+  },
+  "templateEditor": {
+    "choose_color_scheme": "Yan Awọ",
+    "save_template": "Fipamọ Àwòrán",
+    "saving": "N fipamọ..."
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "effective_date": "Effective Date: {date}",
+    "welcome_paragraph": "Welcome to Myweddingpage (\"we\", \"our\", or \"us\"). By accessing or using our services, you agree to be bound by these Terms and Conditions (\"Terms\"). Please read them carefully.",
+    "use_of_service": "1. Use of the Service",
+    "use_of_service_body": "You agree to use Myweddingpage only for lawful purposes and in accordance with these Terms. You must provide accurate and truthful information when registering or using the app.",
+    "payment_policy": "2. Payment and Refund Policy",
+    "payment_policy_item1": "All payments for subscription plans or services are due upfront.",
+    "payment_policy_item2_emph": "No refunds will be issued after 24 hours from the time of purchase.",
+    "payment_policy_item3": "If you encounter issues within the first 24 hours, please contact our support for assistance and potential refund consideration.",
+    "intellectual_property_title": "3. Intellectual Property",
+    "intellectual_property_body": "All content, trademarks, and intellectual property related to Myweddingpage are owned by us or our licensors. You may not use, reproduce, or distribute any content without express permission.",
+    "privacy_title": "4. Privacy",
+    "privacy_body": "Your use of Myweddingpage is also governed by our Privacy Policy, which explains how we collect, use, and protect your data.",
+    "governing_law_title": "5. Governing Law and Jurisdiction",
+    "governing_law_body": "These Terms shall be governed by and construed in accordance with the laws of the Federal Republic of Nigeria. Any disputes arising out of or related to these Terms shall, subject to the dispute resolution clause below, be resolved exclusively by the courts of Nigeria.",
+    "international_users_title": "6. International Users and Compliance",
+    "international_users_body": "If you are accessing or using Myweddingpage from outside Nigeria, you agree to comply with all applicable laws in your jurisdiction, including but not limited to data protection, consumer protection, and import/export laws.",
+    "dispute_resolution_title": "7. Dispute Resolution and Arbitration",
+    "dispute_resolution_intro": "To reduce court battles and provide a flexible, fair process for resolving disputes:",
+    "dispute_resolution_item1": "If a dispute arises, you and we agree to first try to resolve the dispute amicably through good faith negotiations or mediation.",
+    "dispute_resolution_item2": "If mediation fails or is not feasible within 30 days, the dispute will be finally resolved by binding arbitration under the rules of a reputable arbitration organization (e.g., ICC, UNCITRAL, or another mutually agreed body).",
+    "dispute_resolution_item3": "The place of arbitration will be Lagos, Nigeria, but parties may participate remotely.",
+    "dispute_resolution_item4": "Arbitration decisions will be final and binding on both parties.",
+    "dispute_resolution_item5": "This clause does not prevent either party from seeking injunctive or provisional relief in any court if necessary.",
+    "limitation_title": "8. Limitation of Liability",
+    "limitation_body": "To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of Myweddingpage.",
+    "changes_title": "9. Changes to Terms",
+    "changes_body": "We reserve the right to update or modify these Terms at any time. Updated Terms will be posted on the app or website, and your continued use constitutes acceptance.",
+    "contact_title": "10. Contact Us",
+    "contact_paragraph": "For questions or support regarding these Terms, please contact us at:",
+    "contact_email_label": "Email",
+    "contact_email_value": "info@myweddingpage.online",
+    "contact_address_label": "Address",
+    "contact_address_value": "147 NTA Road Mgbuoba, Port Harcourt, Rivers State, Nigeria."
+  },
+  "videos": {
+    "title": "Awọn Ẹkọ Fọti",
+    "getting_started": "Bibẹrẹ",
+    "advanced_tips": "Awọn Imọran Ilọsiwaju"
+  },
+  "coming_soon": {
+    "message": "N bọ laipẹ..."
+  },
+  "cta": {
+    "title": "Ṣe o ti ṣetan lati bẹrẹ irin-ajo rẹ?",
+    "description": "Darapọ mọ awọn ọkọ ati aya ẹgbẹẹgbẹrun ti o ti ṣẹda iriri igbeyawo ti o pe pẹlu wa.",
+    "get_started": "Bẹrẹ Loni",
+    "contact_us": "Kan si wa"
+  },
+  "contact_upgrade": {
+    "title": "Kan si wa fun igbega",
+    "description": "Yan aṣayan kan ni isalẹ lati kan si ẹgbẹ tita wa ki o si gbe ero rẹ ga.",
+    "whatsapp": "WhatsApp",
+    "call": "Pe",
+    "close": "Ti"
+  },
+  "no_weddings": {
+    "title": "Ko si awọn oju-iwe igbeyawo sibẹsibẹ",
+    "description": "Ṣẹda oju-iwe igbeyawo akọkọ rẹ lati bẹrẹ.",
+    "create_button": "Ṣẹda oju-iwe igbeyawo"
+  },
+  "notification_permission": {
+    "title": "Awọn iwifunni Push",
+    "enabled": "Ti ṣiṣẹ",
+    "disabled": "Ko ṣiṣẹ",
+    "active": "Ti n ṣiṣẹ",
+    "description": "Gba iwifunni nipa awọn olurannileti iṣẹ, awọn aago ọjọ igbeyawo, ati awọn imudojuiwọn pataki.",
+    "enable_description": "Mu awọn iwifunni ṣiṣẹ lati gba:",
+    "task_reminders": "Awọn olurannileti iṣẹ fun atokọ igbeyawo rẹ",
+    "countdown": "Awọn iwifunni aago ọjọ igbeyawo",
+    "rsvp_updates": "Awọn imudojuiwọn idahun alejo",
+    "announcements": "Awọn ikede pataki",
+    "enable_button": "Mu awọn iwifunni ṣiṣẹ",
+    "enabling": "N mu ṣiṣẹ...",
+    "disable_button": "Pa",
+    "disabling": "N pa...",
+    "test_button": "Fi idanwo ranṣẹ",
+    "learn_more": "Kọ ẹkun",
+    "show_less": "Fi kukuru han",
+    "blocked_message": "Awọn iwifunni ti dina. Jọwọ mu ṣiṣẹ ninu eto aṣawakiri rẹ.",
+    "permission_denied": "Aṣẹ iwifunni kọ",
+    "enabled_success": "Awọn iwifunni ti ṣiṣẹ ni aṣeyọri!",
+    "enable_failed": "Kuna lati mu awọn iwifunni ṣiṣẹ",
+    "disabled_success": "Awọn iwifunni ti pa",
+    "disable_failed": "Kuna lati pa awọn iwifunni",
+    "test_success": "Iwifunni idanwo ti ranṣẹ! Ṣayẹwo awọn iwifunni rẹ.",
+    "test_failed": "Kuna lati fi iwifunni idanwo ranṣẹ",
+    "error_generic": "Aṣiṣe kan ṣẹlẹ. Jọwọ gbiyanju lẹẹkansi."
+  },
+  "stats": {
+    "couples_served": "Awọn Tọkọtaya Ti A Ṣe Iranṣẹ",
+    "weddings_planned": "Awọn Igbeyawo Ti A Gbero",
+    "love_stories": "Awọn Itan Ife Ti A Sọ",
+    "gifts_delivered": "Awọn Ẹbun Ti A Fi Ranṣẹ"
+  },
+  "how_to": {
+    "hero": {
+      "title": "Bi O Ṣe Le Lo Myweddingpage.Online",
+      "description": "Tẹle awọn igbesẹ rọrun wọnyi lati bẹrẹ ati mu anfani julọ kuro ninu myweddingpage.",
+      "watch_overview": "Wo Akojọpọ"
+    },
+    "steps": {
+      "title": "Bibẹrẹ",
+      "description": "Tẹle awọn igbesẹ rọrun wọnyi lati ṣẹda oju-iwe igbeyawo pipe rẹ",
+      "step1": {
+        "title": "Yan Temipleti Rẹ",
+        "description": "Wa awọn temipleti ẹlẹwa wa ki o yan eyi ti o baamu aṣa rẹ"
+      },
+      "step2": {
+        "title": "Ṣe Akanṣe Akoonu Rẹ",
+        "description": "Fi awọn fọto rẹ, itan rẹ, ati awọn alaye igbeyawo kun lati jẹ ki o jẹ tirẹ nikan"
+      },
+      "step3": {
+        "title": "Pin Pẹlu Awọn Alejo",
+        "description": "Fi ọna asopọ oju-iwe igbeyawo rẹ ranṣẹ si ẹbi ati awọn ọrẹ fun awọn RSVP ati awọn imudojuiwọn"
+      }
+    },
+    "faq": {
+      "title": "Awọn Ibeere Ti A Beere Nigbagbogbo",
+      "subtitle": "Gbogbo ohun ti o nilo lati mọ nipa ṣiṣẹda oju-iwe igbeyawo rẹ",
+      "questions": [
+        {
+          "question": "Ṣe pẹpẹ naa jẹ ọfẹ lati lo?",
+          "answer": "Bẹẹni! A funni ni eto ọfẹ pẹlu ọpọlọpọ awọn ẹya lati bẹrẹ."
+        },
+        {
+          "question": "Ṣe Mo le ṣe igbesoke akọọlẹ mi lẹhinna?",
+          "answer": "Dajudaju! O le ṣe igbesoke nigbakugba lati ṣi awọn ẹya diẹ sii."
+        },
+        {
+          "question": "Ṣe data mi wa ni aabo?",
+          "answer": "A gba aabo ni pataki, nipa lilo ifipamọ ati awọn olupin aabo."
+        }
+      ]
+    }
+  },
+
+  "home": {
+    "hero": {
+      "title_line1": "Igbeyawo Re Ti O Pe",
+      "title_line2": "Irin-ajo Igbeyawo",
+      "subtitle": "Se awọn iriri igbeyawo ti o lewa pẹlu pẹpẹ ode oni wa. Apẹrẹ ẹlẹwa pade agbara iṣẹ fun ọjọ pataki julọ ni aye rẹ.",
+      "cta_start": "Bẹrẹ Irin-ajo Re",
+      "cta_view_pages": "Wo Awọn Oju-iwe Igbeyawo"
+    },
+    "features": {
+      "title": "Gbogbo Ohun Ti O Nilo",
+      "subtitle": "Awọn irinṣẹ agbara ti a ṣe fun awọn tọkọtaya ode oni ti o fẹ ẹwa ati irọrun.",
+      "gallery_title": "Awọn Gallery Ọlọgbọn",
+      "gallery_description": "Eto awọn fọto AI pẹlu ibi ipamọ ailopin ati pinpin lẹsẹkẹsẹ",
+      "gift_title": "Iṣakoso Awọn Ẹbun",
+      "gift_description": "Itọpa ẹbun irọrun pẹlu awọn akọsilẹ ọpẹ adaṣe ati awọn itupalẹ",
+      "engagement_title": "Ifaramọ Awọn Alejo",
+      "engagement_description": "Iwe alejo ibaraenisepo pẹlu iṣakoso akoko gidi ati itupalẹ ikunsinu",
+      "dashboard_title": "Dashboard Tọkọtaya",
+      "dashboard_description": "Ile-iṣẹ iṣakoso oye pẹlu awọn oye ati awọn irinṣẹ ifowosowopo"
+    },
+    "packages": {
+      "title": "Yan Package Re",
+      "description": "Idiyele rọ ti a ṣe lati dagba pẹlu awọn iwulo rẹ, lati awọn ayẹyẹ ikọkọ si awọn ayẹyẹ nla.",
+      "most_popular": "Ti O Gbajumọ Julọ",
+      "get_started": "Bẹrẹ",
+      "loading": "Gbigbe awọn ero..."
+    },
+    "find_wedding": {
+      "title": "Wa Igbeyawo Kan",
+      "description": "Wa awọn ayeye igbeyawo ati awọn iṣẹlẹ ni agbegbe rẹ",
+      "no_weddings": "Ko si awọn oju-iwe igbeyawo ti a ri. Jẹ akọkọ lati ṣẹda ọkan!",
+      "view_all": "Wo Gbogbo Awọn Igbeyawo"
+    },
+    "testimonials": {
+      "title": "Ti a fẹ nipasẹ Awọn tọkọtaya",
+      "description": "Darapọ mọ awọn ẹgbẹẹgbẹrun tọkọtaya ti wọn ti ṣẹda iriri igbeyawo pipe wọn.",
+      "testimonials": [
+        {
+          "name": "Sarah & Michael",
+          "text": "Eto naa kọja awọn ireti wa. Apẹrẹ naa dara ati pe awọn alejo wa fẹran awọn ẹya ibaraẹnisọrọ. Iṣakoso ohun gbogbo ko ni wahala.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Emily & David",
+          "text": "Akiyesi iyalẹnu si awọn alaye ati iriri olumulo. Dashboard mu igbero rọrun pupọ, ati pe abajade ikẹhin jẹ ẹwa pupọ.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Jessica & Ryan",
+          "text": "Ode oni, ẹwa ati iṣẹ-ṣiṣe. Awọn idile wa le rin kiri ohun gbogbo ni irọrun, ati pe a gba ọpọlọpọ awọn iyin lori oju-iwe igbeyawo wa.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024866/pexels-photo-1024866.jpeg?auto=compress&cs=tinysrgb&w=150"
+        }
+      ]
+    },
+    "wedding_card": {
+      "live": "LAI",
+      "not_live": "KII LAAYE"
+    }
+  },
+
+  "auth": {
+    "login": "Wọle",
+    "logout": "Jade",
+    "register": "Forukọsilẹ",
+    "profile": "Profaili",
+    "dashboard": "Pópá àkọ́so",
+    "login_page": {
+      "welcome": "Kaaabo Pada",
+      "subtitle": "Wọle si pópá àkọ́so igbeyawo rẹ"
+    },
+    "login_form": {
+      "labels": {
+        "email": "Email tabi Nọmba WhatsApp",
+        "password": "Ọrọ aṣina"
+      },
+      "placeholders": {
+        "email": "Tẹ email tabi nọmba WhatsApp rẹ",
+        "password": "Tẹ ọrọ aṣina rẹ"
+      },
+      "forgot_password": "Ṣe o gbagbe ọrọ aṣina?",
+      "sign_in_button": "Wọle",
+      "signing_in": "N wọle...",
+      "dont_have_account": "Ṣe o ko ni akauntu?",
+      "sign_up": "Forukọsilẹ",
+      "two_factor_auth": "Ijẹrisi Ọ̀nà-Méjì",
+      "enter_backup_code": "Tẹ ọkan ninu awọn koodu agbekele rẹ",
+      "enter_email_code": "Tẹ koodu 6-digiti ti a fi ranṣẹ si email rẹ",
+      "enter_app_code": "Tẹ koodu 6-digiti lati app ijẹrisi rẹ",
+      "verify_button": "Jẹrisi",
+      "cancel_button": "Fagilee",
+      "use_backup_code": "Lo koodu agbekele dipo",
+      "use_authenticator": "Lo koodu ijẹrisi",
+      "send_email_code": "Fi Koodu Email Ranṣẹ",
+      "sending": "N ranṣẹ...",
+      "enter_verification_code": "Jọwọ tẹ koodu ijẹrisi rẹ",
+      "validation": {
+        "email_required": "Email tabi nọmba WhatsApp pọndandan",
+        "email_invalid": "Tẹ email tabi nọmba foonu to tọ",
+        "password_required": "Ọrọ aṣina pọndandan"
+      }
+    },
+    "register_form": {
+      "title": "Tẹsiwaju lati ṣe Oju-ewe Igbeyawo Rẹ",
+      "subtitle": "Bẹrẹ irin ajo igbeyawo rẹ loni",
+      "labels": {
+        "groom_name": "Orukọ Ọkọ Iyawo",
+        "bride_name": "Orukọ Iyawo",
+        "email": "Adirẹsi Email",
+        "whatsapp": "Nọmba WhatsApp",
+        "wedding_date": "Ọjọ Igbeyawo",
+        "image": "Fi Aworan si Oju-ewe Rẹ (Ti o ba fẹ)",
+        "password": "Ọrọ aṣina",
+        "confirm_password": "Jẹrisi Ọrọ aṣina"
+      },
+      "placeholders": {
+        "groom_name": "Tẹ orukọ ọkọ iyawo",
+        "bride_name": "Tẹ orukọ iyawo",
+        "email": "Tẹ email rẹ",
+        "whatsapp": "Nọmba WhatsApp pẹlu koodu orile-ede bi: +234",
+        "wedding_date": "Yan ọjọ igbeyawo",
+        "password": "Ṣe ọrọ aṣina",
+        "confirm_password": "Jẹrisi ọrọ aṣina rẹ"
+      },
+      "validation": {
+        "groom_name_required": "Orukọ ọkọ iyawo pọndandan.",
+        "bride_name_required": "Orukọ iyawo pọndandan.",
+        "email_required": "Email pọndandan.",
+        "email_invalid": "Adirẹsi email ti ko tọ.",
+        "whatsapp_required": "Nọmba WhatsApp pọndandan.",
+        "wedding_date_required": "Ọjọ igbeyawo pọndandan.",
+        "password_required": "Ọrọ aṣina pọndandan.",
+        "passwords_mismatch": "Awọn ọrọ aṣina ko baamu."
+      },
+      "password_requirements": "Ọrọ aṣina gbọdọ jẹ o kere ju awọn kikọ 8 pẹlu nla, kekere, nọmba ati kikọ pataki (@, $, !, %, *, ?, &, #, ati be lo)",
+      "continue_button": "Tẹsiwaju",
+      "already_have_account": "Ṣe o ni akauntu tẹlẹ?",
+      "sign_in": "Wọle",
+      "messages": {
+        "registration_successful": "Forukọsilẹ ni aṣeyọri! Ṣayẹwo email rẹ.",
+        "registration_failed": "Forukọsilẹ kuna. Jọwọ gbiyanju lẹẹkansi.",
+        "network_error": "Aṣiṣe nẹtiwọọki. Ṣayẹwo asopọ rẹ ki o gbiyanju lẹẹkansi."
+      }
+    }
+  },
+
+  "package": {
+    "modal": {
+      "title_format": "Package {name}",
+      "email_label": "Adirẹsi Email",
+      "email_placeholder": "Tẹ email rẹ",
+      "whatsapp_label": "Nọmba WhatsApp",
+      "whatsapp_placeholder": "Nọmba WhatsApp pẹlu koodu orile-ede bi: +234",
+      "show_terms": "Fi Awọn Ofin Ati Ipo Han ▼",
+      "hide_terms": "Fi Awọn Ofin Ati Ipo Pamọ ▲",
+      "agree_terms": "Mo gba awọn Ofin ati Ipo",
+      "pay_now": "San Bayi",
+      "processing": "N ṣiṣẹ...",
+      "errors": {
+        "fill_contact": "Jọwọ kún Email ati nọmba WhatsApp mejeeji.",
+        "agree_terms": "O gbọdọ gba awọn Ofin ati Ipo."
+      }
+    }
+  },
+
+  "contact": {
+    "form": {
+      "title": "Fi Ifiranṣẹ Ranṣẹ Si Wa",
+      "name_label": "Orukọ Rẹ",
+      "name_placeholder": "Tẹ orukọ rẹ",
+      "email_label": "Adirẹsi Email",
+      "email_placeholder": "Tẹ email rẹ",
+      "subject_label": "Koko-ọrọ",
+      "message_label": "Ifiranṣẹ",
+      "message_placeholder": "Sọ fun wa bi a ṣe le ṣe iranlọwọ fun ọ...",
+      "send_button": "Fi Ifiranṣẹ Ranṣẹ",
+      "sending": "Nfi Ifiranṣẹ Ranṣẹ...",
+      "success_message": "✅ Ifiranṣẹ ti ranṣẹ ni aṣeyọri!",
+      "error_message": "❌ Kuna lati fi ifiranṣẹ ranṣẹ",
+      "error_generic": "⚠️ Nkan kan ṣẹlẹ"
+    }
+  }
+}

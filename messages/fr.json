@@ -1,0 +1,361 @@
+{
+  "site": { "title": "Ma page de mariage", "tagline": "Célébrez avec nous" },
+  "preview": {
+    "no_longer_live": "Cette page de mariage n'est plus en ligne",
+    "close": "Fermer",
+    "create_similar": "Créer une page similaire"
+  },
+  "footer": { "platform": "Plateforme", "support": "Assistance" },
+  "cookies": { "label": "Cookies" },
+  "pwa": {
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "installed": "Installé",
+    "not_installed": "Non installé",
+    "running_as_app": "Exécuté en tant qu'application",
+    "install_prompt": "Installez pour une meilleure expérience",
+    "notifications_on": "Notifications activées",
+    "notifications_off": "Notifications désactivées",
+    "subscription_enabled": "Rappels d'abonnement activés",
+    "enable_to_get_reminders": "Activez pour recevoir des rappels",
+    "disable": "Désactiver",
+    "enable": "Activer",
+    "connected_to_internet": "Connecté à internet",
+    "some_features_limited": "Certaines fonctions limitées"
+  },
+  "templateEditor": {
+    "choose_color_scheme": "Choisir le schéma de couleurs",
+    "save_template": "Enregistrer le modèle",
+    "saving": "Enregistrement..."
+  },
+  "terms": {
+    "title": "Conditions générales",
+    "effective_date": "Date d'effet : {date}",
+    "welcome_paragraph": "Bienvenue sur Ma page de mariage (\"nous\", \"notre\", ou \"nos\"). En accédant ou en utilisant nos services, vous acceptez d'être lié par ces Conditions générales (\"Conditions\"). Veuillez les lire attentivement.",
+    "use_of_service": "1. Utilisation du service",
+    "use_of_service_body": "Vous acceptez d'utiliser Ma page de mariage uniquement à des fins légales et conformément à ces Conditions. Vous devez fournir des informations exactes et véridiques lors de l'inscription ou de l'utilisation de l'application.",
+    "payment_policy": "2. Politique de paiement et de remboursement",
+    "payment_policy_item1": "Tous les paiements pour les plans d'abonnement ou les services sont dus d'avance.",
+    "payment_policy_item2_emph": "Aucun remboursement ne sera effectué après 24 heures à partir du moment de l'achat.",
+    "payment_policy_item3": "Si vous rencontrez des problèmes dans les 24 premières heures, veuillez contacter notre support pour assistance et éventuellement un remboursement.",
+    "intellectual_property_title": "3. Propriété Intellectuelle",
+    "intellectual_property_body": "Tout le contenu, les marques et la propriété intellectuelle liés à Ma page de mariage nous appartiennent ou appartiennent à nos concédants. Vous ne pouvez pas utiliser, reproduire ou distribuer tout contenu sans autorisation expresse.",
+    "privacy_title": "4. Confidentialité",
+    "privacy_body": "Votre utilisation de Ma page de mariage est également régie par notre Politique de Confidentialité, qui explique comment nous collectons, utilisons et protégeons vos données.",
+    "governing_law_title": "5. Droit applicable et juridiction",
+    "governing_law_body": "Ces Conditions sont régies et interprétées conformément aux lois de la République fédérale du Nigeria. Tout litige découlant de ces Conditions sera, sous réserve de la clause de règlement des différends ci-dessous, résolu exclusivement par les tribunaux du Nigeria.",
+    "international_users_title": "6. Utilisateurs internationaux et conformité",
+    "international_users_body": "Si vous accédez ou utilisez Ma page de mariage depuis l'extérieur du Nigeria, vous acceptez de respecter toutes les lois applicables dans votre juridiction, y compris la protection des données et la protection des consommateurs.",
+    "dispute_resolution_title": "7. Résolution des litiges et arbitrage",
+    "dispute_resolution_intro": "Afin de réduire les batailles judiciaires et de fournir un processus équitable et flexible pour résoudre les différends:",
+    "dispute_resolution_item1": "En cas de différend, vous et nous convenons d'abord d'essayer de résoudre le différend à l'amiable par des négociations de bonne foi ou une médiation.",
+    "dispute_resolution_item2": "Si la médiation échoue ou n'est pas réalisable dans les 30 jours, le différend sera finalement résolu par arbitrage contraignant selon les règles d'une organisation d'arbitrage réputée.",
+    "dispute_resolution_item3": "Le lieu de l'arbitrage sera Lagos, Nigéria, mais les parties peuvent y participer à distance.",
+    "dispute_resolution_item4": "Les décisions arbitrales seront finales et contraignantes pour les deux parties.",
+    "dispute_resolution_item5": "Cette clause n'empêche pas l'une ou l'autre des parties de demander des mesures provisoires ou injonctives devant tout tribunal si nécessaire.",
+    "limitation_title": "8. Limitation de responsabilité",
+    "limitation_body": "Dans la mesure maximale permise par la loi, nous ne serons pas responsables des dommages indirects, accessoires, spéciaux ou consécutifs résultant de votre utilisation de Ma page de mariage.",
+    "changes_title": "9. Modifications des Conditions",
+    "changes_body": "Nous nous réservons le droit de mettre à jour ou de modifier ces Conditions à tout moment. Les Conditions mises à jour seront publiées sur l'application ou le site Web et votre utilisation continue constitue une acceptation.",
+    "contact_title": "10. Nous contacter",
+    "contact_paragraph": "Pour des questions ou de l'assistance concernant ces Conditions, veuillez nous contacter à :",
+    "contact_email_label": "Email",
+    "contact_email_value": "info@myweddingpage.online",
+    "contact_address_label": "Adresse",
+    "contact_address_value": "147 NTA Road Mgbuoba, Port Harcourt, Rivers State, Nigeria."
+  },
+  "videos": {
+    "title": "Tutoriels Vidéo",
+    "getting_started": "Commencer",
+    "advanced_tips": "Conseils Avancés"
+  },
+  "coming_soon": {
+    "message": "Bientôt disponible..."
+  },
+  "cta": {
+    "title": "Prêt à Commencer Votre Voyage?",
+    "description": "Rejoignez des milliers de couples qui ont créé leur expérience de mariage parfaite avec nous.",
+    "get_started": "Commencer Aujourd'hui",
+    "contact_us": "Nous Contacter"
+  },
+  "contact_upgrade": {
+    "title": "Contactez-nous pour une mise à niveau",
+    "description": "Choisissez une option ci-dessous pour contacter notre équipe commerciale et mettre à niveau votre plan.",
+    "whatsapp": "WhatsApp",
+    "call": "Appeler",
+    "close": "Fermer"
+  },
+  "no_weddings": {
+    "title": "Aucune page de mariage pour le moment",
+    "description": "Créez votre première page de mariage pour commencer.",
+    "create_button": "Créer une page de mariage"
+  },
+  "notification_permission": {
+    "title": "Notifications Push",
+    "enabled": "Activées",
+    "disabled": "Désactivées",
+    "active": "Actives",
+    "description": "Recevez des notifications pour les rappels de tâches, les comptes à rebours et les mises à jour importantes.",
+    "enable_description": "Activez les notifications pour recevoir:",
+    "task_reminders": "Rappels de tâches pour votre liste de mariage",
+    "countdown": "Notifications de compte à rebours jusqu'au mariage",
+    "rsvp_updates": "Mises à jour des réponses d'invités",
+    "announcements": "Annonces importantes",
+    "enable_button": "Activer les notifications",
+    "enabling": "Activation...",
+    "disable_button": "Désactiver",
+    "disabling": "Désactivation...",
+    "test_button": "Envoyer un test",
+    "learn_more": "En savoir plus",
+    "show_less": "Afficher moins",
+    "blocked_message": "Notifications bloquées. Veuillez les activer dans les paramètres de votre navigateur.",
+    "permission_denied": "Permission de notification refusée",
+    "enabled_success": "Notifications activées avec succès!",
+    "enable_failed": "Échec de l'activation des notifications",
+    "disabled_success": "Notifications désactivées",
+    "disable_failed": "Échec de la désactivation des notifications",
+    "test_success": "Notification de test envoyée! Vérifiez vos notifications.",
+    "test_failed": "Échec de l'envoi de la notification de test",
+    "error_generic": "Une erreur s'est produite. Veuillez réessayer."
+  },
+  "stats": {
+    "couples_served": "Couples Servis",
+    "weddings_planned": "Mariages Planifiés",
+    "love_stories": "Histoires d'Amour Racontées",
+    "gifts_delivered": "Cadeaux Livrés"
+  },
+  "mission": {
+    "title": "Notre Mission",
+    "description": "Donner aux couples les outils et la plateforme dont ils ont besoin pour créer, partager et célébrer leur jour de mariage parfait. Nous nous engageons à rendre la planification de mariage sans stress et joyeuse, permettant aux couples de se concentrer sur ce qui compte le plus - leur histoire d'amour."
+  },
+  "vision": {
+    "title": "Notre Vision",
+    "description": "Devenir la plateforme de mariage la plus fiable au monde, où chaque couple peut créer l'expérience de mariage de ses rêves. Nous envisageons un avenir où la technologie améliore parfaitement les moments les plus importants de la vie des gens."
+  },
+  "how_to": {
+    "hero": {
+      "title": "Comment Utiliser Myweddingpage.Online",
+      "description": "Suivez ces étapes simples pour commencer et tirer le meilleur parti de myweddingpage.",
+      "watch_overview": "Regarder l'Aperçu"
+    },
+    "steps": {
+      "title": "Commencer",
+      "description": "Suivez ces étapes simples pour créer votre page de mariage parfaite",
+      "step1": {
+        "title": "Choisissez Votre Modèle",
+        "description": "Parcourez nos beaux modèles et sélectionnez celui qui correspond à votre style"
+      },
+      "step2": {
+        "title": "Personnalisez Votre Contenu",
+        "description": "Ajoutez vos photos, votre histoire et les détails de votre mariage pour le rendre uniquement vôtre"
+      },
+      "step3": {
+        "title": "Partagez avec les Invités",
+        "description": "Envoyez le lien de votre page de mariage à la famille et aux amis pour les RSVP et les mises à jour"
+      }
+    },
+    "faq": {
+      "title": "Questions Fréquemment Posées",
+      "subtitle": "Tout ce que vous devez savoir sur la création de votre page de mariage",
+      "questions": [
+        {
+          "question": "La plateforme est-elle gratuite à utiliser?",
+          "answer": "Oui! Nous offrons un plan gratuit avec de nombreuses fonctionnalités pour commencer."
+        },
+        {
+          "question": "Puis-je mettre à niveau mon compte plus tard?",
+          "answer": "Absolument! Vous pouvez mettre à niveau à tout moment pour débloquer plus de fonctionnalités."
+        },
+        {
+          "question": "Mes données sont-elles sécurisées?",
+          "answer": "Nous prenons la sécurité au sérieux, en utilisant le cryptage et des serveurs sécurisés."
+        }
+      ]
+    }
+  },
+
+  "home": {
+    "hero": {
+      "title_line1": "Votre Parfait",
+      "title_line2": "Voyage de Mariage",
+      "subtitle": "Créez des expériences de mariage époustouflantes avec notre plateforme moderne. Le design élégant rencontre une fonctionnalité puissante pour le jour le plus important de votre vie.",
+      "cta_start": "Commencez Votre Voyage",
+      "cta_view_pages": "Voir les Pages de Mariage"
+    },
+    "features": {
+      "title": "Tout Ce Dont Vous Avez Besoin",
+      "subtitle": "Des outils puissants conçus pour les couples modernes qui veulent élégance et simplicité.",
+      "gallery_title": "Galeries Intelligentes",
+      "gallery_description": "Organisation de photos alimentée par l'IA avec stockage illimité et partage instantané",
+      "gift_title": "Gestion des Cadeaux",
+      "gift_description": "Suivi de cadeaux fluide avec des notes de remerciement automatisées et des analyses",
+      "engagement_title": "Engagement des Invités",
+      "engagement_description": "Livre d'or interactif avec modération en temps réel et analyse de sentiment",
+      "dashboard_title": "Tableau de Bord du Couple",
+      "dashboard_description": "Centre de contrôle intuitif avec des insights et des outils de collaboration"
+    },
+    "packages": {
+      "title": "Choisissez Votre Forfait",
+      "description": "Tarification flexible conçue pour évoluer avec vos besoins, des cérémonies intimes aux grandes célébrations.",
+      "most_popular": "Le Plus Populaire",
+      "get_started": "Commencer",
+      "loading": "Chargement des plans..."
+    },
+    "find_wedding": {
+      "title": "Trouver un Mariage",
+      "description": "Recherchez des célébrations de mariage et des événements dans votre région",
+      "no_weddings": "Aucune page de mariage trouvée. Soyez le premier à en créer une !",
+      "view_all": "Voir Tous les Mariages"
+    },
+    "testimonials": {
+      "title": "Aimé par les Couples",
+      "description": "Rejoignez des milliers de couples qui ont créé leur expérience de mariage parfaite.",
+      "testimonials": [
+        {
+          "name": "Sarah & Michael",
+          "text": "La plateforme a dépassé nos attentes. Le design est magnifique et nos invités ont adoré les fonctionnalités interactives. Tout gérer était sans effort.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Emily & David",
+          "text": "Attention incroyable aux détails et expérience utilisateur. Le tableau de bord a rendu la planification beaucoup plus facile, et le résultat final était absolument magnifique.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Jessica & Ryan",
+          "text": "Moderne, élégant et fonctionnel. Nos familles pouvaient facilement naviguer dans tout, et nous avons reçu tant de compliments sur notre page de mariage.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024866/pexels-photo-1024866.jpeg?auto=compress&cs=tinysrgb&w=150"
+        }
+      ]
+    },
+    "wedding_card": {
+      "live": "EN DIRECT",
+      "not_live": "PAS EN DIRECT"
+    }
+  },
+
+  "auth": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "register": "S'inscrire",
+    "profile": "Profil",
+    "dashboard": "Tableau de bord",
+    "login_page": {
+      "welcome": "Bon Retour",
+      "subtitle": "Connectez-vous à votre tableau de bord de mariage"
+    },
+    "login_form": {
+      "labels": {
+        "email": "Email ou Numéro WhatsApp",
+        "password": "Mot de passe"
+      },
+      "placeholders": {
+        "email": "Entrez votre email ou numéro WhatsApp",
+        "password": "Entrez votre mot de passe"
+      },
+      "forgot_password": "Mot de passe oublié?",
+      "sign_in_button": "Se connecter",
+      "signing_in": "Connexion...",
+      "dont_have_account": "Vous n'avez pas de compte?",
+      "sign_up": "S'inscrire",
+      "two_factor_auth": "Authentification à Deux Facteurs",
+      "enter_backup_code": "Entrez un de vos codes de sauvegarde",
+      "enter_email_code": "Entrez le code à 6 chiffres envoyé à votre email",
+      "enter_app_code": "Entrez le code à 6 chiffres de votre application d'authentification",
+      "verify_button": "Vérifier",
+      "cancel_button": "Annuler",
+      "use_backup_code": "Utiliser un code de sauvegarde",
+      "use_authenticator": "Utiliser le code d'authentification",
+      "send_email_code": "Envoyer Code Email",
+      "sending": "Envoi...",
+      "enter_verification_code": "Veuillez entrer votre code de vérification",
+      "validation": {
+        "email_required": "Email ou numéro WhatsApp requis",
+        "email_invalid": "Entrez un email ou numéro de téléphone valide",
+        "password_required": "Mot de passe requis"
+      }
+    },
+    "register_form": {
+      "title": "Continuez pour créer votre Page de Mariage",
+      "subtitle": "Commencez votre voyage de mariage aujourd'hui",
+      "labels": {
+        "groom_name": "Prénom du Marié",
+        "bride_name": "Prénom de la Mariée",
+        "email": "Adresse Email",
+        "whatsapp": "Numéro WhatsApp",
+        "wedding_date": "Date de Mariage",
+        "image": "Ajoutez une Image pour votre Site Web (Optionnel)",
+        "password": "Mot de passe",
+        "confirm_password": "Confirmer le Mot de passe"
+      },
+      "placeholders": {
+        "groom_name": "Entrez le prénom du marié",
+        "bride_name": "Entrez le nom de la mariée",
+        "email": "Entrez votre email",
+        "whatsapp": "Numéro WhatsApp avec code pays ex: +234",
+        "wedding_date": "Sélectionnez la date de mariage",
+        "password": "Créez un mot de passe",
+        "confirm_password": "Confirmez votre mot de passe"
+      },
+      "validation": {
+        "groom_name_required": "Le nom du marié est requis.",
+        "bride_name_required": "Le nom de la mariée est requis.",
+        "email_required": "L'email est requis.",
+        "email_invalid": "Adresse email invalide.",
+        "whatsapp_required": "Le numéro WhatsApp est requis.",
+        "wedding_date_required": "La date de mariage est requise.",
+        "password_required": "Le mot de passe est requis.",
+        "passwords_mismatch": "Les mots de passe ne correspondent pas."
+      },
+      "password_requirements": "Le mot de passe doit contenir au moins 8 caractères avec majuscule, minuscule, chiffre et caractère spécial (@, $, !, %, *, ?, &, #, etc.)",
+      "continue_button": "Continuer",
+      "already_have_account": "Vous avez déjà un compte?",
+      "sign_in": "Se connecter",
+      "messages": {
+        "registration_successful": "Inscription réussie! Vérifiez vos emails.",
+        "registration_failed": "L'inscription a échoué. Veuillez réessayer.",
+        "network_error": "Erreur réseau. Vérifiez votre connexion et réessayez."
+      }
+    }
+  },
+
+  "package": {
+    "modal": {
+      "title_format": "Forfait {name}",
+      "email_label": "Adresse Email",
+      "email_placeholder": "Entrez votre email",
+      "whatsapp_label": "Numéro WhatsApp",
+      "whatsapp_placeholder": "Numéro WhatsApp avec code pays ex: +234",
+      "show_terms": "Afficher les Conditions Générales ▼",
+      "hide_terms": "Masquer les Conditions Générales ▲",
+      "agree_terms": "J'accepte les Conditions Générales",
+      "pay_now": "Payer Maintenant",
+      "processing": "Traitement...",
+      "errors": {
+        "fill_contact": "Veuillez renseigner l'e-mail et le numéro WhatsApp.",
+        "agree_terms": "Vous devez accepter les Conditions Générales."
+      }
+    }
+  },
+
+  "contact": {
+    "form": {
+      "title": "Envoyez-nous un Message",
+      "name_label": "Votre Nom",
+      "name_placeholder": "Entrez votre nom",
+      "email_label": "Adresse Email",
+      "email_placeholder": "Entrez votre email",
+      "subject_label": "Sujet",
+      "message_label": "Message",
+      "message_placeholder": "Dites-nous comment nous pouvons vous aider...",
+      "send_button": "Envoyer le Message",
+      "sending": "Envoi du Message...",
+      "success_message": "✅ Message envoyé avec succès!",
+      "error_message": "❌ Échec de l'envoi du message",
+      "error_generic": "⚠️ Quelque chose s'est mal passé"
+    }
+  }
+}
