@@ -28,6 +28,21 @@ const eslintConfig = [
     "eslint:recommended",
     "plugin:prettier/recommended"
   ),
+  {
+    rules: {
+      "prettier/prettier": [
+        "error",
+        {
+          semi: true,
+          singleQuote: false,
+          trailingComma: "es5",
+          tabWidth: 2,
+          printWidth: 80,
+          endOfLine: "lf",
+        },
+      ],
+    },
+  },
 ];
 
 export default eslintConfig;
