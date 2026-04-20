@@ -20,7 +20,10 @@ export async function POST(req: Request) {
         const { emailOrPhone } = await req.json();
 
         if (!emailOrPhone) {
-          return NextResponse.json({ error: "Email or phone required" }, { status: 400 });
+          return NextResponse.json(
+            { error: "Email or phone required" },
+            { status: 400 }
+          );
         }
 
         // Find user by email or phone
@@ -57,7 +60,10 @@ export async function POST(req: Request) {
       } catch (error) {
         console.error("Check 2FA error:", error);
 
-        return NextResponse.json({ error: "Failed to check 2FA status" }, { status: 500 });
+        return NextResponse.json(
+          { error: "Failed to check 2FA status" },
+          { status: 500 }
+        );
       }
     },
     { sampleRate: 1, eventType: "TWO_FA_CHECK" }

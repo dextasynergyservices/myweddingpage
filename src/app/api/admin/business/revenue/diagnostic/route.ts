@@ -60,7 +60,8 @@ export async function GET(req: Request) {
       samplePayments = [];
     }
 
-    const lastPaymentDate = samplePayments.length > 0 ? samplePayments[0].createdAt : null;
+    const lastPaymentDate =
+      samplePayments.length > 0 ? samplePayments[0].createdAt : null;
 
     return new Response(
       JSON.stringify({
@@ -72,6 +73,9 @@ export async function GET(req: Request) {
       { status: 200 }
     );
   } catch (err: any) {
-    return new Response(JSON.stringify({ error: String(err?.message ?? err) }), { status: 500 });
+    return new Response(
+      JSON.stringify({ error: String(err?.message ?? err) }),
+      { status: 500 }
+    );
   }
 }

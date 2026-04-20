@@ -34,7 +34,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { HexColorPicker } from "react-colorful";
 import { motion, AnimatePresence } from "framer-motion";
 import { Palette, Check, AlertCircle } from "lucide-react";
-import { validateColor, hexToRgb, rgbToHex, checkContrast } from "@/lib/color-utils";
+import {
+  validateColor,
+  hexToRgb,
+  rgbToHex,
+  checkContrast,
+} from "@/lib/color-utils";
 
 interface ColorInputProps {
   label: string;
@@ -105,7 +110,10 @@ export default function ColorInput({
   // Close picker when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
+      if (
+        pickerRef.current &&
+        !pickerRef.current.contains(event.target as Node)
+      ) {
         setIsPickerOpen(false);
       }
     };
@@ -185,7 +193,9 @@ export default function ColorInput({
             {required && <span className="text-red-500 ml-1">*</span>}
           </label>
           {description && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{description}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              {description}
+            </p>
           )}
         </div>
 
@@ -285,7 +295,9 @@ export default function ColorInput({
 
               {/* Quick Actions */}
               <div className="mt-3 flex items-center justify-between">
-                <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">{value}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
+                  {value}
+                </span>
                 <button
                   type="button"
                   onClick={() => setIsPickerOpen(false)}

@@ -111,7 +111,9 @@ export async function GET() {
       where: { status: "ACTIVE" },
     });
     const retentionRate =
-      totalUsers === 0 ? 0 : Math.round((activeSubscriptions / totalUsers) * 100 * 100) / 100; // percent with 2 decimals
+      totalUsers === 0
+        ? 0
+        : Math.round((activeSubscriptions / totalUsers) * 100 * 100) / 100; // percent with 2 decimals
     const churnRate = Math.max(0, 100 - retentionRate);
 
     // Lifetime value: average subscription amount * expected renewals (simple heuristic)
@@ -131,6 +133,9 @@ export async function GET() {
     return NextResponse.json(growthAnalytics);
   } catch (e) {
     console.error("Business growth fetch error:", e);
-    return NextResponse.json({ error: "Failed to fetch growth analytics" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch growth analytics" },
+      { status: 500 }
+    );
   }
 }

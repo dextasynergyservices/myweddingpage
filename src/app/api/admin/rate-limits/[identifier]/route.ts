@@ -5,7 +5,10 @@ import { requireAdmin, logAdminAction } from "@/lib/middleware/admin";
  * DELETE /api/admin/rate-limits/[identifier]
  * Clear a specific rate limit
  */
-export async function DELETE(request: Request, { params }: { params: { identifier: string } }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { identifier: string } }
+) {
   try {
     // Check admin authentication
     const adminUser = await requireAdmin();

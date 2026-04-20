@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function POST(req: NextRequest, { params }: { params: { token: string } }) {
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { token: string } }
+) {
   const { token } = await params;
 
   try {
@@ -14,7 +17,10 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
     });
 
     if (!user) {
-      return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid or expired token" },
+        { status: 400 }
+      );
     }
 
     await prisma.user.update({
@@ -32,6 +38,9 @@ export async function POST(req: NextRequest, { params }: { params: { token: stri
     });
   } catch (error) {
     console.error("Verification error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

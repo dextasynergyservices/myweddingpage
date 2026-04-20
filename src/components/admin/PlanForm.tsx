@@ -25,8 +25,12 @@ interface Props {
 export default function PlanForm({ initial = {}, onSaved }: Props) {
   const { token: csrfToken } = useCSRFToken();
   const [name, setName] = useState(initial.name || "");
-  const [price, setPrice] = useState(initial.price ? String(initial.price) : "0.00");
-  const [duration_days, setDurationDays] = useState(initial.duration_days ?? 30);
+  const [price, setPrice] = useState(
+    initial.price ? String(initial.price) : "0.00"
+  );
+  const [duration_days, setDurationDays] = useState(
+    initial.duration_days ?? 30
+  );
   const [max_photos, setMaxPhotos] = useState(initial.max_photos ?? 100);
   const [max_videos, setMaxVideos] = useState(initial.max_videos ?? 10);
   const [max_tabs, setMaxTabs] = useState(initial.max_tabs ?? 5);
@@ -50,7 +54,9 @@ export default function PlanForm({ initial = {}, onSaved }: Props) {
       };
 
       const method = initial?.id ? "PATCH" : "POST";
-      const url = initial?.id ? `/api/admin/plans/${initial.id}` : "/api/admin/plans";
+      const url = initial?.id
+        ? `/api/admin/plans/${initial.id}`
+        : "/api/admin/plans";
 
       const res = await fetch(url, {
         method,
@@ -79,7 +85,10 @@ export default function PlanForm({ initial = {}, onSaved }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white border rounded-lg p-6 shadow-sm">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 bg-white border rounded-lg p-6 shadow-sm"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium">Name</label>

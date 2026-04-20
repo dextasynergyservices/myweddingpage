@@ -24,7 +24,10 @@ export async function GET(request: Request) {
     if (status) where.status = status;
     if (templateId) where.templateId = templateId;
     if (qterm) {
-      where.OR = [{ publicId: { contains: qterm } }, { source: { contains: qterm } }];
+      where.OR = [
+        { publicId: { contains: qterm } },
+        { source: { contains: qterm } },
+      ];
     }
 
     const [total, rows] = await Promise.all([
@@ -39,7 +42,10 @@ export async function GET(request: Request) {
     return NextResponse.json({ rows, total, page, take });
   } catch (err) {
     console.error("Failed to list remote media gc:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -52,7 +58,8 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const ids: string[] = Array.isArray(body?.ids) ? body.ids : [];
-    if (!ids.length) return NextResponse.json({ error: "ids required" }, { status: 400 });
+    if (!ids.length)
+      return NextResponse.json({ error: "ids required" }, { status: 400 });
 
     const results: Array<{ id: string; ok: boolean; error?: string }> = [];
     for (const id of ids) {
@@ -67,7 +74,9 @@ export async function POST(request: Request) {
           resource_type: rec.resourceType || "image",
         });
         const resultField =
-          (res as unknown) && typeof res === "object" && (res as { [k: string]: unknown }).result
+          (res as unknown) &&
+          typeof res === "object" &&
+          (res as { [k: string]: unknown }).result
             ? (res as { [k: string]: unknown }).result
             : null;
         const ok = resultField === "ok" || resultField === "not_found";
@@ -110,6 +119,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ results });
   } catch (err) {
     console.error("Retry GC error:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

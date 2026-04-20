@@ -34,7 +34,9 @@ interface UseSignedUploadReturn {
 /**
  * React hook for handling signed Cloudinary uploads
  */
-export function useSignedUpload(options: UseSignedUploadOptions): UseSignedUploadReturn {
+export function useSignedUpload(
+  options: UseSignedUploadOptions
+): UseSignedUploadReturn {
   const {
     uploadType,
     onSuccess,
@@ -129,7 +131,8 @@ export function useSignedUpload(options: UseSignedUploadOptions): UseSignedUploa
         const uploadResult = await uploadWithSignature(file, uploadOptions);
         return uploadResult;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Upload failed";
+        const errorMessage =
+          err instanceof Error ? err.message : "Upload failed";
         setError(errorMessage);
 
         if (showToasts) {
@@ -163,17 +166,22 @@ export function useSignedUpload(options: UseSignedUploadOptions): UseSignedUploa
 /**
  * Specialized hooks for common upload types
  */
-export const useProfileImageUpload = (callbacks?: Partial<UseSignedUploadOptions>) =>
-  useSignedUpload({ uploadType: "profile", ...callbacks });
+export const useProfileImageUpload = (
+  callbacks?: Partial<UseSignedUploadOptions>
+) => useSignedUpload({ uploadType: "profile", ...callbacks });
 
-export const useHeroImageUpload = (callbacks?: Partial<UseSignedUploadOptions>) =>
-  useSignedUpload({ uploadType: "hero", ...callbacks });
+export const useHeroImageUpload = (
+  callbacks?: Partial<UseSignedUploadOptions>
+) => useSignedUpload({ uploadType: "hero", ...callbacks });
 
-export const useStoryImageUpload = (callbacks?: Partial<UseSignedUploadOptions>) =>
-  useSignedUpload({ uploadType: "story", ...callbacks });
+export const useStoryImageUpload = (
+  callbacks?: Partial<UseSignedUploadOptions>
+) => useSignedUpload({ uploadType: "story", ...callbacks });
 
-export const useLogoImageUpload = (callbacks?: Partial<UseSignedUploadOptions>) =>
-  useSignedUpload({ uploadType: "logo", ...callbacks });
+export const useLogoImageUpload = (
+  callbacks?: Partial<UseSignedUploadOptions>
+) => useSignedUpload({ uploadType: "logo", ...callbacks });
 
-export const useGeneralImageUpload = (callbacks?: Partial<UseSignedUploadOptions>) =>
-  useSignedUpload({ uploadType: "general", ...callbacks });
+export const useGeneralImageUpload = (
+  callbacks?: Partial<UseSignedUploadOptions>
+) => useSignedUpload({ uploadType: "general", ...callbacks });

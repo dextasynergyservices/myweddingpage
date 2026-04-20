@@ -47,8 +47,11 @@ function TemplateManagerGroup({
 }) {
   // initialize open state from localStorage when available, or open if any child is active
   // find remote-media-gc badge count (if present) so we can render a compact badge when collapsed
-  const remoteGcItem = items.find((it) => it.href === "/dashboard/admin/remote-media-gc");
-  const remoteBadge = typeof remoteGcItem?.badgeCount === "number" ? remoteGcItem!.badgeCount : 0;
+  const remoteGcItem = items.find(
+    (it) => it.href === "/dashboard/admin/remote-media-gc"
+  );
+  const remoteBadge =
+    typeof remoteGcItem?.badgeCount === "number" ? remoteGcItem!.badgeCount : 0;
   const anyActive = items.some((it) => pathname === it.href);
   const [open, setOpen] = React.useState(() => {
     try {
@@ -66,7 +69,10 @@ function TemplateManagerGroup({
   React.useEffect(() => {
     try {
       if (typeof window !== "undefined") {
-        localStorage.setItem("admin-template-manager-open", open ? "true" : "false");
+        localStorage.setItem(
+          "admin-template-manager-open",
+          open ? "true" : "false"
+        );
       }
     } catch {
       // ignore
@@ -113,9 +119,13 @@ function TemplateManagerGroup({
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <p className="font-medium">Template Manager</p>
-              <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
+              />
             </div>
-            <p className={`text-xs ${anyActive ? "text-white/80" : "text-gray-500"}`}>
+            <p
+              className={`text-xs ${anyActive ? "text-white/80" : "text-gray-500"}`}
+            >
               Manage templates
             </p>
           </div>
@@ -154,7 +164,9 @@ function TemplateManagerGroup({
                       aria-label={`Pending remote media deletions: ${it.badgeCount}`}
                       title={`Pending remote media deletions: ${it.badgeCount}`}
                     >
-                      <span className="sr-only">Pending remote media deletions:</span>
+                      <span className="sr-only">
+                        Pending remote media deletions:
+                      </span>
                       {it.badgeCount}
                     </div>
                   )}
@@ -224,9 +236,13 @@ function PlansManagerGroup({
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <p className="font-medium">Plans Management</p>
-              <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
+              />
             </div>
-            <p className={`text-xs ${anyActive ? "text-white/80" : "text-gray-500"}`}>
+            <p
+              className={`text-xs ${anyActive ? "text-white/80" : "text-gray-500"}`}
+            >
               Manage subscription plans
             </p>
           </div>
@@ -405,7 +421,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("admin-sidebar-collapsed", isSidebarCollapsed.toString());
+      localStorage.setItem(
+        "admin-sidebar-collapsed",
+        isSidebarCollapsed.toString()
+      );
     }
   }, [isSidebarCollapsed]);
 
@@ -437,7 +456,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   // compute a render-time copy with badge injected
   const templateManagerItemsWithBadge = templateManagerItems.map((it) =>
-    it.href === "/dashboard/admin/remote-media-gc" ? { ...it, badgeCount: pendingGCCount } : it
+    it.href === "/dashboard/admin/remote-media-gc"
+      ? { ...it, badgeCount: pendingGCCount }
+      : it
   );
 
   const handleLogout = async () => {
@@ -460,7 +481,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div
             className={`mx-auto h-16 w-16 animate-spin rounded-full border-4 border-[#ab862b] border-t-transparent`}
           />
-          <p className={`mt-4 text-lg ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
+          <p
+            className={`mt-4 text-lg ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
+          >
             Verifying admin access...
           </p>
         </motion.div>
@@ -473,7 +496,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`}>
+    <div
+      className={`min-h-screen ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`}
+    >
       {/* Header */}
       <header
         className={`sticky top-0 z-40 border-b ${
@@ -489,7 +514,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className="lg:hidden rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              {isSidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isSidebarOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
 
             {/* Logo and title */}
@@ -498,10 +527,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <Shield className="h-6 w-6 text-white" />
               </div>
               <div className="hidden sm:block">
-                <h1 className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                <h1
+                  className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                >
                   Admin Dashboard
                 </h1>
-                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   System Management
                 </p>
               </div>
@@ -530,13 +563,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               }`}
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ab862b] text-sm font-semibold text-white">
-                {session?.user?.name?.charAt(0) || session?.user?.email?.charAt(0) || "A"}
+                {session?.user?.name?.charAt(0) ||
+                  session?.user?.email?.charAt(0) ||
+                  "A"}
               </div>
               <div className="hidden text-left sm:block">
-                <p className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                <p
+                  className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                >
                   {session?.user?.name || "Admin"}
                 </p>
-                <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   {session?.user?.email}
                 </p>
               </div>
@@ -551,7 +590,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className={`absolute right-0 mt-2 w-48 rounded-lg border shadow-lg ${
-                    isDarkMode ? "border-gray-800 bg-gray-900" : "border-gray-200 bg-white"
+                    isDarkMode
+                      ? "border-gray-800 bg-gray-900"
+                      : "border-gray-200 bg-white"
                   }`}
                 >
                   <button
@@ -614,7 +655,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   {!isSidebarCollapsed && (
                     <div className="flex-1">
                       <p className="font-medium">{item.name}</p>
-                      <p className={`text-xs ${isActive ? "text-white/80" : "text-gray-500"}`}>
+                      <p
+                        className={`text-xs ${isActive ? "text-white/80" : "text-gray-500"}`}
+                      >
                         {item.description}
                       </p>
                     </div>
@@ -683,7 +726,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 exit={{ x: -300 }}
                 transition={{ type: "spring", damping: 20 }}
                 className={`fixed left-0 top-16 z-50 h-[calc(100vh-4rem)] w-64 border-r ${
-                  isDarkMode ? "border-gray-800 bg-gray-900" : "border-gray-200 bg-white"
+                  isDarkMode
+                    ? "border-gray-800 bg-gray-900"
+                    : "border-gray-200 bg-white"
                 } lg:hidden`}
               >
                 <nav className="p-4 space-y-2">
@@ -712,7 +757,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         <Icon className="h-5 w-5" />
                         <div className="flex-1">
                           <p className="font-medium">{item.name}</p>
-                          <p className={`text-xs ${isActive ? "text-white/80" : "text-gray-500"}`}>
+                          <p
+                            className={`text-xs ${isActive ? "text-white/80" : "text-gray-500"}`}
+                          >
                             {item.description}
                           </p>
                         </div>
@@ -803,17 +850,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                                 {it.description}
                               </p>
                             </div>
-                            {typeof it.badgeCount === "number" && it.badgeCount > 0 && (
-                              <div
-                                className="ml-2 rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-semibold text-white"
-                                role="status"
-                                aria-label={`Pending remote media deletions: ${it.badgeCount}`}
-                                title={`Pending remote media deletions: ${it.badgeCount}`}
-                              >
-                                <span className="sr-only">Pending remote media deletions:</span>
-                                {it.badgeCount}
-                              </div>
-                            )}
+                            {typeof it.badgeCount === "number" &&
+                              it.badgeCount > 0 && (
+                                <div
+                                  className="ml-2 rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-semibold text-white"
+                                  role="status"
+                                  aria-label={`Pending remote media deletions: ${it.badgeCount}`}
+                                  title={`Pending remote media deletions: ${it.badgeCount}`}
+                                >
+                                  <span className="sr-only">
+                                    Pending remote media deletions:
+                                  </span>
+                                  {it.badgeCount}
+                                </div>
+                              )}
                           </div>
                         </motion.button>
                       );

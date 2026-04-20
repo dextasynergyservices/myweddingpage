@@ -28,7 +28,10 @@ export async function POST(req: Request) {
     const userId = session.user.id;
 
     if (!password) {
-      return NextResponse.json({ error: "Password required to disable 2FA" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Password required to disable 2FA" },
+        { status: 400 }
+      );
     }
 
     // Verify password
@@ -38,7 +41,10 @@ export async function POST(req: Request) {
     });
 
     if (!user?.password) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid credentials" },
+        { status: 401 }
+      );
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
@@ -84,6 +90,9 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("2FA disable error:", error);
 
-    return NextResponse.json({ error: "Failed to disable 2FA" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to disable 2FA" },
+      { status: 500 }
+    );
   }
 }

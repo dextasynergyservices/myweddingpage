@@ -90,13 +90,16 @@ export default function RateLimitsPage() {
     if (!confirm(`Clear rate limit for ${identifier}?`)) return;
 
     try {
-      const response = await fetch(`/api/admin/rate-limits/${encodeURIComponent(identifier)}`, {
-        method: "DELETE",
-        credentials: "include",
-        headers: {
-          "x-csrf-token": csrfToken || "",
-        },
-      });
+      const response = await fetch(
+        `/api/admin/rate-limits/${encodeURIComponent(identifier)}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            "x-csrf-token": csrfToken || "",
+          },
+        }
+      );
 
       if (response.ok) {
         toast.success("Rate limit cleared successfully");
@@ -142,18 +145,23 @@ export default function RateLimitsPage() {
           className={`rounded-lg p-3 ${isDarkMode ? "bg-yellow-900/20 border border-yellow-800 text-yellow-200" : "bg-yellow-50 border border-yellow-200 text-yellow-800"}`}
         >
           <p className="text-sm">
-            Redis backend not detected — rate limit data may be mocked or estimated in this
-            environment. For accurate live metrics enable Redis and restart the monitor.
+            Redis backend not detected — rate limit data may be mocked or
+            estimated in this environment. For accurate live metrics enable
+            Redis and restart the monitor.
           </p>
         </div>
       )}
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+          <h1
+            className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+          >
             Rate Limit Monitor
           </h1>
-          <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+          <p
+            className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+          >
             Monitor active rate limits and system protection
           </p>
         </div>
@@ -166,7 +174,9 @@ export default function RateLimitsPage() {
               : "bg-white text-gray-900 hover:bg-gray-50 border border-gray-300"
           }`}
         >
-          <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
+          />
           Refresh
         </button>
       </div>
@@ -185,7 +195,9 @@ export default function RateLimitsPage() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Active Limits
                 </p>
                 <p
@@ -210,7 +222,9 @@ export default function RateLimitsPage() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Redis Limits
                 </p>
                 <p
@@ -235,7 +249,9 @@ export default function RateLimitsPage() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Memory Limits
                 </p>
                 <p
@@ -260,7 +276,9 @@ export default function RateLimitsPage() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Total Blocked
                 </p>
                 <p
@@ -287,22 +305,32 @@ export default function RateLimitsPage() {
               : "border-gray-200 bg-white shadow-sm"
           }`}
         >
-          <h3 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+          <h3
+            className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+          >
             Rate Limit Activity
           </h3>
-          <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+          <p
+            className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+          >
             Recent rate limit hits and blocks
           </p>
           <div className="mt-6 h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={stats.chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? "#374151" : "#e5e7eb"} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke={isDarkMode ? "#374151" : "#e5e7eb"}
+                />
                 <XAxis
                   dataKey="time"
                   stroke={isDarkMode ? "#9ca3af" : "#6b7280"}
                   style={{ fontSize: "12px" }}
                 />
-                <YAxis stroke={isDarkMode ? "#9ca3af" : "#6b7280"} style={{ fontSize: "12px" }} />
+                <YAxis
+                  stroke={isDarkMode ? "#9ca3af" : "#6b7280"}
+                  style={{ fontSize: "12px" }}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: isDarkMode ? "#1f2937" : "#ffffff",
@@ -391,14 +419,18 @@ export default function RateLimitsPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}>
+            <tbody
+              className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}
+            >
               {currentLimits.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
                     <Activity
                       className={`mx-auto h-12 w-12 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`}
                     />
-                    <p className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       No active rate limits
                     </p>
                   </td>
@@ -501,9 +533,11 @@ export default function RateLimitsPage() {
               isDarkMode ? "border-gray-800" : "border-gray-200"
             }`}
           >
-            <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-              Showing {startIndex + 1} to {Math.min(endIndex, limits.length)} of {limits.length}{" "}
-              rate limits
+            <div
+              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
+              Showing {startIndex + 1} to {Math.min(endIndex, limits.length)} of{" "}
+              {limits.length} rate limits
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -521,11 +555,15 @@ export default function RateLimitsPage() {
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+              <span
+                className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+              >
                 Page {currentPage} of {totalPages}
               </span>
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
                 className={`rounded-lg p-2 transition-colors ${
                   currentPage === totalPages
@@ -559,7 +597,9 @@ export default function RateLimitsPage() {
             <Activity
               className={`mx-auto h-12 w-12 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`}
             />
-            <p className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+            <p
+              className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
               No active rate limits
             </p>
           </motion.div>
@@ -616,7 +656,9 @@ export default function RateLimitsPage() {
                 <div className="space-y-3">
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}>
+                      <span
+                        className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}
+                      >
                         Usage
                       </span>
                       <span
@@ -640,19 +682,27 @@ export default function RateLimitsPage() {
                   </div>
 
                   <div className="flex items-center justify-between pt-2 border-t ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}">
-                    <span className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}>
+                    <span
+                      className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}
+                    >
                       Remaining
                     </span>
-                    <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-900"}`}>
+                    <span
+                      className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-900"}`}
+                    >
                       {limit.remaining}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}>
+                    <span
+                      className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}
+                    >
                       Reset In
                     </span>
-                    <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-900"}`}>
+                    <span
+                      className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-900"}`}
+                    >
                       {getResetTime(limit.reset)}
                     </span>
                   </div>
@@ -665,7 +715,9 @@ export default function RateLimitsPage() {
         {/* Mobile Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between pt-4">
-            <span className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+            <span
+              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
               Page {currentPage} of {totalPages}
             </span>
             <div className="flex items-center gap-2">
@@ -685,7 +737,9 @@ export default function RateLimitsPage() {
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
                 className={`rounded-lg p-2 transition-colors ${
                   currentPage === totalPages

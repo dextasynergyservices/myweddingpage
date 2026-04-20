@@ -10,7 +10,8 @@ export default withAuth(
     // CSRF Protection for API routes (only for state-changing methods)
     if (req.nextUrl.pathname.startsWith("/api")) {
       const method = req.method?.toUpperCase();
-      const isStateChanging = method && ["POST", "PUT", "DELETE", "PATCH"].includes(method);
+      const isStateChanging =
+        method && ["POST", "PUT", "DELETE", "PATCH"].includes(method);
 
       // Only apply CSRF to state-changing requests on non-exempt paths
       if (isStateChanging && !isCSRFExempt(req as NextRequest)) {

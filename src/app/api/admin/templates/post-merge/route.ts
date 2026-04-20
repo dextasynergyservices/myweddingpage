@@ -30,7 +30,10 @@ async function handle(req: Request) {
   const secretHeader = req.headers.get("x-template-webhook-secret");
   const expected = process.env.TEMPLATE_WEBHOOK_SECRET;
   if (expected && secretHeader !== expected) {
-    return NextResponse.json({ error: "Invalid webhook secret" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Invalid webhook secret" },
+      { status: 401 }
+    );
   }
 
   interface PostMergePayload {
@@ -102,7 +105,10 @@ async function handle(req: Request) {
   } = parsed.data as unknown as PostMergePayload;
 
   if (!name || !slug)
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
 
   try {
     // Upsert template record
@@ -116,7 +122,10 @@ async function handle(req: Request) {
         layout_data: layout_data as Prisma.InputJsonValue,
         components: components as Prisma.InputJsonValue,
         colorSchemes: colorSchemes as Prisma.InputJsonValue,
-        previewData: previewData == null ? undefined : (previewData as Prisma.InputJsonValue),
+        previewData:
+          previewData == null
+            ? undefined
+            : (previewData as Prisma.InputJsonValue),
         isActive: true,
       },
       create: {
@@ -124,11 +133,16 @@ async function handle(req: Request) {
         description,
         thumbnail,
         hero_image: heroImage,
-        categoryId: (parsed.data.categoryId as string) || (await ensureDefaultCategory()).id,
+        categoryId:
+          (parsed.data.categoryId as string) ||
+          (await ensureDefaultCategory()).id,
         layout_data: layout_data as Prisma.InputJsonValue,
         components: components as Prisma.InputJsonValue,
         colorSchemes: colorSchemes as Prisma.InputJsonValue,
-        previewData: previewData == null ? undefined : (previewData as Prisma.InputJsonValue),
+        previewData:
+          previewData == null
+            ? undefined
+            : (previewData as Prisma.InputJsonValue),
         isActive: true,
       },
     });
@@ -160,7 +174,10 @@ async function handle(req: Request) {
       });
     }
 
-    return NextResponse.json({ success: true, templateId: template.id }, { status: 200 });
+    return NextResponse.json(
+      { success: true, templateId: template.id },
+      { status: 200 }
+    );
   } catch (err: unknown) {
     console.error("post-merge webhook failed:", err);
     const msg = err instanceof Error ? err.message : String(err);

@@ -142,7 +142,13 @@ const TEMPLATES = {
       hero: {
         style: "romantic_floral",
         layout: "split_image_text",
-        elements: ["floating_hearts", "couple_names", "date", "romantic_quote", "cta_buttons"],
+        elements: [
+          "floating_hearts",
+          "couple_names",
+          "date",
+          "romantic_quote",
+          "cta_buttons",
+        ],
       },
       story: {
         style: "romantic_timeline",
@@ -276,12 +282,21 @@ const TEMPLATES = {
       hero: {
         style: "luxury_showcase",
         layout: "fullscreen_parallax",
-        elements: ["dramatic_typography", "floating_elements", "premium_animations", "luxury_cta"],
+        elements: [
+          "dramatic_typography",
+          "floating_elements",
+          "premium_animations",
+          "luxury_cta",
+        ],
       },
       story: {
         style: "premium_timeline",
         layout: "interactive_cards",
-        elements: ["premium_cards", "interactive_elements", "luxury_animations"],
+        elements: [
+          "premium_cards",
+          "interactive_elements",
+          "luxury_animations",
+        ],
       },
       gallery: {
         style: "premium_masonry",
@@ -351,7 +366,8 @@ const TEMPLATE_SAMPLE_DATA = {
       {
         id: "vows-gift-1",
         name: "Dining Table Set",
-        description: "Beautiful oak dining table for our new home - perfect for family dinners",
+        description:
+          "Beautiful oak dining table for our new home - perfect for family dinners",
         price: "₦1,200,000",
         image:
           "https://images.pexels.com/photos/271897/pexels-photo-271897.jpeg?auto=compress&cs=tinysrgb&w=800",
@@ -360,7 +376,8 @@ const TEMPLATE_SAMPLE_DATA = {
       {
         id: "vows-gift-2",
         name: "Kitchen Mixer",
-        description: "Professional stand mixer for baking together on Sunday mornings",
+        description:
+          "Professional stand mixer for baking together on Sunday mornings",
         price: "₦350,000",
         image:
           "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",
@@ -369,7 +386,8 @@ const TEMPLATE_SAMPLE_DATA = {
       {
         id: "vows-gift-3",
         name: "Bedding Set",
-        description: "Luxury cotton bedding set, king size for our master bedroom",
+        description:
+          "Luxury cotton bedding set, king size for our master bedroom",
         price: "₦200,000",
         image:
           "https://images.pexels.com/photos/1743227/pexels-photo-1743227.jpeg?auto=compress&cs=tinysrgb&w=800",
@@ -474,7 +492,8 @@ const TEMPLATE_SAMPLE_DATA = {
       {
         id: "bloom-gift-2",
         name: "Garden Furniture",
-        description: "Outdoor furniture for our garden where we'll have morning coffee",
+        description:
+          "Outdoor furniture for our garden where we'll have morning coffee",
         price: "₦800,000",
         image:
           "https://images.pexels.com/photos/271897/pexels-photo-271897.jpeg?auto=compress&cs=tinysrgb&w=800",
@@ -530,7 +549,8 @@ const TEMPLATE_SAMPLE_DATA = {
     groomName: "Precious",
     weddingDate: "December 14, 2024",
     venue: "Modern Art Gallery, Lagos",
-    welcomeMessage: "Join us as we celebrate our love story and begin our journey together as one.",
+    welcomeMessage:
+      "Join us as we celebrate our love story and begin our journey together as one.",
     storyContent:
       "From our first meeting to this special day, our journey has been filled with love, laughter, and countless beautiful memories. We're excited to share this moment with all of you. Our love is simple, pure, and built on a foundation of mutual respect and understanding.",
     storyMilestones: [
@@ -579,7 +599,8 @@ const TEMPLATE_SAMPLE_DATA = {
       {
         id: "elegance-gift-1",
         name: "Modern Art Piece",
-        description: "Contemporary artwork for our home - something that speaks to our souls",
+        description:
+          "Contemporary artwork for our home - something that speaks to our souls",
         price: "₦750,000",
         image:
           "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",
@@ -694,7 +715,8 @@ const TEMPLATE_SAMPLE_DATA = {
       {
         id: "luxe-gift-1",
         name: "Luxury Watch Set",
-        description: "Matching luxury watches for the couple - timepieces that will last forever",
+        description:
+          "Matching luxury watches for the couple - timepieces that will last forever",
         price: "₦2,500,000",
         image:
           "https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=800",
@@ -703,7 +725,8 @@ const TEMPLATE_SAMPLE_DATA = {
       {
         id: "luxe-gift-2",
         name: "Designer Home Decor",
-        description: "High-end home decoration pieces from world-renowned designers",
+        description:
+          "High-end home decoration pieces from world-renowned designers",
         price: "₦3,000,000",
         image:
           "https://images.pexels.com/photos/1743227/pexels-photo-1743227.jpeg?auto=compress&cs=tinysrgb&w=800",
@@ -712,7 +735,8 @@ const TEMPLATE_SAMPLE_DATA = {
       {
         id: "luxe-gift-3",
         name: "Luxury Car Accessories",
-        description: "Premium car accessories and upgrades for our luxury vehicles",
+        description:
+          "Premium car accessories and upgrades for our luxury vehicles",
         price: "₦5,000,000",
         image:
           "https://images.pexels.com/photos/271897/pexels-photo-271897.jpeg?auto=compress&cs=tinysrgb&w=800",
@@ -795,7 +819,9 @@ async function main() {
         },
       });
 
-      console.log(`✅ Template ${templateData.name} created/updated (ID: ${template.id})`);
+      console.log(
+        `✅ Template ${templateData.name} created/updated (ID: ${template.id})`
+      );
 
       // Create template sections
       await createTemplateSections(template.id, templateKey);
@@ -820,7 +846,8 @@ async function createTemplateSections(templateId: string, templateKey: string) {
   console.log(`  📋 Creating sections for ${templateKey}...`);
 
   // Get template-specific sample data
-  const sampleData = TEMPLATE_SAMPLE_DATA[templateKey as keyof typeof TEMPLATE_SAMPLE_DATA];
+  const sampleData =
+    TEMPLATE_SAMPLE_DATA[templateKey as keyof typeof TEMPLATE_SAMPLE_DATA];
 
   // Delete existing sections first
   await prisma.templateSection.deleteMany({
@@ -839,9 +866,15 @@ async function createTemplateSections(templateId: string, templateKey: string) {
         description: "{welcomeMessage}",
         heroImage: TEMPLATES[templateKey as keyof typeof TEMPLATES].heroImage,
         // Template-specific styling
-        style: TEMPLATES[templateKey as keyof typeof TEMPLATES].components.hero.style,
-        layout_type: TEMPLATES[templateKey as keyof typeof TEMPLATES].components.hero.layout,
-        elements: TEMPLATES[templateKey as keyof typeof TEMPLATES].components.hero.elements,
+        style:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].components.hero
+            .style,
+        layout_type:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].components.hero
+            .layout,
+        elements:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].components.hero
+            .elements,
       },
     },
     {
@@ -851,13 +884,21 @@ async function createTemplateSections(templateId: string, templateKey: string) {
       components: {
         title: "Our Story",
         content: "{storyContent}",
-        storyImage1: TEMPLATES[templateKey as keyof typeof TEMPLATES].assets[1] || null,
-        storyImage2: TEMPLATES[templateKey as keyof typeof TEMPLATES].assets[2] || null,
+        storyImage1:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].assets[1] || null,
+        storyImage2:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].assets[2] || null,
         milestones: sampleData.storyMilestones || [],
         // Template-specific styling
-        style: TEMPLATES[templateKey as keyof typeof TEMPLATES].components.story.style,
-        layout_type: TEMPLATES[templateKey as keyof typeof TEMPLATES].components.story.layout,
-        elements: TEMPLATES[templateKey as keyof typeof TEMPLATES].components.story.elements,
+        style:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].components.story
+            .style,
+        layout_type:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].components.story
+            .layout,
+        elements:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].components.story
+            .elements,
       },
     },
     {
@@ -891,9 +932,15 @@ async function createTemplateSections(templateId: string, templateKey: string) {
         videos: sampleData.galleryVideos,
         categories: ["all", "before", "during", "after"],
         // Template-specific styling
-        style: TEMPLATES[templateKey as keyof typeof TEMPLATES].components.gallery.style,
-        layout_type: TEMPLATES[templateKey as keyof typeof TEMPLATES].components.gallery.layout,
-        elements: TEMPLATES[templateKey as keyof typeof TEMPLATES].components.gallery.elements,
+        style:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].components.gallery
+            .style,
+        layout_type:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].components.gallery
+            .layout,
+        elements:
+          TEMPLATES[templateKey as keyof typeof TEMPLATES].components.gallery
+            .elements,
       },
     },
     {
@@ -914,7 +961,8 @@ async function createTemplateSections(templateId: string, templateKey: string) {
       order: 5,
       components: {
         title: "Well Wishes",
-        description: "Share your love, memories, and well wishes for our special day",
+        description:
+          "Share your love, memories, and well wishes for our special day",
         existingMessages: sampleData.guestMessages,
         allowNewMessages: true,
       },
@@ -936,11 +984,16 @@ async function createTemplateSections(templateId: string, templateKey: string) {
   console.log(`  ✅ Created ${sections.length} sections for ${templateKey}`);
 }
 
-async function createPreviewData(templateId: string, templateData: any, templateKey: string) {
+async function createPreviewData(
+  templateId: string,
+  templateData: any,
+  templateKey: string
+) {
   console.log(`  🖼️ Creating preview data for ${templateData.name}...`);
 
   // Get template-specific sample data
-  const sampleData = TEMPLATE_SAMPLE_DATA[templateKey as keyof typeof TEMPLATE_SAMPLE_DATA];
+  const sampleData =
+    TEMPLATE_SAMPLE_DATA[templateKey as keyof typeof TEMPLATE_SAMPLE_DATA];
 
   const previewData = {
     // Basic template info
@@ -1051,7 +1104,9 @@ async function linkTemplateToPlans(templateId: string, planIds: string[]) {
     });
   }
 
-  const readablePlanNames = planIds.map((id) => planNames[id as keyof typeof planNames]).join(", ");
+  const readablePlanNames = planIds
+    .map((id) => planNames[id as keyof typeof planNames])
+    .join(", ");
   console.log(`  ✅ Template linked to plans: ${readablePlanNames}`);
 }
 

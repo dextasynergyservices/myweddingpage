@@ -22,7 +22,10 @@ export async function POST(req: Request) {
       return rateLimitResponse;
     }
 
-    const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown IP";
+    const ip =
+      req.headers.get("x-forwarded-for") ||
+      req.headers.get("x-real-ip") ||
+      "unknown IP";
 
     const body = await req.json();
     const {
@@ -42,16 +45,22 @@ export async function POST(req: Request) {
     // Honeypot check — reject if filled (likely spam bot)
     if (website && website.trim() !== "") {
       // Log spam attempt
-      console.warn(`[Spam detected] Honeypot triggered from IP: ${ip} | Data:`, {
-        name,
-        email,
-        subject,
-        message,
-        website,
-        time: new Date().toISOString(),
-      });
+      console.warn(
+        `[Spam detected] Honeypot triggered from IP: ${ip} | Data:`,
+        {
+          name,
+          email,
+          subject,
+          message,
+          website,
+          time: new Date().toISOString(),
+        }
+      );
 
-      return NextResponse.json({ success: false, error: "Bot detected" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: "Bot detected" },
+        { status: 400 }
+      );
     }
 
     // Validate with Zod schema
@@ -116,6 +125,9 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Error sending message:", error);
-    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

@@ -15,9 +15,13 @@ const videos = [
 const HowToVideos = () => {
   const { isDarkMode } = useTheme();
   return (
-    <AnimatedSection className={`py-16 px-6 ${isDarkMode ? "bg-slate-800" : " bg-gray-50"}`}>
+    <AnimatedSection
+      className={`py-16 px-6 ${isDarkMode ? "bg-slate-800" : " bg-gray-50"}`}
+    >
       <div className="max-w-5xl mx-auto text-center">
-        <h2 className={`text-3xl font-bold mb-10 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+        <h2
+          className={`text-3xl font-bold mb-10 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+        >
           Video Tutorials
         </h2>
         <div className="grid md:grid-cols-2 gap-8">
@@ -37,7 +41,9 @@ const HowToVideos = () => {
                 allowFullScreen
                 className="rounded-xl"
               ></iframe>
-              <p className={`mt-2 font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+              <p
+                className={`mt-2 font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+              >
                 {video.title}
               </p>
             </motion.div>

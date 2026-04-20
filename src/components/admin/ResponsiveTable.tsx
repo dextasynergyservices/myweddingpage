@@ -40,7 +40,9 @@ export function ResponsiveTable<T>({
     return (
       <div className="px-6 py-12 text-center">
         {emptyState.icon}
-        <p className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+        <p
+          className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+        >
           {emptyState.message}
         </p>
       </div>
@@ -68,7 +70,9 @@ export function ResponsiveTable<T>({
               ))}
             </tr>
           </thead>
-          <tbody className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}>
+          <tbody
+            className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}
+          >
             {data.map((item, index) => (
               <motion.tr
                 key={keyExtractor(item)}
@@ -101,13 +105,18 @@ export function ResponsiveTable<T>({
             transition={{ delay: index * 0.02 }}
             onClick={() => onRowClick?.(item)}
             className={`rounded-lg border p-4 space-y-3 ${
-              isDarkMode ? "border-gray-800 bg-gray-800/30" : "border-gray-200 bg-gray-50"
+              isDarkMode
+                ? "border-gray-800 bg-gray-800/30"
+                : "border-gray-200 bg-gray-50"
             } ${onRowClick ? "cursor-pointer active:scale-[0.98]" : ""}`}
           >
             {columns
               .filter((column) => !column.hideOnMobile)
               .map((column) => (
-                <div key={column.key} className="flex items-start justify-between gap-3">
+                <div
+                  key={column.key}
+                  className="flex items-start justify-between gap-3"
+                >
                   <span
                     className={`text-xs font-medium uppercase tracking-wider ${
                       isDarkMode ? "text-gray-400" : "text-gray-600"

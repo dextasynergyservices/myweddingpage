@@ -26,9 +26,15 @@ export default function ModernOurStory(props: ModernOurStoryProps) {
 
   // Extract data from props (prioritize direct props over ourStory object)
   const content =
-    props.content || props.story || props.ourStory?.content || "Our love story will appear here...";
+    props.content ||
+    props.story ||
+    props.ourStory?.content ||
+    "Our love story will appear here...";
   const imageUrl =
-    props.imageUrl || props.storyImage || props.ourStory?.imageUrl || "/default-story.jpg";
+    props.imageUrl ||
+    props.storyImage ||
+    props.ourStory?.imageUrl ||
+    "/default-story.jpg";
 
   const paragraphs = content.split("\n").filter((p: string) => p.trim() !== "");
   const preview = paragraphs.slice(0, 3).join("\n\n");
@@ -80,7 +86,10 @@ export default function ModernOurStory(props: ModernOurStoryProps) {
 
             {paragraphs.length > 3 && (
               <div className="mt-4">
-                <button onClick={() => setOpen(true)} className="text-indigo-600 hover:underline">
+                <button
+                  onClick={() => setOpen(true)}
+                  className="text-indigo-600 hover:underline"
+                >
                   Read full story
                 </button>
               </div>

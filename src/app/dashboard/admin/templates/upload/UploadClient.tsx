@@ -9,7 +9,9 @@ import SearchableMultiSelect from "@/components/ui/SearchableMultiSelect";
 import Button from "@/components/ui/Button";
 import Label from "@/components/ui/Label";
 import Modal from "@/components/ui/Modal";
-import UploadProgress, { useUploadProgress } from "@/components/ui/UploadProgress";
+import UploadProgress, {
+  useUploadProgress,
+} from "@/components/ui/UploadProgress";
 
 type StagingPreview = {
   stagingId: string;
@@ -86,20 +88,31 @@ export default function UploadClient({
   const [prPlanned, setPrPlanned] = useState<PlannedPR>(null);
 
   // upload progress handler (local minimal usage)
-  const { uploads, addUpload, updateProgress, setUploadSuccess, setUploadError, removeUpload } =
-    useUploadProgress();
+  const {
+    uploads,
+    addUpload,
+    updateProgress,
+    setUploadSuccess,
+    setUploadError,
+    removeUpload,
+  } = useUploadProgress();
   const plans = initialPlans || [];
   const [selectedPlanIds, setSelectedPlanIds] = useState<string[]>([]);
-  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>(
-    initialCategories || []
-  );
+  const [categories, setCategories] = useState<
+    Array<{ id: string; name: string }>
+  >(initialCategories || []);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const stagingIdRef = React.useRef<string | null>(null);
   const csrfRef = React.useRef<string | null>(null);
-  const uploadMapRef = React.useRef<Map<string, { file: File; subdir?: string }>>(new Map());
+  const uploadMapRef = React.useRef<
+    Map<string, { file: File; subdir?: string }>
+  >(new Map());
   const [dryRunOpen, setDryRunOpen] = useState(false);
-  const [dryRunManifest, setDryRunManifest] = useState<Record<string, unknown> | null>(null);
+  const [dryRunManifest, setDryRunManifest] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
   const [dryRunInspect, setDryRunInspect] = useState<{
     missingLayouts: string[];
     sectionKeys: string[];
@@ -107,7 +120,10 @@ export default function UploadClient({
     exists?: boolean;
     existingTemplate?: { id: string; name: string } | null;
   } | null>(null);
-  const [existingManifest, setExistingManifest] = useState<Record<string, unknown> | null>(null);
+  const [existingManifest, setExistingManifest] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
   const [deepDiff, setDeepDiff] = useState<ManifestDiffResult | null>(null);
   const [dryRunLoading, setDryRunLoading] = useState(false);
 
@@ -136,8 +152,14 @@ export default function UploadClient({
       const fd = new FormData();
       fd.append("file", file, name);
       xhr.upload.onprogress = (ev) => {
-        if (ev.lengthComputable) updateProgress(entryName, ev.loaded, undefined);
-        else updateProgress(entryName, Math.min(file.size || 0, ev.loaded || 0), undefined);
+        if (ev.lengthComputable)
+          updateProgress(entryName, ev.loaded, undefined);
+        else
+          updateProgress(
+            entryName,
+            Math.min(file.size || 0, ev.loaded || 0),
+            undefined
+          );
       };
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
@@ -220,9 +242,13 @@ export default function UploadClient({
       }
       manifestObj.planIds = selectedPlanIds;
       manifestObj.categoryIds = selectedCategoryIds;
-      const patchedManifest = new File([JSON.stringify(manifestObj, null, 2)], "manifest.json", {
-        type: "application/json",
-      });
+      const patchedManifest = new File(
+        [JSON.stringify(manifestObj, null, 2)],
+        "manifest.json",
+        {
+          type: "application/json",
+        }
+      );
 
       // upload manifest
       await uploadSingle(patchedManifest, "");
@@ -344,7 +370,9 @@ export default function UploadClient({
       }
     } catch (err: unknown) {
       console.error(err);
-      toast.error((err as Error)?.message || String(err) || "Failed to create PR");
+      toast.error(
+        (err as Error)?.message || String(err) || "Failed to create PR"
+      );
     } finally {
       setCreatingPR(false);
       if (!prDryRun) setCreatePROpen(false);
@@ -401,23 +429,36 @@ export default function UploadClient({
         if (detail.action === "create" && detail.category) {
           setCategories((prev) => {
             if (prev.find((c) => c.id === detail.category.id)) return prev;
-            return [...prev, { id: detail.category.id, name: detail.category.name }];
+            return [
+              ...prev,
+              { id: detail.category.id, name: detail.category.name },
+            ];
           });
         } else if (detail.action === "update" && detail.category) {
           setCategories((prev) =>
             prev.map((c) =>
-              c.id === detail.category.id ? { ...c, name: detail.category.name } : c
+              c.id === detail.category.id
+                ? { ...c, name: detail.category.name }
+                : c
             )
           );
         } else if (detail.action === "delete" && detail.id) {
           setCategories((prev) => prev.filter((c) => c.id !== detail.id));
-          setSelectedCategoryIds((prev) => prev.filter((id) => id !== detail.id));
+          setSelectedCategoryIds((prev) =>
+            prev.filter((id) => id !== detail.id)
+          );
         }
       } catch {}
     };
-    window.addEventListener("template-categories:changed", handler as EventListener);
+    window.addEventListener(
+      "template-categories:changed",
+      handler as EventListener
+    );
     return () =>
-      window.removeEventListener("template-categories:changed", handler as EventListener);
+      window.removeEventListener(
+        "template-categories:changed",
+        handler as EventListener
+      );
   }, []);
 
   return (
@@ -441,10 +482,12 @@ export default function UploadClient({
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Upload Template Package (Staging)</h1>
+            <h1 className="text-2xl font-bold">
+              Upload Template Package (Staging)
+            </h1>
             <p className="text-sm text-gray-600">
-              Upload a template manifest, optional components ZIP, and supporting assets to stage
-              for review and publishing.
+              Upload a template manifest, optional components ZIP, and
+              supporting assets to stage for review and publishing.
             </p>
           </div>
         </div>
@@ -485,9 +528,13 @@ export default function UploadClient({
                         const exists = categories.find((x) => x.id === c.id);
                         if (!exists) {
                           // mutate underlying array in place to preserve reference expected by SearchableMultiSelect
-                          (categories as Array<{ id: string; name: string }>).push(c);
+                          (
+                            categories as Array<{ id: string; name: string }>
+                          ).push(c);
                         }
-                        setSelectedCategoryIds((prev) => Array.from(new Set([...prev, c.id])));
+                        setSelectedCategoryIds((prev) =>
+                          Array.from(new Set([...prev, c.id]))
+                        );
                       }}
                     />
                   </div>
@@ -507,7 +554,9 @@ export default function UploadClient({
                     type="file"
                     accept="application/json"
                     className="hidden"
-                    onChange={(e) => setManifestFile(e.target.files?.[0] || null)}
+                    onChange={(e) =>
+                      setManifestFile(e.target.files?.[0] || null)
+                    }
                     disabled={loading}
                   />
                   <Button
@@ -556,8 +605,16 @@ export default function UploadClient({
             {assetPreviews.length > 0 && (
               <div className="grid grid-cols-4 gap-3 mt-3">
                 {assetPreviews.map((src, idx) => (
-                  <div key={src} className="w-full h-24 relative rounded overflow-hidden border">
-                    <Image src={src} alt={`preview-${idx}`} fill className="object-cover" />
+                  <div
+                    key={src}
+                    className="w-full h-24 relative rounded overflow-hidden border"
+                  >
+                    <Image
+                      src={src}
+                      alt={`preview-${idx}`}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                 ))}
               </div>
@@ -652,22 +709,29 @@ export default function UploadClient({
                     // if exists, fetch the stored manifest for deep diff
                     if (existsJson.exists && existsJson.template?.id) {
                       try {
-                        const getRes = await fetch(`/api/admin/templates/get-by-name`, {
-                          method: "POST",
-                          headers: { "content-type": "application/json" },
-                          body: JSON.stringify({
-                            id: existsJson.template.id,
-                          }),
-                        });
+                        const getRes = await fetch(
+                          `/api/admin/templates/get-by-name`,
+                          {
+                            method: "POST",
+                            headers: { "content-type": "application/json" },
+                            body: JSON.stringify({
+                              id: existsJson.template.id,
+                            }),
+                          }
+                        );
                         if (getRes.ok) {
                           const getJson = await getRes.json();
                           if (getJson.found && getJson.manifest) {
-                            setExistingManifest(getJson.manifest as Record<string, unknown>);
+                            setExistingManifest(
+                              getJson.manifest as Record<string, unknown>
+                            );
                             // compute richer manifest diff (top-level, sections, assets)
                             const d = computeManifestDiff(
                               getJson.manifest as unknown,
                               obj as unknown,
-                              Array.isArray(getJson.assets) ? (getJson.assets as string[]) : [],
+                              Array.isArray(getJson.assets)
+                                ? (getJson.assets as string[])
+                                : [],
                               assets
                             );
                             setDeepDiff(d);
@@ -710,13 +774,16 @@ export default function UploadClient({
       {preview && (
         <div className="rounded-lg border p-6 bg-white">
           <h2 className="text-xl font-semibold mb-2">Staging Preview</h2>
-          <pre className="p-2 bg-gray-100 rounded">{JSON.stringify(preview.manifest, null, 2)}</pre>
+          <pre className="p-2 bg-gray-100 rounded">
+            {JSON.stringify(preview.manifest, null, 2)}
+          </pre>
 
           {preview.componentsValidation && (
             <div className="mt-4">
               <div className="font-semibold">Components validation</div>
               <div className="text-sm mt-2">
-                Has components: {preview.componentsValidation.hasComponents ? "Yes" : "No"}
+                Has components:{" "}
+                {preview.componentsValidation.hasComponents ? "Yes" : "No"}
               </div>
               {preview.componentsValidation.files?.length > 0 && (
                 <div className="mt-2">
@@ -739,7 +806,9 @@ export default function UploadClient({
                         }
                         return (
                           <tr key={f} className="border-t">
-                            <td className="py-2 align-top">{parsed?.path || f}</td>
+                            <td className="py-2 align-top">
+                              {parsed?.path || f}
+                            </td>
                             <td className="py-2 align-top">
                               {parsed?.hasDefaultExport ? "Yes" : "No"}
                             </td>
@@ -752,11 +821,16 @@ export default function UploadClient({
                               {Array.isArray(parsed?.diagnostics) &&
                               parsed!.diagnostics!.length > 0 ? (
                                 <ul className="list-disc pl-4">
-                                  {parsed!.diagnostics!.map((d: string, i: number) => (
-                                    <li key={i} className="text-xs text-red-600">
-                                      {d}
-                                    </li>
-                                  ))}
+                                  {parsed!.diagnostics!.map(
+                                    (d: string, i: number) => (
+                                      <li
+                                        key={i}
+                                        className="text-xs text-red-600"
+                                      >
+                                        {d}
+                                      </li>
+                                    )
+                                  )}
                                 </ul>
                               ) : (
                                 "—"
@@ -774,7 +848,10 @@ export default function UploadClient({
 
           <div className="mt-4 grid grid-cols-3 gap-4">
             {preview.assets?.map((url: string) => (
-              <div key={url} className="w-full h-40 relative rounded overflow-hidden">
+              <div
+                key={url}
+                className="w-full h-40 relative rounded overflow-hidden"
+              >
                 <Image src={url} alt="asset" fill className="object-cover" />
               </div>
             ))}
@@ -816,7 +893,11 @@ export default function UploadClient({
       />
 
       {/* Modal for staging preview */}
-      <Modal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} title="Staging Preview">
+      <Modal
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        title="Staging Preview"
+      >
         {preview ? (
           <div>
             <pre className="p-2 bg-gray-100 rounded">
@@ -833,19 +914,29 @@ export default function UploadClient({
         <Modal
           isOpen={iframeOpen}
           onClose={() => setIframeOpen(false)}
-          title={preview ? String(preview.manifest?.name ?? "Preview") : "Full Preview"}
+          title={
+            preview
+              ? String(preview.manifest?.name ?? "Preview")
+              : "Full Preview"
+          }
         >
           {preview ? (
             <div style={{ height: "80vh" }}>
               <iframe
                 src={`/admin/templates/preview/${encodeURIComponent(preview.stagingId)}`}
-                title={preview ? String(preview.manifest?.name ?? "Preview") : "Preview"}
+                title={
+                  preview
+                    ? String(preview.manifest?.name ?? "Preview")
+                    : "Preview"
+                }
                 style={{ width: "100%", height: "100%", border: "none" }}
                 sandbox="allow-scripts allow-same-origin"
               />
             </div>
           ) : (
-            <div className="p-4">No staged preview available yet. Please stage first.</div>
+            <div className="p-4">
+              No staged preview available yet. Please stage first.
+            </div>
           )}
         </Modal>
 
@@ -882,7 +973,9 @@ export default function UploadClient({
                   checked={prDryRun}
                   onChange={(e) => setPrDryRun(e.target.checked)}
                 />
-                <span className="text-sm">Dry run (preview planned changes)</span>
+                <span className="text-sm">
+                  Dry run (preview planned changes)
+                </span>
               </label>
               {prPlanned && (
                 <button
@@ -946,7 +1039,9 @@ export default function UploadClient({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className="text-sm font-medium mb-1">Manifest (patched)</div>
+                <div className="text-sm font-medium mb-1">
+                  Manifest (patched)
+                </div>
                 <pre className="p-2 bg-gray-100 rounded max-h-80 overflow-auto">
                   {JSON.stringify(dryRunManifest, null, 2)}
                 </pre>
@@ -957,10 +1052,13 @@ export default function UploadClient({
                   <div className="text-sm text-slate-500">Inspecting...</div>
                 ) : dryRunInspect ? (
                   <div className="text-sm">
-                    <div className="mb-2">Sections found: {dryRunInspect.sectionKeys.length}</div>
+                    <div className="mb-2">
+                      Sections found: {dryRunInspect.sectionKeys.length}
+                    </div>
                     {dryRunInspect.missingLayouts.length > 0 ? (
                       <div className="text-xs text-red-600">
-                        Missing layouts: {dryRunInspect.missingLayouts.join(", ")}
+                        Missing layouts:{" "}
+                        {dryRunInspect.missingLayouts.join(", ")}
                       </div>
                     ) : (
                       <div className="text-xs text-green-600">
@@ -972,9 +1070,11 @@ export default function UploadClient({
                     <div className="mt-3">
                       {dryRunInspect.exists ? (
                         <div className="text-sm text-yellow-700">
-                          A template with this name already exists and will be replaced:{" "}
+                          A template with this name already exists and will be
+                          replaced:{" "}
                           <span className="font-medium">
-                            {dryRunInspect.existingTemplate?.name || "(unknown)"}
+                            {dryRunInspect.existingTemplate?.name ||
+                              "(unknown)"}
                           </span>
                         </div>
                       ) : (
@@ -1015,11 +1115,15 @@ export default function UploadClient({
                         ))}
                       </div>
                     ) : (
-                      <div className="text-xs text-slate-500">No assets selected</div>
+                      <div className="text-xs text-slate-500">
+                        No assets selected
+                      </div>
                     )}
 
                     <div className="mt-3">
-                      <div className="text-sm font-medium mb-2">Manifest diff</div>
+                      <div className="text-sm font-medium mb-2">
+                        Manifest diff
+                      </div>
                       {deepDiff ? (
                         <div>
                           <div className="mb-2 text-xs">Top-level changes:</div>
@@ -1027,20 +1131,27 @@ export default function UploadClient({
                             oldManifest={existingManifest || undefined}
                             newManifest={dryRunManifest}
                           />
-                          <div className="mt-3 text-sm font-medium">Sections</div>
+                          <div className="mt-3 text-sm font-medium">
+                            Sections
+                          </div>
                           <div className="space-y-2 mt-2">
                             {deepDiff.sections.map((s: SectionChange) => (
                               <SectionDiff key={s.index} s={s} />
                             ))}
                           </div>
 
-                          <div className="mt-3 text-sm font-medium">Raw deep diff</div>
+                          <div className="mt-3 text-sm font-medium">
+                            Raw deep diff
+                          </div>
                           <div className="mt-2">
                             <DiffViewer
                               diff={
                                 deepDiff && deepDiff.raw
                                   ? deepDiff.raw
-                                  : computeDeepDiff(existingManifest, dryRunManifest)
+                                  : computeDeepDiff(
+                                      existingManifest,
+                                      dryRunManifest
+                                    )
                               }
                             />
                           </div>
@@ -1062,7 +1173,9 @@ export default function UploadClient({
                         }}
                         data-primary
                       >
-                        {dryRunInspect.exists ? "Replace Package" : "Stage Package"}
+                        {dryRunInspect.exists
+                          ? "Replace Package"
+                          : "Stage Package"}
                       </Button>
                       <Button
                         variant="outline"
@@ -1074,12 +1187,16 @@ export default function UploadClient({
                           setIframeOpen(true);
                         }}
                       >
-                        {dryRunInspect.exists ? "Replace + Preview" : "Stage + Preview"}
+                        {dryRunInspect.exists
+                          ? "Replace + Preview"
+                          : "Stage + Preview"}
                       </Button>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-sm text-slate-500">No inspection data available</div>
+                  <div className="text-sm text-slate-500">
+                    No inspection data available
+                  </div>
                 )}
               </div>
             </div>
@@ -1093,7 +1210,10 @@ export default function UploadClient({
 }
 
 // Deep diff utility (returns an object describing added/removed/changed at nested paths)
-function computeDeepDiff(oldObj: unknown, newObj: unknown): Record<string, unknown> {
+function computeDeepDiff(
+  oldObj: unknown,
+  newObj: unknown
+): Record<string, unknown> {
   const result: Record<string, unknown> = {};
   const isRecord = (v: unknown): v is Record<string, unknown> =>
     typeof v === "object" && v !== null && !Array.isArray(v);
@@ -1124,7 +1244,10 @@ function computeDeepDiff(oldObj: unknown, newObj: unknown): Record<string, unkno
     if (isRecord(a) && isRecord(b)) {
       const aObj: Record<string, unknown> = a;
       const bObj: Record<string, unknown> = b;
-      const keys = new Set<string>([...Object.keys(aObj), ...Object.keys(bObj)]);
+      const keys = new Set<string>([
+        ...Object.keys(aObj),
+        ...Object.keys(bObj),
+      ]);
       for (const k of keys) {
         walk(aObj[k], bObj[k], [...pathParts, k]);
       }
@@ -1170,7 +1293,10 @@ function DiffViewer({ diff }: { diff: Record<string, unknown> | null }) {
 }
 
 // --- Manifest diff component (client-local utility) ---
-function shallowDiff(oldObj: Record<string, unknown> = {}, newObj: Record<string, unknown> = {}) {
+function shallowDiff(
+  oldObj: Record<string, unknown> = {},
+  newObj: Record<string, unknown> = {}
+) {
   const added: string[] = [];
   const removed: string[] = [];
   const changed: string[] = [];
@@ -1204,7 +1330,8 @@ function ManifestDiff({
   oldManifest?: Record<string, unknown> | undefined;
   newManifest: Record<string, unknown> | null;
 }) {
-  if (!newManifest) return <div className="text-xs text-slate-500">No manifest</div>;
+  if (!newManifest)
+    return <div className="text-xs text-slate-500">No manifest</div>;
   // For now we only diff against empty/undefined oldManifest. If oldManifest is provided in future,
   // we can compute a true create/replace diff. Here we surface top-level changed keys.
   const diff = shallowDiff(oldManifest || {}, newManifest || {});
@@ -1212,13 +1339,16 @@ function ManifestDiff({
   return (
     <div className="border rounded p-2 bg-white max-h-56 overflow-auto text-xs">
       <div className="mb-2">
-        <strong>Added:</strong> {diff.added.length ? diff.added.join(", ") : "—"}
+        <strong>Added:</strong>{" "}
+        {diff.added.length ? diff.added.join(", ") : "—"}
       </div>
       <div className="mb-2">
-        <strong>Removed:</strong> {diff.removed.length ? diff.removed.join(", ") : "—"}
+        <strong>Removed:</strong>{" "}
+        {diff.removed.length ? diff.removed.join(", ") : "—"}
       </div>
       <div>
-        <strong>Changed:</strong> {diff.changed.length ? diff.changed.join(", ") : "—"}
+        <strong>Changed:</strong>{" "}
+        {diff.changed.length ? diff.changed.join(", ") : "—"}
       </div>
     </div>
   );
@@ -1250,7 +1380,9 @@ function computeManifestDiff(
   const getSections = (m: unknown): Array<Record<string, unknown>> => {
     if (!m || typeof m !== "object") return [];
     const maybe = (m as Record<string, unknown>)?.sections;
-    return Array.isArray(maybe) ? (maybe as Array<Record<string, unknown>>) : [];
+    return Array.isArray(maybe)
+      ? (maybe as Array<Record<string, unknown>>)
+      : [];
   };
 
   const oldSections = getSections(oldManifest);
@@ -1266,7 +1398,11 @@ function computeManifestDiff(
       result.sections.push({ index: i, action: "remove", oldSection: a });
     } else if (a && b) {
       const sectionDiff = shallowDiff(a || {}, b || {});
-      if (sectionDiff.added.length || sectionDiff.removed.length || sectionDiff.changed.length) {
+      if (
+        sectionDiff.added.length ||
+        sectionDiff.removed.length ||
+        sectionDiff.changed.length
+      ) {
         result.sections.push({
           index: i,
           action: "change",
@@ -1282,7 +1418,8 @@ function computeManifestDiff(
 
   const uploading: string[] = [];
   if (uploadedAssets) {
-    for (let i = 0; i < uploadedAssets.length; i++) uploading.push(uploadedAssets[i].name);
+    for (let i = 0; i < uploadedAssets.length; i++)
+      uploading.push(uploadedAssets[i].name);
   }
   result.assets.uploading = uploading;
 
@@ -1294,7 +1431,10 @@ function computeManifestDiff(
   );
 
   // include a raw path-based deep diff for debugging/viewing
-  result.raw = computeDeepDiff((oldManifest as unknown) || {}, (newManifest as unknown) || {});
+  result.raw = computeDeepDiff(
+    (oldManifest as unknown) || {},
+    (newManifest as unknown) || {}
+  );
 
   return result;
 }
@@ -1302,28 +1442,38 @@ function computeManifestDiff(
 function SectionDiff({ s }: { s: SectionChange }) {
   if (!s) return null;
   if (s.action === "identical")
-    return <div className="text-xs text-slate-500">Section {s.index}: identical</div>;
+    return (
+      <div className="text-xs text-slate-500">Section {s.index}: identical</div>
+    );
   if (s.action === "create")
     return (
       <div className="text-xs text-green-700">
-        Section {s.index}: will be created (layout: {String(s.newSection?.layout)})
+        Section {s.index}: will be created (layout:{" "}
+        {String(s.newSection?.layout)})
       </div>
     );
   if (s.action === "remove")
-    return <div className="text-xs text-red-700">Section {s.index}: will be removed</div>;
+    return (
+      <div className="text-xs text-red-700">
+        Section {s.index}: will be removed
+      </div>
+    );
   // change
   return (
     <div className="text-xs">
       <div className="font-medium">Section {s.index}: changes</div>
       <div className="ml-2 mt-1">
         <div>
-          <strong>Added:</strong> {s.diff.added.length ? s.diff.added.join(", ") : "—"}
+          <strong>Added:</strong>{" "}
+          {s.diff.added.length ? s.diff.added.join(", ") : "—"}
         </div>
         <div>
-          <strong>Removed:</strong> {s.diff.removed.length ? s.diff.removed.join(", ") : "—"}
+          <strong>Removed:</strong>{" "}
+          {s.diff.removed.length ? s.diff.removed.join(", ") : "—"}
         </div>
         <div>
-          <strong>Changed:</strong> {s.diff.changed.length ? s.diff.changed.join(", ") : "—"}
+          <strong>Changed:</strong>{" "}
+          {s.diff.changed.length ? s.diff.changed.join(", ") : "—"}
         </div>
       </div>
     </div>
@@ -1377,7 +1527,8 @@ function InlineCreateCategory({
       }
       const json = await res.json();
       const created = json.category || json || null;
-      if (!created || !created.id) throw new Error("Invalid response from server");
+      if (!created || !created.id)
+        throw new Error("Invalid response from server");
       toast.success(`Category '${created.name}' created`);
       // notify parent and other listeners
       onCreated({ id: created.id, name: created.name });

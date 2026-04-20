@@ -16,7 +16,8 @@ export async function POST(request: Request) {
     const id = String(body?.id || "").trim();
     const thumbnailUrl = body?.thumbnailUrl ? String(body.thumbnailUrl) : null;
     const publicId = body?.publicId ? String(body.publicId) : null;
-    if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
+    if (!id)
+      return NextResponse.json({ error: "id required" }, { status: 400 });
 
     const updated = await prisma.template.update({
       where: { id },
@@ -28,7 +29,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ template: updated });
   } catch (err: unknown) {
     console.error("Failed to update template thumbnail:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -40,11 +44,13 @@ export async function DELETE(request: Request) {
     }
     const body = await request.json();
     const id = String(body?.id || "").trim();
-    if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
+    if (!id)
+      return NextResponse.json({ error: "id required" }, { status: 400 });
 
     // fetch existing template to see if we have a stored public id to delete
     const existing = await prisma.template.findUnique({ where: { id } });
-    if (!existing) return NextResponse.json({ error: "not found" }, { status: 404 });
+    if (!existing)
+      return NextResponse.json({ error: "not found" }, { status: 404 });
 
     // attempt to delete the Cloudinary resource if public id exists
     const remoteDeletion = {
@@ -57,7 +63,10 @@ export async function DELETE(request: Request) {
       remoteDeletion.publicId = publicId || null;
       if (publicId) {
         remoteDeletion.attempted = true;
-        if (process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+        if (
+          process.env.CLOUDINARY_API_KEY &&
+          process.env.CLOUDINARY_API_SECRET
+        ) {
           try {
             const res = await cloudinary.uploader.destroy(publicId, {
               invalidate: true,
@@ -74,7 +83,10 @@ export async function DELETE(request: Request) {
             if (ok) console.log(`Deleted cloudinary resource ${publicId}`);
             else console.warn(`Cloudinary destroy returned:`, res);
           } catch (e) {
-            console.warn(`Failed to delete cloudinary resource ${publicId}:`, e);
+            console.warn(
+              `Failed to delete cloudinary resource ${publicId}:`,
+              e
+            );
           }
         }
 
@@ -123,6 +135,9 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ template: updated, remoteDeletion });
   } catch (err: unknown) {
     console.error("Failed to clear template thumbnail:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

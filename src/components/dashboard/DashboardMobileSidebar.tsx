@@ -34,7 +34,9 @@ const DashboardMobileSidebar = ({
           exit={{ x: -300, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className={`fixed inset-y-0 left-0 z-50 w-72 h-screen border-r md:hidden ${
-            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+            isDarkMode
+              ? "bg-slate-800 border-slate-700"
+              : "bg-white border-slate-200"
           }`}
         >
           <div className="p-4 border-b border-slate-200 dark:border-slate-700">
@@ -46,7 +48,9 @@ const DashboardMobileSidebar = ({
                   >
                     Wedding Dashboard
                   </h1>
-                  <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                  <p
+                    className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                  >
                     Plan your perfect day
                   </p>
                 </div>
@@ -68,7 +72,10 @@ const DashboardMobileSidebar = ({
                 key={item.id}
                 onClick={() => {
                   if (item.disabled) {
-                    alert(item.disabledReason || "This feature is currently disabled.");
+                    alert(
+                      item.disabledReason ||
+                        "This feature is currently disabled."
+                    );
                     return;
                   }
                   setActiveTab(item.id);

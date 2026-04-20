@@ -36,7 +36,9 @@ export const FontSelector: React.FC<FontSelectorProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<FontCategory | "all" | "popular">("all");
+  const [selectedCategory, setSelectedCategory] = useState<
+    FontCategory | "all" | "popular"
+  >("all");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Get all fonts
@@ -70,7 +72,10 @@ export const FontSelector: React.FC<FontSelectorProps> = ({
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -97,7 +102,9 @@ export const FontSelector: React.FC<FontSelectorProps> = ({
         {label}
       </label>
       {description && (
-        <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">{description}</p>
+        <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+          {description}
+        </p>
       )}
 
       {/* Current Font Display */}
@@ -230,7 +237,8 @@ export const FontSelector: React.FC<FontSelectorProps> = ({
             {/* Footer */}
             <div className="border-t border-gray-200 p-3 text-center dark:border-gray-700">
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                {filteredFonts.length} {filteredFonts.length === 1 ? "font" : "fonts"} available
+                {filteredFonts.length}{" "}
+                {filteredFonts.length === 1 ? "font" : "fonts"} available
               </p>
             </div>
           </motion.div>

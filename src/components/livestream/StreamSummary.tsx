@@ -37,7 +37,9 @@ export default function StreamSummary({ streamId }: StreamSummaryProps) {
   useEffect(() => {
     const fetchSummary = async () => {
       try {
-        const response = await fetch(`/api/stream-summary?streamId=${streamId}`);
+        const response = await fetch(
+          `/api/stream-summary?streamId=${streamId}`
+        );
         if (response.ok) {
           const data = await response.json();
           setSummary(data);
@@ -82,19 +84,25 @@ export default function StreamSummary({ streamId }: StreamSummaryProps) {
       animate={{ opacity: 1, y: 0 }}
       className={`rounded-lg shadow-lg p-6 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}
     >
-      <h3 className="text-2xl font-semibold mb-6 flex items-center gap-2">Stream Summary</h3>
+      <h3 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+        Stream Summary
+      </h3>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 rounded-lg">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Total Viewers</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Total Viewers
+          </p>
           <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
             {summary.summary?.totalViewers || 0}
           </p>
         </div>
 
         <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-4 rounded-lg">
-          <p className="text-sm text-gray-600 dark:text-gray-400">Peak Viewers</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Peak Viewers
+          </p>
           <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">
             {summary.summary?.peakViewers || 0}
           </p>
@@ -136,12 +144,21 @@ export default function StreamSummary({ streamId }: StreamSummaryProps) {
       {/* Recent Messages */}
       {summary.recentMessages && summary.recentMessages.length > 0 && (
         <div>
-          <h4 className="text-lg font-semibold mb-3">Recent Guestbook Messages</h4>
+          <h4 className="text-lg font-semibold mb-3">
+            Recent Guestbook Messages
+          </h4>
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {summary.recentMessages.map((message) => (
-              <div key={message.id} className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <p className="text-sm text-gray-700 dark:text-gray-200 mb-2">{message.message}</p>
-                <p className="text-xs text-gray-500">— {message.guestName || "Anonymous"}</p>
+              <div
+                key={message.id}
+                className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+              >
+                <p className="text-sm text-gray-700 dark:text-gray-200 mb-2">
+                  {message.message}
+                </p>
+                <p className="text-xs text-gray-500">
+                  — {message.guestName || "Anonymous"}
+                </p>
               </div>
             ))}
           </div>

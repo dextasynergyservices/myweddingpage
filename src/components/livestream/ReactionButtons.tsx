@@ -23,7 +23,9 @@ const REACTIONS = [
 ];
 
 export default function ReactionButtons({ streamId }: ReactionButtonsProps) {
-  const [floatingReactions, setFloatingReactions] = useState<FloatingReaction[]>([]);
+  const [floatingReactions, setFloatingReactions] = useState<
+    FloatingReaction[]
+  >([]);
   const [stats, setStats] = useState<Record<string, number>>({});
   const [cooldown, setCooldown] = useState(false);
 
@@ -31,7 +33,9 @@ export default function ReactionButtons({ streamId }: ReactionButtonsProps) {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(`/api/reactions/stats?streamId=${streamId}`);
+        const response = await fetch(
+          `/api/reactions/stats?streamId=${streamId}`
+        );
         if (response.ok) {
           const data = await response.json();
           setStats(data.stats || {});

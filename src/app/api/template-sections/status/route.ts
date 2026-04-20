@@ -15,7 +15,10 @@ export async function GET(req: Request) {
     const templateId = searchParams.get("templateId");
 
     if (!templateId) {
-      return NextResponse.json({ error: "Template ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Template ID is required" },
+        { status: 400 }
+      );
     }
 
     const user = await prisma.user.findUnique({
@@ -42,7 +45,10 @@ export async function GET(req: Request) {
 
     const userTemplate = user.userTemplates[0];
     if (!userTemplate) {
-      return NextResponse.json({ error: "User template not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "User template not found" },
+        { status: 404 }
+      );
     }
 
     const template = userTemplate.template;
@@ -50,18 +56,23 @@ export async function GET(req: Request) {
 
     // Check completion status for each section
     const sectionStatus = template.sections.map((section) => {
-      const sectionContent = (userContent[section.id] as Record<string, unknown>) || {};
+      const sectionContent =
+        (userContent[section.id] as Record<string, unknown>) || {};
       let isComplete = false;
 
       switch (section.type) {
         case "HERO":
           isComplete = Boolean(
-            sectionContent.title || sectionContent.groomName || sectionContent.brideName
+            sectionContent.title ||
+            sectionContent.groomName ||
+            sectionContent.brideName
           );
           break;
         case "STORY": {
           // Check for various story content formats
-          const hasBasicContent = Boolean(sectionContent.text || sectionContent.content);
+          const hasBasicContent = Boolean(
+            sectionContent.text || sectionContent.content
+          );
           const hasStoryContent = Boolean(sectionContent.storyContent);
 
           // Check for Vows template structure (storyContent.howWeMet, storyContent.theProposal)
@@ -82,7 +93,8 @@ export async function GET(req: Request) {
             (Array.isArray(sectionContent.stories)
               ? sectionContent.stories.length > 0 &&
                 sectionContent.stories.some(
-                  (story: { title?: string; story?: string }) => story.title || story.story
+                  (story: { title?: string; story?: string }) =>
+                    story.title || story.story
                 )
               : Object.keys(sectionContent.stories).length > 0)
           );
@@ -93,7 +105,8 @@ export async function GET(req: Request) {
             (Array.isArray(sectionContent.storyItems)
               ? sectionContent.storyItems.length > 0 &&
                 sectionContent.storyItems.some(
-                  (item: { title?: string; text?: string }) => item.title || item.text
+                  (item: { title?: string; text?: string }) =>
+                    item.title || item.text
                 )
               : Object.keys(sectionContent.storyItems).length > 0)
           );
@@ -139,10 +152,14 @@ export async function GET(req: Request) {
           break;
         }
         case "REGISTRY":
-          isComplete = Boolean(sectionContent.content || sectionContent.description);
+          isComplete = Boolean(
+            sectionContent.content || sectionContent.description
+          );
           break;
         case "WISHES":
-          isComplete = Boolean(sectionContent.content || sectionContent.description);
+          isComplete = Boolean(
+            sectionContent.content || sectionContent.description
+          );
           break;
         default:
           isComplete = Boolean(sectionContent.content);
@@ -158,7 +175,8 @@ export async function GET(req: Request) {
 
     const totalSections = sectionStatus.length;
     const completedSections = sectionStatus.filter((s) => s.isComplete).length;
-    const completionPercentage = totalSections > 0 ? (completedSections / totalSections) * 100 : 0;
+    const completionPercentage =
+      totalSections > 0 ? (completedSections / totalSections) * 100 : 0;
 
     return NextResponse.json({
       sectionStatus,
@@ -169,6 +187,9 @@ export async function GET(req: Request) {
     });
   } catch (error) {
     console.error("Error fetching section status:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

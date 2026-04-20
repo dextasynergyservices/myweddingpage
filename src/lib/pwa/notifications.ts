@@ -17,7 +17,9 @@ interface NotificationPayload {
  * @param payload Notification content
  * @returns Promise<boolean> Success status
  */
-export async function sendNotificationToSelf(payload: NotificationPayload): Promise<boolean> {
+export async function sendNotificationToSelf(
+  payload: NotificationPayload
+): Promise<boolean> {
   try {
     const response = await fetch("/api/notifications/send", {
       method: "POST",

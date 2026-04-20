@@ -61,7 +61,10 @@ export function sanitizeRichHTML(dirty: string): string {
   }
   // Allow formatting, links, lists, headings
   return dirty
-    .replace(/<(?!\/?(?:b|i|em|strong|u|br|p|a|ul|ol|li|blockquote|h[1-6])(?:\s|>))[^>]*>/gi, "")
+    .replace(
+      /<(?!\/?(?:b|i|em|strong|u|br|p|a|ul|ol|li|blockquote|h[1-6])(?:\s|>))[^>]*>/gi,
+      ""
+    )
     .replace(/on\w+\s*=\s*["'][^"']*["']/gi, "") // Remove event handlers
     .replace(/javascript:/gi, "") // Remove javascript: protocol
     .trim();
@@ -111,7 +114,13 @@ export function sanitizeURL(url: string): string {
   const trimmedUrl = url.trim();
 
   // Block dangerous protocols
-  const dangerousProtocols = ["javascript:", "data:", "vbscript:", "file:", "about:"];
+  const dangerousProtocols = [
+    "javascript:",
+    "data:",
+    "vbscript:",
+    "file:",
+    "about:",
+  ];
 
   for (const protocol of dangerousProtocols) {
     if (trimmedUrl.toLowerCase().startsWith(protocol)) {
@@ -251,7 +260,10 @@ export function sanitizeObject<T extends Record<string, unknown>>(
 
   for (const key in sanitized) {
     if (typeof sanitized[key] === "string") {
-      sanitized[key] = sanitizer(sanitized[key] as string) as T[Extract<keyof T, string>];
+      sanitized[key] = sanitizer(sanitized[key] as string) as T[Extract<
+        keyof T,
+        string
+      >];
     } else if (typeof sanitized[key] === "object" && sanitized[key] !== null) {
       sanitized[key] = sanitizeObject(
         sanitized[key] as Record<string, unknown>,

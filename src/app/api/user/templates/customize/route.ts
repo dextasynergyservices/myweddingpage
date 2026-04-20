@@ -94,7 +94,10 @@ function validateCustomization(customization: UserCustomization): {
   const errors: string[] = [];
 
   // Validate mode
-  if (!customization.mode || !["preset", "custom"].includes(customization.mode)) {
+  if (
+    !customization.mode ||
+    !["preset", "custom"].includes(customization.mode)
+  ) {
     errors.push('Invalid mode: must be "preset" or "custom"');
   }
 
@@ -137,7 +140,10 @@ export async function PUT(req: Request) {
     // Check authentication
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
     // Get user from database
@@ -146,7 +152,10 @@ export async function PUT(req: Request) {
     });
 
     if (!user) {
-      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: "User not found" },
+        { status: 404 }
+      );
     }
 
     // Parse request body
@@ -196,7 +205,10 @@ export async function PUT(req: Request) {
     });
 
     if (!template) {
-      return NextResponse.json({ success: false, error: "Template not found" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: "Template not found" },
+        { status: 404 }
+      );
     }
 
     // Add updated timestamp

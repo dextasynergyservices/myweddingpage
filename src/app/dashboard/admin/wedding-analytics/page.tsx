@@ -59,7 +59,9 @@ export default function WeddingAnalyticsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredPages, setFilteredPages] = useState<WeddingPage[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState<"views" | "created_at" | "engagement_rate">("views");
+  const [sortBy, setSortBy] = useState<
+    "views" | "created_at" | "engagement_rate"
+  >("views");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const pagesPerPage = 15;
   // Pagination for template performance table
@@ -81,10 +83,13 @@ export default function WeddingAnalyticsPage() {
   }) => {
     try {
       const qp = new URLSearchParams();
-      if (opts?.templateCursor) qp.set("templateCursor", String(opts.templateCursor));
-      if (opts?.templatePerPage) qp.set("templatePerPage", String(opts.templatePerPage));
+      if (opts?.templateCursor)
+        qp.set("templateCursor", String(opts.templateCursor));
+      if (opts?.templatePerPage)
+        qp.set("templatePerPage", String(opts.templatePerPage));
       const url =
-        "/api/admin/dashboard/wedding-analytics" + (qp.toString() ? `?${qp.toString()}` : "");
+        "/api/admin/dashboard/wedding-analytics" +
+        (qp.toString() ? `?${qp.toString()}` : "");
 
       const response = await fetch(url, {
         credentials: "include",
@@ -175,14 +180,24 @@ export default function WeddingAnalyticsPage() {
     if (!analytics) return;
 
     const csvData = [
-      ["Couple Name", "Template", "Views", "Status", "Created", "Last Viewed", "Engagement Rate"],
+      [
+        "Couple Name",
+        "Template",
+        "Views",
+        "Status",
+        "Created",
+        "Last Viewed",
+        "Engagement Rate",
+      ],
       ...filteredPages.map((page) => [
         page.couple_name,
         page.template_name,
         page.views.toString(),
         page.is_live ? "Live" : "Draft",
         new Date(page.created_at).toLocaleDateString(),
-        page.last_viewed_at ? new Date(page.last_viewed_at).toLocaleDateString() : "Never",
+        page.last_viewed_at
+          ? new Date(page.last_viewed_at).toLocaleDateString()
+          : "Never",
         `${Number(page.engagement_rate ?? 0).toFixed(1)}%`,
       ]),
     ];
@@ -216,10 +231,14 @@ export default function WeddingAnalyticsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+          <h1
+            className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+          >
             Wedding Analytics
           </h1>
-          <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+          <p
+            className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+          >
             Comprehensive analytics for all wedding pages on your platform
           </p>
         </div>
@@ -249,7 +268,9 @@ export default function WeddingAnalyticsPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 Total Pages
               </p>
               <p
@@ -274,7 +295,9 @@ export default function WeddingAnalyticsPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 Live Pages
               </p>
               <p
@@ -299,7 +322,9 @@ export default function WeddingAnalyticsPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 Total Views
               </p>
               <p
@@ -324,7 +349,9 @@ export default function WeddingAnalyticsPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 Avg Views/Page
               </p>
               <p
@@ -351,12 +378,16 @@ export default function WeddingAnalyticsPage() {
             : "border-gray-200 bg-white shadow-sm"
         }`}
       >
-        <h3 className={`text-lg font-semibold mb-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+        <h3
+          className={`text-lg font-semibold mb-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}
+        >
           Template Performance
         </h3>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className={`border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}>
+            <thead
+              className={`border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}
+            >
               <tr>
                 <th
                   className={`text-left py-3 px-4 text-sm font-medium ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
@@ -391,7 +422,9 @@ export default function WeddingAnalyticsPage() {
                   key={template.template}
                   className={`border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}
                 >
-                  <td className={`py-3 px-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                  <td
+                    className={`py-3 px-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                  >
                     {template.template}
                   </td>
                   <td
@@ -491,8 +524,12 @@ export default function WeddingAnalyticsPage() {
             />
           </div>
           <div className="flex items-center gap-2">
-            <Filter className={`h-5 w-5 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`} />
-            <span className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+            <Filter
+              className={`h-5 w-5 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            />
+            <span
+              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
               Sort by:
             </span>
             <select
@@ -515,8 +552,12 @@ export default function WeddingAnalyticsPage() {
               <option value="views-asc">Views (Low to High)</option>
               <option value="created_at-desc">Newest First</option>
               <option value="created_at-asc">Oldest First</option>
-              <option value="engagement_rate-desc">Engagement (High to Low)</option>
-              <option value="engagement_rate-asc">Engagement (Low to High)</option>
+              <option value="engagement_rate-desc">
+                Engagement (High to Low)
+              </option>
+              <option value="engagement_rate-asc">
+                Engagement (Low to High)
+              </option>
             </select>
           </div>
         </div>
@@ -561,7 +602,8 @@ export default function WeddingAnalyticsPage() {
                   }`}
                   onClick={() => handleSort("views")}
                 >
-                  Views {sortBy === "views" && (sortOrder === "desc" ? "↓" : "↑")}
+                  Views{" "}
+                  {sortBy === "views" && (sortOrder === "desc" ? "↓" : "↑")}
                 </th>
                 <th
                   className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
@@ -578,7 +620,9 @@ export default function WeddingAnalyticsPage() {
                   }`}
                   onClick={() => handleSort("engagement_rate")}
                 >
-                  Engagement {sortBy === "engagement_rate" && (sortOrder === "desc" ? "↓" : "↑")}
+                  Engagement{" "}
+                  {sortBy === "engagement_rate" &&
+                    (sortOrder === "desc" ? "↓" : "↑")}
                 </th>
                 <th
                   className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer ${
@@ -588,7 +632,9 @@ export default function WeddingAnalyticsPage() {
                   }`}
                   onClick={() => handleSort("created_at")}
                 >
-                  Created {sortBy === "created_at" && (sortOrder === "desc" ? "↓" : "↑")}
+                  Created{" "}
+                  {sortBy === "created_at" &&
+                    (sortOrder === "desc" ? "↓" : "↑")}
                 </th>
                 <th
                   className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
@@ -606,14 +652,18 @@ export default function WeddingAnalyticsPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}>
+            <tbody
+              className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}
+            >
               {currentPages.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="px-6 py-12 text-center">
                     <Heart
                       className={`mx-auto h-12 w-12 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`}
                     />
-                    <p className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       {searchQuery
                         ? "No wedding pages match your search"
                         : "No wedding pages found"}
@@ -638,7 +688,9 @@ export default function WeddingAnalyticsPage() {
                         >
                           {page.couple_name}
                         </p>
-                        <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                        <p
+                          className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                        >
                           {page.title}
                         </p>
                       </div>
@@ -683,7 +735,9 @@ export default function WeddingAnalyticsPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
-                        onClick={() => window.open(`/wedding/${page.slug}`, "_blank")}
+                        onClick={() =>
+                          window.open(`/wedding/${page.slug}`, "_blank")
+                        }
                         className={`rounded-lg p-2 transition-colors ${
                           isDarkMode
                             ? "hover:bg-gray-800 text-gray-400"
@@ -708,8 +762,11 @@ export default function WeddingAnalyticsPage() {
               isDarkMode ? "border-gray-800" : "border-gray-200"
             }`}
           >
-            <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-              Showing {startIndex + 1} to {Math.min(endIndex, filteredPages.length)} of{" "}
+            <div
+              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
+              Showing {startIndex + 1} to{" "}
+              {Math.min(endIndex, filteredPages.length)} of{" "}
               {filteredPages.length} wedding pages
             </div>
             <div className="flex items-center gap-2">
@@ -728,11 +785,15 @@ export default function WeddingAnalyticsPage() {
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+              <span
+                className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+              >
                 Page {currentPage} of {totalPages}
               </span>
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
                 className={`rounded-lg p-2 transition-colors ${
                   currentPage === totalPages

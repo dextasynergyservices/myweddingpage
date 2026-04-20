@@ -27,7 +27,8 @@ export default function WeddingPageGuest() {
     {
       id: 3,
       guest: "Lisa Davis",
-      message: "Beautiful ceremony and reception! You two are perfect for each other. Best wishes!",
+      message:
+        "Beautiful ceremony and reception! You two are perfect for each other. Best wishes!",
       date: "2024-01-13",
     },
   ];
@@ -42,7 +43,9 @@ export default function WeddingPageGuest() {
   return (
     <div
       className={`rounded-3xl p-12 shadow-lg border mb-16 ${
-        isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+        isDarkMode
+          ? "bg-slate-800 border-slate-700"
+          : "bg-white border-slate-100"
       }`}
     >
       <div className="text-center mb-12">
@@ -52,7 +55,9 @@ export default function WeddingPageGuest() {
           Wedding Guestbook
         </h2>
         <div className="w-24 h-1 bg-gradient-to-r from-indigo-600 to-purple-600 mx-auto rounded-full mb-6"></div>
-        <p className={`text-lg font-light ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+        <p
+          className={`text-lg font-light ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+        >
           Leave us a message and share in our joy!
         </p>
       </div>
@@ -131,7 +136,9 @@ export default function WeddingPageGuest() {
               </h3>
               <span
                 className={`text-sm px-3 py-1 rounded-full ${
-                  isDarkMode ? "text-slate-400 bg-slate-600" : "text-slate-500 bg-white"
+                  isDarkMode
+                    ? "text-slate-400 bg-slate-600"
+                    : "text-slate-500 bg-white"
                 }`}
               >
                 {message.date}

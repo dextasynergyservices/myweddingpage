@@ -16,7 +16,11 @@ type Planned = {
 };
 type TreeEntry = { path: string; mode?: string; type?: string };
 
-export default function PrPlannedSummary({ planned }: { planned: Planned | null | undefined }) {
+export default function PrPlannedSummary({
+  planned,
+}: {
+  planned: Planned | null | undefined;
+}) {
   const [showFullRegistry, setShowFullRegistry] = useState(false);
   const [showRaw, setShowRaw] = useState(false);
   const rawRef = React.useRef<HTMLDivElement | null>(null);
@@ -88,7 +92,9 @@ export default function PrPlannedSummary({ planned }: { planned: Planned | null 
               <button
                 type="button"
                 className="text-xs text-blue-600 hover:underline ml-4"
-                onClick={() => copyToClipboard(String(planned.prTitle || ""), "PR title")}
+                onClick={() =>
+                  copyToClipboard(String(planned.prTitle || ""), "PR title")
+                }
                 aria-label="Copy PR title to clipboard"
               >
                 Copy
@@ -103,14 +109,19 @@ export default function PrPlannedSummary({ planned }: { planned: Planned | null 
           <div className="flex items-center justify-between">
             <div>
               <div className="text-sm text-slate-700">Commit message</div>
-              <div className="text-xs font-mono text-slate-800">{planned.commitMessage}</div>
+              <div className="text-xs font-mono text-slate-800">
+                {planned.commitMessage}
+              </div>
             </div>
             <div>
               <button
                 type="button"
                 className="text-xs text-blue-600 hover:underline ml-4"
                 onClick={() =>
-                  copyToClipboard(String(planned.commitMessage || ""), "Commit message")
+                  copyToClipboard(
+                    String(planned.commitMessage || ""),
+                    "Commit message"
+                  )
                 }
                 aria-label="Copy commit message to clipboard"
               >
@@ -132,13 +143,17 @@ export default function PrPlannedSummary({ planned }: { planned: Planned | null 
                 className="text-xs text-blue-600 hover:underline"
                 onClick={() => setShowFullRegistry((s) => !s)}
               >
-                {showFullRegistry ? "Hide registry patch" : "Show registry patch"}
+                {showFullRegistry
+                  ? "Hide registry patch"
+                  : "Show registry patch"}
               </button>
               <button
                 type="button"
                 className="text-xs text-slate-500 ml-3"
                 onClick={() => setShowRaw((s) => !s)}
-                aria-label={showRaw ? "Hide raw planned JSON" : "Show raw planned JSON"}
+                aria-label={
+                  showRaw ? "Hide raw planned JSON" : "Show raw planned JSON"
+                }
               >
                 {showRaw ? "Hide raw JSON" : "Show raw JSON"}
               </button>
@@ -175,7 +190,9 @@ export default function PrPlannedSummary({ planned }: { planned: Planned | null 
               ) : (
                 <div className="mt-2 text-xs text-slate-600">
                   {String(planned.updatedRegistryContent || "").slice(0, 300)}
-                  {String(planned.updatedRegistryContent || "").length > 300 ? "..." : ""}
+                  {String(planned.updatedRegistryContent || "").length > 300
+                    ? "..."
+                    : ""}
                 </div>
               )}
             </div>
@@ -186,7 +203,9 @@ export default function PrPlannedSummary({ planned }: { planned: Planned | null 
       <div>
         <div className="text-sm text-slate-700">Planned tree entries</div>
         {changedFiles.length === 0 ? (
-          <div className="text-xs text-green-700">No file-level changes planned</div>
+          <div className="text-xs text-green-700">
+            No file-level changes planned
+          </div>
         ) : (
           <ul className="mt-2 list-disc pl-5 text-xs">
             {changedFiles.map((p: string) => (
@@ -201,7 +220,9 @@ export default function PrPlannedSummary({ planned }: { planned: Planned | null 
       {planned.prBody && (
         <div>
           <div className="text-sm text-slate-700">PR body</div>
-          <div className="text-xs whitespace-pre-wrap mt-1 text-slate-800">{planned.prBody}</div>
+          <div className="text-xs whitespace-pre-wrap mt-1 text-slate-800">
+            {planned.prBody}
+          </div>
         </div>
       )}
 

@@ -41,7 +41,12 @@ export default function CashGiftModal({
     e.preventDefault();
     setError("");
 
-    if (!formData.name || !formData.email || !formData.phone || !formData.amount) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.amount
+    ) {
       setError("Please fill in all required fields");
       return;
     }
@@ -85,7 +90,9 @@ export default function CashGiftModal({
       onClose();
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to submit cash gift. Please try again.";
+        err instanceof Error
+          ? err.message
+          : "Failed to submit cash gift. Please try again.";
       setError(errorMessage);
       console.error("Cash gift submission error:", err);
     } finally {
@@ -93,7 +100,9 @@ export default function CashGiftModal({
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -131,7 +140,9 @@ export default function CashGiftModal({
             </div>
             <div>
               <h2 className="text-xl font-bold text-gray-900">Cash Gift</h2>
-              <p className="text-sm text-gray-500">Let us know you sent us a Cash Gift!</p>
+              <p className="text-sm text-gray-500">
+                Let us know you sent us a Cash Gift!
+              </p>
             </div>
           </div>
           <button
@@ -152,33 +163,49 @@ export default function CashGiftModal({
             </div>
           ) : bankDetails.length > 0 ? (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Bank Account Details</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Bank Account Details
+              </h3>
               <div className="space-y-3">
                 {bankDetails.map((bank, index) => (
-                  <div key={bank.id || index} className="bg-gray-50 rounded-lg p-4">
+                  <div
+                    key={bank.id || index}
+                    className="bg-gray-50 rounded-lg p-4"
+                  >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="text-gray-500 text-sm">Bank Name:</span>
-                          <p className="font-medium text-gray-900">{bank.bankName}</p>
+                          <span className="text-gray-500 text-sm">
+                            Bank Name:
+                          </span>
+                          <p className="font-medium text-gray-900">
+                            {bank.bankName}
+                          </p>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="text-gray-500 text-sm">Account Number:</span>
+                          <span className="text-gray-500 text-sm">
+                            Account Number:
+                          </span>
                           <p className="font-medium text-gray-900 font-mono text-lg">
                             {bank.accountNumber}
                           </p>
                         </div>
                         <button
                           onClick={() =>
-                            handleCopy(bank.accountNumber, `accountNumber-${bank.id || index}`)
+                            handleCopy(
+                              bank.accountNumber,
+                              `accountNumber-${bank.id || index}`
+                            )
                           }
                           className="p-2 rounded hover:bg-gray-200 transition-colors"
                           title="Copy account number"
                         >
-                          {copiedItems.has(`accountNumber-${bank.id || index}`) ? (
+                          {copiedItems.has(
+                            `accountNumber-${bank.id || index}`
+                          ) ? (
                             <Check className="h-4 w-4 text-green-500" />
                           ) : (
                             <Copy className="h-4 w-4 text-gray-500" />
@@ -188,17 +215,26 @@ export default function CashGiftModal({
 
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="text-gray-500 text-sm">Account Name:</span>
-                          <p className="font-medium text-gray-900">{bank.accountName}</p>
+                          <span className="text-gray-500 text-sm">
+                            Account Name:
+                          </span>
+                          <p className="font-medium text-gray-900">
+                            {bank.accountName}
+                          </p>
                         </div>
                         <button
                           onClick={() =>
-                            handleCopy(bank.accountName, `accountName-${bank.id || index}`)
+                            handleCopy(
+                              bank.accountName,
+                              `accountName-${bank.id || index}`
+                            )
                           }
                           className="p-2 rounded hover:bg-gray-200 transition-colors"
                           title="Copy account name"
                         >
-                          {copiedItems.has(`accountName-${bank.id || index}`) ? (
+                          {copiedItems.has(
+                            `accountName-${bank.id || index}`
+                          ) ? (
                             <Check className="h-4 w-4 text-green-500" />
                           ) : (
                             <Copy className="h-4 w-4 text-gray-500" />
@@ -221,7 +257,10 @@ export default function CashGiftModal({
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Your Name *
               </label>
               <input
@@ -237,7 +276,10 @@ export default function CashGiftModal({
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Email Address *
               </label>
               <input
@@ -253,7 +295,10 @@ export default function CashGiftModal({
             </div>
 
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Phone Number *
               </label>
               <input
@@ -269,7 +314,10 @@ export default function CashGiftModal({
             </div>
 
             <div>
-              <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="amount"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Amount *
               </label>
               <input
@@ -285,7 +333,10 @@ export default function CashGiftModal({
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Message (Optional)
               </label>
               <textarea

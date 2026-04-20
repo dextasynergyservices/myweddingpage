@@ -40,7 +40,10 @@ async function handle(req: NextRequest) {
   const githubToken = process.env.TEMPLATE_GITHUB_TOKEN;
 
   if (!stagingId || !slug || !adminEmail) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
   }
   if (!githubOwner || !githubRepo || !githubToken) {
     return NextResponse.json(
@@ -65,7 +68,9 @@ async function handle(req: NextRequest) {
   const ghOpts = { owner: githubOwner, repo: githubRepo, token: githubToken };
 
   try {
-    const MAX_BYTES = Number(process.env.MAX_COMMIT_FILE_SIZE_BYTES || 5 * 1024 * 1024); // default 5MB
+    const MAX_BYTES = Number(
+      process.env.MAX_COMMIT_FILE_SIZE_BYTES || 5 * 1024 * 1024
+    ); // default 5MB
     // 1. Resolve develop ref
     const developRef = (await gh.getRef(ghOpts, "heads/develop")) as {
       object?: { sha?: string };
@@ -124,7 +129,11 @@ async function handle(req: NextRequest) {
       const baseTreeSha = developCommit?.tree?.sha;
 
       // fetch existing registry content at develop
-      const existing = await gh.getContent(ghOpts, registryPath, `develop` as unknown as string);
+      const existing = await gh.getContent(
+        ghOpts,
+        registryPath,
+        `develop` as unknown as string
+      );
       let updatedRegistryContent: string | null = null;
       if (existing && existing.content) {
         const content = existing.content as string;
@@ -183,11 +192,15 @@ async function handle(req: NextRequest) {
           type: "blob",
         });
         if (!dryRun) {
-          const registryBlob = (await gh.createBlob(ghOpts, updatedRegistryContent)) as {
+          const registryBlob = (await gh.createBlob(
+            ghOpts,
+            updatedRegistryContent
+          )) as {
             sha?: string;
           } | null;
           const registrySha = registryBlob?.sha;
-          if (!registrySha) throw new Error("Failed to create blob for component-registry");
+          if (!registrySha)
+            throw new Error("Failed to create blob for component-registry");
           treeEntries.push({
             path: registryPath,
             mode: "100644",
@@ -206,7 +219,10 @@ async function handle(req: NextRequest) {
         if (f.path.startsWith(".")) continue;
         const full = f.full;
         // sanitize components of the relative path
-        const parts = f.path.split(/\\|\//).map(sanitizeFilenameComponent).filter(Boolean);
+        const parts = f.path
+          .split(/\\|\//)
+          .map(sanitizeFilenameComponent)
+          .filter(Boolean);
         const relPath = parts.join("/");
         const ext = path.extname(relPath).toLowerCase();
 
@@ -258,7 +274,11 @@ async function handle(req: NextRequest) {
         const isBinary = buf.includes(0);
         if (isBinary) {
           const contentB64 = buf.toString("base64");
-          const blob = (await gh.createBlobWithEncoding(ghOpts, contentB64, "base64")) as {
+          const blob = (await gh.createBlobWithEncoding(
+            ghOpts,
+            contentB64,
+            "base64"
+          )) as {
             sha?: string;
           } | null;
           const sha = blob?.sha;
@@ -296,26 +316,47 @@ async function handle(req: NextRequest) {
                     // determine script kind value if available
                     const kind = ((): unknown => {
                       try {
-                        if (lowerExt === ".js" && ScriptKindObj.JS !== undefined)
+                        if (
+                          lowerExt === ".js" &&
+                          ScriptKindObj.JS !== undefined
+                        )
                           return ScriptKindObj.JS;
-                        if (lowerExt === ".jsx" && ScriptKindObj.JSX !== undefined)
+                        if (
+                          lowerExt === ".jsx" &&
+                          ScriptKindObj.JSX !== undefined
+                        )
                           return ScriptKindObj.JSX;
-                        if (lowerExt === ".ts" && ScriptKindObj.TS !== undefined)
+                        if (
+                          lowerExt === ".ts" &&
+                          ScriptKindObj.TS !== undefined
+                        )
                           return ScriptKindObj.TS;
-                        if (ScriptKindObj.TSX !== undefined) return ScriptKindObj.TSX;
+                        if (ScriptKindObj.TSX !== undefined)
+                          return ScriptKindObj.TSX;
                       } catch {
                         // ignore
                       }
                       return undefined;
                     })();
                     const projectLike = projectInstance as unknown as {
-                      createSourceFile?: (name: string, content: string, opts?: unknown) => unknown;
+                      createSourceFile?: (
+                        name: string,
+                        content: string,
+                        opts?: unknown
+                      ) => unknown;
                     };
-                    if (projectLike && typeof projectLike.createSourceFile === "function") {
+                    if (
+                      projectLike &&
+                      typeof projectLike.createSourceFile === "function"
+                    ) {
                       // call createSourceFile if available
-                      src = projectLike.createSourceFile!("uploaded" + lowerExt, contentStr, {
-                        scriptKind: kind,
-                      });
+                      src = projectLike.createSourceFile!(
+                        "uploaded" + lowerExt,
+                        contentStr,
+                        {
+                          scriptKind: kind,
+                        }
+                      );
                     }
                   }
                   // check for imports of node builtins
@@ -323,7 +364,8 @@ async function handle(req: NextRequest) {
                     getImportDeclarations?: () => unknown[];
                   } | null;
                   const imports =
-                    srcLike && typeof srcLike.getImportDeclarations === "function"
+                    srcLike &&
+                    typeof srcLike.getImportDeclarations === "function"
                       ? srcLike.getImportDeclarations() || []
                       : [];
                   const builtins = [
@@ -347,20 +389,31 @@ async function handle(req: NextRequest) {
                     try {
                       if (
                         imp &&
-                        typeof (imp as ImportLike).getModuleSpecifierValue === "function"
+                        typeof (imp as ImportLike).getModuleSpecifierValue ===
+                          "function"
                       ) {
-                        importStrings.push(String((imp as ImportLike).getModuleSpecifierValue!()));
+                        importStrings.push(
+                          String((imp as ImportLike).getModuleSpecifierValue!())
+                        );
                       } else if (typeof imp === "string") {
                         importStrings.push(imp);
-                      } else if (imp && typeof (imp as ImportLike).getText === "function") {
-                        importStrings.push(String((imp as ImportLike).getText!()));
+                      } else if (
+                        imp &&
+                        typeof (imp as ImportLike).getText === "function"
+                      ) {
+                        importStrings.push(
+                          String((imp as ImportLike).getText!())
+                        );
                       }
                     } catch {
                       // ignore
                     }
                   }
                   for (const im of importStrings) {
-                    if (builtins.includes(im) || builtins.some((b) => im === `node:${b}`)) {
+                    if (
+                      builtins.includes(im) ||
+                      builtins.some((b) => im === `node:${b}`)
+                    ) {
                       foundServerOnly = true;
                       serverOnlyFiles.push({
                         path: relPath,
@@ -380,17 +433,25 @@ async function handle(req: NextRequest) {
                     const srcDesc = src as unknown as {
                       getDescendantsOfKind?: (k: unknown) => unknown[];
                     } | null;
-                    const SyntaxKindObj = (tm as { SyntaxKind?: Record<string, unknown> } | null)
-                      ?.SyntaxKind;
+                    const SyntaxKindObj = (
+                      tm as { SyntaxKind?: Record<string, unknown> } | null
+                    )?.SyntaxKind;
                     const pas =
-                      srcDesc && typeof srcDesc.getDescendantsOfKind === "function" && SyntaxKindObj
-                        ? srcDesc.getDescendantsOfKind(SyntaxKindObj.PropertyAccessExpression)
+                      srcDesc &&
+                      typeof srcDesc.getDescendantsOfKind === "function" &&
+                      SyntaxKindObj
+                        ? srcDesc.getDescendantsOfKind(
+                            SyntaxKindObj.PropertyAccessExpression
+                          )
                         : [];
                     for (const pa of pas) {
                       try {
-                        const getTextFunc = (pa as { getText?: () => unknown })?.getText;
+                        const getTextFunc = (pa as { getText?: () => unknown })
+                          ?.getText;
                         const txt =
-                          typeof getTextFunc === "function" ? String(getTextFunc.call(pa)) : "";
+                          typeof getTextFunc === "function"
+                            ? String(getTextFunc.call(pa))
+                            : "";
                         if (txt.includes("process.env")) {
                           foundServerOnly = true;
                           serverOnlyFiles.push({
@@ -415,7 +476,10 @@ async function handle(req: NextRequest) {
                 }
               }
               // fallback heuristic if ts-morph not available or nothing found
-              if (!TsMorph || !serverOnlyFiles.some((s) => s.path === relPath)) {
+              if (
+                !TsMorph ||
+                !serverOnlyFiles.some((s) => s.path === relPath)
+              ) {
                 const lc = contentStr.toLowerCase();
                 const serverPatterns = [
                   "fs.",
@@ -444,7 +508,11 @@ async function handle(req: NextRequest) {
             // best effort; do not fail parsing
             console.error("Server-side AST check failed:", err);
           }
-          const blob = (await gh.createBlobWithEncoding(ghOpts, contentStr, "utf-8")) as {
+          const blob = (await gh.createBlobWithEncoding(
+            ghOpts,
+            contentStr,
+            "utf-8"
+          )) as {
             sha?: string;
           } | null;
           const sha = blob?.sha;
@@ -526,13 +594,18 @@ async function handle(req: NextRequest) {
         // Nothing prepared to commit (no registry update computed)
         return NextResponse.json(
           {
-            error: "No changes to commit. Registry unchanged and no tree entries were prepared.",
+            error:
+              "No changes to commit. Registry unchanged and no tree entries were prepared.",
           },
           { status: 400 }
         );
       }
 
-      const newTree = (await gh.createTree(ghOpts, treeEntries, baseTreeSha)) as {
+      const newTree = (await gh.createTree(
+        ghOpts,
+        treeEntries,
+        baseTreeSha
+      )) as {
         sha?: string;
       } | null;
       const treeSha = newTree?.sha;
@@ -596,11 +669,20 @@ async function handle(req: NextRequest) {
       // open PR
       const prTitle = `Add template ${slug}`;
       const prBody = `Automated template import from staging ${stagingId}\nUploaded by: ${adminEmail}`;
-      const pr = await gh.createPR(ghOpts, branchName, "develop", prTitle, prBody);
+      const pr = await gh.createPR(
+        ghOpts,
+        branchName,
+        "develop",
+        prTitle,
+        prBody
+      );
 
       return NextResponse.json({ success: true, pr }, { status: 200 });
     } catch (err: unknown) {
-      console.error("Registry update failed, falling back to normal tree creation:", err);
+      console.error(
+        "Registry update failed, falling back to normal tree creation:",
+        err
+      );
       // fallback to regular flow below
     }
 
@@ -627,7 +709,13 @@ async function handle(req: NextRequest) {
     // open PR
     const prTitle = `Add template ${slug}`;
     const prBody = `Automated template import from staging ${stagingId}\nUploaded by: ${adminEmail}`;
-    const pr = await gh.createPR(ghOpts, branchName, "develop", prTitle, prBody);
+    const pr = await gh.createPR(
+      ghOpts,
+      branchName,
+      "develop",
+      prTitle,
+      prBody
+    );
 
     return NextResponse.json({ success: true, pr }, { status: 200 });
   } catch (err: unknown) {

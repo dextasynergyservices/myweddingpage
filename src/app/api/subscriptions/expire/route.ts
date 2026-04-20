@@ -44,7 +44,9 @@ export async function GET() {
     }
 
     const subscriptionIds = subscriptionsToExpire.map((s) => s.id);
-    const userIds = subscriptionsToExpire.map((s) => s.userId).filter((v): v is string => !!v);
+    const userIds = subscriptionsToExpire
+      .map((s) => s.userId)
+      .filter((v): v is string => !!v);
 
     // This block Updates subscriptions as EXPIRED
     await prisma.subscription.updateMany({
@@ -106,7 +108,9 @@ export async function GET() {
     const adminTableRows = subscriptionsToExpire
       .map((s) => {
         const fullName =
-          [s.user?.groomName, s.user?.brideName].filter(Boolean).join(" and ") || "N/A";
+          [s.user?.groomName, s.user?.brideName]
+            .filter(Boolean)
+            .join(" and ") || "N/A";
         const email = s.email || "N/A";
         const userId = s.userId || "N/A";
         const when = new Date(s.expiresAt).toLocaleString();
@@ -155,6 +159,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error("[Cron] expire-subscriptions error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

@@ -98,7 +98,8 @@ export const HeroSection = (props: HeroSectionProps) => {
   // Use timezone-agnostic date formatting
   const formattedDate = formatWeddingDate(dateValue);
 
-  const heroImage = props.heroImage || "/templates/vows/assets/hero-wedding.jpg";
+  const heroImage =
+    props.heroImage || "/templates/vows/assets/hero-wedding.jpg";
   const { ref } = useScrollAnimation(0.3);
 
   // Handle scroll to story section
@@ -165,7 +166,9 @@ export const HeroSection = (props: HeroSectionProps) => {
           {/* Date - icon above text on mobile */}
           <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 mb-6">
             <Calendar className="w-5 h-5 md:w-6 md:h-6 text-gray-200" />
-            <p className={`${styles.fontBody} text-lg md:text-xl text-gray-200 text-center`}>
+            <p
+              className={`${styles.fontBody} text-lg md:text-xl text-gray-200 text-center`}
+            >
               {formattedDate}
             </p>
           </div>

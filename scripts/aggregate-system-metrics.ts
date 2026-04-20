@@ -24,7 +24,8 @@ async function compute(windowMinutes = 60) {
     const md = r.metadata as any;
     if (md) {
       const cand = md.duration ?? md.responseTime ?? md.timing ?? md.latency;
-      if (typeof cand === "number" && Number.isFinite(cand) && cand > 0) timings.push(cand);
+      if (typeof cand === "number" && Number.isFinite(cand) && cand > 0)
+        timings.push(cand);
       if (
         !timings.length &&
         md.timing &&
@@ -38,11 +39,15 @@ async function compute(windowMinutes = 60) {
     if (md && md.statusCode && Number(md.statusCode) >= 400) errorRequests++;
   }
 
-  const throughputPerMin = totalRequests > 0 ? Math.round(totalRequests / windowMinutes) : 0;
-  const errorRatePct = totalRequests > 0 ? (errorRequests / totalRequests) * 100 : 0;
+  const throughputPerMin =
+    totalRequests > 0 ? Math.round(totalRequests / windowMinutes) : 0;
+  const errorRatePct =
+    totalRequests > 0 ? (errorRequests / totalRequests) * 100 : 0;
 
   const avgResponseMs =
-    timings.length > 0 ? Math.round(timings.reduce((a, b) => a + b, 0) / timings.length) : null;
+    timings.length > 0
+      ? Math.round(timings.reduce((a, b) => a + b, 0) / timings.length)
+      : null;
   const sorted = timings.sort((a, b) => a - b);
   const p50 = sorted.length ? sorted[Math.floor(sorted.length * 0.5)] : null;
   const p95 = sorted.length ? sorted[Math.floor(sorted.length * 0.95)] : null;
@@ -70,7 +75,9 @@ async function compute(windowMinutes = 60) {
 }
 
 (async () => {
-  const argv = Object.fromEntries(process.argv.slice(2).map((a) => a.split("=")));
+  const argv = Object.fromEntries(
+    process.argv.slice(2).map((a) => a.split("="))
+  );
   const windowMinutes = Number(argv["--window"] || argv["window"] || 60);
   await compute(windowMinutes);
   process.exit(0);

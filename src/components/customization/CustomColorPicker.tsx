@@ -53,10 +53,12 @@ export default function CustomColorPicker({
     <div className="space-y-4">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Custom Colors</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          Custom Colors
+        </h2>
         <p className="text-gray-600 dark:text-gray-400">
-          Choose your own colors with full control. Pick from the color wheel or enter hex/RGB
-          codes.
+          Choose your own colors with full control. Pick from the color wheel or
+          enter hex/RGB codes.
         </p>
       </div>
 
@@ -185,7 +187,9 @@ export default function CustomColorPicker({
             label="Button Text"
             description="Text color on secondary buttons"
             value={colors.buttonSecondaryText}
-            onChange={(value) => handleColorChange("buttonSecondaryText", value)}
+            onChange={(value) =>
+              handleColorChange("buttonSecondaryText", value)
+            }
             checkContrastWith={colors.buttonSecondary}
             disabled={disabled}
           />
@@ -194,7 +198,9 @@ export default function CustomColorPicker({
             label="Button Hover"
             description="Secondary button color when hovering"
             value={colors.buttonSecondaryHover}
-            onChange={(value) => handleColorChange("buttonSecondaryHover", value)}
+            onChange={(value) =>
+              handleColorChange("buttonSecondaryHover", value)
+            }
             disabled={disabled}
           />
         </div>
@@ -203,9 +209,10 @@ export default function CustomColorPicker({
       {/* Helper Text */}
       <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
         <p className="text-sm text-blue-800 dark:text-blue-200">
-          <strong>Tip:</strong> For best accessibility, ensure text colors have sufficient contrast
-          against their backgrounds (minimum 4.5:1 for normal text, 3:1 for large text). We&apos;ll
-          automatically check and warn you about contrast issues.
+          <strong>Tip:</strong> For best accessibility, ensure text colors have
+          sufficient contrast against their backgrounds (minimum 4.5:1 for
+          normal text, 3:1 for large text). We&apos;ll automatically check and
+          warn you about contrast issues.
         </p>
       </div>
     </div>

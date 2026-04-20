@@ -22,7 +22,8 @@ export async function sendRenewalEmail({
   expiresAt,
   adminEmail,
 }: SendRenewalEmailParams) {
-  const groomAndBride = [user.groomName, user.brideName].filter(Boolean).join(" and ") || "there";
+  const groomAndBride =
+    [user.groomName, user.brideName].filter(Boolean).join(" and ") || "there";
   const userEmail = user.email;
 
   // Format expiry date nicely

@@ -44,10 +44,14 @@ export async function DELETE(req: Request) {
     const providedBrideName = brideName.toLowerCase().trim();
     const providedGroomName = groomName.toLowerCase().trim();
 
-    if (userBrideName !== providedBrideName || userGroomName !== providedGroomName) {
+    if (
+      userBrideName !== providedBrideName ||
+      userGroomName !== providedGroomName
+    ) {
       return NextResponse.json(
         {
-          error: "Names do not match. Please enter the correct bride and groom names.",
+          error:
+            "Names do not match. Please enter the correct bride and groom names.",
         },
         { status: 400 }
       );
@@ -57,7 +61,10 @@ export async function DELETE(req: Request) {
     const userTemplate = user.userTemplates[0];
 
     if (!weddingPage) {
-      return NextResponse.json({ error: "No published wedding page found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "No published wedding page found" },
+        { status: 404 }
+      );
     }
 
     // Delete all related data in a transaction to ensure atomicity

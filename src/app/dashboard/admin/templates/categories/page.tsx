@@ -248,7 +248,10 @@ export default function CategoriesAdminPage() {
                   <Button variant="outline" onClick={() => onEditRequested(c)}>
                     Edit
                   </Button>
-                  <Button variant="outline" onClick={() => onDeleteRequested(c.id)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => onDeleteRequested(c.id)}
+                  >
                     Delete
                   </Button>
                 </div>
@@ -266,9 +269,17 @@ export default function CategoriesAdminPage() {
         message="Are you sure you want to delete this category? This action cannot be undone."
       />
 
-      <Modal isOpen={editOpen} onClose={() => setEditOpen(false)} title="Edit category">
+      <Modal
+        isOpen={editOpen}
+        onClose={() => setEditOpen(false)}
+        title="Edit category"
+      >
         <div className="grid grid-cols-1 gap-2">
-          <input value={editName} onChange={(e) => setEditName(e.target.value)} className="input" />
+          <input
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            className="input"
+          />
           <input
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
@@ -279,7 +290,11 @@ export default function CategoriesAdminPage() {
           <Button onClick={confirmEdit} data-primary>
             Save
           </Button>
-          <Button variant="outline" className="ml-3" onClick={() => setEditOpen(false)}>
+          <Button
+            variant="outline"
+            className="ml-3"
+            onClick={() => setEditOpen(false)}
+          >
             Cancel
           </Button>
         </div>

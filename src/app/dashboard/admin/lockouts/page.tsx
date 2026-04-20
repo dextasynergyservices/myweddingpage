@@ -4,11 +4,27 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useCSRFToken } from "@/hooks/useCSRFToken";
-import { Lock, Unlock, AlertCircle, Clock, Shield, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Lock,
+  Unlock,
+  AlertCircle,
+  Clock,
+  Shield,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { PageSkeleton } from "@/components/admin/LoadingSkeleton";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 interface AccountLockout {
   id: string;
@@ -83,13 +99,16 @@ export default function AccountLockoutsPage() {
   const confirmUnlock = async () => {
     if (!unlockTarget) return;
     try {
-      const response = await fetch(`/api/admin/lockouts/${unlockTarget.id}/unlock`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "x-csrf-token": csrfToken || "",
-        },
-      });
+      const response = await fetch(
+        `/api/admin/lockouts/${unlockTarget.id}/unlock`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "x-csrf-token": csrfToken || "",
+          },
+        }
+      );
 
       if (response.ok) {
         toast.success("Account unlocked successfully");
@@ -123,7 +142,8 @@ export default function AccountLockoutsPage() {
   };
 
   const filteredLockouts = lockouts.filter((lockout) => {
-    if (filter === "active") return !lockout.unlocked && new Date(lockout.lockedUntil) > new Date();
+    if (filter === "active")
+      return !lockout.unlocked && new Date(lockout.lockedUntil) > new Date();
     if (filter === "unlocked") return lockout.unlocked;
     return true;
   });
@@ -142,10 +162,14 @@ export default function AccountLockoutsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+        <h1
+          className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+        >
           Account Lockouts
         </h1>
-        <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+        <p
+          className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+        >
           Manage locked accounts and security incidents
         </p>
       </div>
@@ -164,7 +188,9 @@ export default function AccountLockoutsPage() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Total Lockouts
                 </p>
                 <p
@@ -189,7 +215,9 @@ export default function AccountLockoutsPage() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Active Lockouts
                 </p>
                 <p
@@ -214,7 +242,9 @@ export default function AccountLockoutsPage() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   Unlocked
                 </p>
                 <p
@@ -241,22 +271,32 @@ export default function AccountLockoutsPage() {
               : "border-gray-200 bg-white shadow-sm"
           }`}
         >
-          <h3 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+          <h3
+            className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+          >
             Lockout Trend
           </h3>
-          <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+          <p
+            className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+          >
             Account lockouts over the last 7 days
           </p>
           <div className="mt-6 h-80">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={stats.chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? "#374151" : "#e5e7eb"} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke={isDarkMode ? "#374151" : "#e5e7eb"}
+                />
                 <XAxis
                   dataKey="date"
                   stroke={isDarkMode ? "#9ca3af" : "#6b7280"}
                   style={{ fontSize: "12px" }}
                 />
-                <YAxis stroke={isDarkMode ? "#9ca3af" : "#6b7280"} style={{ fontSize: "12px" }} />
+                <YAxis
+                  stroke={isDarkMode ? "#9ca3af" : "#6b7280"}
+                  style={{ fontSize: "12px" }}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: isDarkMode ? "#1f2937" : "#ffffff",
@@ -311,7 +351,12 @@ export default function AccountLockoutsPage() {
             }`}
           >
             Active (
-            {lockouts.filter((l) => !l.unlocked && new Date(l.lockedUntil) > new Date()).length})
+            {
+              lockouts.filter(
+                (l) => !l.unlocked && new Date(l.lockedUntil) > new Date()
+              ).length
+            }
+            )
           </button>
           <button
             onClick={() => setFilter("unlocked")}
@@ -389,21 +434,27 @@ export default function AccountLockoutsPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}>
+            <tbody
+              className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}
+            >
               {currentLockouts.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
                     <Lock
                       className={`mx-auto h-12 w-12 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`}
                     />
-                    <p className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <p
+                      className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       No account lockouts found
                     </p>
                   </td>
                 </tr>
               ) : (
                 currentLockouts.map((lockout, index) => {
-                  const isActive = !lockout.unlocked && new Date(lockout.lockedUntil) > new Date();
+                  const isActive =
+                    !lockout.unlocked &&
+                    new Date(lockout.lockedUntil) > new Date();
 
                   return (
                     <motion.tr
@@ -484,7 +535,9 @@ export default function AccountLockoutsPage() {
                         {isActive && (
                           <>
                             <button
-                              onClick={() => handleUnlock(lockout.id, lockout.email)}
+                              onClick={() =>
+                                handleUnlock(lockout.id, lockout.email)
+                              }
                               className={`rounded-lg p-2 transition-colors ${
                                 isDarkMode
                                   ? "hover:bg-gray-800 text-green-400"
@@ -512,8 +565,11 @@ export default function AccountLockoutsPage() {
               isDarkMode ? "border-gray-800" : "border-gray-200"
             }`}
           >
-            <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-              Showing {startIndex + 1} to {Math.min(endIndex, filteredLockouts.length)} of{" "}
+            <div
+              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
+              Showing {startIndex + 1} to{" "}
+              {Math.min(endIndex, filteredLockouts.length)} of{" "}
               {filteredLockouts.length} lockouts
             </div>
             <div className="flex items-center gap-2">
@@ -532,11 +588,15 @@ export default function AccountLockoutsPage() {
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
+              <span
+                className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
+              >
                 Page {currentPage} of {totalPages}
               </span>
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
                 className={`rounded-lg p-2 transition-colors ${
                   currentPage === totalPages
@@ -570,13 +630,16 @@ export default function AccountLockoutsPage() {
             <Lock
               className={`mx-auto h-12 w-12 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`}
             />
-            <p className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+            <p
+              className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
               No account lockouts found
             </p>
           </motion.div>
         ) : (
           currentLockouts.map((lockout, index) => {
-            const isActive = !lockout.unlocked && new Date(lockout.lockedUntil) > new Date();
+            const isActive =
+              !lockout.unlocked && new Date(lockout.lockedUntil) > new Date();
 
             return (
               <motion.div
@@ -619,7 +682,9 @@ export default function AccountLockoutsPage() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}>
+                    <span
+                      className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}
+                    >
                       Status
                     </span>
                     {lockout.unlocked ? (
@@ -659,7 +724,9 @@ export default function AccountLockoutsPage() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}>
+                    <span
+                      className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}
+                    >
                       Failed Attempts
                     </span>
                     <span
@@ -671,10 +738,14 @@ export default function AccountLockoutsPage() {
                   </div>
 
                   <div className="flex items-center justify-between pt-2 border-t ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}">
-                    <span className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}>
+                    <span
+                      className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}
+                    >
                       Locked At
                     </span>
-                    <span className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                    <span
+                      className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                    >
                       {new Date(lockout.lockedAt).toLocaleString()}
                     </span>
                   </div>
@@ -687,7 +758,9 @@ export default function AccountLockoutsPage() {
         {/* Mobile Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between pt-4">
-            <span className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+            <span
+              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
               Page {currentPage} of {totalPages}
             </span>
             <div className="flex items-center gap-2">
@@ -707,7 +780,9 @@ export default function AccountLockoutsPage() {
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button
-                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
                 className={`rounded-lg p-2 transition-colors ${
                   currentPage === totalPages

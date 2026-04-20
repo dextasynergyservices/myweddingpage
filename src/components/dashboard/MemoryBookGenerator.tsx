@@ -203,7 +203,9 @@ const MemoryBookGenerator = () => {
                   key={i}
                   className={`p-3 rounded-lg ${isDarkMode ? "bg-slate-600" : "bg-slate-100"}`}
                 >
-                  <p className={`text-xs ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+                  <p
+                    className={`text-xs ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}
+                  >
                     &quot;{msg.message.substring(0, 50)}...&quot;
                   </p>
                   <p
@@ -223,7 +225,9 @@ const MemoryBookGenerator = () => {
               <FileText
                 className={`h-8 w-8 mx-auto mb-2 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
               />
-              <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+              >
                 {page.title}
               </p>
             </div>
@@ -308,7 +312,9 @@ const MemoryBookGenerator = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             className={`rounded-3xl p-6 shadow-lg border ${
-              isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+              isDarkMode
+                ? "bg-slate-800 border-slate-700"
+                : "bg-white border-slate-100"
             }`}
           >
             <div className="flex items-center justify-between">
@@ -341,11 +347,15 @@ const MemoryBookGenerator = () => {
         {/* Page List */}
         <div
           className={`lg:col-span-1 rounded-3xl p-6 shadow-lg border h-fit ${
-            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+            isDarkMode
+              ? "bg-slate-800 border-slate-700"
+              : "bg-white border-slate-100"
           }`}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+            <h2
+              className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
+            >
               Pages
             </h2>
             <div className="relative">
@@ -374,7 +384,9 @@ const MemoryBookGenerator = () => {
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-8 h-10 rounded border-2 flex items-center justify-center text-xs font-medium ${
-                      isDarkMode ? "border-slate-600 bg-slate-600" : "border-slate-300 bg-white"
+                      isDarkMode
+                        ? "border-slate-600 bg-slate-600"
+                        : "border-slate-300 bg-white"
                     }`}
                   >
                     {index + 1}
@@ -387,7 +399,9 @@ const MemoryBookGenerator = () => {
                     >
                       {page.title}
                     </p>
-                    <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                    <p
+                      className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                    >
                       {page.type}
                     </p>
                   </div>
@@ -400,11 +414,15 @@ const MemoryBookGenerator = () => {
         {/* Page Preview */}
         <div
           className={`lg:col-span-2 rounded-3xl p-8 shadow-lg border ${
-            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+            isDarkMode
+              ? "bg-slate-800 border-slate-700"
+              : "bg-white border-slate-100"
           }`}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+            <h2
+              className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
+            >
               Page Preview
             </h2>
             <div className="flex gap-2">
@@ -431,7 +449,9 @@ const MemoryBookGenerator = () => {
 
           <div className="flex justify-center">
             {selectedPage ? (
-              <div className="w-full max-w-md">{renderPagePreview(selectedPage)}</div>
+              <div className="w-full max-w-md">
+                {renderPagePreview(selectedPage)}
+              </div>
             ) : (
               <div className="w-full max-w-md aspect-[3/4] border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl flex items-center justify-center">
                 <div className="text-center">
@@ -440,7 +460,9 @@ const MemoryBookGenerator = () => {
                       isDarkMode ? "text-slate-600" : "text-slate-400"
                     }`}
                   />
-                  <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                  <p
+                    className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                  >
                     Select a page to preview
                   </p>
                 </div>
@@ -452,7 +474,9 @@ const MemoryBookGenerator = () => {
         {/* Page Settings */}
         <div
           className={`lg:col-span-1 rounded-3xl p-6 shadow-lg border h-fit ${
-            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+            isDarkMode
+              ? "bg-slate-800 border-slate-700"
+              : "bg-white border-slate-100"
           }`}
         >
           <h2
@@ -522,7 +546,9 @@ const MemoryBookGenerator = () => {
                   isDarkMode ? "text-slate-600" : "text-slate-400"
                 }`}
               />
-              <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+              <p
+                className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+              >
                 Select a page to edit settings
               </p>
             </div>
@@ -533,7 +559,9 @@ const MemoryBookGenerator = () => {
       {/* Export Options */}
       <div
         className={`rounded-3xl p-6 shadow-lg border ${
-          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+          isDarkMode
+            ? "bg-slate-800 border-slate-700"
+            : "bg-white border-slate-100"
         }`}
       >
         <h2

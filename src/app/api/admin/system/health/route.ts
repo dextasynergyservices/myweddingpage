@@ -5,7 +5,9 @@ import prisma from "@/lib/prisma";
 import os from "os";
 
 // optional dependency to get disk usage cross-platform; we'll lazy-load it inside the handler
-let checkDiskSpace: ((path: string) => Promise<{ free: number; size: number }>) | null = null;
+let checkDiskSpace:
+  | ((path: string) => Promise<{ free: number; size: number }>)
+  | null = null;
 
 export async function GET() {
   try {
@@ -77,7 +79,10 @@ export async function GET() {
 
     if (checkDiskSpace) {
       try {
-        const root = process.platform === "win32" ? process.cwd().split("\\")[0] + "\\" : "/";
+        const root =
+          process.platform === "win32"
+            ? process.cwd().split("\\")[0] + "\\"
+            : "/";
         const ds = await checkDiskSpace(root as string);
         diskTotal = Number(ds.size || 0);
         diskUsed = Math.max(0, diskTotal - Number(ds.free || 0));
@@ -147,6 +152,9 @@ export async function GET() {
     return NextResponse.json(systemHealth);
   } catch (error) {
     console.error("System health check error:", error);
-    return NextResponse.json({ error: "Failed to fetch system health data" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch system health data" },
+      { status: 500 }
+    );
   }
 }

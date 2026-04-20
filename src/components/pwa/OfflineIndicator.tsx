@@ -43,7 +43,9 @@ export function OfflineIndicator({
             <div className="max-w-7xl mx-auto flex items-center justify-center gap-2">
               <WifiOff className="w-5 h-5" />
               <span className="font-medium">You are offline</span>
-              <span className="text-sm opacity-90">- Some features may be limited</span>
+              <span className="text-sm opacity-90">
+                - Some features may be limited
+              </span>
             </div>
           </div>
         </motion.div>

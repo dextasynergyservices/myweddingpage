@@ -57,7 +57,9 @@ const HomePackages = () => {
   const formatNaira = (value: string | number) => {
     const numericValue = Number(value);
     if (Number.isNaN(numericValue)) return String(value);
-    return new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(numericValue);
+    return new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(
+      numericValue
+    );
   };
 
   useEffect(() => {
@@ -126,8 +128,8 @@ const HomePackages = () => {
                 isDarkMode ? "text-slate-300" : "text-slate-600"
               }`}
             >
-              Flexible pricing designed to grow with your needs, from intimate ceremonies to grand
-              celebrations.
+              Flexible pricing designed to grow with your needs, from intimate
+              ceremonies to grand celebrations.
             </p>
           </AnimatedSection>
 
@@ -155,7 +157,9 @@ const HomePackages = () => {
 
                 <motion.div
                   className={`relative rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-slate-100 overflow-hidden ${
-                    isDarkMode ? "bg-black/50 border-[#ab862b]/30" : "bg-white/80 border-amber-200"
+                    isDarkMode
+                      ? "bg-black/50 border-[#ab862b]/30"
+                      : "bg-white/80 border-amber-200"
                   } ${plan.popular ? "ring-2 ring-indigo-500/20 scale-105" : ""}`}
                   whileHover={{ y: -5, scale: plan.popular ? 1.08 : 1.03 }}
                 >
@@ -173,7 +177,10 @@ const HomePackages = () => {
                         className={`inline-block p-4 rounded-2xl bg-gradient-to-r ${plan.gradient} mb-6 shadow-lg`}
                         whileHover={{ rotate: 5, scale: 1.1 }}
                       >
-                        <Heart className="h-8 w-8 text-white" fill="currentColor" />
+                        <Heart
+                          className="h-8 w-8 text-white"
+                          fill="currentColor"
+                        />
                       </motion.div>
                       <h3
                         className={`text-xl font-semibold mb-2 ${
@@ -227,7 +234,10 @@ const HomePackages = () => {
                       ))}
                     </ul>
 
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
                       <motion.button
                         onClick={() => setSelectedPackage(plan)}
                         className={`block text-center w-40 m-auto py-4 px-6 rounded-2xl font-medium transition-all cursor-pointer duration-300 ${
@@ -248,7 +258,10 @@ const HomePackages = () => {
           </div>
         </div>
       </section>
-      <PackageModal isOpen={!!selectedPackage} onClose={() => setSelectedPackage(null)}>
+      <PackageModal
+        isOpen={!!selectedPackage}
+        onClose={() => setSelectedPackage(null)}
+      >
         {selectedPackage && (
           <>
             <h3 className="text-2xl font-semibold text-slate-800 mb-2">
@@ -257,11 +270,15 @@ const HomePackages = () => {
 
             {/* Scrollable content wrapper */}
             <div className="max-h-[70vh] overflow-y-auto pr-4 mb-6">
-              <p className="text-slate-600 mb-4">{selectedPackage.duration_days} access</p>
+              <p className="text-slate-600 mb-4">
+                {selectedPackage.duration_days} access
+              </p>
               <ul className="list-disc list-inside text-slate-700 mb-6 space-y-2">
-                {selectedPackage.features?.map((feature: string, idx: number) => (
-                  <li key={idx}>{feature}</li>
-                ))}
+                {selectedPackage.features?.map(
+                  (feature: string, idx: number) => (
+                    <li key={idx}>{feature}</li>
+                  )
+                )}
               </ul>
 
               {/* FORM FIELDS */}
@@ -304,7 +321,9 @@ const HomePackages = () => {
                   onClick={() => setShowTerms((prev) => !prev)}
                   className="text-black font-medium hover:underline focus:outline-none"
                 >
-                  {showTerms ? "Hide Terms and Conditions ▲" : "Show Terms and Conditions ▼"}
+                  {showTerms
+                    ? "Hide Terms and Conditions ▲"
+                    : "Show Terms and Conditions ▼"}
                 </button>
 
                 <div

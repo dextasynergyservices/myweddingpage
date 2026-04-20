@@ -34,7 +34,9 @@ export async function GET() {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29); // include today as day 0
 
-    const pvsByDate = await prisma.$queryRaw<Array<{ day: Date; count: bigint }>>`
+    const pvsByDate = await prisma.$queryRaw<
+      Array<{ day: Date; count: bigint }>
+    >`
       SELECT date_trunc('day', "createdAt")::date AS day, COUNT(*) as count
       FROM "PageView"
       WHERE "createdAt" >= ${thirtyDaysAgo}
@@ -43,7 +45,9 @@ export async function GET() {
     `;
 
     // Also gather distinct IPs per day where available to form a loose 'users' estimate
-    const ipsByDate = await prisma.$queryRaw<Array<{ day: Date; unique_ips: bigint }>>`
+    const ipsByDate = await prisma.$queryRaw<
+      Array<{ day: Date; unique_ips: bigint }>
+    >`
       SELECT date_trunc('day', "createdAt")::date AS day, COUNT(DISTINCT "ipAddress") as unique_ips
       FROM "PageView"
       WHERE "createdAt" >= ${thirtyDaysAgo}
@@ -70,9 +74,13 @@ export async function GET() {
 
     // Build maps for quick lookup
     const pvMap = new Map<string, number>();
-    pvsByDate.forEach((r) => pvMap.set(r.day.toISOString().split("T")[0], Number(r.count)));
+    pvsByDate.forEach((r) =>
+      pvMap.set(r.day.toISOString().split("T")[0], Number(r.count))
+    );
     const ipMap = new Map<string, number>();
-    ipsByDate.forEach((r) => ipMap.set(r.day.toISOString().split("T")[0], Number(r.unique_ips)));
+    ipsByDate.forEach((r) =>
+      ipMap.set(r.day.toISOString().split("T")[0], Number(r.unique_ips))
+    );
 
     // Fill the last 30 days using the PageView data; if a day has no PageViews, return 0
     let allocated = 0;
@@ -90,7 +98,10 @@ export async function GET() {
       if (dayUniqueIps > 0) {
         usersEstimate = Math.min(activeUsers, dayUniqueIps);
       } else {
-        usersEstimate = Math.min(activeUsers, Math.max(0, Math.floor(dayPageViews * 0.25)));
+        usersEstimate = Math.min(
+          activeUsers,
+          Math.max(0, Math.floor(dayPageViews * 0.25))
+        );
       }
 
       const sessionsEstimate = Math.max(0, Math.floor(usersEstimate * 0.9));
@@ -117,10 +128,17 @@ export async function GET() {
     ); // seconds
     const bounceRate = Math.max(
       10,
-      Math.min(90, Math.round((1 - Math.min(1, activeUsers / Math.max(1, totalUsers))) * 100))
+      Math.min(
+        90,
+        Math.round(
+          (1 - Math.min(1, activeUsers / Math.max(1, totalUsers))) * 100
+        )
+      )
     );
     const conversionRate =
-      totalPageViews > 0 ? Number(((recentSubscriptions / totalPageViews) * 100).toFixed(2)) : 0;
+      totalPageViews > 0
+        ? Number(((recentSubscriptions / totalPageViews) * 100).toFixed(2))
+        : 0;
 
     // User growth: percent change in users created in last 30 days vs previous 30 days
     const thirtyDaysAgoStart = new Date();
@@ -136,7 +154,9 @@ export async function GET() {
         ? usersThisWindow > 0
           ? 100
           : 0
-        : Math.round(((usersThisWindow - usersPrevWindow) / usersPrevWindow) * 100);
+        : Math.round(
+            ((usersThisWindow - usersPrevWindow) / usersPrevWindow) * 100
+          );
 
     const engagementMetrics = {
       totalUsers,
@@ -152,6 +172,9 @@ export async function GET() {
     return NextResponse.json(engagementMetrics);
   } catch (e) {
     console.error("Business engagement fetch error:", e);
-    return NextResponse.json({ error: "Failed to fetch engagement metrics" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch engagement metrics" },
+      { status: 500 }
+    );
   }
 }

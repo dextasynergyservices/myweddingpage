@@ -49,7 +49,10 @@ export async function GET() {
     }
 
     if (!wp) {
-      console.debug("/api/wedding-views: no wedding page found for user", user.id);
+      console.debug(
+        "/api/wedding-views: no wedding page found for user",
+        user.id
+      );
       return NextResponse.json({ views: 0, weddingPage: null });
     }
 
@@ -142,7 +145,10 @@ export async function POST(req: NextRequest) {
         });
         updatedViews = txRes?.views ?? null;
       } catch (err) {
-        console.error("Failed to increment wedding page views and record PageView:", err);
+        console.error(
+          "Failed to increment wedding page views and record PageView:",
+          err
+        );
       }
     }
 
@@ -170,7 +176,10 @@ export async function POST(req: NextRequest) {
 
     return res;
   } catch (error) {
-    console.error("Error incrementing wedding views via /api/wedding-views POST:", error);
+    console.error(
+      "Error incrementing wedding views via /api/wedding-views POST:",
+      error
+    );
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

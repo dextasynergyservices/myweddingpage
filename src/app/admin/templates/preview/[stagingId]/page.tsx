@@ -5,7 +5,11 @@ import PreviewHost from "./PreviewHost";
 
 export const runtime = "nodejs";
 
-export default async function PreviewPage({ params }: { params: { stagingId: string } }) {
+export default async function PreviewPage({
+  params,
+}: {
+  params: { stagingId: string };
+}) {
   const { stagingId } = params;
   const dir = path.join(staging.STAGING_ROOT, stagingId);
   const manifestPath = path.join(dir, "manifest.json");

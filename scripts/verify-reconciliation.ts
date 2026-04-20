@@ -33,7 +33,9 @@
 
     console.error("MISMATCHES FOUND:");
     rows.forEach((r) =>
-      console.error(`${r.slug} : aggregate=${r.aggregate_views} pageview_count=${r.pageview_count}`)
+      console.error(
+        `${r.slug} : aggregate=${r.aggregate_views} pageview_count=${r.pageview_count}`
+      )
     );
     await prisma.$disconnect();
     process.exit(2);

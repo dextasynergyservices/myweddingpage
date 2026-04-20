@@ -104,10 +104,14 @@ const DraggableComponent = ({
           <component.icon className="h-5 w-5 text-white" />
         </div>
         <div>
-          <h3 className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+          <h3
+            className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+          >
             {component.name}
           </h3>
-          <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+          <p
+            className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+          >
             Drag to canvas
           </p>
         </div>
@@ -161,9 +165,14 @@ const DropZone = ({
 
 const WeddingPageBuilder = () => {
   const { isDarkMode } = useTheme();
-  const [droppedComponents, setDroppedComponents] = useState<DroppedComponent[]>([]);
-  const [selectedComponent, setSelectedComponent] = useState<DroppedComponent | null>(null);
-  const [previewMode, setPreviewMode] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [droppedComponents, setDroppedComponents] = useState<
+    DroppedComponent[]
+  >([]);
+  const [selectedComponent, setSelectedComponent] =
+    useState<DroppedComponent | null>(null);
+  const [previewMode, setPreviewMode] = useState<
+    "desktop" | "tablet" | "mobile"
+  >("desktop");
   const [isDragging, setIsDragging] = useState(false);
   const [templates, setTemplates] = useState<Template[]>([
     {
@@ -279,18 +288,28 @@ const WeddingPageBuilder = () => {
     setShowTemplates(false);
   };
 
-  const updateComponentContent = (id: string, content: Record<string, unknown>) => {
+  const updateComponentContent = (
+    id: string,
+    content: Record<string, unknown>
+  ) => {
     setDroppedComponents((prev) =>
       prev.map((comp) =>
-        comp.id === id ? { ...comp, content: { ...comp.content, ...content } } : comp
+        comp.id === id
+          ? { ...comp, content: { ...comp.content, ...content } }
+          : comp
       )
     );
   };
 
-  const updateComponentStyles = (id: string, styles: Record<string, string>) => {
+  const updateComponentStyles = (
+    id: string,
+    styles: Record<string, string>
+  ) => {
     setDroppedComponents((prev) =>
       prev.map((comp) =>
-        comp.id === id ? { ...comp, styles: { ...comp.styles, ...styles } } : comp
+        comp.id === id
+          ? { ...comp, styles: { ...comp.styles, ...styles } }
+          : comp
       )
     );
   };
@@ -325,7 +344,9 @@ const WeddingPageBuilder = () => {
             <div className="p-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg">
               <component.icon className="h-5 w-5 text-white" />
             </div>
-            <h3 className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+            <h3
+              className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+            >
               {component.name}
             </h3>
           </div>
@@ -360,7 +381,9 @@ const WeddingPageBuilder = () => {
           </div>
         </div>
 
-        <div className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+        <div
+          className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+        >
           {renderComponentContent(component)}
         </div>
       </motion.div>
@@ -390,7 +413,10 @@ const WeddingPageBuilder = () => {
             <h2 className="text-xl font-semibold mb-2">Photo Gallery</h2>
             <div className="grid grid-cols-3 gap-2">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="aspect-square bg-slate-200 dark:bg-slate-600 rounded"></div>
+                <div
+                  key={i}
+                  className="aspect-square bg-slate-200 dark:bg-slate-600 rounded"
+                ></div>
               ))}
             </div>
           </div>
@@ -398,7 +424,9 @@ const WeddingPageBuilder = () => {
       case "countdown":
         return (
           <div className="text-center">
-            <h2 className="text-xl font-semibold mb-4">Countdown to Our Wedding</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Countdown to Our Wedding
+            </h2>
             <div className="grid grid-cols-4 gap-4">
               {["Days", "Hours", "Minutes", "Seconds"].map((unit) => (
                 <div key={unit} className="text-center">
@@ -442,7 +470,9 @@ const WeddingPageBuilder = () => {
         <div className="flex-1 flex gap-8">
           <div
             className={`w-80 rounded-3xl p-6 shadow-lg border h-fit ${
-              isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+              isDarkMode
+                ? "bg-slate-800 border-slate-700"
+                : "bg-white border-slate-100"
             }`}
           >
             <div className="flex items-center justify-between mb-6">
@@ -462,7 +492,9 @@ const WeddingPageBuilder = () => {
             {showTemplates ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                  <h3
+                    className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                  >
                     Saved Templates
                   </h3>
                   <button
@@ -489,10 +521,14 @@ const WeddingPageBuilder = () => {
                       height={96}
                       className="w-full h-24 object-cover rounded-lg mb-3"
                     />
-                    <h4 className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                    <h4
+                      className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                    >
                       {template.name}
                     </h4>
-                    <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                    <p
+                      className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                    >
                       {template.components.length} components
                     </p>
                   </div>
@@ -515,7 +551,9 @@ const WeddingPageBuilder = () => {
           <div className="flex-1 flex flex-col">
             <div
               className={`flex items-center justify-between p-4 rounded-2xl mb-6 ${
-                isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+                isDarkMode
+                  ? "bg-slate-800 border-slate-700"
+                  : "bg-white border-slate-200"
               } border shadow-lg`}
             >
               <div className="flex items-center gap-4">
@@ -583,7 +621,9 @@ const WeddingPageBuilder = () => {
             </div>
 
             <div className="flex-1">
-              <div className={`mx-auto transition-all duration-300 ${getPreviewWidth()}`}>
+              <div
+                className={`mx-auto transition-all duration-300 ${getPreviewWidth()}`}
+              >
                 <DropZone onDrop={handleDrop} isDragging={isDragging}>
                   {droppedComponents.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-96 text-center">
@@ -605,7 +645,9 @@ const WeddingPageBuilder = () => {
                       >
                         Start Building Your Wedding Page
                       </h3>
-                      <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      <p
+                        className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
                         Drag components from the left panel to start building
                       </p>
                     </div>
@@ -614,7 +656,9 @@ const WeddingPageBuilder = () => {
                       <AnimatePresence>
                         {droppedComponents
                           .sort((a, b) => a.position - b.position)
-                          .map((component) => renderComponentPreview(component))}
+                          .map((component) =>
+                            renderComponentPreview(component)
+                          )}
                       </AnimatePresence>
                     </div>
                   )}
@@ -630,7 +674,9 @@ const WeddingPageBuilder = () => {
                 animate={{ width: 320, opacity: 1 }}
                 exit={{ width: 0, opacity: 0 }}
                 className={`rounded-3xl p-6 shadow-lg border h-fit ${
-                  isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+                  isDarkMode
+                    ? "bg-slate-800 border-slate-700"
+                    : "bg-white border-slate-100"
                 }`}
               >
                 <div className="mb-6">
@@ -641,7 +687,9 @@ const WeddingPageBuilder = () => {
                   >
                     Properties
                   </h2>
-                  <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                  <p
+                    className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                  >
                     Customize {selectedComponent.name}
                   </p>
                 </div>
@@ -667,7 +715,9 @@ const WeddingPageBuilder = () => {
                           </label>
                           <input
                             type="text"
-                            value={(selectedComponent.content?.title as string) || ""}
+                            value={
+                              (selectedComponent.content?.title as string) || ""
+                            }
                             onChange={(e) =>
                               updateComponentContent(selectedComponent.id, {
                                 title: e.target.value,
@@ -690,7 +740,10 @@ const WeddingPageBuilder = () => {
                           </label>
                           <input
                             type="text"
-                            value={(selectedComponent.content?.subtitle as string) || ""}
+                            value={
+                              (selectedComponent.content?.subtitle as string) ||
+                              ""
+                            }
                             onChange={(e) =>
                               updateComponentContent(selectedComponent.id, {
                                 subtitle: e.target.value,
@@ -713,7 +766,9 @@ const WeddingPageBuilder = () => {
                           </label>
                           <input
                             type="text"
-                            value={(selectedComponent.content?.venue as string) || ""}
+                            value={
+                              (selectedComponent.content?.venue as string) || ""
+                            }
                             onChange={(e) =>
                               updateComponentContent(selectedComponent.id, {
                                 venue: e.target.value,
@@ -750,7 +805,10 @@ const WeddingPageBuilder = () => {
                         <div className="flex gap-2">
                           <input
                             type="color"
-                            value={selectedComponent.styles?.backgroundColor || "#ffffff"}
+                            value={
+                              selectedComponent.styles?.backgroundColor ||
+                              "#ffffff"
+                            }
                             onChange={(e) =>
                               updateComponentStyles(selectedComponent.id, {
                                 backgroundColor: e.target.value,
@@ -760,7 +818,10 @@ const WeddingPageBuilder = () => {
                           />
                           <input
                             type="text"
-                            value={selectedComponent.styles?.backgroundColor || "#ffffff"}
+                            value={
+                              selectedComponent.styles?.backgroundColor ||
+                              "#ffffff"
+                            }
                             onChange={(e) =>
                               updateComponentStyles(selectedComponent.id, {
                                 backgroundColor: e.target.value,
@@ -785,7 +846,9 @@ const WeddingPageBuilder = () => {
                         <div className="flex gap-2">
                           <input
                             type="color"
-                            value={selectedComponent.styles?.textColor || "#1e293b"}
+                            value={
+                              selectedComponent.styles?.textColor || "#1e293b"
+                            }
                             onChange={(e) =>
                               updateComponentStyles(selectedComponent.id, {
                                 textColor: e.target.value,
@@ -795,7 +858,9 @@ const WeddingPageBuilder = () => {
                           />
                           <input
                             type="text"
-                            value={selectedComponent.styles?.textColor || "#1e293b"}
+                            value={
+                              selectedComponent.styles?.textColor || "#1e293b"
+                            }
                             onChange={(e) =>
                               updateComponentStyles(selectedComponent.id, {
                                 textColor: e.target.value,

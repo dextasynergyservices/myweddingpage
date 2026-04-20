@@ -70,7 +70,9 @@ const OverviewContent = ({
   const [isContactUpgradeOpen, setContactUpgradeOpen] = useState(false);
   const [remoteInfo, setRemoteInfo] = useState<RemoteInfo | null>(null);
   const [loadingRemoteInfo, setLoadingRemoteInfo] = useState(true);
-  const [tasksByWedding] = useState<Record<string, { total: number; completed: number }>>({});
+  const [tasksByWedding] = useState<
+    Record<string, { total: number; completed: number }>
+  >({});
   const [polledViews, setPolledViews] = useState<number | null>(null);
 
   // ✅ Make fetchUserData reusable
@@ -121,7 +123,8 @@ const OverviewContent = ({
         });
         if (!res.ok) return;
         const data = await res.json();
-        if (mounted && typeof data?.views === "number") setPolledViews(data.views);
+        if (mounted && typeof data?.views === "number")
+          setPolledViews(data.views);
       } catch (err) {
         console.error("Failed to fetch polled wedding views:", err);
       }
@@ -172,8 +175,8 @@ const OverviewContent = ({
         })
         .finally(() => {
           const url = new URL(window.location.href);
-          ["reference", "trxref", "planId", "optionId", "renewal"].forEach((key) =>
-            url.searchParams.delete(key)
+          ["reference", "trxref", "planId", "optionId", "renewal"].forEach(
+            (key) => url.searchParams.delete(key)
           );
           window.history.replaceState({}, "", url.toString());
         });
@@ -227,7 +230,9 @@ const OverviewContent = ({
       const gracePeriodEnd = new Date(displayUser.gracePeriodEnd);
       const graceDaysLeft = Math.max(
         0,
-        Math.ceil((gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        Math.ceil(
+          (gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+        )
       );
 
       if (graceDaysLeft > 0) {
@@ -261,7 +266,8 @@ const OverviewContent = ({
   };
 
   const subscriptionStatus = getSubscriptionStatus();
-  const { remainingDays, status, message, isExpired, graceDaysLeft } = subscriptionStatus;
+  const { remainingDays, status, message, isExpired, graceDaysLeft } =
+    subscriptionStatus;
 
   // Helper function to get deletion message
   const getDeletionMessage = () => {
@@ -338,11 +344,15 @@ const OverviewContent = ({
               className={`text-base md:text-md ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}
             >
               Your wedding plan is:{" "}
-              <span className="font-bold text-lg">{displayUser?.plan?.name || "No plan"}</span>
+              <span className="font-bold text-lg">
+                {displayUser?.plan?.name || "No plan"}
+              </span>
               {status === "active" && (
                 <>
                   , valid for{" "}
-                  <span className={`font-bold text-lg ${remainingDays <= 7 ? "text-red-500" : ""}`}>
+                  <span
+                    className={`font-bold text-lg ${remainingDays <= 7 ? "text-red-500" : ""}`}
+                  >
                     {message}
                   </span>
                 </>
@@ -350,7 +360,9 @@ const OverviewContent = ({
               {(status === "grace-period" || status === "just-expired") && (
                 <>
                   {" - "}
-                  <span className="font-bold text-lg text-red-600">{message}</span>
+                  <span className="font-bold text-lg text-red-600">
+                    {message}
+                  </span>
                   {graceDaysLeft > 0 && (
                     <span className="text-red-500 text-sm ml-2">
                       Renew within {graceDaysLeft} day
@@ -362,23 +374,26 @@ const OverviewContent = ({
               {status === "deletion-pending" && (
                 <>
                   {" - "}
-                  <span className="font-bold text-lg text-red-700">{message}</span>
+                  <span className="font-bold text-lg text-red-700">
+                    {message}
+                  </span>
                   <span className="text-red-700 text-sm ml-2">
                     Wedding page scheduled for deletion
                   </span>
                 </>
               )}
             </p>
-            {(remainingDays <= 7 || isExpired) && status !== "deletion-pending" && (
-              <button
-                onClick={() => setRenewalOpen(true)}
-                className={`ml-2 underline text-sm font-medium cursor-pointer ${
-                  isExpired ? "text-red-600 font-bold" : "text-red-500"
-                }`}
-              >
-                {isExpired ? "URGENT: Renew Now" : "Renew Plan"}
-              </button>
-            )}
+            {(remainingDays <= 7 || isExpired) &&
+              status !== "deletion-pending" && (
+                <button
+                  onClick={() => setRenewalOpen(true)}
+                  className={`ml-2 underline text-sm font-medium cursor-pointer ${
+                    isExpired ? "text-red-600 font-bold" : "text-red-500"
+                  }`}
+                >
+                  {isExpired ? "URGENT: Renew Now" : "Renew Plan"}
+                </button>
+              )}
             <RenewalModal
               isOpen={isRenewalOpen}
               onClose={() => setRenewalOpen(false)}
@@ -425,7 +440,10 @@ const OverviewContent = ({
                       to renew before your wedding page is permanently deleted.
                     </>
                   ) : (
-                    <>Your grace period has ended. Wedding page deletion is imminent.</>
+                    <>
+                      Your grace period has ended. Wedding page deletion is
+                      imminent.
+                    </>
                   )}
                 </p>
               </div>
@@ -457,7 +475,9 @@ const OverviewContent = ({
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
               <div>
-                <h3 className="text-gray-100 font-semibold text-lg">🔒 Wedding Page Deleted</h3>
+                <h3 className="text-gray-100 font-semibold text-lg">
+                  🔒 Wedding Page Deleted
+                </h3>
                 <p className="text-gray-300 text-sm">{getDeletionMessage()}</p>
               </div>
             </div>
@@ -516,7 +536,11 @@ const OverviewContent = ({
       {/* PWA Features Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* PWA Status Widget */}
-        <PWAStatus showInstallButton={true} showNotificationToggle={true} compact={false} />
+        <PWAStatus
+          showInstallButton={true}
+          showNotificationToggle={true}
+          compact={false}
+        />
 
         {/* Notification Settings */}
         <NotificationPermission showTestButton={true} />
@@ -551,8 +575,12 @@ const OverviewContent = ({
             >
               <action.icon className="h-6 md:h-8 w-6 md:w-8" />
               <div className="text-center">
-                <h3 className="font-semibold text-sm md:text-lg">{action.title}</h3>
-                <p className="text-white/80 text-xs md:text-sm">{action.description}</p>
+                <h3 className="font-semibold text-sm md:text-lg">
+                  {action.title}
+                </h3>
+                <p className="text-white/80 text-xs md:text-sm">
+                  {action.description}
+                </p>
               </div>
             </motion.button>
           ))}
@@ -602,7 +630,9 @@ const OverviewContent = ({
                 <Edit2 className="h-3 md:h-4 w-3 md:w-4" />
               )}
               <span className="text-sm md:text-base">
-                {remoteInfo.weddingPage?.deleted_at ? "Restore Page" : "Edit Wedding page"}
+                {remoteInfo.weddingPage?.deleted_at
+                  ? "Restore Page"
+                  : "Edit Wedding page"}
               </span>
             </button>
           ) : remoteInfo?.userTemplate ? (
@@ -629,13 +659,15 @@ const OverviewContent = ({
             {userWeddings.map((wedding) => {
               const perWedding = tasksByWedding[wedding.id] ?? {
                 total: typeof tasksTotal === "number" ? tasksTotal : 0,
-                completed: typeof tasksCompleted === "number" ? tasksCompleted : 0,
+                completed:
+                  typeof tasksCompleted === "number" ? tasksCompleted : 0,
               };
 
               // If we have a polled live value for views, prefer it for display
               const displayWedding = {
                 ...wedding,
-                views: typeof polledViews === "number" ? polledViews : wedding.views,
+                views:
+                  typeof polledViews === "number" ? polledViews : wedding.views,
               } as Wedding;
 
               return (
@@ -644,7 +676,9 @@ const OverviewContent = ({
                   wedding={displayWedding}
                   isDarkMode={isDarkMode}
                   handleViewWedding={handleViewWedding}
-                  setActiveTab={(tab: string) => setActiveTab && setActiveTab(tab)}
+                  setActiveTab={(tab: string) =>
+                    setActiveTab && setActiveTab(tab)
+                  }
                   // pass published/template info when available from the /api/wedding-data response
                   hasTemplate={!!remoteInfo?.userTemplate}
                   hasWeddingPage={!!remoteInfo?.weddingPage}
@@ -658,7 +692,10 @@ const OverviewContent = ({
             })}
           </div>
         ) : (
-          <NoWeddings isDarkMode={isDarkMode} handleCreateWedding={handleCreateWedding} />
+          <NoWeddings
+            isDarkMode={isDarkMode}
+            handleCreateWedding={handleCreateWedding}
+          />
         )}
       </div>
     </div>

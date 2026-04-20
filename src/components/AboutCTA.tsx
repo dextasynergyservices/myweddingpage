@@ -20,7 +20,9 @@ const AboutCTA = () => {
         } p-16`}
       >
         <Sparkles className="h-16 w-16 text-indigo-600 mx-auto mb-8" />
-        <h2 className={`text-4xl font-light mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+        <h2
+          className={`text-4xl font-light mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+        >
           Ready to Start Your Journey?
         </h2>
         <p
@@ -28,7 +30,8 @@ const AboutCTA = () => {
             isDarkMode ? "text-slate-400" : "text-slate-600"
           }`}
         >
-          Join thousands of couples who have created their perfect wedding experience with us.
+          Join thousands of couples who have created their perfect wedding
+          experience with us.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link

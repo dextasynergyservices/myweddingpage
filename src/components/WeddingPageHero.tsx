@@ -21,7 +21,9 @@ interface WeddingPageHeroProps {
   isDemoMode?: boolean;
 }
 
-export default function WeddingPageHero({ isDemoMode = false }: WeddingPageHeroProps) {
+export default function WeddingPageHero({
+  isDemoMode = false,
+}: WeddingPageHeroProps) {
   const { isDarkMode } = useTheme();
   const [weddingData, setWeddingData] = useState<WeddingData | null>(null);
   const [loading, setLoading] = useState(true);

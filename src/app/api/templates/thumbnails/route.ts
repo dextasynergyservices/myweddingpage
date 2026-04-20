@@ -58,7 +58,8 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Failed to fetch template thumbnails:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
     return NextResponse.json(
       { error: "Internal Server Error", details: errorMessage },
       { status: 500 }

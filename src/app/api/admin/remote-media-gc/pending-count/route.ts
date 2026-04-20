@@ -18,6 +18,9 @@ export async function GET() {
     return NextResponse.json({ pending });
   } catch (err) {
     console.error("Failed to fetch pending remote media gc count:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

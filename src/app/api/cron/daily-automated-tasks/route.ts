@@ -13,7 +13,10 @@ export async function GET(request: NextRequest) {
 
     if (!cronSecret) {
       console.error("CRON_SECRET environment variable not set");
-      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 }
+      );
     }
 
     if (authHeader !== `Bearer ${cronSecret}`) {

@@ -36,7 +36,9 @@ export async function GET() {
       _count?: { _all?: number };
     };
     const byTemplateRawTyped = (byTemplateRaw as GroupByTemplate[]).slice();
-    byTemplateRawTyped.sort((a, b) => (b._count?._all || 0) - (a._count?._all || 0));
+    byTemplateRawTyped.sort(
+      (a, b) => (b._count?._all || 0) - (a._count?._all || 0)
+    );
 
     const templateIds = byTemplateRawTyped.map((r) => r.templateId as string);
     const templates = templateIds.length
@@ -58,6 +60,9 @@ export async function GET() {
     return NextResponse.json({ bySource, byTemplate });
   } catch (err) {
     console.error("Failed to compute remote-media-gc counts:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

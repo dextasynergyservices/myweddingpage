@@ -26,19 +26,28 @@ export default function AdminUserAutocomplete({
       if (!q) return setResults([]);
       (async () => {
         try {
-          const res = await fetch(`/api/admin/users?search=${encodeURIComponent(q)}`, {
-            credentials: "include",
-          });
+          const res = await fetch(
+            `/api/admin/users?search=${encodeURIComponent(q)}`,
+            {
+              credentials: "include",
+            }
+          );
           if (!res.ok) return;
           const j = await res.json();
           const users = (j.users || []) as Array<Record<string, unknown>>;
           setResults(
             users
-              .filter((u): u is Record<string, unknown> => !!u && typeof u === "object")
+              .filter(
+                (u): u is Record<string, unknown> =>
+                  !!u && typeof u === "object"
+              )
               .map((u) => ({
                 id: String(u["id"] || ""),
                 email: String(u["email"] || ""),
-                name: typeof u["name"] === "string" ? (u["name"] as string) : undefined,
+                name:
+                  typeof u["name"] === "string"
+                    ? (u["name"] as string)
+                    : undefined,
               }))
           );
           setHighlight(0);
@@ -114,7 +123,9 @@ export default function AdminUserAutocomplete({
           }
           if (e.key === "ArrowDown") {
             e.preventDefault();
-            setHighlight((h) => Math.min(h + 1, Math.max(0, results.length - 1)));
+            setHighlight((h) =>
+              Math.min(h + 1, Math.max(0, results.length - 1))
+            );
           } else if (e.key === "ArrowUp") {
             e.preventDefault();
             setHighlight((h) => Math.max(0, h - 1));

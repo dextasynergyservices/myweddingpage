@@ -106,7 +106,9 @@ export async function GET(req: NextRequest) {
           slug: page?.slug ?? null,
           title: page?.title ?? null,
           userAgent: r.userAgent ?? null,
-          ipAddress: anonymize ? hashIp(r.ipAddress ?? undefined) : (r.ipAddress ?? null),
+          ipAddress: anonymize
+            ? hashIp(r.ipAddress ?? undefined)
+            : (r.ipAddress ?? null),
           createdAt: r.createdAt,
         };
       })

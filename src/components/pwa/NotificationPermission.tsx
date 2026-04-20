@@ -102,7 +102,9 @@ export function NotificationPermission({
         <div className="flex items-center gap-3">
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              isSubscribed ? "bg-green-100 dark:bg-green-900/30" : "bg-gray-100 dark:bg-gray-700"
+              isSubscribed
+                ? "bg-green-100 dark:bg-green-900/30"
+                : "bg-gray-100 dark:bg-gray-700"
             }`}
           >
             {isSubscribed ? (
@@ -113,7 +115,9 @@ export function NotificationPermission({
           </div>
 
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">Push Notifications</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white">
+              Push Notifications
+            </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {isSubscribed ? "Enabled" : "Disabled"}
             </p>
@@ -131,7 +135,8 @@ export function NotificationPermission({
       {/* Description */}
       {!isExpanded && (
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-          Get notified about task reminders, wedding date countdowns, and important updates.
+          Get notified about task reminders, wedding date countdowns, and
+          important updates.
         </p>
       )}
 
@@ -178,13 +183,19 @@ export function NotificationPermission({
         {!isSubscribed && permission === "denied" && (
           <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
             <X className="w-4 h-4" />
-            <span>Notifications blocked. Please enable in your browser settings.</span>
+            <span>
+              Notifications blocked. Please enable in your browser settings.
+            </span>
           </div>
         )}
 
         {isSubscribed && (
           <>
-            <Button onClick={handleDisable} disabled={isLoading} variant="outline">
+            <Button
+              onClick={handleDisable}
+              disabled={isLoading}
+              variant="outline"
+            >
               <BellOff className="w-4 h-4 mr-2" />
               {isLoading ? "Disabling..." : "Disable"}
             </Button>
@@ -197,7 +208,11 @@ export function NotificationPermission({
           </>
         )}
 
-        <Button onClick={() => setIsExpanded(!isExpanded)} variant="outline" className="text-sm">
+        <Button
+          onClick={() => setIsExpanded(!isExpanded)}
+          variant="outline"
+          className="text-sm"
+        >
           {isExpanded ? "Show less" : "Learn more"}
         </Button>
       </div>

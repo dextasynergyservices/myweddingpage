@@ -17,6 +17,9 @@ export async function POST() {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error stopping streams:", error);
-    return NextResponse.json({ error: "Error stopping streams" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error stopping streams" },
+      { status: 500 }
+    );
   }
 }

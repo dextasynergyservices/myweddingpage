@@ -34,7 +34,10 @@ export async function POST(req: Request) {
         field: err.path.join("."),
         message: err.message,
       }));
-      return NextResponse.json({ error: "Validation failed", details: errors }, { status: 400 });
+      return NextResponse.json(
+        { error: "Validation failed", details: errors },
+        { status: 400 }
+      );
     }
 
     // Validate password strength
@@ -54,7 +57,10 @@ export async function POST(req: Request) {
       where: { token },
     });
     if (!resetToken || resetToken.expires < new Date()) {
-      return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid or expired token" },
+        { status: 400 }
+      );
     }
 
     const hashed = await hashPassword(password);
@@ -69,6 +75,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Password reset successfully" });
   } catch (error) {
     console.error("Reset password error:", error);
-    return NextResponse.json({ error: "Failed to reset password" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to reset password" },
+      { status: 500 }
+    );
   }
 }

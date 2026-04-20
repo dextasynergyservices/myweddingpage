@@ -82,14 +82,29 @@ export const CommentsSection = (props: CommentsSectionProps) => {
   const initialComments = useMemo(() => {
     if (slug) {
       // When we have a slug (real wedding page), don't use guests prop - only use API data
-      return props.initialComments || props.guestMessages || props.existingComments || [];
+      return (
+        props.initialComments ||
+        props.guestMessages ||
+        props.existingComments ||
+        []
+      );
     } else {
       // When no slug (preview mode), use all available props
       return (
-        props.initialComments || props.guests || props.guestMessages || props.existingComments || []
+        props.initialComments ||
+        props.guests ||
+        props.guestMessages ||
+        props.existingComments ||
+        []
       );
     }
-  }, [props.initialComments, props.guests, props.guestMessages, props.existingComments, slug]);
+  }, [
+    props.initialComments,
+    props.guests,
+    props.guestMessages,
+    props.existingComments,
+    slug,
+  ]);
 
   // const _placeholder = props.placeholder || {
   //   name: "Your Name",
@@ -103,7 +118,9 @@ export const CommentsSection = (props: CommentsSectionProps) => {
 
     setLoadingComments(true);
     try {
-      const response = await fetch(`/api/guests/comments?slug=${encodeURIComponent(slug)}`);
+      const response = await fetch(
+        `/api/guests/comments?slug=${encodeURIComponent(slug)}`
+      );
 
       if (response.ok) {
         const commentsData = await response.json();
@@ -140,7 +157,9 @@ export const CommentsSection = (props: CommentsSectionProps) => {
     }
 
     if (!slug) {
-      toast.error("Unable to identify wedding page. Please refresh and try again.");
+      toast.error(
+        "Unable to identify wedding page. Please refresh and try again."
+      );
       return;
     }
 
@@ -172,7 +191,9 @@ export const CommentsSection = (props: CommentsSectionProps) => {
 
       if (response.ok) {
         toast.dismiss(loadingToast);
-        toast.success("Thank you for your message! It will be visible after approval.");
+        toast.success(
+          "Thank you for your message! It will be visible after approval."
+        );
         setNewMessage("");
         setGuestName("");
 
@@ -214,7 +235,9 @@ export const CommentsSection = (props: CommentsSectionProps) => {
           {/* Comment Form */}
           <div
             className={`transition-all duration-1000 delay-400 ${
-              isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
+              isVisible
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 -translate-x-8"
             }`}
           >
             <Card className="elegant-card">
@@ -270,7 +293,9 @@ export const CommentsSection = (props: CommentsSectionProps) => {
           {/* Comments Display */}
           <div
             className={`transition-all duration-1000 delay-600 ${
-              isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
+              isVisible
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-8"
             }`}
           >
             <h3 className="font-heading text-2xl md:text-3xl text-black/80 mb-8">
@@ -279,7 +304,9 @@ export const CommentsSection = (props: CommentsSectionProps) => {
 
             {loadingComments ? (
               <div className="text-center py-12">
-                <p className="font-body text-lg text-black/80">Loading messages...</p>
+                <p className="font-body text-lg text-black/80">
+                  Loading messages...
+                </p>
               </div>
             ) : comments.length === 0 ? (
               <div className="text-center py-12">
@@ -297,25 +324,36 @@ export const CommentsSection = (props: CommentsSectionProps) => {
               >
                 {paginatedComments.map((comment, index) => {
                   const commentDate = new Date(comment.created_at);
-                  const formattedDate = commentDate.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  });
+                  const formattedDate = commentDate.toLocaleDateString(
+                    "en-US",
+                    {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }
+                  );
 
                   return (
                     <Card
                       key={comment.id}
                       className={`border border-border-light hover:shadow-soft transition-all duration-300 ${
-                        index === 0 && comment.created_at ? "bg-primary/5 border-primary/20" : ""
+                        index === 0 && comment.created_at
+                          ? "bg-primary/5 border-primary/20"
+                          : ""
                       }`}
                     >
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-body font-semibold text-black/80">{comment.name}</h4>
-                          <span className="font-body text-xs text-black/80">{formattedDate}</span>
+                          <h4 className="font-body font-semibold text-black/80">
+                            {comment.name}
+                          </h4>
+                          <span className="font-body text-xs text-black/80">
+                            {formattedDate}
+                          </span>
                         </div>
-                        <p className="font-body text-black/80 leading-relaxed">{comment.message}</p>
+                        <p className="font-body text-black/80 leading-relaxed">
+                          {comment.message}
+                        </p>
                       </CardContent>
                     </Card>
                   );
@@ -341,19 +379,21 @@ export const CommentsSection = (props: CommentsSectionProps) => {
                   </button>
 
                   <div className="flex items-center space-x-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <button
-                        key={page}
-                        onClick={() => handlePageClick(page)}
-                        className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
-                          currentPage === page
-                            ? "bg-black text-white"
-                            : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    ))}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <button
+                          key={page}
+                          onClick={() => handlePageClick(page)}
+                          className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                            currentPage === page
+                              ? "bg-black text-white"
+                              : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    )}
                   </div>
 
                   <button
@@ -371,7 +411,8 @@ export const CommentsSection = (props: CommentsSectionProps) => {
 
                 {/* Page Info */}
                 <p className="text-sm text-black/60">
-                  Page {currentPage} of {totalPages} • {comments.length} total comments
+                  Page {currentPage} of {totalPages} • {comments.length} total
+                  comments
                 </p>
               </div>
             )}

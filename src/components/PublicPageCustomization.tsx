@@ -8,7 +8,10 @@
 
 import { useEffect } from "react";
 import type { UserCustomization } from "@/types/customization";
-import { applyGlobalCustomization, removeGlobalCustomization } from "@/lib/css-variable-injection";
+import {
+  applyGlobalCustomization,
+  removeGlobalCustomization,
+} from "@/lib/css-variable-injection";
 import { loadFontsFromScheme } from "@/lib/font-utils";
 
 interface PublicPageCustomizationProps {
@@ -31,7 +34,11 @@ export default function PublicPageCustomization({
 
     // Apply CSS variables globally with cache key based on slug and timestamp
     const cacheKey = `${slug}-${customization.updatedAt || Date.now()}`;
-    applyGlobalCustomization(customization.colors, customization.fonts, cacheKey);
+    applyGlobalCustomization(
+      customization.colors,
+      customization.fonts,
+      cacheKey
+    );
 
     // Cleanup function
     return () => {

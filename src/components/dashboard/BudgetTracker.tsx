@@ -165,14 +165,20 @@ const BudgetTracker = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className={`rounded-3xl p-6 shadow-lg border ${
-            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+            isDarkMode
+              ? "bg-slate-800 border-slate-700"
+              : "bg-white border-slate-100"
           }`}
         >
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl">
               <DollarSign className="h-6 w-6 text-white" />
             </div>
-            <div className={budgetUsedPercentage > 90 ? "text-red-600" : "text-emerald-600"}>
+            <div
+              className={
+                budgetUsedPercentage > 90 ? "text-red-600" : "text-emerald-600"
+              }
+            >
               <TrendingUp className="h-5 w-5" />
             </div>
           </div>
@@ -181,7 +187,9 @@ const BudgetTracker = () => {
           >
             ${totalBudget.toLocaleString()}
           </h3>
-          <p className={isDarkMode ? "text-slate-400" : "text-slate-600"}>Total Budget</p>
+          <p className={isDarkMode ? "text-slate-400" : "text-slate-600"}>
+            Total Budget
+          </p>
         </motion.div>
 
         {/* Total Spent */}
@@ -190,7 +198,9 @@ const BudgetTracker = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className={`rounded-3xl p-6 shadow-lg border ${
-            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+            isDarkMode
+              ? "bg-slate-800 border-slate-700"
+              : "bg-white border-slate-100"
           }`}
         >
           <div className="flex items-center justify-between mb-4">
@@ -215,7 +225,9 @@ const BudgetTracker = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className={`rounded-3xl p-6 shadow-lg border ${
-            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+            isDarkMode
+              ? "bg-slate-800 border-slate-700"
+              : "bg-white border-slate-100"
           }`}
         >
           <div className="flex items-center justify-between mb-4">
@@ -228,11 +240,17 @@ const BudgetTracker = () => {
             >
               <DollarSign className="h-6 w-6 text-white" />
             </div>
-            {remainingBudget < 0 && <AlertTriangle className="h-5 w-5 text-red-600" />}
+            {remainingBudget < 0 && (
+              <AlertTriangle className="h-5 w-5 text-red-600" />
+            )}
           </div>
           <h3
             className={`text-3xl font-light mb-1 ${
-              remainingBudget < 0 ? "text-red-600" : isDarkMode ? "text-white" : "text-slate-900"
+              remainingBudget < 0
+                ? "text-red-600"
+                : isDarkMode
+                  ? "text-white"
+                  : "text-slate-900"
             }`}
           >
             ${Math.abs(remainingBudget).toLocaleString()}
@@ -265,26 +283,39 @@ const BudgetTracker = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className={`p-4 rounded-2xl border ${
-                  isDarkMode ? "bg-slate-700/50 border-slate-600" : "bg-slate-50 border-slate-200"
+                  isDarkMode
+                    ? "bg-slate-700/50 border-slate-600"
+                    : "bg-slate-50 border-slate-200"
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 bg-gradient-to-r ${category.color} rounded-xl`}>
+                    <div
+                      className={`p-2 bg-gradient-to-r ${category.color} rounded-xl`}
+                    >
                       <Icon className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <h3 className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                      <h3
+                        className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                      >
                         {category.name}
                       </h3>
-                      <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-                        ${category.spent.toLocaleString()} of ${category.budgeted.toLocaleString()}
+                      <p
+                        className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
+                        ${category.spent.toLocaleString()} of $
+                        {category.budgeted.toLocaleString()}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {status === "over" && <AlertTriangle className="h-5 w-5 text-red-600" />}
-                    {status === "warning" && <AlertTriangle className="h-5 w-5 text-amber-600" />}
+                    {status === "over" && (
+                      <AlertTriangle className="h-5 w-5 text-red-600" />
+                    )}
+                    {status === "warning" && (
+                      <AlertTriangle className="h-5 w-5 text-amber-600" />
+                    )}
                     <span
                       className={`text-sm font-medium ${
                         status === "over"
@@ -337,16 +368,18 @@ const BudgetTracker = () => {
           <table className="w-full">
             <thead className={isDarkMode ? "bg-slate-700" : "bg-slate-50"}>
               <tr>
-                {["Vendor", "Category", "Amount", "Status", "Actions"].map((label) => (
-                  <th
-                    key={label}
-                    className={`px-4 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium ${
-                      isDarkMode ? "text-slate-300" : "text-slate-700"
-                    } ${label === "Actions" ? "text-right" : ""}`}
-                  >
-                    {label}
-                  </th>
-                ))}
+                {["Vendor", "Category", "Amount", "Status", "Actions"].map(
+                  (label) => (
+                    <th
+                      key={label}
+                      className={`px-4 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium ${
+                        isDarkMode ? "text-slate-300" : "text-slate-700"
+                      } ${label === "Actions" ? "text-right" : ""}`}
+                    >
+                      {label}
+                    </th>
+                  )
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
@@ -358,7 +391,9 @@ const BudgetTracker = () => {
                   className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
                 >
                   <td className="px-4 sm:px-6 py-3 sm:py-4">
-                    <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                    <p
+                      className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                    >
                       {expense.vendor}
                     </p>
                     <p
@@ -385,7 +420,8 @@ const BudgetTracker = () => {
                     <span
                       className={`inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(expense.status)}`}
                     >
-                      {expense.status.charAt(0).toUpperCase() + expense.status.slice(1)}
+                      {expense.status.charAt(0).toUpperCase() +
+                        expense.status.slice(1)}
                     </span>
                   </td>
                   <td className="px-4 sm:px-6 py-3 sm:py-4 text-right">
@@ -421,7 +457,9 @@ const BudgetTracker = () => {
               <div className="flex justify-between items-start gap-3">
                 <div className="flex-1">
                   <div className="flex items-center justify-between gap-2 mb-2">
-                    <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                    <p
+                      className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                    >
                       {expense.vendor}
                     </p>
                     <span
@@ -443,10 +481,13 @@ const BudgetTracker = () => {
                     <span
                       className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(expense.status)}`}
                     >
-                      {expense.status.charAt(0).toUpperCase() + expense.status.slice(1)}
+                      {expense.status.charAt(0).toUpperCase() +
+                        expense.status.slice(1)}
                     </span>
 
-                    <span className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                    <span
+                      className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                    >
                       {expense.category}
                     </span>
                   </div>

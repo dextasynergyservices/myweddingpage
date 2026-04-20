@@ -42,7 +42,9 @@ const LiveStreaming = () => {
   const [streamConfigs, setStreamConfigs] = useState<StreamConfig[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"streams" | "engagement">("streams");
+  const [activeTab, setActiveTab] = useState<"streams" | "engagement">(
+    "streams"
+  );
   const [newStream, setNewStream] = useState({
     name: "",
     youtubeUrl: "",
@@ -139,7 +141,9 @@ const LiveStreaming = () => {
     for (const stream of streamConfigs) {
       if (stream.isActive && stream.youtubeId) {
         try {
-          const response = await fetch(`/api/youtube-stats?videoId=${stream.youtubeId}`);
+          const response = await fetch(
+            `/api/youtube-stats?videoId=${stream.youtubeId}`
+          );
           if (response.ok) {
             const data = await response.json();
 
@@ -147,10 +151,15 @@ const LiveStreaming = () => {
 
             // Update viewer count
             const viewerCount = data.concurrentViewers || data.viewerCount || 0;
-            console.log(`📊 Updating ${stream.name} viewer count to:`, viewerCount);
+            console.log(
+              `📊 Updating ${stream.name} viewer count to:`,
+              viewerCount
+            );
 
             setStreamConfigs((prev) => {
-              const updated = prev.map((s) => (s.id === stream.id ? { ...s, viewerCount } : s));
+              const updated = prev.map((s) =>
+                s.id === stream.id ? { ...s, viewerCount } : s
+              );
               console.log(`📊 Stream configs after update:`, updated);
               return updated;
             });
@@ -159,7 +168,9 @@ const LiveStreaming = () => {
             healthData[stream.id] = data.health || "good";
           } else {
             // Get error details
-            const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+            const errorData = await response
+              .json()
+              .catch(() => ({ error: "Unknown error" }));
             console.error(`❌ Failed to fetch stats for ${stream.name}:`, {
               status: response.status,
               error: errorData,
@@ -168,7 +179,10 @@ const LiveStreaming = () => {
             healthData[stream.id] = "poor";
           }
         } catch (error) {
-          console.error(`❌ Error updating stats for stream ${stream.name}:`, error);
+          console.error(
+            `❌ Error updating stats for stream ${stream.name}:`,
+            error
+          );
           healthData[stream.id] = "poor";
         }
       }
@@ -223,7 +237,10 @@ const LiveStreaming = () => {
     }
   };
 
-  const toggleSingleStream = async (streamId: string, currentlyActive: boolean) => {
+  const toggleSingleStream = async (
+    streamId: string,
+    currentlyActive: boolean
+  ) => {
     try {
       setIsLoading(true);
       const response = await fetch(`/api/streams/${streamId}`, {
@@ -376,7 +393,10 @@ const LiveStreaming = () => {
     setTimeout(() => setCopiedUrl(null), 2000);
   };
 
-  const totalViewers = streamConfigs.reduce((sum, config) => sum + config.viewerCount, 0);
+  const totalViewers = streamConfigs.reduce(
+    (sum, config) => sum + config.viewerCount,
+    0
+  );
 
   return (
     <div className="space-y-8">
@@ -493,7 +513,9 @@ const LiveStreaming = () => {
                 title: "Stream Status",
                 value: isStreaming ? "Live" : "Offline",
                 icon: Video,
-                color: isStreaming ? "from-red-500 to-red-600" : "from-slate-500 to-slate-600",
+                color: isStreaming
+                  ? "from-red-500 to-red-600"
+                  : "from-slate-500 to-slate-600",
               },
               {
                 title: "Total Viewers",
@@ -503,7 +525,9 @@ const LiveStreaming = () => {
               },
               {
                 title: "Active Cameras",
-                value: streamConfigs.filter((c) => c.isActive).length.toString(),
+                value: streamConfigs
+                  .filter((c) => c.isActive)
+                  .length.toString(),
                 icon: Camera,
                 color: "from-purple-500 to-pink-600",
               },
@@ -512,7 +536,10 @@ const LiveStreaming = () => {
                 value: "Copy Link",
                 icon: Share2,
                 color: "from-emerald-500 to-teal-600",
-                onClick: () => copyToClipboard(weddingPageUrl || `${window.location.origin}`),
+                onClick: () =>
+                  copyToClipboard(
+                    weddingPageUrl || `${window.location.origin}`
+                  ),
               },
             ].map((stat, index) => (
               <motion.div
@@ -536,10 +563,14 @@ const LiveStreaming = () => {
                       {stat.value}
                     </p>
                     {stat.title === "Watch Page" && (
-                      <p className="text-xs mt-1 text-blue-500">Click to copy link</p>
+                      <p className="text-xs mt-1 text-blue-500">
+                        Click to copy link
+                      </p>
                     )}
                   </div>
-                  <div className={`p-3 bg-gradient-to-r ${stat.color} rounded-2xl`}>
+                  <div
+                    className={`p-3 bg-gradient-to-r ${stat.color} rounded-2xl`}
+                  >
                     <stat.icon className="h-6 w-6 text-white" />
                   </div>
                 </div>
@@ -580,7 +611,9 @@ const LiveStreaming = () => {
                       type="text"
                       required
                       value={newStream.name}
-                      onChange={(e) => setNewStream({ ...newStream, name: e.target.value })}
+                      onChange={(e) =>
+                        setNewStream({ ...newStream, name: e.target.value })
+                      }
                       className={`w-full px-4 py-3 rounded-2xl border transition-colors ${
                         isDarkMode
                           ? "bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500"
@@ -623,7 +656,9 @@ const LiveStreaming = () => {
                       type="text"
                       required
                       value={newStream.camera}
-                      onChange={(e) => setNewStream({ ...newStream, camera: e.target.value })}
+                      onChange={(e) =>
+                        setNewStream({ ...newStream, camera: e.target.value })
+                      }
                       className={`w-full px-4 py-3 rounded-2xl border transition-colors ${
                         isDarkMode
                           ? "bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500"
@@ -640,7 +675,9 @@ const LiveStreaming = () => {
                     </label>
                     <select
                       value={newStream.quality}
-                      onChange={(e) => setNewStream({ ...newStream, quality: e.target.value })}
+                      onChange={(e) =>
+                        setNewStream({ ...newStream, quality: e.target.value })
+                      }
                       className={`w-full px-4 py-3 rounded-2xl border transition-colors ${
                         isDarkMode
                           ? "bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-indigo-500"
@@ -679,7 +716,9 @@ const LiveStreaming = () => {
           {/* Camera Feeds */}
           <div
             className={`rounded-3xl p-8 shadow-lg border ${
-              isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+              isDarkMode
+                ? "bg-slate-800 border-slate-700"
+                : "bg-white border-slate-100"
             }`}
           >
             <h2
@@ -751,7 +790,9 @@ const LiveStreaming = () => {
                     </div>
 
                     {/* Camera Info */}
-                    <div className={`p-4 ${isDarkMode ? "bg-slate-700" : "bg-slate-50"}`}>
+                    <div
+                      className={`p-4 ${isDarkMode ? "bg-slate-700" : "bg-slate-50"}`}
+                    >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <h3
@@ -771,7 +812,8 @@ const LiveStreaming = () => {
                                 className={`w-2 h-2 rounded-full ${
                                   (streamHealth[config.id] || "poor") === "good"
                                     ? "bg-green-500"
-                                    : (streamHealth[config.id] || "poor") === "fair"
+                                    : (streamHealth[config.id] || "poor") ===
+                                        "fair"
                                       ? "bg-yellow-500"
                                       : "bg-red-500"
                                 }`}
@@ -779,7 +821,8 @@ const LiveStreaming = () => {
                               <span className="text-xs text-slate-500">
                                 {(streamHealth[config.id] || "poor") === "good"
                                   ? "Excellent"
-                                  : (streamHealth[config.id] || "poor") === "fair"
+                                  : (streamHealth[config.id] || "poor") ===
+                                      "fair"
                                     ? "Fair"
                                     : "Checking..."}
                               </span>
@@ -822,7 +865,9 @@ const LiveStreaming = () => {
                             <Trash2 className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => toggleSingleStream(config.id, config.isActive)}
+                            onClick={() =>
+                              toggleSingleStream(config.id, config.isActive)
+                            }
                             className={`p-2 rounded-lg transition-colors ${
                               config.isActive
                                 ? "bg-red-600 text-white hover:bg-red-700"
@@ -848,7 +893,9 @@ const LiveStreaming = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div
               className={`rounded-3xl p-6 shadow-lg border ${
-                isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+                isDarkMode
+                  ? "bg-slate-800 border-slate-700"
+                  : "bg-white border-slate-100"
               }`}
             >
               <h2
@@ -889,7 +936,9 @@ const LiveStreaming = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs text-green-500 font-medium">LIVE</span>
+                      <span className="text-xs text-green-500 font-medium">
+                        LIVE
+                      </span>
                     </div>
                   </div>
                 </motion.div>
@@ -906,13 +955,18 @@ const LiveStreaming = () => {
                       <Users className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      <p
+                        className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
                         Peak Viewers
                       </p>
                       <p
                         className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
                       >
-                        {Math.max(totalViewers, ...streamConfigs.map((s) => s.viewerCount))}
+                        {Math.max(
+                          totalViewers,
+                          ...streamConfigs.map((s) => s.viewerCount)
+                        )}
                       </p>
                     </div>
                   </div>
@@ -975,13 +1029,16 @@ const LiveStreaming = () => {
                       <Video className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      <p
+                        className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
                         Active Streams
                       </p>
                       <p
                         className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
                       >
-                        {streamConfigs.filter((s) => s.isActive).length} / {streamConfigs.length}
+                        {streamConfigs.filter((s) => s.isActive).length} /{" "}
+                        {streamConfigs.length}
                       </p>
                     </div>
                   </div>
@@ -999,7 +1056,9 @@ const LiveStreaming = () => {
                       <Monitor className="h-5 w-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      <p
+                        className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
                         Engagement Level
                       </p>
                       <p
@@ -1022,7 +1081,9 @@ const LiveStreaming = () => {
             {/* Quick Actions */}
             <div
               className={`rounded-3xl p-6 shadow-lg border ${
-                isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
+                isDarkMode
+                  ? "bg-slate-800 border-slate-700"
+                  : "bg-white border-slate-100"
               }`}
             >
               <h2
@@ -1038,7 +1099,8 @@ const LiveStreaming = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
-                    const shareUrl = weddingPageUrl || `${window.location.origin}`;
+                    const shareUrl =
+                      weddingPageUrl || `${window.location.origin}`;
                     copyToClipboard(shareUrl);
                   }}
                   className={`w-full flex items-center gap-3 p-4 rounded-2xl transition-all ${
@@ -1055,10 +1117,16 @@ const LiveStreaming = () => {
                     )}
                   </div>
                   <div className="flex-1 text-left">
-                    <p className={`font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
-                      {copiedUrl === weddingPageUrl ? "Link Copied!" : "Share Wedding Page"}
+                    <p
+                      className={`font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
+                    >
+                      {copiedUrl === weddingPageUrl
+                        ? "Link Copied!"
+                        : "Share Wedding Page"}
                     </p>
-                    <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                    <p
+                      className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                    >
                       Copy link for guests to watch
                     </p>
                   </div>
@@ -1090,7 +1158,9 @@ const LiveStreaming = () => {
                       >
                         YouTube Studio
                       </p>
-                      <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      <p
+                        className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
                         Manage stream settings on YouTube
                       </p>
                     </div>
@@ -1123,7 +1193,9 @@ const LiveStreaming = () => {
                       >
                         View Full Analytics
                       </p>
-                      <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      <p
+                        className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
                         See detailed YouTube analytics
                       </p>
                     </div>
@@ -1156,7 +1228,9 @@ const LiveStreaming = () => {
                       >
                         Manage Live Chat
                       </p>
-                      <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      <p
+                        className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
                         Interact with viewers in real-time
                       </p>
                     </div>
@@ -1190,7 +1264,9 @@ const LiveStreaming = () => {
                       >
                         Generate QR Code
                       </p>
-                      <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      <p
+                        className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
+                      >
                         Let guests scan to join quickly
                       </p>
                     </div>
@@ -1223,7 +1299,9 @@ const LiveStreaming = () => {
       )}
 
       {activeTab === "engagement" && streamConfigs.length === 0 && (
-        <div className={`text-center py-12 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+        <div
+          className={`text-center py-12 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+        >
           <p>Please add a stream first to access engagement features.</p>
         </div>
       )}

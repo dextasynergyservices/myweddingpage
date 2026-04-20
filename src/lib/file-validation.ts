@@ -22,9 +22,9 @@ const config = {
   maxFileSize: parseInt(process.env.MAX_FILE_SIZE || "10485760", 10), // 10MB default
   maxImageWidth: parseInt(process.env.MAX_IMAGE_WIDTH || "4096", 10),
   maxImageHeight: parseInt(process.env.MAX_IMAGE_HEIGHT || "4096", 10),
-  allowedFileTypes: (process.env.ALLOWED_FILE_TYPES || "jpg,jpeg,png,gif,webp,pdf,mp4,webm").split(
-    ","
-  ),
+  allowedFileTypes: (
+    process.env.ALLOWED_FILE_TYPES || "jpg,jpeg,png,gif,webp,pdf,mp4,webm"
+  ).split(","),
 };
 
 // File type signatures (magic numbers)
@@ -107,7 +107,10 @@ export async function validateFile(
     let buffer: Buffer;
     if (file instanceof Buffer) {
       buffer = file;
-    } else if ("arrayBuffer" in file && typeof file.arrayBuffer === "function") {
+    } else if (
+      "arrayBuffer" in file &&
+      typeof file.arrayBuffer === "function"
+    ) {
       buffer = Buffer.from(await file.arrayBuffer());
     } else {
       throw new Error("Invalid file type");
@@ -199,7 +202,10 @@ export async function validateFile(
       const dimensions = await getImageDimensions(buffer, extension);
 
       if (dimensions) {
-        if (dimensions.width > config.maxImageWidth || dimensions.height > config.maxImageHeight) {
+        if (
+          dimensions.width > config.maxImageWidth ||
+          dimensions.height > config.maxImageHeight
+        ) {
           await logFileRejection(
             fileName,
             "Image dimensions exceed limits",
@@ -300,7 +306,10 @@ function detectFileType(buffer: Buffer): string | null {
  * @param type - Image type (png, jpg, gif, webp)
  * @returns Image dimensions or null
  */
-async function getImageDimensions(buffer: Buffer, type: string): Promise<ImageDimensions | null> {
+async function getImageDimensions(
+  buffer: Buffer,
+  type: string
+): Promise<ImageDimensions | null> {
   try {
     switch (type) {
       case "png":
@@ -336,7 +345,13 @@ function getJpegDimensions(buffer: Buffer): ImageDimensions | null {
     const marker = buffer[offset + 1];
 
     // Start of Frame markers (SOF0-SOF15)
-    if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+    if (
+      marker >= 0xc0 &&
+      marker <= 0xcf &&
+      marker !== 0xc4 &&
+      marker !== 0xc8 &&
+      marker !== 0xcc
+    ) {
       return {
         height: buffer.readUInt16BE(offset + 5),
         width: buffer.readUInt16BE(offset + 7),
@@ -401,7 +416,8 @@ function detectMaliciousContent(
 
   // Check for polyglot markers (file valid in multiple formats)
   const hasPdfMarker = content.includes("%PDF");
-  const hasHtmlMarker = content.includes("<html") || content.includes("<!DOCTYPE");
+  const hasHtmlMarker =
+    content.includes("<html") || content.includes("<!DOCTYPE");
   const hasZipMarker = buffer[0] === 0x50 && buffer[1] === 0x4b; // PK
 
   let markerCount = 0;

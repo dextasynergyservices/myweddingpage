@@ -60,7 +60,8 @@ interface PerformanceMetrics {
 export default function SystemMonitoringPage() {
   const { isDarkMode } = useTheme();
   const [systemHealth, setSystemHealth] = useState<SystemHealth | null>(null);
-  const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetrics | null>(null);
+  const [performanceMetrics, setPerformanceMetrics] =
+    useState<PerformanceMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -162,10 +163,14 @@ export default function SystemMonitoringPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+          <h1
+            className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+          >
             System Monitoring
           </h1>
-          <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+          <p
+            className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+          >
             Monitor system health, performance, and infrastructure status
           </p>
         </div>
@@ -178,7 +183,9 @@ export default function SystemMonitoringPage() {
               : "bg-white text-gray-900 hover:bg-gray-50 border border-gray-300"
           } ${refreshing ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-          <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
+          />
           Refresh
         </button>
       </div>
@@ -196,7 +203,9 @@ export default function SystemMonitoringPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 System Status
               </p>
               <p
@@ -221,7 +230,11 @@ export default function SystemMonitoringPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Uptime</p>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
+                Uptime
+              </p>
               <p
                 className={`mt-1 text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
               >
@@ -244,13 +257,18 @@ export default function SystemMonitoringPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 CPU Usage
               </p>
               <p
                 className={`mt-1 text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
               >
-                {systemHealth?.cpu?.usage != null ? systemHealth.cpu.usage.toFixed(1) : 0}%
+                {systemHealth?.cpu?.usage != null
+                  ? systemHealth.cpu.usage.toFixed(1)
+                  : 0}
+                %
               </p>
             </div>
             <Cpu className="h-8 w-8 text-purple-600" />
@@ -269,7 +287,9 @@ export default function SystemMonitoringPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 Memory Usage
               </p>
               <p
@@ -307,10 +327,12 @@ export default function SystemMonitoringPage() {
           <div className="space-y-4">
             <div className="flex justify-between text-sm">
               <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>
-                Used: {systemHealth ? formatBytes(systemHealth.memory.used) : "N/A"}
+                Used:{" "}
+                {systemHealth ? formatBytes(systemHealth.memory.used) : "N/A"}
               </span>
               <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>
-                Total: {systemHealth ? formatBytes(systemHealth.memory.total) : "N/A"}
+                Total:{" "}
+                {systemHealth ? formatBytes(systemHealth.memory.total) : "N/A"}
               </span>
             </div>
             <div
@@ -323,7 +345,9 @@ export default function SystemMonitoringPage() {
                 }}
               />
             </div>
-            <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+            <p
+              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
               {systemHealth?.memory?.percentage != null
                 ? systemHealth.memory.percentage.toFixed(1)
                 : 0}
@@ -351,10 +375,12 @@ export default function SystemMonitoringPage() {
           <div className="space-y-4">
             <div className="flex justify-between text-sm">
               <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>
-                Used: {systemHealth ? formatBytes(systemHealth.disk.used) : "N/A"}
+                Used:{" "}
+                {systemHealth ? formatBytes(systemHealth.disk.used) : "N/A"}
               </span>
               <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>
-                Total: {systemHealth ? formatBytes(systemHealth.disk.total) : "N/A"}
+                Total:{" "}
+                {systemHealth ? formatBytes(systemHealth.disk.total) : "N/A"}
               </span>
             </div>
             <div
@@ -367,8 +393,12 @@ export default function SystemMonitoringPage() {
                 }}
               />
             </div>
-            <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-              {systemHealth?.disk?.percentage != null ? systemHealth.disk.percentage.toFixed(1) : 0}
+            <p
+              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
+              {systemHealth?.disk?.percentage != null
+                ? systemHealth.disk.percentage.toFixed(1)
+                : 0}
               % of disk space used
             </p>
           </div>
@@ -386,7 +416,9 @@ export default function SystemMonitoringPage() {
             : "border-gray-200 bg-white shadow-sm"
         }`}
       >
-        <h3 className={`text-lg font-semibold mb-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+        <h3
+          className={`text-lg font-semibold mb-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}
+        >
           Service Status
         </h3>
         <div className="space-y-4">
@@ -395,10 +427,14 @@ export default function SystemMonitoringPage() {
             <div className="flex items-center gap-3">
               <Database className="h-5 w-5 text-blue-600" />
               <div>
-                <p className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                <p
+                  className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                >
                   Database
                 </p>
-                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                >
                   {systemHealth?.database.responseTime || 0}ms response time
                 </p>
               </div>
@@ -426,11 +462,16 @@ export default function SystemMonitoringPage() {
               <div className="flex items-center gap-3">
                 <Globe className="h-5 w-5 text-purple-600" />
                 <div>
-                  <p className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                  <p
+                    className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                  >
                     {service.name}
                   </p>
-                  <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-                    Last checked: {new Date(service.lastChecked).toLocaleString()}
+                  <p
+                    className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                  >
+                    Last checked:{" "}
+                    {new Date(service.lastChecked).toLocaleString()}
                     {service.responseTime && ` • ${service.responseTime}ms`}
                   </p>
                 </div>
@@ -467,34 +508,50 @@ export default function SystemMonitoringPage() {
           </h3>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="text-center">
-              <p className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+              <p
+                className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+              >
                 {performanceMetrics.responseTime}ms
               </p>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 Avg Response Time
               </p>
             </div>
             <div className="text-center">
-              <p className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+              <p
+                className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+              >
                 {performanceMetrics.throughput}
               </p>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 Requests/min
               </p>
             </div>
             <div className="text-center">
-              <p className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+              <p
+                className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+              >
                 {performanceMetrics.errorRate.toFixed(2)}%
               </p>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 Error Rate
               </p>
             </div>
             <div className="text-center">
-              <p className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+              <p
+                className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+              >
                 {performanceMetrics.activeConnections}
               </p>
-              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+              >
                 Active Connections
               </p>
             </div>

@@ -13,7 +13,10 @@ async function main() {
     );
   }
   // Map template names to default sections and layouts
-  const defaults: Record<string, Array<{ type: string; layout: string; components: any }>> = {
+  const defaults: Record<
+    string,
+    Array<{ type: string; layout: string; components: any }>
+  > = {
     Rustic: [
       {
         type: "HERO",
@@ -207,11 +210,14 @@ async function main() {
     if (tpl.sections.length > 0) continue;
 
     const key =
-      Object.keys(defaults).find((k) => tpl.name.toLowerCase().includes(k.toLowerCase())) ||
-      "Modern";
+      Object.keys(defaults).find((k) =>
+        tpl.name.toLowerCase().includes(k.toLowerCase())
+      ) || "Modern";
     const items = defaults[key];
 
-    console.log(`Seeding sections for template ${tpl.name} using preset ${key}`);
+    console.log(
+      `Seeding sections for template ${tpl.name} using preset ${key}`
+    );
 
     let order = 1;
     for (const def of items) {

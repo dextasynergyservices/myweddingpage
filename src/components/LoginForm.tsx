@@ -27,7 +27,9 @@ const LoginForm = () => {
   const [show2FAModal, setShow2FAModal] = useState(false);
   const [twoFactorToken, setTwoFactorToken] = useState("");
   const [useBackupCode, setUseBackupCode] = useState(false);
-  const [twoFactorMethod, setTwoFactorMethod] = useState<"totp" | "email">("totp");
+  const [twoFactorMethod, setTwoFactorMethod] = useState<"totp" | "email">(
+    "totp"
+  );
   const [emailCodeSent, setEmailCodeSent] = useState(false);
   const [isSendingCode, setIsSendingCode] = useState(false);
   const { token: csrfToken } = useCSRFToken();
@@ -106,7 +108,10 @@ const LoginForm = () => {
         (
           window as Window & {
             grecaptcha?: {
-              execute: (siteKey: string, options: { action: string }) => Promise<string>;
+              execute: (
+                siteKey: string,
+                options: { action: string }
+              ) => Promise<string>;
             };
           }
         ).grecaptcha
@@ -115,12 +120,18 @@ const LoginForm = () => {
           recaptchaToken = await (
             window as unknown as {
               grecaptcha: {
-                execute: (siteKey: string, options: { action: string }) => Promise<string>;
+                execute: (
+                  siteKey: string,
+                  options: { action: string }
+                ) => Promise<string>;
               };
             }
-          ).grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_V3 || "", {
-            action: "login",
-          });
+          ).grecaptcha.execute(
+            process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_V3 || "",
+            {
+              action: "login",
+            }
+          );
         } catch (error) {
           console.error("reCAPTCHA error:", error);
         }
@@ -156,7 +167,9 @@ const LoginForm = () => {
         } else if (res?.error === "Invalid 2FA token") {
           toast.error("Invalid verification code. Please try again.");
         } else {
-          toast.error(res?.error || "Login failed. Please check your credentials.");
+          toast.error(
+            res?.error || "Login failed. Please check your credentials."
+          );
         }
       }
     } catch (error) {
@@ -237,8 +250,12 @@ const LoginForm = () => {
               isDarkMode ? "bg-gray-800" : "bg-white"
             } shadow-2xl`}
           >
-            <h2 className="text-2xl font-bold mb-2">Two-Factor Authentication</h2>
-            <p className={`mb-6 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+            <h2 className="text-2xl font-bold mb-2">
+              Two-Factor Authentication
+            </h2>
+            <p
+              className={`mb-6 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+            >
               {useBackupCode
                 ? "Enter one of your backup codes"
                 : twoFactorMethod === "email"
@@ -255,7 +272,9 @@ const LoginForm = () => {
                     : "bg-blue-50 border border-blue-200"
                 }`}
               >
-                <p className={`text-sm ${isDarkMode ? "text-blue-300" : "text-blue-800"}`}>
+                <p
+                  className={`text-sm ${isDarkMode ? "text-blue-300" : "text-blue-800"}`}
+                >
                   {emailCodeSent
                     ? "📧 Code sent! Check your email inbox."
                     : "Sending verification code..."}
@@ -317,7 +336,9 @@ const LoginForm = () => {
                 }}
                 className="text-sm text-[#ab862b] hover:underline w-full text-center mt-2"
               >
-                {useBackupCode ? "Use authenticator code" : "Use backup code instead"}
+                {useBackupCode
+                  ? "Use authenticator code"
+                  : "Use backup code instead"}
               </button>
             </form>
           </motion.div>
@@ -374,7 +395,11 @@ const LoginForm = () => {
                   : "text-black/50 hover:text-black/60"
               } transition-colors duration-200`}
             >
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
             </button>
           </div>
           {errors.password && (
@@ -410,7 +435,9 @@ const LoginForm = () => {
         <GoogleAuthButton />
 
         {/* Signup Link */}
-        <p className={`text-center mt-8 ${isDarkMode ? "text-white/50" : "text-black"}`}>
+        <p
+          className={`text-center mt-8 ${isDarkMode ? "text-white/50" : "text-black"}`}
+        >
           Don&lsquo;t have an account?{" "}
           <Link
             href="/packages"
@@ -420,7 +447,10 @@ const LoginForm = () => {
           </Link>
         </p>
       </form>
-      <ForgotPasswordModal isOpen={forgotOpen} onClose={() => setForgotOpen(false)} />
+      <ForgotPasswordModal
+        isOpen={forgotOpen}
+        onClose={() => setForgotOpen(false)}
+      />
     </>
   );
 };

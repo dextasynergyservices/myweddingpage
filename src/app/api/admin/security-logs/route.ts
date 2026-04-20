@@ -83,7 +83,9 @@ export async function GET(request: NextRequest) {
     let afterId: string | undefined;
     if (after) {
       try {
-        const decoded = JSON.parse(Buffer.from(after, "base64").toString("utf8"));
+        const decoded = JSON.parse(
+          Buffer.from(after, "base64").toString("utf8")
+        );
         afterTimestamp = decoded.t;
         afterId = decoded.id;
       } catch {
@@ -93,7 +95,9 @@ export async function GET(request: NextRequest) {
     const messageContains = searchParams.get("messageContains") || undefined;
     const metadataContains = searchParams.get("metadataContains") || undefined;
     const offsetParam = searchParams.get("offset");
-    const offset = offsetParam ? Math.max(0, parseInt(offsetParam, 10)) : undefined;
+    const offset = offsetParam
+      ? Math.max(0, parseInt(offsetParam, 10))
+      : undefined;
 
     const logs = await querySecurityLogs({
       eventType,
@@ -113,7 +117,8 @@ export async function GET(request: NextRequest) {
     // compute total count for pagination when requested
     const metadataKey = searchParams.get("metadataKey") || undefined;
     const metadataValue = searchParams.get("metadataValue") || undefined;
-    const { countSecurityLogs } = await import("../../../../lib/security-logger");
+    const { countSecurityLogs } =
+      await import("../../../../lib/security-logger");
     const totalCount = await countSecurityLogs({
       eventType,
       severity,
@@ -141,14 +146,19 @@ export async function GET(request: NextRequest) {
           if (!isNaN(d.getTime())) iso = d.toISOString();
         } else if (tsVal instanceof Date) {
           iso = tsVal.toISOString();
-        } else if (typeof last.createdAt === "string" || typeof last.createdAt === "number") {
+        } else if (
+          typeof last.createdAt === "string" ||
+          typeof last.createdAt === "number"
+        ) {
           const d = new Date(last.createdAt as string | number);
           if (!isNaN(d.getTime())) iso = d.toISOString();
         }
 
         if (iso) {
           const cur = { t: iso, id: String(last.id ?? "") };
-          nextCursor = Buffer.from(JSON.stringify(cur), "utf8").toString("base64");
+          nextCursor = Buffer.from(JSON.stringify(cur), "utf8").toString(
+            "base64"
+          );
         } else {
           nextCursor = null;
         }
@@ -162,16 +172,26 @@ export async function GET(request: NextRequest) {
       try {
         const meta = (l.metadata as Record<string, unknown>) || {};
         let action = undefined as string | undefined;
-        if (meta && typeof meta === "object" && typeof meta["action"] === "string") {
+        if (
+          meta &&
+          typeof meta === "object" &&
+          typeof meta["action"] === "string"
+        ) {
           action = String(meta["action"]);
         } else if (typeof l.message === "string") {
           const m = (l.message as string).toUpperCase();
           if (m.startsWith("PLAN_CREATED")) action = "PLAN_CREATED";
           else if (m.startsWith("PLAN_UPDATED")) action = "PLAN_UPDATED";
           else if (m.startsWith("PLAN_DELETED")) action = "PLAN_DELETED";
-          else if (m.includes("LOGIN") && (m.includes("FAIL") || m.includes("FAILURE")))
+          else if (
+            m.includes("LOGIN") &&
+            (m.includes("FAIL") || m.includes("FAILURE"))
+          )
             action = "LOGIN_FAILED";
-          else if (m.includes("LOGIN") && (m.includes("SUCCESS") || m.includes("SUCCEED")))
+          else if (
+            m.includes("LOGIN") &&
+            (m.includes("SUCCESS") || m.includes("SUCCEED"))
+          )
             action = "LOGIN_SUCCESS";
         }
         return { ...l, action };
@@ -189,7 +209,10 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Failed to query security logs:", error);
-    return NextResponse.json({ error: "Failed to query security logs" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to query security logs" },
+      { status: 500 }
+    );
   }
 }
 
@@ -222,6 +245,9 @@ export async function DELETE(request: NextRequest) {
     });
   } catch (error) {
     console.error("Failed to cleanup logs:", error);
-    return NextResponse.json({ error: "Failed to cleanup logs" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to cleanup logs" },
+      { status: 500 }
+    );
   }
 }

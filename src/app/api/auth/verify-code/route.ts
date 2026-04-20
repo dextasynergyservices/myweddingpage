@@ -26,7 +26,10 @@ export async function POST(req: NextRequest) {
   }
 
   if (!user) {
-    return NextResponse.json({ error: "Invalid verification code" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid verification code" },
+      { status: 400 }
+    );
   }
 
   await prisma.user.update({
