@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { v2 as cloudinary } from "cloudinary";
-import { createUserAwareRateLimit, addRateLimitHeaders } from "@/lib/rate-limit";
+import {
+  createUserAwareRateLimit,
+  addRateLimitHeaders,
+} from "@/lib/rate-limit";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -33,7 +36,8 @@ const signatureRateLimit = createUserAwareRateLimit(
   {
     maxRequests: 10, // Unauthenticated users: 10 signatures/hour
     windowMs: 60 * 60 * 1000, // 1 hour
-    message: "Signature generation rate limit exceeded. Please sign in for higher limits.",
+    message:
+      "Signature generation rate limit exceeded. Please sign in for higher limits.",
   },
   async () => {
     try {
@@ -65,7 +69,10 @@ export async function POST(request: NextRequest) {
     // Validate upload type
     const allowedUploadTypes = ["profile", "hero", "story", "logo", "general"];
     if (!allowedUploadTypes.includes(uploadType)) {
-      return NextResponse.json({ error: "Invalid upload type" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid upload type" },
+        { status: 400 }
+      );
     }
 
     // Define upload parameters based on type
@@ -132,12 +139,16 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        return NextResponse.json({ error: "Invalid upload type" }, { status: 400 });
+        return NextResponse.json(
+          { error: "Invalid upload type" },
+          { status: 400 }
+        );
     }
 
     // Add timestamp and generate unique public_id if not provided
     const timestamp = Math.round(Date.now() / 1000);
-    const public_id = uploadParams.public_id || `${uploadType}_${session.user.id}_${timestamp}`;
+    const public_id =
+      uploadParams.public_id || `${uploadType}_${session.user.id}_${timestamp}`;
 
     // Prepare parameters for signature
     const paramsToSign: Record<string, string | number> = {
@@ -196,6 +207,9 @@ export async function POST(request: NextRequest) {
     return addRateLimitHeaders(request, response);
   } catch (error) {
     console.error("Signature generation error:", error);
-    return NextResponse.json({ error: "Failed to generate upload signature" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to generate upload signature" },
+      { status: 500 }
+    );
   }
 }

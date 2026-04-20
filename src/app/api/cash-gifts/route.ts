@@ -8,7 +8,10 @@ export async function POST(request: Request) {
     // Validate required fields
     if (!body.name || !body.email || !body.phone || !body.userId) {
       return NextResponse.json(
-        { error: "Missing required fields: name, email, phone, and userId are required" },
+        {
+          error:
+            "Missing required fields: name, email, phone, and userId are required",
+        },
         { status: 400 }
       );
     }
@@ -16,7 +19,10 @@ export async function POST(request: Request) {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(body.email)) {
-      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid email format" },
+        { status: 400 }
+      );
     }
 
     // Create the received gift record

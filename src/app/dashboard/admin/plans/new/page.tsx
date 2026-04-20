@@ -10,7 +10,9 @@ export default function NewPlanPage() {
 
   return (
     <div>
-      <h1 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+      <h1
+        className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+      >
         Create Plan
       </h1>
       <div className="mt-4">

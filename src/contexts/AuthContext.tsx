@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import toast from "react-hot-toast";
 
 interface User {
@@ -62,7 +68,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const userData: User = {
         id: "1",
         email,
-        name: email === "admin@wedding.com" ? "Admin User" : email.split("@")[0],
+        name:
+          email === "admin@wedding.com" ? "Admin User" : email.split("@")[0],
         role: email === "admin@wedding.com" ? "admin" : "user",
         avatar:
           "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=150",

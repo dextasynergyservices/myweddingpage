@@ -24,17 +24,28 @@ export async function GET(request: Request) {
     if (status) where.status = status;
     if (templateId) where.templateId = templateId;
     if (qterm) {
-      where.OR = [{ publicId: { contains: qterm } }, { source: { contains: qterm } }];
+      where.OR = [
+        { publicId: { contains: qterm } },
+        { source: { contains: qterm } },
+      ];
     }
 
     const [total, rows] = await Promise.all([
       prisma.remoteMediaGC.count({ where }),
-      prisma.remoteMediaGC.findMany({ where, orderBy: { createdAt: "desc" }, skip, take }),
+      prisma.remoteMediaGC.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take,
+      }),
     ]);
     return NextResponse.json({ rows, total, page, take });
   } catch (err) {
     console.error("Failed to list remote media gc:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -47,7 +58,8 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const ids: string[] = Array.isArray(body?.ids) ? body.ids : [];
-    if (!ids.length) return NextResponse.json({ error: "ids required" }, { status: 400 });
+    if (!ids.length)
+      return NextResponse.json({ error: "ids required" }, { status: 400 });
 
     const results: Array<{ id: string; ok: boolean; error?: string }> = [];
     for (const id of ids) {
@@ -62,21 +74,31 @@ export async function POST(request: Request) {
           resource_type: rec.resourceType || "image",
         });
         const resultField =
-          (res as unknown) && typeof res === "object" && (res as { [k: string]: unknown }).result
+          (res as unknown) &&
+          typeof res === "object" &&
+          (res as { [k: string]: unknown }).result
             ? (res as { [k: string]: unknown }).result
             : null;
         const ok = resultField === "ok" || resultField === "not_found";
         if (ok) {
           await prisma.remoteMediaGC.update({
             where: { id },
-            data: { status: "success", attempts: { increment: 1 }, lastError: null },
+            data: {
+              status: "success",
+              attempts: { increment: 1 },
+              lastError: null,
+            },
           });
           results.push({ id, ok: true });
         } else {
           const message = JSON.stringify(res);
           await prisma.remoteMediaGC.update({
             where: { id },
-            data: { status: "failed", attempts: { increment: 1 }, lastError: message },
+            data: {
+              status: "failed",
+              attempts: { increment: 1 },
+              lastError: message,
+            },
           });
           results.push({ id, ok: false, error: message });
         }
@@ -84,7 +106,11 @@ export async function POST(request: Request) {
         const message = err instanceof Error ? err.message : String(err);
         await prisma.remoteMediaGC.update({
           where: { id },
-          data: { status: "failed", attempts: { increment: 1 }, lastError: message },
+          data: {
+            status: "failed",
+            attempts: { increment: 1 },
+            lastError: message,
+          },
         });
         results.push({ id, ok: false, error: message });
       }
@@ -93,6 +119,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ results });
   } catch (err) {
     console.error("Retry GC error:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

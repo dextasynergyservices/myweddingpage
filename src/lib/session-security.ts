@@ -23,14 +23,18 @@ import { logSecurityEvent } from "./security-logger";
 
 // Session security configuration
 const config = {
-  maxConcurrentSessions: parseInt(process.env.MAX_CONCURRENT_SESSIONS || "3", 10),
+  maxConcurrentSessions: parseInt(
+    process.env.MAX_CONCURRENT_SESSIONS || "3",
+    10
+  ),
   sessionMaxAge: parseInt(
     process.env.SESSION_MAX_AGE || "2592000", // 30 days
     10
   ),
   rotationEnabled: process.env.SESSION_ROTATION_ENABLED !== "false",
   strictIpValidation: process.env.STRICT_IP_VALIDATION === "true",
-  strictUserAgentValidation: process.env.STRICT_USER_AGENT_VALIDATION === "true",
+  strictUserAgentValidation:
+    process.env.STRICT_USER_AGENT_VALIDATION === "true",
 };
 
 // Types
@@ -213,7 +217,10 @@ export async function validateSession(
  * @param userId - User ID
  * @returns New session token
  */
-export async function rotateSession(oldSessionToken: string, userId: string): Promise<string> {
+export async function rotateSession(
+  oldSessionToken: string,
+  userId: string
+): Promise<string> {
   try {
     // Get old session
     const oldSession = await prisma.session.findUnique({
@@ -290,7 +297,8 @@ export async function checkConcurrentSessions(
     // Check if limit exceeded
     if (sessions.length >= config.maxConcurrentSessions) {
       // Terminate oldest sessions
-      const sessionsToTerminate = sessions.length - config.maxConcurrentSessions + 1;
+      const sessionsToTerminate =
+        sessions.length - config.maxConcurrentSessions + 1;
 
       for (let i = 0; i < sessionsToTerminate; i++) {
         await prisma.session.delete({
@@ -407,7 +415,9 @@ export async function terminateAllSessions(
       message: `All sessions terminated (${result.count} sessions)`,
       metadata: {
         terminatedCount: result.count,
-        excludedSession: excludeSessionToken ? excludeSessionToken.substring(0, 10) + "..." : null,
+        excludedSession: excludeSessionToken
+          ? excludeSessionToken.substring(0, 10) + "..."
+          : null,
       },
     });
 
@@ -426,7 +436,9 @@ export async function terminateAllSessions(
  * @param userId - User ID
  * @returns Array of session metadata
  */
-export async function getActiveSessions(userId: string): Promise<SessionMetadata[]> {
+export async function getActiveSessions(
+  userId: string
+): Promise<SessionMetadata[]> {
   try {
     const sessions = await prisma.session.findMany({
       where: {
@@ -518,7 +530,9 @@ export async function detectSessionHijacking(userId: string): Promise<{
         .filter((ip: string | null | undefined): ip is string => !!ip)
     );
     if (uniqueIPs.size > 3) {
-      reasons.push(`Multiple concurrent IP addresses (${uniqueIPs.size} unique IPs)`);
+      reasons.push(
+        `Multiple concurrent IP addresses (${uniqueIPs.size} unique IPs)`
+      );
     }
 
     // Check for rapid IP changes (within 5 minutes)

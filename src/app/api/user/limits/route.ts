@@ -17,7 +17,10 @@ export async function GET() {
     });
 
     if (!user || !user.plan) {
-      return NextResponse.json({ error: "User plan not found" }, { status: 400 });
+      return NextResponse.json(
+        { error: "User plan not found" },
+        { status: 400 }
+      );
     }
 
     const photoCount = await prisma.galleryMedia.count({
@@ -46,6 +49,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching user limits:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

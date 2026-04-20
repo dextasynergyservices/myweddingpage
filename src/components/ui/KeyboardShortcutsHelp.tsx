@@ -126,7 +126,9 @@ export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({
                       {shortcut.keys.map((key, keyIndex) => (
                         <React.Fragment key={keyIndex}>
                           {keyIndex > 0 && (
-                            <span className="text-gray-400 dark:text-gray-600">+</span>
+                            <span className="text-gray-400 dark:text-gray-600">
+                              +
+                            </span>
                           )}
                           <kbd className="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700 shadow-sm dark:bg-gray-700 dark:text-gray-300">
                             {key}

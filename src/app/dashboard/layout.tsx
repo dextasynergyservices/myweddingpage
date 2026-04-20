@@ -4,7 +4,11 @@ import "../globals.css";
 import { InstallPrompt } from "@/components/pwa";
 import { useAuth } from "@/contexts/AuthContext";
 
-export default function WeddingPageLayout({ children }: { children: React.ReactNode }) {
+export default function WeddingPageLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { user } = useAuth();
 
   return (

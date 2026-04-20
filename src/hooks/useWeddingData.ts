@@ -14,7 +14,12 @@ interface WeddingData {
     content: string;
     imageUrl: string;
   };
-  galleryPhotos?: Array<{ id: string; url: string; title: string; category: string }>;
+  galleryPhotos?: Array<{
+    id: string;
+    url: string;
+    title: string;
+    category: string;
+  }>;
   giftRegistry?: Array<{
     id: string;
     item: string;
@@ -22,7 +27,12 @@ interface WeddingData {
     image: string;
     purchased: boolean;
   }>;
-  guestMessages?: Array<{ id: string; guest: string; message: string; date: string }>;
+  guestMessages?: Array<{
+    id: string;
+    guest: string;
+    message: string;
+    date: string;
+  }>;
 }
 
 export function useWeddingData() {

@@ -101,7 +101,10 @@ export default function ManualVerificationPage() {
       toast.success("📧 Code resent to your email.");
       const cooldownSeconds = 60;
       setCooldown(cooldownSeconds);
-      localStorage.setItem("resendCooldownUntil", (Date.now() + cooldownSeconds * 1000).toString());
+      localStorage.setItem(
+        "resendCooldownUntil",
+        (Date.now() + cooldownSeconds * 1000).toString()
+      );
       localStorage.setItem("pendingEmail", email);
     } else {
       toast.error("⚠️ Could not resend. Try again later.");
@@ -121,7 +124,9 @@ export default function ManualVerificationPage() {
         >
           Verify with Code
         </h2>
-        <p className="text-slate-900 text-center">Check your email for verification code</p>
+        <p className="text-slate-900 text-center">
+          Check your email for verification code
+        </p>
 
         <Input
           type="text"
@@ -154,7 +159,9 @@ export default function ManualVerificationPage() {
                 cooldown > 0 ? "text-black" : "text-black"
               }`}
             >
-              {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend Verification Code"}
+              {cooldown > 0
+                ? `Resend in ${cooldown}s`
+                : "Resend Verification Code"}
             </Button>
           </>
         )}

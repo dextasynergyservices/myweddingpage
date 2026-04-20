@@ -76,7 +76,10 @@ export default function RusticHero(props: RusticHeroProps) {
           <div className="text-center pt-12">
             <div className="flex justify-center mb-8">
               <div className="relative p-6 bg-white/10 backdrop-blur-sm rounded-3xl border border-amber-300/30">
-                <Heart className="h-16 w-16 text-amber-100" fill="currentColor" />
+                <Heart
+                  className="h-16 w-16 text-amber-100"
+                  fill="currentColor"
+                />
                 <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-amber-500 to-brown-600 rounded-full animate-pulse"></div>
               </div>
             </div>

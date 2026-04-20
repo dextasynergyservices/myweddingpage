@@ -61,7 +61,8 @@ export default async function WeddingPreviewPage({
           <div className="flex">
             <div className="ml-3">
               <p className="text-sm font-medium">
-                🔍 You&apos;re viewing a preview of this wedding page. This page is no longer live.
+                🔍 You&apos;re viewing a preview of this wedding page. This page
+                is no longer live.
               </p>
             </div>
           </div>
@@ -70,7 +71,9 @@ export default async function WeddingPreviewPage({
     );
 
     return (
-      <div className={`min-h-screen bg-white ${isModal ? "modal-content" : ""}`}>
+      <div
+        className={`min-h-screen bg-white ${isModal ? "modal-content" : ""}`}
+      >
         {/* Preview banner for non-modal view */}
         {previewBanner}
 
@@ -93,7 +96,9 @@ export default async function WeddingPreviewPage({
         <div className="pt-16 md:pt-20">
           <DynamicTemplateRenderer
             template={template}
-            userPlan={plan || { id: "public", name: "Public", maxComponents: 10 }}
+            userPlan={
+              plan || { id: "public", name: "Public", maxComponents: 10 }
+            }
             userData={userData}
             colorScheme={userTemplate?.colorScheme}
             editable={false} // Preview is never editable

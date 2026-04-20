@@ -1,0 +1,431 @@
+{
+  "site": {
+    "title": "My Wedding Page",
+    "tagline": "Celebrate with us"
+  },
+  "nav": {
+    "home": "Home",
+    "how_to": "How To",
+    "packages": "Packages",
+    "wedding_pages": "Wedding Pages",
+    "contact": "Contact"
+  },
+  "footer": {
+    "copyright": "© {year} My Wedding Page. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "platform": "Platform",
+    "support": "Support"
+  },
+  "cookies": {
+    "label": "Cookies"
+  },
+  "locale": {
+    "select_language": "Select language"
+  },
+
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "profile": "Profile",
+    "dashboard": "Dashboard",
+    "login_page": {
+      "welcome": "Welcome Back",
+      "subtitle": "Sign in to your wedding dashboard"
+    },
+    "login_form": {
+      "labels": {
+        "email": "Email or WhatsApp Number",
+        "password": "Password"
+      },
+      "placeholders": {
+        "email": "Enter your email or WhatsApp number",
+        "password": "Enter your password"
+      },
+      "forgot_password": "Forgot password?",
+      "sign_in_button": "Sign In",
+      "signing_in": "Signing In...",
+      "dont_have_account": "Don't have an account?",
+      "sign_up": "Sign up",
+      "two_factor_auth": "Two-Factor Authentication",
+      "enter_backup_code": "Enter one of your backup codes",
+      "enter_email_code": "Enter the 6-digit code sent to your email",
+      "enter_app_code": "Enter the 6-digit code from your authenticator app",
+      "verify_button": "Verify",
+      "cancel_button": "Cancel",
+      "use_backup_code": "Use backup code instead",
+      "use_authenticator": "Use authenticator code",
+      "send_email_code": "Send Email Code",
+      "sending": "Sending...",
+      "enter_verification_code": "Please enter your verification code",
+      "validation": {
+        "email_required": "Email or WhatsApp number is required",
+        "email_invalid": "Enter a valid email or phone number",
+        "password_required": "Password is required"
+      }
+    },
+    "register_form": {
+      "title": "Continue to create your Wedding Page",
+      "subtitle": "Start your wedding journey today",
+      "labels": {
+        "groom_name": "Groom's First Name",
+        "bride_name": "Bride's First Name",
+        "email": "Email Address",
+        "whatsapp": "WhatsApp Number",
+        "wedding_date": "Wedding Date",
+        "image": "Add an Image for your Website (Optional)",
+        "password": "Password",
+        "confirm_password": "Confirm Password"
+      },
+      "placeholders": {
+        "groom_name": "Enter groom's first name",
+        "bride_name": "Enter bride's name",
+        "email": "Enter your email",
+        "whatsapp": "WhatsApp number with country code e.g +234",
+        "wedding_date": "Select wedding date",
+        "password": "Create a password",
+        "confirm_password": "Confirm your password"
+      },
+      "validation": {
+        "groom_name_required": "Groom's name is required.",
+        "bride_name_required": "Bride's name is required.",
+        "email_required": "Email is required.",
+        "email_invalid": "Invalid email address.",
+        "whatsapp_required": "WhatsApp number is required.",
+        "wedding_date_required": "Wedding date is required.",
+        "password_required": "Password is required.",
+        "passwords_mismatch": "Passwords do not match."
+      },
+      "password_requirements": "Password must be at least 8 characters with uppercase, lowercase, number, and special character (@, $, !, %, *, ?, &, #, etc.)",
+      "continue_button": "Continue",
+      "already_have_account": "Already have an account?",
+      "sign_in": "Sign in",
+      "messages": {
+        "registration_successful": "Registration successful! Please check your email.",
+        "registration_failed": "Registration failed. Please try again.",
+        "network_error": "Network error. Please check your connection and try again."
+      }
+    }
+  },
+
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search"
+  },
+
+  "messages": {
+    "welcome": "Welcome to {siteName}",
+    "not_found": "Not found",
+    "error": "An error occurred"
+  },
+
+  "pwa": {
+    "online": "Online",
+    "offline": "Offline",
+    "installed": "Installed",
+    "not_installed": "Not Installed",
+    "running_as_app": "Running as app",
+    "install_prompt": "Install for better experience",
+    "notifications_on": "Notifications On",
+    "notifications_off": "Notifications Off",
+    "subscription_enabled": "Subscription reminders enabled",
+    "enable_to_get_reminders": "Enable to get reminders",
+    "disable": "Disable",
+    "enable": "Enable",
+    "connected_to_internet": "Connected to internet",
+    "some_features_limited": "Some features limited"
+  },
+  "templateEditor": {
+    "choose_color_scheme": "Choose Color Scheme",
+    "save_template": "Save Template",
+    "saving": "Saving..."
+  },
+  "terms": {
+    "title": "Terms and Conditions",
+    "effective_date": "Effective Date: {date}",
+    "welcome_paragraph": "Welcome to Myweddingpage (\"we\", \"our\", or \"us\"). By accessing or using our services, you agree to be bound by these Terms and Conditions (\"Terms\"). Please read them carefully.",
+    "use_of_service": "1. Use of the Service",
+    "use_of_service_body": "You agree to use Myweddingpage only for lawful purposes and in accordance with these Terms. You must provide accurate and truthful information when registering or using the app.",
+    "payment_policy": "2. Payment and Refund Policy",
+    "payment_policy_item1": "All payments for subscription plans or services are due upfront.",
+    "payment_policy_item2_emph": "No refunds will be issued after 24 hours from the time of purchase.",
+    "payment_policy_item3": "If you encounter issues within the first 24 hours, please contact our support for assistance and potential refund consideration.",
+    "intellectual_property_title": "3. Intellectual Property",
+    "intellectual_property_body": "All content, trademarks, and intellectual property related to Myweddingpage are owned by us or our licensors. You may not use, reproduce, or distribute any content without express permission.",
+    "privacy_title": "4. Privacy",
+    "privacy_body": "Your use of Myweddingpage is also governed by our Privacy Policy, which explains how we collect, use, and protect your data.",
+    "governing_law_title": "5. Governing Law and Jurisdiction",
+    "governing_law_body": "These Terms shall be governed by and construed in accordance with the laws of the Federal Republic of Nigeria. Any disputes arising out of or related to these Terms shall, subject to the dispute resolution clause below, be resolved exclusively by the courts of Nigeria.",
+    "international_users_title": "6. International Users and Compliance",
+    "international_users_body": "If you are accessing or using Myweddingpage from outside Nigeria, you agree to comply with all applicable laws in your jurisdiction, including but not limited to data protection, consumer protection, and import/export laws.",
+    "dispute_resolution_title": "7. Dispute Resolution and Arbitration",
+    "dispute_resolution_intro": "To reduce court battles and provide a flexible, fair process for resolving disputes:",
+    "dispute_resolution_item1": "If a dispute arises, you and we agree to first try to resolve the dispute amicably through good faith negotiations or mediation.",
+    "dispute_resolution_item2": "If mediation fails or is not feasible within 30 days, the dispute will be finally resolved by binding arbitration under the rules of a reputable arbitration organization (e.g., ICC, UNCITRAL, or another mutually agreed body).",
+    "dispute_resolution_item3": "The place of arbitration will be Lagos, Nigeria, but parties may participate remotely.",
+    "dispute_resolution_item4": "Arbitration decisions will be final and binding on both parties.",
+    "dispute_resolution_item5": "This clause does not prevent either party from seeking injunctive or provisional relief in any court if necessary.",
+    "limitation_title": "8. Limitation of Liability",
+    "limitation_body": "To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of Myweddingpage.",
+    "changes_title": "9. Changes to Terms",
+    "changes_body": "We reserve the right to update or modify these Terms at any time. Updated Terms will be posted on the app or website, and your continued use constitutes acceptance.",
+    "contact_title": "10. Contact Us",
+    "contact_paragraph": "For questions or support regarding these Terms, please contact us at:",
+    "contact_email_label": "Email",
+    "contact_email_value": "info@myweddingpage.online",
+    "contact_address_label": "Address",
+    "contact_address_value": "147 NTA Road Mgbuoba, Port Harcourt, Rivers State, Nigeria."
+  },
+  "videos": {
+    "title": "Video Tutorials",
+    "getting_started": "Getting Started",
+    "advanced_tips": "Advanced Tips"
+  },
+  "stats": {
+    "couples_served": "Couples Served",
+    "weddings_planned": "Weddings Planned",
+    "love_stories": "Love Stories Told",
+    "gifts_delivered": "Gifts Delivered"
+  },
+  "mission": {
+    "title": "Our Mission",
+    "description": "To empower couples with the tools and platform they need to create, share, and celebrate their perfect wedding day. We're committed to making wedding planning stress-free and joyful, allowing couples to focus on what matters most - their love story."
+  },
+  "vision": {
+    "title": "Our Vision",
+    "description": "To become the world's most trusted wedding platform, where every couple can create their dream wedding experience. We envision a future where technology seamlessly enhances the most important moments in people's lives."
+  },
+  "coming_soon": {
+    "message": "Coming soon..."
+  },
+  "cta": {
+    "title": "Ready to Start Your Journey?",
+    "description": "Join thousands of couples who have created their perfect wedding experience with us.",
+    "get_started": "Get Started Today",
+    "contact_us": "Contact Us"
+  },
+  "contact_upgrade": {
+    "title": "Contact us for Upgrade",
+    "description": "Choose an option below to reach our sales team and upgrade your plan.",
+    "whatsapp": "WhatsApp",
+    "call": "Call",
+    "close": "Close"
+  },
+  "no_weddings": {
+    "title": "No wedding pages yet",
+    "description": "Create your first wedding page to get started.",
+    "create_button": "Create Wedding Page"
+  },
+
+  "legal": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "preview": {
+    "no_longer_live": "This wedding page is no longer live",
+    "close": "Close",
+    "create_similar": "Create Similar Page"
+  },
+
+  "home": {
+    "hero": {
+      "title_line1": "Your Perfect",
+      "title_line2": "Wedding Journey",
+      "subtitle": "Create stunning wedding experiences with our modern platform. Elegant design meets powerful functionality for the most important day of your life.",
+      "cta_start": "Start Your Journey",
+      "cta_view_pages": "View Wedding Pages"
+    },
+    "features": {
+      "title": "Everything You Need",
+      "subtitle": "Powerful tools designed for modern couples who want elegance and simplicity.",
+      "gallery_title": "Smart Galleries",
+      "gallery_description": "AI-powered photo organization with unlimited storage and instant sharing",
+      "gift_title": "Gift Management",
+      "gift_description": "Seamless gift tracking with automated thank you notes and analytics",
+      "engagement_title": "Guest Engagement",
+      "engagement_description": "Interactive guestbook with real-time moderation and sentiment analysis",
+      "dashboard_title": "Couple Dashboard",
+      "dashboard_description": "Intuitive control center with insights and collaboration tools"
+    },
+    "packages": {
+      "title": "Choose Your Package",
+      "description": "Flexible pricing designed to grow with your needs, from intimate ceremonies to grand celebrations.",
+      "most_popular": "Most Popular",
+      "get_started": "Get Started",
+      "loading": "Loading plans..."
+    },
+    "find_wedding": {
+      "title": "Find a Wedding",
+      "description": "Search for wedding celebrations and share in the joy of couples around the world.",
+      "no_weddings": "No wedding pages found yet. Be the first to create one!",
+      "view_all": "View All Weddings"
+    },
+    "testimonials": {
+      "title": "Loved by Couples",
+      "description": "Join thousands of couples who've created their perfect wedding experience.",
+      "testimonials": [
+        {
+          "name": "Sarah & Michael",
+          "text": "The platform exceeded our expectations. The design is stunning and our guests loved the interactive features. Managing everything was effortless.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Emily & David",
+          "text": "Incredible attention to detail and user experience. The dashboard made planning so much easier, and the final result was absolutely beautiful.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Jessica & Ryan",
+          "text": "Modern, elegant, and functional. Our families could easily navigate everything, and we received so many compliments on our wedding page.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024866/pexels-photo-1024866.jpeg?auto=compress&cs=tinysrgb&w=150"
+        }
+      ]
+    },
+    "wedding_card": {
+      "live": "LIVE",
+      "not_live": "NOT LIVE"
+    }
+  },
+
+  "package": {
+    "modal": {
+      "title_format": "{name} Package",
+      "email_label": "Email Address",
+      "email_placeholder": "Enter your email",
+      "whatsapp_label": "WhatsApp Number",
+      "whatsapp_placeholder": "WhatsApp number with country code e.g +234",
+      "show_terms": "Show Terms and Conditions ▼",
+      "hide_terms": "Hide Terms and Conditions ▲",
+      "agree_terms": "I agree to the Terms and Conditions",
+      "pay_now": "Pay Now",
+      "processing": "Processing...",
+      "errors": {
+        "fill_contact": "Please fill in both Email and WhatsApp number.",
+        "agree_terms": "You must agree to the Terms and Conditions."
+      }
+    }
+  },
+  "how_to": {
+    "hero": {
+      "title": "How to Use Myweddingpage.Online",
+      "description": "Follow these easy steps to get started and make the most out of myweddingpage.",
+      "watch_overview": "Watch Overview"
+    },
+    "steps": {
+      "title": "Getting Started",
+      "description": "Follow these simple steps to create your perfect wedding page",
+      "step1": {
+        "title": "Choose Your Template",
+        "description": "Browse our beautiful templates and select the one that matches your style"
+      },
+      "step2": {
+        "title": "Customize Your Content",
+        "description": "Add your photos, story, and wedding details to make it uniquely yours"
+      },
+      "step3": {
+        "title": "Share with Guests",
+        "description": "Send your wedding page link to family and friends for RSVPs and updates"
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about creating your wedding page",
+      "questions": [
+        {
+          "question": "Is the platform free to use?",
+          "answer": "Yes! We offer a free plan with plenty of features to get started."
+        },
+        {
+          "question": "Can I upgrade my account later?",
+          "answer": "Absolutely! You can upgrade anytime to unlock more features."
+        },
+        {
+          "question": "Is my data secure?",
+          "answer": "We take security seriously, using encryption and secure servers."
+        }
+      ]
+    }
+  },
+
+  "contact": {
+    "hero": {
+      "title": "Get in Touch",
+      "description": "We're here to help make your wedding dreams come true. Reach out to us anytime."
+    },
+    "info": {
+      "email": {
+        "title": "Email Us",
+        "description": "Send us an email anytime"
+      },
+      "phone": {
+        "title": "Call Us",
+        "description": "Mon-Fri from 10am to 6pm (WAT)"
+      },
+      "whatsapp": {
+        "title": "WhatsApp"
+      },
+      "address": {
+        "title": "Office Address",
+        "description": "147 NTA Road, Mgbuoba\nPort Harcourt, Rivers State, Nigeria."
+      },
+      "business_hours": {
+        "title": "Business Hours",
+        "schedule": [
+          { "day": "Monday - Friday", "hours": "10:00 AM - 6:00 PM (WAT)" },
+          { "day": "Saturday", "hours": "Closed" },
+          { "day": "Sunday", "hours": "Closed" }
+        ]
+      },
+      "faq": {
+        "title": "Need Quick Answers?",
+        "description": "Check out our frequently asked questions for instant help."
+      }
+    },
+    "form": {
+      "title": "Send us a Message",
+      "name_label": "Your Name",
+      "name_placeholder": "Enter your name",
+      "email_label": "Email Address",
+      "email_placeholder": "Enter your email",
+      "subject_label": "Subject",
+      "message_label": "Message",
+      "message_placeholder": "Tell us how we can help you...",
+      "send_button": "Send Message",
+      "sending": "Sending Message...",
+      "success_message": "✅ Message sent successfully!",
+      "error_message": "❌ Failed to send message",
+      "error_generic": "⚠️ Something went wrong"
+    }
+  },
+
+  "about": {
+    "values": {
+      "title": "Our Values",
+      "description": "The principles that guide everything we do",
+      "items": [
+        {
+          "title": "Love First",
+          "description": "Every decision we make is guided by our commitment to celebrating love in all its beautiful forms."
+        },
+        {
+          "title": "Innovation",
+          "description": "We constantly push the boundaries of technology to create magical wedding experiences."
+        },
+        {
+          "title": "Community",
+          "description": "Building connections between couples, families, and friends to create lasting memories."
+        },
+        {
+          "title": "Excellence",
+          "description": "We strive for perfection in every detail, because your special day deserves nothing less."
+        }
+      ]
+    }
+  }
+}

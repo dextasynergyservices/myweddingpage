@@ -5,7 +5,11 @@ import path from "path";
 class TokenStore {
   private static tokenFile = path.join(process.cwd(), ".canva-token.json");
 
-  static setTokens(accessToken: string, refreshToken?: string, expiresIn?: number) {
+  static setTokens(
+    accessToken: string,
+    refreshToken?: string,
+    expiresIn?: number
+  ) {
     const tokenData = {
       accessToken,
       refreshToken: refreshToken || null,
@@ -19,7 +23,10 @@ class TokenStore {
       console.log("Access token length:", accessToken.length);
       console.log("Expires in:", expiresIn, "seconds");
       if (tokenData.expiresAt) {
-        console.log("Token expires at:", new Date(tokenData.expiresAt).toISOString());
+        console.log(
+          "Token expires at:",
+          new Date(tokenData.expiresAt).toISOString()
+        );
       }
     } catch (error) {
       console.error("Failed to store tokens to file:", error);
@@ -77,12 +84,16 @@ class TokenStore {
       }
 
       const tokenData = JSON.parse(fs.readFileSync(this.tokenFile, "utf8"));
-      const isExpired = tokenData.expiresAt ? Date.now() > tokenData.expiresAt : false;
+      const isExpired = tokenData.expiresAt
+        ? Date.now() > tokenData.expiresAt
+        : false;
 
       return {
         hasToken: !!tokenData.accessToken,
         isExpired,
-        expiresAt: tokenData.expiresAt ? new Date(tokenData.expiresAt).toISOString() : null,
+        expiresAt: tokenData.expiresAt
+          ? new Date(tokenData.expiresAt).toISOString()
+          : null,
       };
     } catch (error) {
       console.error("Failed to get token status:", error);

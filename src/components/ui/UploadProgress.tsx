@@ -51,7 +51,9 @@ export const UploadProgress: React.FC<UploadProgressProps> = ({
   if (!uploads.length) return null;
 
   return (
-    <div className={`fixed bottom-4 right-4 z-50 space-y-2 max-w-sm ${className}`}>
+    <div
+      className={`fixed bottom-4 right-4 z-50 space-y-2 max-w-sm ${className}`}
+    >
       {uploads.map((upload) => (
         <motion.div
           key={upload.fileName}
@@ -66,9 +68,15 @@ export const UploadProgress: React.FC<UploadProgressProps> = ({
               {upload.status === "uploading" && (
                 <Upload className="w-4 h-4 text-blue-500 animate-pulse" />
               )}
-              {upload.status === "success" && <CheckCircle className="w-4 h-4 text-green-500" />}
-              {upload.status === "error" && <XCircle className="w-4 h-4 text-red-500" />}
-              {upload.status === "pending" && <Clock className="w-4 h-4 text-gray-400" />}
+              {upload.status === "success" && (
+                <CheckCircle className="w-4 h-4 text-green-500" />
+              )}
+              {upload.status === "error" && (
+                <XCircle className="w-4 h-4 text-red-500" />
+              )}
+              {upload.status === "pending" && (
+                <Clock className="w-4 h-4 text-gray-400" />
+              )}
               <span className="text-sm font-medium text-white truncate max-w-48">
                 {upload.fileName}
               </span>
@@ -94,15 +102,16 @@ export const UploadProgress: React.FC<UploadProgressProps> = ({
                   <Upload className="w-4 h-4" />
                 </button>
               )}
-              {(upload.status === "success" || upload.status === "error") && onDismiss && (
-                <button
-                  onClick={() => onDismiss(upload.fileName)}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
-                  title="Dismiss"
-                >
-                  <XCircle className="w-4 h-4" />
-                </button>
-              )}
+              {(upload.status === "success" || upload.status === "error") &&
+                onDismiss && (
+                  <button
+                    onClick={() => onDismiss(upload.fileName)}
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1"
+                    title="Dismiss"
+                  >
+                    <XCircle className="w-4 h-4" />
+                  </button>
+                )}
             </div>
           </div>
 
@@ -148,12 +157,16 @@ export const UploadProgress: React.FC<UploadProgressProps> = ({
 
           {/* Success Message */}
           {upload.status === "success" && (
-            <div className="text-sm text-green-300">Upload completed successfully</div>
+            <div className="text-sm text-green-300">
+              Upload completed successfully
+            </div>
           )}
 
           {/* Error Message */}
           {upload.status === "error" && (
-            <div className="text-sm text-red-300">{upload.error || "Upload failed"}</div>
+            <div className="text-sm text-red-300">
+              {upload.error || "Upload failed"}
+            </div>
           )}
 
           {/* Pending Message */}
@@ -186,7 +199,8 @@ export const useUploadProgress = () => {
       prev.map((upload) => {
         if (upload.fileName === fileName) {
           const percentage = (loaded / upload.total) * 100;
-          const timeRemaining = speed && speed > 0 ? (upload.total - loaded) / speed : undefined;
+          const timeRemaining =
+            speed && speed > 0 ? (upload.total - loaded) / speed : undefined;
 
           return {
             ...upload,
@@ -215,7 +229,9 @@ export const useUploadProgress = () => {
   const setUploadError = (fileName: string, error: string) => {
     setUploads((prev) =>
       prev.map((upload) =>
-        upload.fileName === fileName ? { ...upload, status: "error" as const, error } : upload
+        upload.fileName === fileName
+          ? { ...upload, status: "error" as const, error }
+          : upload
       )
     );
   };
@@ -226,7 +242,9 @@ export const useUploadProgress = () => {
 
   const clearCompleted = () => {
     setUploads((prev) =>
-      prev.filter((upload) => upload.status !== "success" && upload.status !== "error")
+      prev.filter(
+        (upload) => upload.status !== "success" && upload.status !== "error"
+      )
     );
   };
 

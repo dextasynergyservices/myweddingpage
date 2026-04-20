@@ -7,7 +7,9 @@
 
     const seven = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const sessionsCount = await prisma.session.count({ where: { lastAccessedAt: { gte: seven } } });
+    const sessionsCount = await prisma.session.count({
+      where: { lastAccessedAt: { gte: seven } },
+    });
 
     const distinctUsersRows = (await prisma.$queryRawUnsafe(
       'SELECT COUNT(DISTINCT "userId") as c FROM "Session" WHERE "lastAccessedAt" >= $1',
@@ -23,7 +25,13 @@
 
     console.log(
       JSON.stringify(
-        { totalUsers, sessionsCount, distinctUserIds, pvDistinctIps, seven: seven.toISOString() },
+        {
+          totalUsers,
+          sessionsCount,
+          distinctUserIds,
+          pvDistinctIps,
+          seven: seven.toISOString(),
+        },
         null,
         2
       )

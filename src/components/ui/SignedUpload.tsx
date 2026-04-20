@@ -55,7 +55,9 @@ export function SignedUploadComponent({
     showToasts: !useExternalProgress, // Don't show toasts if using external progress (it should handle them)
   });
 
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -170,10 +172,14 @@ export function SignedUploadComponent({
               </div>
 
               <p className="text-sm text-gray-600 mb-2">
-                {uploading ? `Uploading... ${progress}%` : `Upload ${uploadType} image`}
+                {uploading
+                  ? `Uploading... ${progress}%`
+                  : `Upload ${uploadType} image`}
               </p>
 
-              <p className="text-xs text-gray-400">{getUploadInfo(uploadType)}</p>
+              <p className="text-xs text-gray-400">
+                {getUploadInfo(uploadType)}
+              </p>
             </div>
           )}
         </div>
@@ -195,22 +201,22 @@ function getUploadInfo(uploadType: string): string {
 }
 
 // Specialized components for common use cases
-export const ProfileImageUpload = (props: Omit<SignedUploadComponentProps, "uploadType">) => (
-  <SignedUploadComponent {...props} uploadType="profile" />
-);
+export const ProfileImageUpload = (
+  props: Omit<SignedUploadComponentProps, "uploadType">
+) => <SignedUploadComponent {...props} uploadType="profile" />;
 
-export const HeroImageUpload = (props: Omit<SignedUploadComponentProps, "uploadType">) => (
-  <SignedUploadComponent {...props} uploadType="hero" />
-);
+export const HeroImageUpload = (
+  props: Omit<SignedUploadComponentProps, "uploadType">
+) => <SignedUploadComponent {...props} uploadType="hero" />;
 
-export const StoryImageUpload = (props: Omit<SignedUploadComponentProps, "uploadType">) => (
-  <SignedUploadComponent {...props} uploadType="story" />
-);
+export const StoryImageUpload = (
+  props: Omit<SignedUploadComponentProps, "uploadType">
+) => <SignedUploadComponent {...props} uploadType="story" />;
 
-export const LogoImageUpload = (props: Omit<SignedUploadComponentProps, "uploadType">) => (
-  <SignedUploadComponent {...props} uploadType="logo" />
-);
+export const LogoImageUpload = (
+  props: Omit<SignedUploadComponentProps, "uploadType">
+) => <SignedUploadComponent {...props} uploadType="logo" />;
 
-export const GeneralImageUpload = (props: Omit<SignedUploadComponentProps, "uploadType">) => (
-  <SignedUploadComponent {...props} uploadType="general" />
-);
+export const GeneralImageUpload = (
+  props: Omit<SignedUploadComponentProps, "uploadType">
+) => <SignedUploadComponent {...props} uploadType="general" />;

@@ -19,7 +19,14 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { guestName, guestEmail, guestPhone, message, notificationType, scheduledFor } = body;
+    const {
+      guestName,
+      guestEmail,
+      guestPhone,
+      message,
+      notificationType,
+      scheduledFor,
+    } = body;
 
     // Validation
     if (!guestName || !message || !notificationType) {
@@ -104,7 +111,8 @@ export async function POST(request: NextRequest) {
         }
       } catch (sendError) {
         console.error("Error sending notification:", sendError);
-        const errorMessage = sendError instanceof Error ? sendError.message : "Unknown error";
+        const errorMessage =
+          sendError instanceof Error ? sendError.message : "Unknown error";
         await prisma.guestNotification.update({
           where: { id: notification.id },
           data: {
@@ -125,7 +133,10 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error creating notification:", error);
-    return NextResponse.json({ error: "Failed to create notification" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create notification" },
+      { status: 500 }
+    );
   }
 }
 
@@ -178,6 +189,9 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching notifications:", error);
-    return NextResponse.json({ error: "Failed to fetch notifications" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch notifications" },
+      { status: 500 }
+    );
   }
 }

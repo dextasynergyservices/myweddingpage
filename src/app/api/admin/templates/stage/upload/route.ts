@@ -9,7 +9,8 @@ export const runtime = "nodejs";
 function getSubdirForFilename(filename: string) {
   const lower = filename.toLowerCase();
   if (lower.endsWith(".zip")) return "components";
-  if (lower.endsWith(".json") && filename.toLowerCase().includes("manifest")) return ".";
+  if (lower.endsWith(".json") && filename.toLowerCase().includes("manifest"))
+    return ".";
   return "assets";
 }
 
@@ -19,13 +20,17 @@ export async function POST(req: Request) {
 
   const url = new URL(req.url);
   const stagingId = url.searchParams.get("stagingId");
-  if (!stagingId) return NextResponse.json({ error: "missing stagingId" }, { status: 400 });
+  if (!stagingId)
+    return NextResponse.json({ error: "missing stagingId" }, { status: 400 });
 
   let formData: FormData;
   try {
     formData = await (req as unknown as Request).formData();
   } catch {
-    return NextResponse.json({ error: "failed to parse form data" }, { status: 400 });
+    return NextResponse.json(
+      { error: "failed to parse form data" },
+      { status: 400 }
+    );
   }
 
   const fileEntry = formData.get("file");

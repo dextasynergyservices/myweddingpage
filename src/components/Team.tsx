@@ -41,7 +41,9 @@ const Team = () => {
   return (
     <AnimatedSection>
       <div className="text-center mb-16">
-        <h2 className={`text-4xl font-light mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+        <h2
+          className={`text-4xl font-light mb-6 ${isDarkMode ? "text-white" : "text-slate-900"}`}
+        >
           Meet Our Team
         </h2>
         <p

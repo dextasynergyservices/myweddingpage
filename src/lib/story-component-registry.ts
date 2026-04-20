@@ -104,7 +104,12 @@ const storyConfigs = {
     component: VowsStory,
     props: {} as VowsStoryProps,
     formFields: [
-      { key: "title", label: "Story Title", type: "text", defaultValue: "Our Story" },
+      {
+        key: "title",
+        label: "Story Title",
+        type: "text",
+        defaultValue: "Our Story",
+      },
       {
         key: "description",
         label: "Story Description",
@@ -122,7 +127,8 @@ const storyConfigs = {
         key: "storyContent.howWeMet.content",
         label: "How We Met - Story",
         type: "textarea",
-        defaultValue: "It was a beautiful spring afternoon at the local coffee shop...",
+        defaultValue:
+          "It was a beautiful spring afternoon at the local coffee shop...",
       },
       {
         key: "storyContent.theProposal.title",
@@ -157,7 +163,12 @@ const storyConfigs = {
     component: BloomStory,
     props: {} as BloomStoryProps,
     formFields: [
-      { key: "title", label: "Story Title", type: "text", defaultValue: "Our Love Story" },
+      {
+        key: "title",
+        label: "Story Title",
+        type: "text",
+        defaultValue: "Our Love Story",
+      },
       {
         key: "description",
         label: "Story Description",
@@ -175,13 +186,15 @@ const storyConfigs = {
         key: "storyContent.mainDescription",
         label: "Main Story Description",
         type: "textarea",
-        defaultValue: "What started as a chance encounter at our favorite coffee shop...",
+        defaultValue:
+          "What started as a chance encounter at our favorite coffee shop...",
       },
       {
         key: "storyContent.storyText",
         label: "Additional Story Text",
         type: "textarea",
-        defaultValue: "From quiet Sunday mornings to adventurous weekend getaways...",
+        defaultValue:
+          "From quiet Sunday mornings to adventurous weekend getaways...",
       },
       {
         key: "storyImage",
@@ -227,7 +240,12 @@ const storyConfigs = {
         defaultValue:
           "Our first trip together to the mountains. We knew we were meant to explore the world side by side.",
       },
-      { key: "milestones.2.date", label: "Milestone 3 - Date", type: "text", defaultValue: "2022" },
+      {
+        key: "milestones.2.date",
+        label: "Milestone 3 - Date",
+        type: "text",
+        defaultValue: "2022",
+      },
       {
         key: "milestones.2.title",
         label: "Milestone 3 - Title",
@@ -266,7 +284,12 @@ const storyConfigs = {
     component: EleganceStory,
     props: {} as EleganceStoryProps,
     formFields: [
-      { key: "title", label: "Story Title", type: "text", defaultValue: "Our Love Story" },
+      {
+        key: "title",
+        label: "Story Title",
+        type: "text",
+        defaultValue: "Our Love Story",
+      },
       {
         key: "description",
         label: "Story Description",
@@ -290,7 +313,8 @@ const storyConfigs = {
         key: "stories.0.story",
         label: "Story 1 - Content",
         type: "textarea",
-        defaultValue: "It was a beautiful autumn day when our paths first crossed...",
+        defaultValue:
+          "It was a beautiful autumn day when our paths first crossed...",
       },
       {
         key: "stories.0.image",
@@ -315,7 +339,8 @@ const storyConfigs = {
         key: "stories.1.story",
         label: "Story 2 - Content",
         type: "textarea",
-        defaultValue: "On a snowy winter evening, James recreated our first date...",
+        defaultValue:
+          "On a snowy winter evening, James recreated our first date...",
       },
       {
         key: "stories.1.image",
@@ -330,7 +355,12 @@ const storyConfigs = {
     component: LuxeStory,
     props: {} as LuxeStoryProps,
     formFields: [
-      { key: "title", label: "Story Title", type: "text", defaultValue: "Our Love Story" },
+      {
+        key: "title",
+        label: "Story Title",
+        type: "text",
+        defaultValue: "Our Love Story",
+      },
       {
         key: "description",
         label: "Story Description",
@@ -366,7 +396,8 @@ const storyConfigs = {
         key: "storyItems.1.text",
         label: "Story 2 - Text",
         type: "textarea",
-        defaultValue: "Our first official date was at the art museum downtown...",
+        defaultValue:
+          "Our first official date was at the art museum downtown...",
       },
       {
         key: "storyItems.1.image",
@@ -385,7 +416,8 @@ const storyConfigs = {
         key: "storyItems.2.text",
         label: "Story 3 - Text",
         type: "textarea",
-        defaultValue: "Michael proposed during a weekend getaway to the mountains...",
+        defaultValue:
+          "Michael proposed during a weekend getaway to the mountains...",
       },
       {
         key: "storyItems.2.image",
@@ -431,7 +463,8 @@ async function initializeTemplateIds() {
         }
 
         // Map the template ID to its story configuration
-        storyComponentMap[template.id] = storyConfigs[configKey as keyof typeof storyConfigs];
+        storyComponentMap[template.id] =
+          storyConfigs[configKey as keyof typeof storyConfigs];
         templateIdCache[template.id] = template.name;
       }
 
@@ -493,7 +526,9 @@ export async function createInitialStoryData(
     }
 
     // Use existing data if available, otherwise use default value
-    const existingValue = existingData ? getNestedValue(existingData, field.key) : undefined;
+    const existingValue = existingData
+      ? getNestedValue(existingData, field.key)
+      : undefined;
     current[keys[keys.length - 1]] = existingValue || field.defaultValue;
   });
 
@@ -508,7 +543,9 @@ export async function createInitialStoryData(
 
     // Convert stories.0, stories.1, etc. to an array
     while ((initialData.stories as Record<string, unknown>)[index]) {
-      storiesArray.push((initialData.stories as Record<string, unknown>)[index]);
+      storiesArray.push(
+        (initialData.stories as Record<string, unknown>)[index]
+      );
       index++;
     }
 
@@ -526,7 +563,9 @@ export async function createInitialStoryData(
 
     // Convert storyItems.0, storyItems.1, etc. to an array
     while ((initialData.storyItems as Record<string, unknown>)[index]) {
-      storyItemsArray.push((initialData.storyItems as Record<string, unknown>)[index]);
+      storyItemsArray.push(
+        (initialData.storyItems as Record<string, unknown>)[index]
+      );
       index++;
     }
 
@@ -544,7 +583,9 @@ export async function createInitialStoryData(
 
     // Convert milestones.0, milestones.1, etc. to an array
     while ((initialData.milestones as Record<string, unknown>)[index]) {
-      milestonesArray.push((initialData.milestones as Record<string, unknown>)[index]);
+      milestonesArray.push(
+        (initialData.milestones as Record<string, unknown>)[index]
+      );
       index++;
     }
 
@@ -558,11 +599,18 @@ export async function createInitialStoryData(
 function getNestedValue(obj: Record<string, unknown>, path: string) {
   return path
     .split(".")
-    .reduce((current: unknown, key) => (current as Record<string, unknown>)?.[key], obj);
+    .reduce(
+      (current: unknown, key) => (current as Record<string, unknown>)?.[key],
+      obj
+    );
 }
 
 // Helper function to set nested value in object
-export function setNestedValue(obj: Record<string, unknown>, path: string, value: unknown) {
+export function setNestedValue(
+  obj: Record<string, unknown>,
+  path: string,
+  value: unknown
+) {
   const keys = path.split(".");
   let current = obj;
 
@@ -585,27 +633,33 @@ export function convertFormDataForComponent(formData: Record<string, unknown>) {
   // Convert stories array back to object structure for form storage
   if (convertedData.stories && Array.isArray(convertedData.stories)) {
     const storiesObj: Record<string, unknown> = {};
-    convertedData.stories.forEach((story: Record<string, unknown>, index: number) => {
-      storiesObj[index] = story;
-    });
+    convertedData.stories.forEach(
+      (story: Record<string, unknown>, index: number) => {
+        storiesObj[index] = story;
+      }
+    );
     convertedData.stories = storiesObj;
   }
 
   // Convert storyItems array back to object structure for form storage
   if (convertedData.storyItems && Array.isArray(convertedData.storyItems)) {
     const storyItemsObj: Record<string, unknown> = {};
-    convertedData.storyItems.forEach((item: Record<string, unknown>, index: number) => {
-      storyItemsObj[index] = item;
-    });
+    convertedData.storyItems.forEach(
+      (item: Record<string, unknown>, index: number) => {
+        storyItemsObj[index] = item;
+      }
+    );
     convertedData.storyItems = storyItemsObj;
   }
 
   // Convert milestones array back to object structure for form storage
   if (convertedData.milestones && Array.isArray(convertedData.milestones)) {
     const milestonesObj: Record<string, unknown> = {};
-    convertedData.milestones.forEach((milestone: Record<string, unknown>, index: number) => {
-      milestonesObj[index] = milestone;
-    });
+    convertedData.milestones.forEach(
+      (milestone: Record<string, unknown>, index: number) => {
+        milestonesObj[index] = milestone;
+      }
+    );
     convertedData.milestones = milestonesObj;
   }
 

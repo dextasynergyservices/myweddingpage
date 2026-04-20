@@ -86,7 +86,8 @@ const OurStory = (props: OurStoryProps) => {
 
   // Ensure milestones have proper icon components
   // Use storyMilestones if available (from template preview data), otherwise use milestones
-  let rawMilestones = props.storyMilestones || props.milestones || defaultMilestones;
+  let rawMilestones =
+    props.storyMilestones || props.milestones || defaultMilestones;
 
   // Ensure rawMilestones is always an array
   if (!Array.isArray(rawMilestones)) {
@@ -95,18 +96,25 @@ const OurStory = (props: OurStoryProps) => {
 
   const milestones = rawMilestones.map((milestone, index) => ({
     ...milestone,
-    icon: milestone.icon || defaultMilestones[index % defaultMilestones.length]?.icon || Heart,
+    icon:
+      milestone.icon ||
+      defaultMilestones[index % defaultMilestones.length]?.icon ||
+      Heart,
   }));
   const storyImage =
-    props.storyImage || props.ourStory?.imageUrl || "/templates/bloom/assets/couple-portrait.jpg";
+    props.storyImage ||
+    props.ourStory?.imageUrl ||
+    "/templates/bloom/assets/couple-portrait.jpg";
 
   // Ensure we have a valid image source (fallback to default if empty)
   const safeStoryImage =
     storyImage && storyImage.trim() !== ""
       ? storyImage
       : "/templates/bloom/assets/couple-portrait.jpg";
-  const { elementRef: storyRef, isVisible: storyVisible } = useScrollAnimation(0.2);
-  const { elementRef: timelineRef, isVisible: timelineVisible } = useScrollAnimation(0.1);
+  const { elementRef: storyRef, isVisible: storyVisible } =
+    useScrollAnimation(0.2);
+  const { elementRef: timelineRef, isVisible: timelineVisible } =
+    useScrollAnimation(0.1);
   const { elementRef: imageRef, isVisible: imageVisible } = useScrollScale(0.2);
 
   return (
@@ -115,10 +123,16 @@ const OurStory = (props: OurStoryProps) => {
       className={`${styles.sectionPadding} ${styles.bgGradientPrimary} relative overflow-hidden`}
     >
       {/* Background Elements */}
-      <div className={`${styles.floatingElement} absolute top-20 left-10 opacity-10`}>
-        <Heart className={`w-32 h-32 text-primary ${styles.animateRomanticFloat}`} />
+      <div
+        className={`${styles.floatingElement} absolute top-20 left-10 opacity-10`}
+      >
+        <Heart
+          className={`w-32 h-32 text-primary ${styles.animateRomanticFloat}`}
+        />
       </div>
-      <div className={`${styles.floatingElement} absolute bottom-20 right-16 opacity-10`}>
+      <div
+        className={`${styles.floatingElement} absolute bottom-20 right-16 opacity-10`}
+      >
         <Heart
           className={`w-24 h-24 text-accent ${styles.animateRomanticFloat}`}
           style={{ animationDelay: "1.5s" }}
@@ -130,18 +144,30 @@ const OurStory = (props: OurStoryProps) => {
         <div
           ref={storyRef}
           className={`text-center mb-20 transition-all duration-1000 ${
-            storyVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+            storyVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-10"
           }`}
         >
-          <h2 className={`${styles.fontHeading} text-2xl md:text-5xl font-bold text-black mb-6`}>
+          <h2
+            className={`${styles.fontHeading} text-2xl md:text-5xl font-bold text-black mb-6`}
+          >
             {title}
           </h2>
-          <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
-          <p className={`text-xl text-black/80 max-w-3xl mx-auto leading-relaxed`}>{description}</p>
+          <div
+            className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}
+          ></div>
+          <p
+            className={`text-xl text-black/80 max-w-3xl mx-auto leading-relaxed`}
+          >
+            {description}
+          </p>
         </div>
 
         {/* Story Content */}
-        <div className={`${styles.storyContent} grid lg:grid-cols-2 gap-16 items-center mb-20`}>
+        <div
+          className={`${styles.storyContent} grid lg:grid-cols-2 gap-16 items-center mb-20`}
+        >
           {/* Image */}
           <div
             ref={imageRef}
@@ -170,7 +196,9 @@ const OurStory = (props: OurStoryProps) => {
           {/* Story Text */}
           <div
             className={`transition-all duration-[1500ms] delay-700 ${
-              storyVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
+              storyVisible
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-10"
             }`}
           >
             <div className={`${styles.storyText} space-y-6`}>
@@ -182,7 +210,9 @@ const OurStory = (props: OurStoryProps) => {
               <p className={`text-lg text-black/80 leading-relaxed`}>
                 {storyContent.mainDescription}
               </p>
-              <p className={`text-lg text-black/80 leading-relaxed`}>{storyContent.storyText}</p>
+              <p className={`text-lg text-black/80 leading-relaxed`}>
+                {storyContent.storyText}
+              </p>
             </div>
           </div>
         </div>
@@ -211,7 +241,9 @@ const OurStory = (props: OurStoryProps) => {
                 <div
                   key={index}
                   className={`relative grid md:grid-cols-2 gap-8 items-center transition-all duration-[1200ms] ${
-                    timelineVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                    timelineVisible
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-10"
                   }`}
                   style={{ transitionDelay: `${index * 300}ms` }}
                 >
@@ -225,7 +257,9 @@ const OurStory = (props: OurStoryProps) => {
                       <div
                         className={`${styles.timelineItemHeader} flex items-center gap-3 mb-4 text-black/80`}
                       >
-                        <milestone.icon className={`${styles.timelineIcon} w-6 h-6 text-primary`} />
+                        <milestone.icon
+                          className={`${styles.timelineIcon} w-6 h-6 text-primary`}
+                        />
                         <span
                           className={`${styles.timelineDate} font-medium text-primary text-black/80`}
                         >
@@ -237,7 +271,9 @@ const OurStory = (props: OurStoryProps) => {
                       >
                         {milestone.title}
                       </h4>
-                      <p className={`text-black/80 leading-relaxed`}>{milestone.description}</p>
+                      <p className={`text-black/80 leading-relaxed`}>
+                        {milestone.description}
+                      </p>
                     </div>
                   </div>
 

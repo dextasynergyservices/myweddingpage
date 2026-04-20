@@ -55,7 +55,9 @@ export default function ColorSection({
           )}
           <div className="text-left">
             <div className="flex items-center gap-2">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {title}
+              </h3>
               {colorCount !== undefined && (
                 <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
                   {colorCount} {colorCount === 1 ? "color" : "colors"}
@@ -63,13 +65,18 @@ export default function ColorSection({
               )}
             </div>
             {description && (
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{description}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                {description}
+              </p>
             )}
           </div>
         </div>
 
         {/* Chevron Icon */}
-        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
           <ChevronDown className="w-5 h-5 text-gray-400" />
         </motion.div>
       </button>

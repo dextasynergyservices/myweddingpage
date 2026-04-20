@@ -78,7 +78,10 @@ export default function Gallery({
     const item = filteredItems[index];
     const mediaItem = {
       id: item.id as string,
-      url: "url" in item ? (item.url as string) : ((item as Record<string, unknown>).src as string),
+      url:
+        "url" in item
+          ? (item.url as string)
+          : ((item as Record<string, unknown>).src as string),
       type: ("type" in item ? item.type : "PHOTO") as "PHOTO" | "VIDEO",
       category: item.category as "during" | "before" | "after",
     };
@@ -166,7 +169,9 @@ export default function Gallery({
           <h2 className="text-2xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent mb-6">
             {title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">{description}</p>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            {description}
+          </p>
         </div>
 
         {/* Tab Navigation - Only show if there are gallery items */}
@@ -175,7 +180,9 @@ export default function Gallery({
             {categories.map((category) => (
               <button
                 key={category.id}
-                onClick={() => handleCategoryChange(category.id as GalleryCategory)}
+                onClick={() =>
+                  handleCategoryChange(category.id as GalleryCategory)
+                }
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                   activeCategory === category.id
                     ? "bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white shadow-lg"
@@ -209,7 +216,8 @@ export default function Gallery({
                 No Gallery Media Yet
               </h3>
               <p className="text-gray-600 text-lg">
-                Photos and videos will appear here once they are uploaded to the gallery.
+                Photos and videos will appear here once they are uploaded to the
+                gallery.
               </p>
             </div>
           </div>
@@ -289,19 +297,21 @@ export default function Gallery({
               </button>
 
               <div className="flex items-center space-x-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => handlePageClick(page)}
-                    className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
-                      currentPage === page
-                        ? "bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white"
-                        : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => handlePageClick(page)}
+                      className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                        currentPage === page
+                          ? "bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white"
+                          : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
               </div>
 
               <button
@@ -319,7 +329,8 @@ export default function Gallery({
 
             {/* Page Info */}
             <p className="text-sm text-gray-600">
-              Page {currentPage} of {totalPages} • {filteredItems.length} total items
+              Page {currentPage} of {totalPages} • {filteredItems.length} total
+              items
             </p>
           </div>
         )}
@@ -332,7 +343,10 @@ export default function Gallery({
         media={selectedMedia}
         mediaList={filteredItems.map((item) => ({
           id: item.id,
-          url: "url" in item ? item.url : ((item as Record<string, unknown>).src as string),
+          url:
+            "url" in item
+              ? item.url
+              : ((item as Record<string, unknown>).src as string),
           type: "type" in item ? item.type : "PHOTO",
           category: item.category,
         }))}

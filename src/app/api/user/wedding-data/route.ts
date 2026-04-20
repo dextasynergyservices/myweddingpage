@@ -73,7 +73,9 @@ export async function GET(req: Request) {
       email: user.email,
       brideName: user.brideName || null,
       groomName: user.groomName || null,
-      weddingDate: user.weddingDate ? formatWeddingDate(user.weddingDate) : null,
+      weddingDate: user.weddingDate
+        ? formatWeddingDate(user.weddingDate)
+        : null,
       plan: user.plan || null,
       page: livePage
         ? {
@@ -98,8 +100,8 @@ export async function GET(req: Request) {
     const ourStory = {
       content:
         livePage?.welcomeMessage ||
-        (selectedTemplate as { previewData?: { welcomeMessage?: string } })?.previewData
-          ?.welcomeMessage ||
+        (selectedTemplate as { previewData?: { welcomeMessage?: string } })
+          ?.previewData?.welcomeMessage ||
         "Our story will appear here...",
       imageUrl:
         livePage?.story_image ||
@@ -120,6 +122,9 @@ export async function GET(req: Request) {
     });
   } catch (error) {
     console.error("Error fetching wedding data:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

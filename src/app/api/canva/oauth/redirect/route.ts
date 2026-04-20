@@ -31,7 +31,8 @@ export async function GET(request: NextRequest) {
             <p>${errorDescription || "Unknown error occurred"}</p>
 
             ${
-              error === "invalid_request" && errorDescription?.includes("redirect_uri")
+              error === "invalid_request" &&
+              errorDescription?.includes("redirect_uri")
                 ? `
               <p><strong>Solution:</strong> This error occurs because the redirect URI doesn't match what's configured in your Canva app settings.</p>
               <p>To fix this:</p>
@@ -113,11 +114,17 @@ export async function GET(request: NextRequest) {
 
     // No code or error - invalid request
     return NextResponse.json(
-      { success: false, error: "Invalid OAuth callback - missing code or error parameter" },
+      {
+        success: false,
+        error: "Invalid OAuth callback - missing code or error parameter",
+      },
       { status: 400 }
     );
   } catch (error) {
     console.error("Error in Canva OAuth callback:", error);
-    return NextResponse.json({ success: false, error: "OAuth callback failed" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "OAuth callback failed" },
+      { status: 500 }
+    );
   }
 }

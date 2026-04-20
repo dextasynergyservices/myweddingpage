@@ -36,7 +36,10 @@ export async function GET() {
     return NextResponse.json(user.userTemplates);
   } catch (error) {
     console.error("Failed to fetch user templates:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -90,7 +93,10 @@ export async function POST(req: Request) {
     return NextResponse.json(userTemplate);
   } catch (error) {
     console.error("Failed to save user template:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -166,6 +172,9 @@ export async function PUT(req: Request) {
     return NextResponse.json(userTemplate);
   } catch (error) {
     console.error("Failed to update user template:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-type BackfillEvent = { pageViewId: string; ipAddress?: string | null; userAgent?: string | null };
+type BackfillEvent = {
+  pageViewId: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+};
 
 // Public backfill endpoint (TEMPORARY)
 // This endpoint is intentionally placed under /api/backfill for the one-time backfill job.
@@ -35,7 +39,10 @@ export async function POST(req: NextRequest) {
         await prisma.pageView.update({ where: { id: ev.pageViewId }, data });
         updated++;
       } catch (e: unknown) {
-        errors.push({ id: ev.pageViewId, error: String(e instanceof Error ? e.message : e) });
+        errors.push({
+          id: ev.pageViewId,
+          error: String(e instanceof Error ? e.message : e),
+        });
       }
     }
 

@@ -62,7 +62,10 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
                 delay: i * 0.5,
               }}
             >
-              <Heart className="h-4 w-4 text-amber-400/40" fill="currentColor" />
+              <Heart
+                className="h-4 w-4 text-amber-400/40"
+                fill="currentColor"
+              />
             </motion.div>
           ))}
         </div>
@@ -79,7 +82,12 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
                 className={`relative p-6 backdrop-blur-sm rounded-3xl shadow-xl border border-white/20 ${isDarkMode ? "bg-white" : "bg-white/80"}`}
               >
                 <motion.div transition={{ duration: 2, repeat: Infinity }}>
-                  <Image src="/logoicon.png" alt="my wedding page" width={48} height={48} />
+                  <Image
+                    src="/logoicon.png"
+                    alt="my wedding page"
+                    width={48}
+                    height={48}
+                  />
                 </motion.div>
                 <motion.div
                   className="absolute -top-2 -right-2 w-6 h-6 bg-[#ab862b] rounded-full"
@@ -116,8 +124,9 @@ const HomeHero = ({ onStartDemo }: { onStartDemo?: () => void }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1.2 }}
             >
-              Create stunning wedding experiences with our modern platform. Elegant design meets
-              powerful functionality for the most important day of your life.
+              Create stunning wedding experiences with our modern platform.
+              Elegant design meets powerful functionality for the most important
+              day of your life.
             </motion.p>
 
             <motion.div

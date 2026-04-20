@@ -35,7 +35,10 @@ export async function GET() {
     });
 
     if (!weddingPage) {
-      return NextResponse.json({ error: "No live wedding page found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "No live wedding page found" },
+        { status: 404 }
+      );
     }
 
     // Construct full wedding page URL

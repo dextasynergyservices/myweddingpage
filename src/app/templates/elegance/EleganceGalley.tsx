@@ -95,7 +95,10 @@ const Gallery: React.FC<GalleryProps> = (props) => {
     const item = filteredItems[index];
     const mediaItem = {
       id: item.id as string,
-      url: "url" in item ? (item.url as string) : ((item as Record<string, unknown>).src as string),
+      url:
+        "url" in item
+          ? (item.url as string)
+          : ((item as Record<string, unknown>).src as string),
       type: ("type" in item ? item.type : "PHOTO") as "PHOTO" | "VIDEO",
       category: item.category as "during" | "before" | "after",
     };
@@ -143,7 +146,10 @@ const Gallery: React.FC<GalleryProps> = (props) => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
     // Scroll to top of gallery section after state update
     setTimeout(() => {
-      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      sectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }, 100);
   };
 
@@ -151,7 +157,10 @@ const Gallery: React.FC<GalleryProps> = (props) => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     // Scroll to top of gallery section after state update
     setTimeout(() => {
-      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      sectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }, 100);
   };
 
@@ -159,7 +168,10 @@ const Gallery: React.FC<GalleryProps> = (props) => {
     setCurrentPage(page);
     // Scroll to top of gallery section after state update
     setTimeout(() => {
-      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      sectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }, 100);
   };
 
@@ -193,7 +205,9 @@ const Gallery: React.FC<GalleryProps> = (props) => {
             {categories.map((category) => (
               <button
                 key={category.id}
-                onClick={() => handleCategoryChange(category.id as GalleryCategory)}
+                onClick={() =>
+                  handleCategoryChange(category.id as GalleryCategory)
+                }
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                   activeCategory === category.id
                     ? "bg-rose-600 text-white shadow-lg"
@@ -227,7 +241,8 @@ const Gallery: React.FC<GalleryProps> = (props) => {
                 No Gallery Media Yet
               </h3>
               <p className="text-gray-600 text-lg">
-                Photos and videos will appear here once they are uploaded to the gallery.
+                Photos and videos will appear here once they are uploaded to the
+                gallery.
               </p>
             </div>
           </div>
@@ -309,19 +324,21 @@ const Gallery: React.FC<GalleryProps> = (props) => {
               </button>
 
               <div className="flex items-center space-x-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => handlePageClick(page)}
-                    className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
-                      currentPage === page
-                        ? "bg-rose-600 text-white"
-                        : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => handlePageClick(page)}
+                      className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                        currentPage === page
+                          ? "bg-rose-600 text-white"
+                          : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
               </div>
 
               <button
@@ -339,7 +356,8 @@ const Gallery: React.FC<GalleryProps> = (props) => {
 
             {/* Page Info */}
             <p className="text-sm text-gray-600">
-              Page {currentPage} of {totalPages} • {filteredItems.length} total items
+              Page {currentPage} of {totalPages} • {filteredItems.length} total
+              items
             </p>
           </div>
         )}
@@ -351,7 +369,10 @@ const Gallery: React.FC<GalleryProps> = (props) => {
           media={selectedMedia}
           mediaList={filteredItems.map((item) => ({
             id: item.id,
-            url: "url" in item ? item.url : ((item as Record<string, unknown>).src as string),
+            url:
+              "url" in item
+                ? item.url
+                : ((item as Record<string, unknown>).src as string),
             type: "type" in item ? item.type : "PHOTO",
             category: item.category,
           }))}

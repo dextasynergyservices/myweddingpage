@@ -44,7 +44,8 @@ export async function GET(req: NextRequest) {
           },
         });
 
-        const errorRate = totalRequests > 0 ? (errorRequests / totalRequests) * 100 : 0;
+        const errorRate =
+          totalRequests > 0 ? (errorRequests / totalRequests) * 100 : 0;
 
         // Get active connections (approximate from recent activity)
         const activeConnections = await prisma.securityLog.count({
@@ -71,7 +72,8 @@ export async function GET(req: NextRequest) {
             const md = l.metadata as Record<string, unknown>;
             if (!md) continue;
             // Common fields we might use: duration, responseTime, timing, latency
-            const cand = md.duration ?? md.responseTime ?? md.timing ?? md.latency;
+            const cand =
+              md.duration ?? md.responseTime ?? md.timing ?? md.latency;
             if (typeof cand === "number" && Number.isFinite(cand) && cand > 0)
               timings.push(cand as number);
             // Some systems store nested objects like { timing: { total: 123 } }
@@ -79,15 +81,27 @@ export async function GET(req: NextRequest) {
               const timingObj = md.timing as Record<string, unknown>;
               // Try common shapes: total | Total | string numbers | nested value/duration
               const maybeTotal =
-                timingObj.total ?? timingObj.Total ?? (timingObj as { total?: unknown }).total;
-              if (typeof maybeTotal === "number" && Number.isFinite(maybeTotal)) {
+                timingObj.total ??
+                timingObj.Total ??
+                (timingObj as { total?: unknown }).total;
+              if (
+                typeof maybeTotal === "number" &&
+                Number.isFinite(maybeTotal)
+              ) {
                 timings.push(maybeTotal);
-              } else if (typeof maybeTotal === "string" && !Number.isNaN(Number(maybeTotal))) {
+              } else if (
+                typeof maybeTotal === "string" &&
+                !Number.isNaN(Number(maybeTotal))
+              ) {
                 timings.push(Number(maybeTotal));
               } else {
                 const nested =
-                  ((timingObj as Record<string, unknown>).total as { value?: unknown } | undefined)
-                    ?.value ?? ((timingObj as Record<string, unknown>).duration as unknown);
+                  (
+                    (timingObj as Record<string, unknown>).total as
+                      | { value?: unknown }
+                      | undefined
+                  )?.value ??
+                  ((timingObj as Record<string, unknown>).duration as unknown);
                 if (typeof nested === "number" && Number.isFinite(nested)) {
                   timings.push(nested);
                 }
@@ -96,7 +110,9 @@ export async function GET(req: NextRequest) {
           }
 
           if (timings.length > 0) {
-            avgResponseTime = Math.round(timings.reduce((a, b) => a + b, 0) / timings.length);
+            avgResponseTime = Math.round(
+              timings.reduce((a, b) => a + b, 0) / timings.length
+            );
           }
         } catch {
           // ignore and fallback
@@ -120,7 +136,9 @@ export async function GET(req: NextRequest) {
           cpuUsage = null;
         }
         // If loadavg isn't available (e.g., on Windows), attempt a short sampled CPU usage
-        async function sampleCpuPercent(sampleMs = 100): Promise<number | null> {
+        async function sampleCpuPercent(
+          sampleMs = 100
+        ): Promise<number | null> {
           try {
             const snap = os.cpus();
             const start = snap.map((c) => ({ ...c.times }));
@@ -131,8 +149,14 @@ export async function GET(req: NextRequest) {
             for (let i = 0; i < snap2.length; i++) {
               const s1 = start[i];
               const s2 = snap2[i].times;
-              const t1 = Object.values(s1).reduce((a, b) => a + (b as number), 0);
-              const t2 = Object.values(s2).reduce((a, b) => a + (b as number), 0);
+              const t1 = Object.values(s1).reduce(
+                (a, b) => a + (b as number),
+                0
+              );
+              const t2 = Object.values(s2).reduce(
+                (a, b) => a + (b as number),
+                0
+              );
               const idle1 = s1.idle as number;
               const idle2 = s2.idle as number;
               const td = t2 - t1;
@@ -222,7 +246,10 @@ export async function GET(req: NextRequest) {
         return NextResponse.json(performanceMetrics);
       } catch (err) {
         console.error("System metrics fetch error:", err);
-        return NextResponse.json({ error: "Failed to fetch system metrics" }, { status: 500 });
+        return NextResponse.json(
+          { error: "Failed to fetch system metrics" },
+          { status: 500 }
+        );
       }
     },
     { sampleRate: 1, eventType: "ADMIN_ACTION" }

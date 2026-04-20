@@ -1,0 +1,353 @@
+{
+  "site": { "title": "Shafin Aurena", "tagline": "Ku yi biki tare da mu" },
+  "preview": {
+    "no_longer_live": "Wannan shafin aure ba ya nan a layi",
+    "close": "Rufe",
+    "create_similar": "Ƙirƙiri shafi makamancin haka"
+  },
+  "footer": { "platform": "Dandali", "support": "Taimako" },
+  "cookies": { "label": "Cookies" },
+  "pwa": {
+    "online": "Kan layi",
+    "offline": "Ba a kan layi ba",
+    "installed": "An girka",
+    "not_installed": "Ba a girka ba",
+    "running_as_app": "Aiki a matsayin app",
+    "install_prompt": "Shigar don kyakkyawan kwarewa",
+    "notifications_on": "Sanarwa akan",
+    "notifications_off": "Sanarwa kashe",
+    "subscription_enabled": "Tunatarwar biyan kuɗi an kunna",
+    "enable_to_get_reminders": "Kunna don samun tunatarwa",
+    "disable": "Kashe",
+    "enable": "Kunna",
+    "connected_to_internet": "An haɗa da intanet",
+    "some_features_limited": "Wasu fasali sun iyakance"
+  },
+  "templateEditor": {
+    "choose_color_scheme": "Zaɓi Tsarin Launi",
+    "save_template": "Ajiye Template",
+    "saving": "Ana adanawa..."
+  },
+  "terms": {
+    "title": "Sharuɗɗa da Sharuɗɗa",
+    "effective_date": "Ranar aiki: {date}",
+    "welcome_paragraph": "Maraba da Myweddingpage (\"mu\", \"namu\", ko \"mu\"). Ta hanyar samun dama ko amfani da ayyukanmu, kuna amincewa da waɗannan Sharuɗɗa da Ka'idoji. Da fatan za a karanta su a hankali.",
+    "use_of_service": "1. Amfani da Sabis",
+    "use_of_service_body": "Kuna amincewa da amfani da Myweddingpage ne kawai don dalilai na doka kuma bisa ga waɗannan Sharuɗɗan. Dole ne ku bayar da bayanai masu gaskiya lokacin rajista ko amfani da manhajar.",
+    "payment_policy": "2. Manufofin Biyan Kuɗi da Mayar da Kuɗi",
+    "payment_policy_item1": "Dukkan biyan kuɗi na tsare-tsaren biyan kuɗi ko ayyuka ana buƙatar a biya su a gaba.",
+    "payment_policy_item2_emph": "Ba za a mayar da kuɗi ba bayan awanni 24 daga lokacin sayan.",
+    "payment_policy_item3": "Idan kun fuskanci matsaloli a cikin awanni 24 na farko, da fatan za a tuntuɓi tallafinmu don taimako da yiwuwar la'akari da mayar da kuɗi.",
+    "intellectual_property_title": "3. Haƙƙin Mallaka",
+    "intellectual_property_body": "Dukkan abun ciki, alamun kasuwanci, da haƙƙin mallaka da suka shafi Myweddingpage mallakar mu ne ko na masu lasisinmu. Ba za ku iya amfani, kwafi, ko raba wani abun ciki ba tare da izini ba.",
+    "privacy_title": "4. Sirri",
+    "privacy_body": "Amfanin ku da Myweddingpage yana ƙarƙashin Manufarmu ta Sirri, wacce ke bayanin yadda muke tattarawa, amfani, da kiyaye bayananku.",
+    "governing_law_title": "5. Dokar da za ta yi aiki",
+    "governing_law_body": "Wadannan Sharuɗɗan za su kasance ƙarƙashin dokokin Tarayyar Najeriya. Duk wata gardama da ta taso daga waɗannan Sharuɗɗan za a warware ta a kotunan Najeriya.",
+    "international_users_title": "6. Masu Amfani na Ƙasa da Ƙasa",
+    "international_users_body": "Idan kuna amfani da Myweddingpage daga wajen Najeriya, kuna amincewa ku bi duk dokokin da suka dace a ƙasarku, ciki har da kare bayanai da hakkokin mabukaci.",
+    "dispute_resolution_title": "7. Warware Rikici da Sulhu",
+    "dispute_resolution_intro": "Don rage shari'o'i da samar da hanyar da ta dace don warware rikice-rikice:",
+    "dispute_resolution_item1": "Idan rikici ya taso, za mu fara ƙoƙarin warware shi cikin lumana ta hanyar tattaunawa ko sulhu.",
+    "dispute_resolution_item2": "Idan sulhu ya gaza ko ba zai yiwu ba cikin kwanaki 30, za a warware rikicin ta hanyar sasanci mai ɗaurewa bisa ƙa'idodin wata ƙungiya mai suna (misali ICC, UNCITRAL) ko wata da aka yarda da ita.",
+    "dispute_resolution_item3": "Wurin sasanci zai kasance Lagos, Najeriya, amma za a iya halarta daga nesa.",
+    "dispute_resolution_item4": "Sakamakon sasanci zai zama ƙarshe kuma mai ɗaurewa ga dukkan ɓangarori.",
+    "dispute_resolution_item5": "Wannan sharaɗin ba ya hana kowace ɓangare neman taimakon kotu idan akwai bukata.",
+    "limitation_title": "8. Iyakance Haƙƙin Da Za Mu Dauka",
+    "limitation_body": "A cikin iyakar da doka ta ba da izini, ba za mu ɗauki alhakin duk wata asara ko lahani kai tsaye ko na gefe da ta taso daga amfani da Myweddingpage ba.",
+    "changes_title": "9. Sauye-sauye ga Sharuɗɗa",
+    "changes_body": "Muna riƙe haƙƙin sabunta ko canza waɗannan Sharuɗɗan a kowane lokaci. Sabbin Sharuɗɗan za su bayyana a kan manhaja ko gidan yanar gizo, kuma ci gaba da amfani yana nufin kun yarda.",
+    "contact_title": "10. Tuntuɓi Mu",
+    "contact_paragraph": "Don tambayoyi ko tallafi game da waɗannan Sharuɗɗan, da fatan za a tuntuɓe mu a:",
+    "contact_email_label": "Imel",
+    "contact_email_value": "info@myweddingpage.online",
+    "contact_address_label": "Adireshi",
+    "contact_address_value": "147 NTA Road Mgbuoba, Port Harcourt, Rivers State, Nigeria."
+  },
+  "videos": {
+    "title": "Koyarwar Bidiyo",
+    "getting_started": "Farawa",
+    "advanced_tips": "Shawarwari Na Gaba"
+  },
+  "coming_soon": {
+    "message": "Ana zuwa ba da jimawa ba..."
+  },
+  "cta": {
+    "title": "Kuna shirye ku fara tafiyar ku?",
+    "description": "Ku shiga cikin dubban ma'aurata waɗanda suka ƙirƙiri cikakkiyar ƙwarewar auren su tare da mu.",
+    "get_started": "Fara Yau",
+    "contact_us": "Tuntuɓe Mu"
+  },
+  "contact_upgrade": {
+    "title": "Tuntuɓe mu don haɓakawa",
+    "description": "Zaɓi zaɓi a ƙasa don tuntuɓar ƙungiyar tallace-tallace mu kuma haɓaka tsarin ku.",
+    "whatsapp": "WhatsApp",
+    "call": "Kira",
+    "close": "Rufe"
+  },
+  "no_weddings": {
+    "title": "Babu shafukan aure har yanzu",
+    "description": "Ƙirƙiri shafin aure na farko don farawa.",
+    "create_button": "Ƙirƙiri shafin aure"
+  },
+  "notification_permission": {
+    "title": "Sanarwar Turawa",
+    "enabled": "An kunna",
+    "disabled": "An kashe",
+    "active": "Yana aiki",
+    "description": "Karɓi sanarwa game da tunatarwar ayyuka, ƙididdigar ranar aure, da mahimman sabuntawa.",
+    "enable_description": "Kunna sanarwa don karɓa:",
+    "task_reminders": "Tunatarwar ayyuka don jerin auren ku",
+    "countdown": "Sanarwar ƙididdigar ranar aure",
+    "rsvp_updates": "Sabuntawan amsar baƙi",
+    "announcements": "Muhimman sanarwa",
+    "enable_button": "Kunna sanarwa",
+    "enabling": "Ana kunna...",
+    "disable_button": "Kashe",
+    "disabling": "Ana kashewa...",
+    "test_button": "Aika gwaji",
+    "learn_more": "Koyi ƙara",
+    "show_less": "Nuna kaɗan",
+    "blocked_message": "An toshe sanarwa. Da fatan za ku kunna ta a saitunan binciken ku.",
+    "permission_denied": "An ƙi izinin sanarwa",
+    "enabled_success": "An kunna sanarwa da nasara!",
+    "enable_failed": "Ba a iya kunna sanarwa ba",
+    "disabled_success": "An kashe sanarwa",
+    "disable_failed": "Ba a iya kashe sanarwa ba",
+    "test_success": "An aika sanarwar gwaji! Duba sanarwarka.",
+    "test_failed": "Ba a iya aika sanarwar gwaji ba",
+    "error_generic": "Kuskure ya faru. Da fatan za ku sake gwadawa."
+  },
+  "stats": {
+    "couples_served": "Ma'aurata Da Aka Yi Hidima",
+    "weddings_planned": "Auren Da Aka Shirya",
+    "love_stories": "Labarun Soyayya Da Aka Faɗa",
+    "gifts_delivered": "Kyautar Da Aka Kawo"
+  },
+  "how_to": {
+    "hero": {
+      "title": "Yadda Ake Amfani da Myweddingpage.Online",
+      "description": "Bi waɗannan matakai masu sauƙi don farawa da samun mafi kyawun amfani da myweddingpage.",
+      "watch_overview": "Kalli Bayyani"
+    },
+    "steps": {
+      "title": "Farawa",
+      "description": "Bi waɗannan matakai masu sauƙi don ƙirƙirar cikakkiyar shafin auren ku",
+      "step1": {
+        "title": "Zaɓi Template Ɗin Ku",
+        "description": "Bincika kyawawan template ɗinmu kuma zaɓi wanda ya dace da salon ku"
+      },
+      "step2": {
+        "title": "Gyara Abun Cikin Ku",
+        "description": "Ƙara hotunan ku, labarinku, da cikakkun bayanai na auren ku don sanya shi na ku kaɗai"
+      },
+      "step3": {
+        "title": "Raba da Baƙi",
+        "description": "Aika hanyar haɗin shafin auren ku zuwa ga iyali da abokai don RSVP da sabuntawa"
+      }
+    },
+    "faq": {
+      "title": "Tambayoyin Da Ake Yawan Yi",
+      "subtitle": "Duk abin da kuke buƙatar sani game da ƙirƙirar shafin auren ku",
+      "questions": [
+        {
+          "question": "Shin dandamalin kyauta ne don amfani?",
+          "answer": "I! Muna ba da tsarin kyauta tare da abubuwa da yawa don farawa."
+        },
+        {
+          "question": "Shin zan iya haɓaka asusuna daga baya?",
+          "answer": "Hakika! Kuna iya haɓakawa koyaushe don buɗe ƙarin fasali."
+        },
+        {
+          "question": "Shin bayananina suna da tsaro?",
+          "answer": "Muna ɗaukar tsaro da mahimmanci, ta amfani da ɓoyewa da amintattun sabar."
+        }
+      ]
+    }
+  },
+
+  "home": {
+    "hero": {
+      "title_line1": "Cikakkiyar Auren Ku",
+      "title_line2": "Tafiyar Aure",
+      "subtitle": "Ƙirƙiri ƙwarewa aure tare da dandamalin mu na zamani. Ƙira mai kyau ya haɗu da ƙarfin aiki don rana mafi mahimmanci a rayuwar ku.",
+      "cta_start": "Fara Tafiyar Ku",
+      "cta_view_pages": "Duba Shafukan Aure"
+    },
+    "features": {
+      "title": "Duk Abin Da Kuke Bukata",
+      "subtitle": "Kayan aiki masu ƙarfi da aka tsara don ma'aurata na zamani waɗanda suke son kyau da sauƙi.",
+      "gallery_title": "Gallery Na Hikima",
+      "gallery_description": "Tsarin hotuna na AI tare da ajiya mara iyaka da rabawa nan take",
+      "gift_title": "Gudanar da Kyaututtuka",
+      "gift_description": "Bin kyaututtuka mai sauƙi tare da rubutun godiya ta atomatik da bincike",
+      "engagement_title": "Haɗin Baƙi",
+      "engagement_description": "Littafin baƙi mai hulɗa tare da sarrafa lokaci na gaske da binciken ji",
+      "dashboard_title": "Dashboard Ma'aurata",
+      "dashboard_description": "Cibiyar sarrafawa mai hankali tare da basira da kayan aikin haɗin gwiwa"
+    },
+    "packages": {
+      "title": "Zaɓi Package Nku",
+      "description": "Farashin sassauƙa da aka tsara don girma tare da bukatun ku, daga bikin sirri zuwa manyan bukukuwa.",
+      "most_popular": "Mafi Shahara",
+      "get_started": "Fara",
+      "loading": "Ana ɗaukar tsare-tsare..."
+    },
+    "find_wedding": {
+      "title": "Nemo Aure",
+      "description": "Nemo bikin aure da al'adun yankin ku",
+      "no_weddings": "Babu shafukan aure da aka samu. Ku zama na farko don ƙirƙirawa!",
+      "view_all": "Duba Duk Auren"
+    },
+    "testimonials": {
+      "title": "Masu Aure Suna So",
+      "description": "Haɗu da dubban ma'aurata waɗanda suka ƙirƙiri cikakkiyar ƙwarewar aure ta musamman.",
+      "testimonials": [
+        {
+          "name": "Sarah & Michael",
+          "text": "Dandamalin ya zarce abin da muke tsammani. Ƙiran yana da kyau kuma baƙi sun fi son abubuwan mu'amala. Sarrafa komai ba shi da wahala.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Emily & David",
+          "text": "Kyakkyawan kulawa ga cikakkun bayanai da ƙwarewar mai amfani. Dashboard ya sauƙaƙa tsarawa sosai, kuma sakamakon ƙarshe ya kasance kyakkyawa sosai.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=150"
+        },
+        {
+          "name": "Jessica & Ryan",
+          "text": "Na zamani, kyakkyawa da aiki. Iyalanmu sun iya kewayawa komai cikin sauƙi, kuma mun karɓi yawan yabo akan shafin aure namu.",
+          "rating": 5,
+          "image": "https://images.pexels.com/photos/1024866/pexels-photo-1024866.jpeg?auto=compress&cs=tinysrgb&w=150"
+        }
+      ]
+    },
+    "wedding_card": {
+      "live": "KAI TSAYE",
+      "not_live": "BA KAI TSAYE BA"
+    }
+  },
+
+  "auth": {
+    "login": "Shiga",
+    "logout": "Fita",
+    "register": "Yi rajista",
+    "profile": "Bayani",
+    "dashboard": "Dashboard",
+    "login_page": {
+      "welcome": "Maraba da Dawowa",
+      "subtitle": "Shiga cikin dashboard din auren ku"
+    },
+    "login_form": {
+      "labels": {
+        "email": "Email ko Lambar WhatsApp",
+        "password": "Kalmar sirri"
+      },
+      "placeholders": {
+        "email": "Shigar da email ko lambar WhatsApp",
+        "password": "Shigar da kalmar sirrin ku"
+      },
+      "forgot_password": "Kun manta kalmar sirri?",
+      "sign_in_button": "Shiga",
+      "signing_in": "Ana shiga...",
+      "dont_have_account": "Ba ku da asusu?",
+      "sign_up": "Yi rajista",
+      "two_factor_auth": "Tabbaci Hanya Biyu",
+      "enter_backup_code": "Shigar da ɗaya daga cikin lambobin ajiyar ku",
+      "enter_email_code": "Shigar da lambar 6-digit da aka aika zuwa email ɗin ku",
+      "enter_app_code": "Shigar da lambar 6-digit daga app ɗin tabbaci",
+      "verify_button": "Tabbatar",
+      "cancel_button": "Soke",
+      "use_backup_code": "Yi amfani da lambar ajiya",
+      "use_authenticator": "Yi amfani da lambar tabbaci",
+      "send_email_code": "Aika Lambar Email",
+      "sending": "Ana aikawa...",
+      "enter_verification_code": "Don Allah shigar da lambar tabbaci",
+      "validation": {
+        "email_required": "Email ko lambar WhatsApp yana bukatar",
+        "email_invalid": "Shigar da email ko lambar waya mai inganci",
+        "password_required": "Kalmar sirri yana bukatar"
+      }
+    },
+    "register_form": {
+      "title": "Ci gaba don Ƙirƙira Shafin Auren Ku",
+      "subtitle": "Fara tafiyar auren ku a yau",
+      "labels": {
+        "groom_name": "Sunan Ango",
+        "bride_name": "Sunan Amarya",
+        "email": "Adireshin Email",
+        "whatsapp": "Lambar WhatsApp",
+        "wedding_date": "Ranar Aure",
+        "image": "Ƙara Hoto don Gidan Yanar Gizon Ku (Na zaɓi)",
+        "password": "Kalmar sirri",
+        "confirm_password": "Tabbatar da Kalmar sirri"
+      },
+      "placeholders": {
+        "groom_name": "Shigar da sunan ango",
+        "bride_name": "Shigar da sunan amarya",
+        "email": "Shigar da email ɗin ku",
+        "whatsapp": "Lambar WhatsApp da lambar ƙasa misali: +234",
+        "wedding_date": "Zaɓi ranar aure",
+        "password": "Ƙirƙiri kalmar sirri",
+        "confirm_password": "Tabbatar da kalmar sirrin ku"
+      },
+      "validation": {
+        "groom_name_required": "Sunan ango yana bukatar.",
+        "bride_name_required": "Sunan amarya yana bukatar.",
+        "email_required": "Email yana bukatar.",
+        "email_invalid": "Adireshin email maras inganci.",
+        "whatsapp_required": "Lambar WhatsApp yana bukatar.",
+        "wedding_date_required": "Ranar aure yana bukatar.",
+        "password_required": "Kalmar sirri yana bukatar.",
+        "passwords_mismatch": "Kalmomin sirri ba su yi daidai ba."
+      },
+      "password_requirements": "Kalmar sirri dole ne ta kasance akalla haruffa 8 da babban harafi, ƙaramin harafi, lamba da harafi na musamman (@, $, !, %, *, ?, &, #, da sauransu)",
+      "continue_button": "Ci gaba",
+      "already_have_account": "Kuna da asusu?",
+      "sign_in": "Shiga",
+      "messages": {
+        "registration_successful": "Rajista ya yi nasara! Duba email ɗin ku.",
+        "registration_failed": "Rajista ya kasa. Don Allah sake gwadawa.",
+        "network_error": "Kuskuren hanyar sadarwa. Duba haɗin ku kuma sake gwadawa."
+      }
+    }
+  },
+
+  "package": {
+    "modal": {
+      "title_format": "Kunshin {name}",
+      "email_label": "Adireshin Email",
+      "email_placeholder": "Shigar da email ɗin ku",
+      "whatsapp_label": "Lambar WhatsApp",
+      "whatsapp_placeholder": "Lambar WhatsApp da lambar ƙasa misali: +234",
+      "show_terms": "Nuna Sharuɗɗa da Yanayi ▼",
+      "hide_terms": "Ɓoye Sharuɗɗa da Yanayi ▲",
+      "agree_terms": "Na yarda da Sharuɗɗa da Yanayi",
+      "pay_now": "Biya Yanzu",
+      "processing": "Ana Sarrafa...",
+      "errors": {
+        "fill_contact": "Don Allah cika duka Email da lambar WhatsApp.",
+        "agree_terms": "Dole ne ku yarda da Sharuɗɗa da Yanayi."
+      }
+    }
+  },
+
+  "contact": {
+    "form": {
+      "title": "Aika Mana Saƙo",
+      "name_label": "Sunan Ku",
+      "name_placeholder": "Shigar da sunan ku",
+      "email_label": "Adireshin Email",
+      "email_placeholder": "Shigar da email ɗin ku",
+      "subject_label": "Jigo",
+      "message_label": "Saƙo",
+      "message_placeholder": "Gaya mana yadda za mu iya taimaka muku...",
+      "send_button": "Aika Saƙo",
+      "sending": "Ana Aika Saƙo...",
+      "success_message": "✅ An aika saƙo cikin nasara!",
+      "error_message": "❌ An gaza aika saƙo",
+      "error_generic": "⚠️ Wani abu ya faru"
+    }
+  }
+}

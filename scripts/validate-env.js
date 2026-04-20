@@ -112,7 +112,9 @@ function validateEnvironment() {
 
     // Check starts with
     if (varConfig.startsWith && !value.startsWith(varConfig.startsWith)) {
-      errors.push(`❌ ${varConfig.name}: Must start with '${varConfig.startsWith}'`);
+      errors.push(
+        `❌ ${varConfig.name}: Must start with '${varConfig.startsWith}'`
+      );
       continue;
     }
 

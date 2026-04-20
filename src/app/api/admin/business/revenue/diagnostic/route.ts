@@ -8,7 +8,9 @@ export async function GET(req: Request) {
   const sess: any = session;
 
   if (!sess || sess.user?.role !== "ADMIN") {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+    });
   }
 
   try {
@@ -29,7 +31,10 @@ export async function GET(req: Request) {
     } catch {
       try {
         // fallback: count users via prisma if raw failed
-        const rows = await (prisma as any).payment.groupBy({ by: ["userId"], take: 1 });
+        const rows = await (prisma as any).payment.groupBy({
+          by: ["userId"],
+          take: 1,
+        });
         distinctPayers = Array.isArray(rows) ? rows.length : 0;
       } catch {
         distinctPayers = 0;
@@ -55,13 +60,22 @@ export async function GET(req: Request) {
       samplePayments = [];
     }
 
-    const lastPaymentDate = samplePayments.length > 0 ? samplePayments[0].createdAt : null;
+    const lastPaymentDate =
+      samplePayments.length > 0 ? samplePayments[0].createdAt : null;
 
     return new Response(
-      JSON.stringify({ paymentCount, distinctPayers, samplePayments, lastPaymentDate }),
+      JSON.stringify({
+        paymentCount,
+        distinctPayers,
+        samplePayments,
+        lastPaymentDate,
+      }),
       { status: 200 }
     );
   } catch (err: any) {
-    return new Response(JSON.stringify({ error: String(err?.message ?? err) }), { status: 500 });
+    return new Response(
+      JSON.stringify({ error: String(err?.message ?? err) }),
+      { status: 500 }
+    );
   }
 }

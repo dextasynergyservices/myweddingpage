@@ -305,7 +305,9 @@ export function isPasswordValid(password: string): boolean {
  * @example
  * getStrengthLabel("weak") // Returns: { label: "Weak", color: "red" }
  */
-export function getStrengthLabel(strength: PasswordValidationResult["strength"]): {
+export function getStrengthLabel(
+  strength: PasswordValidationResult["strength"]
+): {
   label: string;
   color: string;
   bgColor: string;
@@ -314,8 +316,16 @@ export function getStrengthLabel(strength: PasswordValidationResult["strength"])
     weak: { label: "Weak", color: "text-red-600", bgColor: "bg-red-100" },
     fair: { label: "Fair", color: "text-orange-600", bgColor: "bg-orange-100" },
     good: { label: "Good", color: "text-yellow-600", bgColor: "bg-yellow-100" },
-    strong: { label: "Strong", color: "text-green-600", bgColor: "bg-green-100" },
-    "very-strong": { label: "Very Strong", color: "text-emerald-600", bgColor: "bg-emerald-100" },
+    strong: {
+      label: "Strong",
+      color: "text-green-600",
+      bgColor: "bg-green-100",
+    },
+    "very-strong": {
+      label: "Very Strong",
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-100",
+    },
   };
 
   return labels[strength];
@@ -377,7 +387,10 @@ export function isPasswordCompromised(password: string): boolean {
  * @param password2 - Second password
  * @returns Boolean indicating if passwords match
  */
-export function comparePasswords(password1: string, password2: string): boolean {
+export function comparePasswords(
+  password1: string,
+  password2: string
+): boolean {
   if (!password1 || !password2 || password1.length !== password2.length) {
     return false;
   }

@@ -29,7 +29,8 @@ function tryParseJsonLine(line: string) {
 
 function parseNginxCombined(line: string) {
   // remote_addr - - [10/Oct/2025:12:27:35 +0000] "GET /slug HTTP/1.1" 200 123 "-" "User-Agent"
-  const re = /^(\S+) \S+ \S+ \[([^\]]+)\] "([A-Z]+) ([^\s]+)[^\"]*" \d+ \d+ "[^"]*" "([^\"]*)"/;
+  const re =
+    /^(\S+) \S+ \S+ \[([^\]]+)\] "([A-Z]+) ([^\s]+)[^\"]*" \d+ \d+ "[^"]*" "([^\"]*)"/;
   const m = line.match(re);
   if (!m) return null;
   const ip = m[1];
@@ -39,7 +40,10 @@ function parseNginxCombined(line: string) {
   const ua = m[5];
 
   // Convert dateStr like 10/Oct/2025:12:27:35 +0000 -> "10 Oct 2025 12:27:35 +0000"
-  const d = dateStr.replace(/(\d{2})\/(\w{3})\/(\d{4}):(\d{2}:\d{2}:\d{2})/, "$1 $2 $3 $4");
+  const d = dateStr.replace(
+    /(\d{2})\/(\w{3})\/(\d{4}):(\d{2}:\d{2}:\d{2})/,
+    "$1 $2 $3 $4"
+  );
   const parsed = new Date(d);
   if (isNaN(parsed.getTime())) return null;
   return { ip, path, ua, timestamp: parsed.toISOString() };
@@ -79,7 +83,13 @@ function extractFromJsonObject(j: any) {
     j.request_url ||
     null;
   const time =
-    j.timestampInMs ?? j.timestamp ?? j.time ?? j.TimeUTC ?? j.date ?? j["@timestamp"] ?? null;
+    j.timestampInMs ??
+    j.timestamp ??
+    j.time ??
+    j.TimeUTC ??
+    j.date ??
+    j["@timestamp"] ??
+    null;
   let ts: string | null = null;
   if (time != null) {
     if (typeof time === "number") {
@@ -93,7 +103,12 @@ function extractFromJsonObject(j: any) {
   }
 
   if (!path || !ts || !ua)
-    return { ip: ip ?? null, ua: ua ?? null, path: path ?? null, timestamp: ts };
+    return {
+      ip: ip ?? null,
+      ua: ua ?? null,
+      path: path ?? null,
+      timestamp: ts,
+    };
   return { ip: ip ?? null, ua: ua ?? null, path: path ?? null, timestamp: ts };
 }
 
@@ -137,9 +152,16 @@ async function main() {
     createdAt: p.createdAt,
   }));
 
-  console.log(`Loaded ${targets.length} targets across ${pageIds.length} pages`);
+  console.log(
+    `Loaded ${targets.length} targets across ${pageIds.length} pages`
+  );
 
-  const parsedLines: Array<{ ip: string | null; path: string; ua: string; timestamp: string }> = [];
+  const parsedLines: Array<{
+    ip: string | null;
+    path: string;
+    ua: string;
+    timestamp: string;
+  }> = [];
 
   // Try reading entire file as JSON (Vercel exports often are a JSON array)
   try {
@@ -160,12 +182,20 @@ async function main() {
     } else if (typeof maybe === "object") {
       const ex = extractFromJsonObject(maybe);
       if (ex && ex.path && ex.timestamp && ex.ua)
-        parsedLines.push({ ip: ex.ip ?? null, path: ex.path, ua: ex.ua, timestamp: ex.timestamp });
+        parsedLines.push({
+          ip: ex.ip ?? null,
+          path: ex.path,
+          ua: ex.ua,
+          timestamp: ex.timestamp,
+        });
     }
   } catch (e) {
     // fall back to line-by-line streaming parse (handles json-lines and nginx combined)
     const fileStream = fs.createReadStream(logPath, { encoding: "utf8" });
-    const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity,
+    });
     for await (const line of rl) {
       if (!line || line.trim().length === 0) continue;
       const j = tryParseJsonLine(line);
@@ -181,7 +211,13 @@ async function main() {
         continue;
       }
       const n = parseNginxCombined(line);
-      if (n) parsedLines.push({ ip: n.ip ?? null, path: n.path, ua: n.ua, timestamp: n.timestamp });
+      if (n)
+        parsedLines.push({
+          ip: n.ip ?? null,
+          path: n.path,
+          ua: n.ua,
+          timestamp: n.timestamp,
+        });
     }
   }
 
@@ -232,7 +268,9 @@ async function main() {
 
   const outPath = "scripts/backfill-payload.json";
   fs.writeFileSync(outPath, JSON.stringify(results, null, 2), "utf8");
-  console.log(`Wrote ${results.length} candidate backfill events to ${outPath}`);
+  console.log(
+    `Wrote ${results.length} candidate backfill events to ${outPath}`
+  );
   console.log("Preview:", results.slice(0, 10));
 }
 

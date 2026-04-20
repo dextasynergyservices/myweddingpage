@@ -6,7 +6,10 @@ import { requireAdmin, logAdminAction } from "@/lib/middleware/admin";
  * DELETE /api/admin/users/[id]
  * Delete a user account and all related data
  */
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   try {
     // Check admin authentication
     const adminCheck = await requireAdmin();
@@ -14,7 +17,9 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       return adminCheck;
     }
 
-    const adminUser = await (await import("@/lib/middleware/admin")).getAdminUser();
+    const adminUser = await (
+      await import("@/lib/middleware/admin")
+    ).getAdminUser();
 
     const { id } = params;
 
@@ -25,7 +30,10 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     });
 
     if (!user) {
-      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: "User not found" },
+        { status: 404 }
+      );
     }
 
     // Prevent admin from deleting themselves
@@ -39,7 +47,10 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     // Prevent deleting other admins (optional safety check)
     if (user.role === "ADMIN") {
       return NextResponse.json(
-        { success: false, error: "Cannot delete admin accounts. Demote them first." },
+        {
+          success: false,
+          error: "Cannot delete admin accounts. Demote them first.",
+        },
         { status: 400 }
       );
     }

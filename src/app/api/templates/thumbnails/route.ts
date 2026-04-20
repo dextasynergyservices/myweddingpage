@@ -44,7 +44,11 @@ export async function GET() {
     console.log("Active templates found:", templates.length);
     console.log(
       "Template data:",
-      templates.map((t) => ({ name: t.name, thumbnail: t.thumbnail, hero_image: t.hero_image }))
+      templates.map((t) => ({
+        name: t.name,
+        thumbnail: t.thumbnail,
+        hero_image: t.hero_image,
+      }))
     );
 
     return NextResponse.json({
@@ -54,7 +58,8 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Failed to fetch template thumbnails:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
     return NextResponse.json(
       { error: "Internal Server Error", details: errorMessage },
       { status: 500 }

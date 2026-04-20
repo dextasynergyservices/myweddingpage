@@ -26,7 +26,10 @@ export async function GET(req: NextRequest) {
       dateFrom,
       dateTo,
     });
-    return NextResponse.json({ events, total, page, pageSize }, { status: 200 });
+    return NextResponse.json(
+      { events, total, page, pageSize },
+      { status: 200 }
+    );
   } catch {
     return NextResponse.json({ events: [], total: 0 }, { status: 500 });
   }

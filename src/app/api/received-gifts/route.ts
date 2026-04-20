@@ -40,7 +40,10 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     if (!body.name || (!body.giftId && !body.amount) || !body.userId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
     const receivedGift = await prisma.receivedGift.create({
@@ -78,7 +81,10 @@ export async function PUT(request: Request) {
 
     const { id, ...data } = await request.json();
     if (!id) {
-      return NextResponse.json({ error: "Missing received gift ID" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing received gift ID" },
+        { status: 400 }
+      );
     }
 
     const existingGift = await prisma.receivedGift.findUnique({
@@ -86,7 +92,10 @@ export async function PUT(request: Request) {
     });
 
     if (!existingGift) {
-      return NextResponse.json({ error: "Received gift not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Received gift not found" },
+        { status: 404 }
+      );
     }
 
     const updatedGift = await prisma.receivedGift.update({
@@ -119,7 +128,10 @@ export async function DELETE(request: Request) {
 
     const { id } = await request.json();
     if (!id) {
-      return NextResponse.json({ error: "Missing received gift ID" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing received gift ID" },
+        { status: 400 }
+      );
     }
 
     await prisma.receivedGift.delete({
@@ -148,7 +160,10 @@ export async function PATCH(request: Request) {
 
     const { id, message } = await request.json();
     if (!id || !message) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
     const gift = await prisma.receivedGift.findUnique({
@@ -185,7 +200,9 @@ export async function PATCH(request: Request) {
       } catch (emailError) {
         console.error("Email sending failed:", emailError);
         notificationResults.email.error =
-          emailError instanceof Error ? emailError.message : "Failed to send email";
+          emailError instanceof Error
+            ? emailError.message
+            : "Failed to send email";
       }
     } else {
       console.log("No valid email address found:", gift.contactEmail);

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateEnvironment, checkServiceConnectivity } from "../../../lib/env-validator";
+import {
+  validateEnvironment,
+  checkServiceConnectivity,
+} from "../../../lib/env-validator";
 
 /**
  * GET /api/health

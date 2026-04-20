@@ -3,7 +3,10 @@ import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
 import cloudinary from "@/lib/cloudinary";
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = await params;
 
   try {

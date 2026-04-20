@@ -14,7 +14,12 @@
  * @module security-logger
  */
 
-import { PrismaClient, SecurityEventType, SecuritySeverity, Prisma } from "@/generated/prisma";
+import {
+  PrismaClient,
+  SecurityEventType,
+  SecuritySeverity,
+  Prisma,
+} from "@/generated/prisma";
 import { NextRequest } from "next/server";
 
 const prisma = new PrismaClient();
@@ -46,16 +51,25 @@ export async function logSecurityEvent(entry: SecurityLogEntry) {
     // Derive canonical action and friendly message to store alongside raw metadata.
     const deriveCanonicalAction = (e: SecurityLogEntry) => {
       // Prefer explicit metadata.action when present
-      const metaAction = e.metadata && (e.metadata as Record<string, unknown>).action;
+      const metaAction =
+        e.metadata && (e.metadata as Record<string, unknown>).action;
       if (metaAction && typeof metaAction === "string") {
         const s = metaAction.toUpperCase();
-        if (s.includes("LOGIN") && (s.includes("FAIL") || s.includes("FAILURE")))
-          return "LOGIN_FAILED";
-        if (s.includes("LOGIN") && (s.includes("SUCCESS") || s.includes("SUCCEED")))
-          return "LOGIN_SUCCESS";
-        if (s.includes("RATE") && s.includes("LIMIT")) return "RATE_LIMIT_EXCEEDED";
         if (
-          (s.includes("ACCOUNT") && (s.includes("LOCK") || s.includes("LOCKED"))) ||
+          s.includes("LOGIN") &&
+          (s.includes("FAIL") || s.includes("FAILURE"))
+        )
+          return "LOGIN_FAILED";
+        if (
+          s.includes("LOGIN") &&
+          (s.includes("SUCCESS") || s.includes("SUCCEED"))
+        )
+          return "LOGIN_SUCCESS";
+        if (s.includes("RATE") && s.includes("LIMIT"))
+          return "RATE_LIMIT_EXCEEDED";
+        if (
+          (s.includes("ACCOUNT") &&
+            (s.includes("LOCK") || s.includes("LOCKED"))) ||
           s.includes("LOCKOUT")
         )
           return "ACCOUNT_LOCKED";
@@ -71,11 +85,16 @@ export async function logSecurityEvent(entry: SecurityLogEntry) {
       if (m.startsWith("PLAN_DELETED")) return "PLAN_DELETED";
       if (m.includes("LOGIN") && (m.includes("FAIL") || m.includes("FAILURE")))
         return "LOGIN_FAILED";
-      if (m.includes("LOGIN") && (m.includes("SUCCESS") || m.includes("SUCCEED")))
-        return "LOGIN_SUCCESS";
-      if (m.includes("RATE") && m.includes("LIMIT")) return "RATE_LIMIT_EXCEEDED";
       if (
-        (m.includes("ACCOUNT") && (m.includes("LOCK") || m.includes("LOCKED"))) ||
+        m.includes("LOGIN") &&
+        (m.includes("SUCCESS") || m.includes("SUCCEED"))
+      )
+        return "LOGIN_SUCCESS";
+      if (m.includes("RATE") && m.includes("LIMIT"))
+        return "RATE_LIMIT_EXCEEDED";
+      if (
+        (m.includes("ACCOUNT") &&
+          (m.includes("LOCK") || m.includes("LOCKED"))) ||
         m.includes("LOCKOUT") ||
         m.includes("LOCK")
       )
@@ -90,11 +109,14 @@ export async function logSecurityEvent(entry: SecurityLogEntry) {
       if (s.startsWith("PLAN_UPDATED")) return "Plan updated";
       if (s.startsWith("PLAN_DELETED")) return "Plan deleted";
       if (s.startsWith("LOGIN_SUCCESS")) return "Login succeeded";
-      if (s.startsWith("LOGIN_FAILURE") || s.startsWith("LOGIN_FAILED")) return "Login failed";
+      if (s.startsWith("LOGIN_FAILURE") || s.startsWith("LOGIN_FAILED"))
+        return "Login failed";
       return undefined;
     };
 
-    const normalizedMetadata: Record<string, unknown> = { ...(entry.metadata || {}) };
+    const normalizedMetadata: Record<string, unknown> = {
+      ...(entry.metadata || {}),
+    };
     const canonical = deriveCanonicalAction(entry);
     if (canonical) normalizedMetadata.action = canonical;
     const friendly = deriveFriendlyMessage(entry.message);
@@ -115,7 +137,10 @@ export async function logSecurityEvent(entry: SecurityLogEntry) {
     });
 
     // Log to console for immediate visibility (optional)
-    if (entry.severity === SecuritySeverity.CRITICAL || entry.severity === SecuritySeverity.HIGH) {
+    if (
+      entry.severity === SecuritySeverity.CRITICAL ||
+      entry.severity === SecuritySeverity.HIGH
+    ) {
       console.error("[SECURITY]", {
         type: entry.eventType,
         severity: entry.severity,
@@ -215,7 +240,11 @@ export function createLogFromRequest(
  * @param email - Email attempted
  * @param reason - Failure reason
  */
-export async function logLoginFailure(request: NextRequest, email: string, reason: string) {
+export async function logLoginFailure(
+  request: NextRequest,
+  email: string,
+  reason: string
+) {
   return logSecurityEvent(
     createLogFromRequest(request, SecurityEventType.LOGIN_FAILURE, {
       severity: SecuritySeverity.MEDIUM,
@@ -233,7 +262,11 @@ export async function logLoginFailure(request: NextRequest, email: string, reaso
  * @param userId - User ID
  * @param email - User email
  */
-export async function logLoginSuccess(request: NextRequest, userId: string, email: string) {
+export async function logLoginSuccess(
+  request: NextRequest,
+  userId: string,
+  email: string
+) {
   return logSecurityEvent(
     createLogFromRequest(request, SecurityEventType.LOGIN_SUCCESS, {
       severity: SecuritySeverity.LOW,
@@ -271,7 +304,10 @@ export async function logRateLimitHit(
  * @param request - Next.js request
  * @param errors - Validation errors
  */
-export async function logValidationFailure(request: NextRequest, errors: Record<string, string>) {
+export async function logValidationFailure(
+  request: NextRequest,
+  errors: Record<string, string>
+) {
   return logSecurityEvent(
     createLogFromRequest(request, SecurityEventType.VALIDATION_FAILURE, {
       severity: SecuritySeverity.LOW,
@@ -306,7 +342,11 @@ export async function logCSRFViolation(request: NextRequest, reason: string) {
  * @param field - Field with malicious content
  * @param content - Suspicious content (truncated)
  */
-export async function logXSSAttempt(request: NextRequest, field: string, content: string) {
+export async function logXSSAttempt(
+  request: NextRequest,
+  field: string,
+  content: string
+) {
   return logSecurityEvent(
     createLogFromRequest(request, SecurityEventType.XSS_ATTEMPT, {
       severity: SecuritySeverity.HIGH,
@@ -493,7 +533,9 @@ export async function querySecurityLogs(options: {
       whereClauses.push(`"metadata" ->> $${idx++} = $${idx++}`);
       params.push(options.metadataKey, options.metadataValue);
 
-      const whereSQL = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : "";
+      const whereSQL = whereClauses.length
+        ? `WHERE ${whereClauses.join(" AND ")}`
+        : "";
       const limit = options.limit || 100;
       // cursor-based: if afterTimestamp/afterId provided, add compound comparison
       if (options.afterTimestamp && options.afterId) {
@@ -601,10 +643,14 @@ export async function countSecurityLogs(options: {
       whereClauses.push(`"metadata" ->> $${idx++} = $${idx++}`);
       params.push(options.metadataKey, options.metadataValue);
 
-      const whereSQL = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : "";
+      const whereSQL = whereClauses.length
+        ? `WHERE ${whereClauses.join(" AND ")}`
+        : "";
       const sql = `SELECT COUNT(*)::int AS cnt FROM "SecurityLog" ${whereSQL}`;
       const res = await prisma.$queryRawUnsafe(sql, ...params);
-      return Number((res as unknown as Array<Record<string, unknown>>)[0]?.cnt || 0);
+      return Number(
+        (res as unknown as Array<Record<string, unknown>>)[0]?.cnt || 0
+      );
     }
 
     // Fallback to Prisma count using metadata substring if provided
@@ -615,11 +661,17 @@ export async function countSecurityLogs(options: {
     if (options.ipAddress) where.ipAddress = options.ipAddress;
     if (options.startDate || options.endDate) {
       // timestamp filter shape for Prisma
-      (where as Record<string, unknown>).timestamp = {} as Record<string, unknown>;
-      if (options.startDate) (where.timestamp as Record<string, unknown>).gte = options.startDate;
-      if (options.endDate) (where.timestamp as Record<string, unknown>).lte = options.endDate;
+      (where as Record<string, unknown>).timestamp = {} as Record<
+        string,
+        unknown
+      >;
+      if (options.startDate)
+        (where.timestamp as Record<string, unknown>).gte = options.startDate;
+      if (options.endDate)
+        (where.timestamp as Record<string, unknown>).lte = options.endDate;
     }
-    if (options.messageContains) where.message = { contains: options.messageContains };
+    if (options.messageContains)
+      where.message = { contains: options.messageContains };
     // Note: no metadata exact match here
 
     const cnt = await prisma.securityLog.count({ where });
@@ -701,10 +753,12 @@ export async function getSecurityStats(startDate: Date, endDate: Date) {
 
     logs.forEach((log) => {
       // Count by event type
-      stats.byEventType[log.eventType] = (stats.byEventType[log.eventType] || 0) + 1;
+      stats.byEventType[log.eventType] =
+        (stats.byEventType[log.eventType] || 0) + 1;
 
       // Count by severity
-      stats.bySeverity[log.severity] = (stats.bySeverity[log.severity] || 0) + 1;
+      stats.bySeverity[log.severity] =
+        (stats.bySeverity[log.severity] || 0) + 1;
 
       // Count severity levels
       switch (log.severity) {

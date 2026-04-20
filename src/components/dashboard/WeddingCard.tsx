@@ -46,7 +46,10 @@ const WeddingCard = ({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4 md:gap-6">
           <div className="p-3 md:p-4 bg-gradient-to-r from-pink-500 to-rose-600 rounded-xl md:rounded-2xl">
-            <Heart className="h-6 md:h-8 w-6 md:w-8 text-white" fill="currentColor" />
+            <Heart
+              className="h-6 md:h-8 w-6 md:w-8 text-white"
+              fill="currentColor"
+            />
           </div>
           <div>
             <h3
@@ -113,7 +116,11 @@ const WeddingCard = ({
               >
                 {wedding.views}
               </p>
-              <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>Views</p>
+              <p
+                className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
+              >
+                Views
+              </p>
             </div>
             <div>
               <p
@@ -121,7 +128,11 @@ const WeddingCard = ({
               >
                 {wedding.rsvpCount}/{wedding.guestCount}
               </p>
-              <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>RSVPs</p>
+              <p
+                className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
+              >
+                RSVPs
+              </p>
             </div>
           </div>
 
@@ -130,7 +141,9 @@ const WeddingCard = ({
               <button
                 onClick={() => {
                   const slug = liveSlug as string;
-                  const url = slug.startsWith("http") ? slug : `${publicUrlBase}/${slug}`;
+                  const url = slug.startsWith("http")
+                    ? slug
+                    : `${publicUrlBase}/${slug}`;
                   window.open(url, "_blank");
                 }}
                 className="p-2 md:p-3 bg-indigo-600 text-white rounded-lg md:rounded-xl hover:bg-indigo-700 transition-colors duration-200"

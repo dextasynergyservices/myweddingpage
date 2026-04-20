@@ -6,7 +6,10 @@ export async function POST(request: Request) {
     const { userId } = await request.json();
 
     if (!userId) {
-      return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "User ID is required" },
+        { status: 400 }
+      );
     }
 
     // Find the user
@@ -27,10 +30,15 @@ export async function POST(request: Request) {
 
     // Check if subscription has actually expired
     const now = new Date();
-    const subscriptionEnd = user.subscription_end ? new Date(user.subscription_end) : null;
+    const subscriptionEnd = user.subscription_end
+      ? new Date(user.subscription_end)
+      : null;
 
     if (!subscriptionEnd || subscriptionEnd.getTime() > now.getTime()) {
-      return NextResponse.json({ error: "Subscription is still active" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Subscription is still active" },
+        { status: 400 }
+      );
     }
 
     // Check if grace period is already active
@@ -83,7 +91,10 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Error activating grace period:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -94,7 +105,10 @@ export async function GET(request: Request) {
     const userId = searchParams.get("userId");
 
     if (!userId) {
-      return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "User ID is required" },
+        { status: 400 }
+      );
     }
 
     const user = await prisma.user.findUnique({
@@ -113,8 +127,12 @@ export async function GET(request: Request) {
     }
 
     const now = new Date();
-    const subscriptionEnd = user.subscription_end ? new Date(user.subscription_end) : null;
-    const gracePeriodEnd = user.gracePeriodEnd ? new Date(user.gracePeriodEnd) : null;
+    const subscriptionEnd = user.subscription_end
+      ? new Date(user.subscription_end)
+      : null;
+    const gracePeriodEnd = user.gracePeriodEnd
+      ? new Date(user.gracePeriodEnd)
+      : null;
 
     // Calculate subscription status
     let status = "active";
@@ -125,7 +143,9 @@ export async function GET(request: Request) {
       if (user.isInGracePeriod && gracePeriodEnd) {
         graceDaysLeft = Math.max(
           0,
-          Math.ceil((gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+          Math.ceil(
+            (gracePeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+          )
         );
         status = graceDaysLeft > 0 ? "grace-period" : "deletion-pending";
       } else {
@@ -144,11 +164,16 @@ export async function GET(request: Request) {
       },
       subscription: {
         end: user.subscription_end,
-        isExpired: subscriptionEnd ? subscriptionEnd.getTime() <= now.getTime() : false,
+        isExpired: subscriptionEnd
+          ? subscriptionEnd.getTime() <= now.getTime()
+          : false,
       },
     });
   } catch (error) {
     console.error("Error checking grace period status:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
