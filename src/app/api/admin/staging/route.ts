@@ -69,9 +69,8 @@ export async function GET(req: Request) {
                     "utf-8"
                   );
                   // Dynamically import typescript to avoid bundling issues
-                  const tsModule = (await import(
-                    "typescript"
-                  )) as typeof import("typescript");
+                  const tsModule =
+                    (await import("typescript")) as typeof import("typescript");
                   const sourceFile = tsModule.createSourceFile(
                     full,
                     content,

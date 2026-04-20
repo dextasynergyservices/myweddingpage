@@ -117,9 +117,8 @@ export async function GET(request: NextRequest) {
     // compute total count for pagination when requested
     const metadataKey = searchParams.get("metadataKey") || undefined;
     const metadataValue = searchParams.get("metadataValue") || undefined;
-    const { countSecurityLogs } = await import(
-      "../../../../lib/security-logger"
-    );
+    const { countSecurityLogs } =
+      await import("../../../../lib/security-logger");
     const totalCount = await countSecurityLogs({
       eventType,
       severity,

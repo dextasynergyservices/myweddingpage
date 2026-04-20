@@ -34,9 +34,8 @@ export async function POST(
     // 🔔 Send push notification to wedding page owner
     if (guest.user) {
       try {
-        const { sendNotificationToUser, createRSVPNotification } = await import(
-          "@/lib/notifications/notificationService"
-        );
+        const { sendNotificationToUser, createRSVPNotification } =
+          await import("@/lib/notifications/notificationService");
         const notification = createRSVPNotification(
           guest.name,
           status as "ATTENDING" | "NOT_ATTENDING" | "MAYBE"

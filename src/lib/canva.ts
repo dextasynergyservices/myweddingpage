@@ -691,9 +691,7 @@ class CanvaAPI {
   }
 
   // Get brand templates
-  async getBrandTemplates(
-    accessToken: string
-  ): Promise<
+  async getBrandTemplates(accessToken: string): Promise<
     Array<{
       id: string;
       name: string;

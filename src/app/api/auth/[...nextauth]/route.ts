@@ -100,9 +100,8 @@ const authOptions: NextAuthOptions = {
           });
 
           // Apply lockout if needed
-          const { applyLockoutIfNeeded } = await import(
-            "@/lib/account-lockout"
-          );
+          const { applyLockoutIfNeeded } =
+            await import("@/lib/account-lockout");
           await applyLockoutIfNeeded(credentials.emailOrPhone, ip);
 
           throw new Error("Invalid credentials");
@@ -125,9 +124,8 @@ const authOptions: NextAuthOptions = {
             throw new Error("2FA_REQUIRED");
           }
 
-          const { verify2FAToken, verifyAndConsumeBackupCode } = await import(
-            "@/lib/two-factor"
-          );
+          const { verify2FAToken, verifyAndConsumeBackupCode } =
+            await import("@/lib/two-factor");
           const { verifyEmailCode } = await import("@/lib/email-two-factor");
 
           let isVerified = false;
