@@ -64,8 +64,8 @@ export async function GET(req: Request) {
         case "HERO":
           isComplete = Boolean(
             sectionContent.title ||
-            sectionContent.groomName ||
-            sectionContent.brideName
+              sectionContent.groomName ||
+              sectionContent.brideName
           );
           break;
         case "STORY": {
@@ -79,60 +79,60 @@ export async function GET(req: Request) {
           const hasVowsContent = Boolean(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (sectionContent.storyContent as any)?.howWeMet?.content ||
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (sectionContent.storyContent as any)?.theProposal?.content ||
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (sectionContent.storyContent as any)?.mainDescription ||
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (sectionContent.storyContent as any)?.mainTitle
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyContent as any)?.theProposal?.content ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyContent as any)?.mainDescription ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyContent as any)?.mainTitle
           );
 
           // Check for Elegance template structure (stories array)
           const hasEleganceContent = Boolean(
             sectionContent.stories &&
-            (Array.isArray(sectionContent.stories)
-              ? sectionContent.stories.length > 0 &&
-                sectionContent.stories.some(
-                  (story: { title?: string; story?: string }) =>
-                    story.title || story.story
-                )
-              : Object.keys(sectionContent.stories).length > 0)
+              (Array.isArray(sectionContent.stories)
+                ? sectionContent.stories.length > 0 &&
+                  sectionContent.stories.some(
+                    (story: { title?: string; story?: string }) =>
+                      story.title || story.story
+                  )
+                : Object.keys(sectionContent.stories).length > 0)
           );
 
           // Check for Luxe template structure (storyItems array)
           const hasLuxeContent = Boolean(
             sectionContent.storyItems &&
-            (Array.isArray(sectionContent.storyItems)
-              ? sectionContent.storyItems.length > 0 &&
-                sectionContent.storyItems.some(
-                  (item: { title?: string; text?: string }) =>
-                    item.title || item.text
-                )
-              : Object.keys(sectionContent.storyItems).length > 0)
+              (Array.isArray(sectionContent.storyItems)
+                ? sectionContent.storyItems.length > 0 &&
+                  sectionContent.storyItems.some(
+                    (item: { title?: string; text?: string }) =>
+                      item.title || item.text
+                  )
+                : Object.keys(sectionContent.storyItems).length > 0)
           );
 
           // Check for Bloom template structure (milestones array)
           const hasBloomContent = Boolean(
             sectionContent.milestones &&
-            (Array.isArray(sectionContent.milestones)
-              ? sectionContent.milestones.length > 0 &&
-                sectionContent.milestones.some(
-                  (milestone: { title?: string; description?: string }) =>
-                    milestone.title || milestone.description
-                )
-              : Object.keys(sectionContent.milestones).length > 0)
+              (Array.isArray(sectionContent.milestones)
+                ? sectionContent.milestones.length > 0 &&
+                  sectionContent.milestones.some(
+                    (milestone: { title?: string; description?: string }) =>
+                      milestone.title || milestone.description
+                  )
+                : Object.keys(sectionContent.milestones).length > 0)
           );
 
           const hasImages = Boolean(
             sectionContent.storyImage ||
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (sectionContent.storyImages as any)?.image1 ||
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (sectionContent.storyImages as any)?.image2 ||
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (sectionContent.stories as any)?.image ||
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (sectionContent.storyItems as any)?.image
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyImages as any)?.image1 ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyImages as any)?.image2 ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.stories as any)?.image ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (sectionContent.storyItems as any)?.image
           );
 
           // Story is complete if it has any meaningful content
