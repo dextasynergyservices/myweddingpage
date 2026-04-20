@@ -10,8 +10,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Lazy initialization: only create client when actually needed
 function getTwilioClient() {
-  const twilioAccountSid =
-    process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
+  const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
   const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
 
   if (!twilioAccountSid || !twilioAuthToken) {
@@ -34,10 +33,7 @@ function isId(str: string): boolean {
 }
 
 // ========== GET ==========
-export async function GET(
-  request: Request,
-  { params }: { params: { token: string } }
-) {
+export async function GET(request: Request, { params }: { params: { token: string } }) {
   const { token } = await params;
 
   try {
@@ -60,18 +56,12 @@ export async function GET(
     return NextResponse.json(task);
   } catch (error) {
     console.error(`GET /api/tasks/${token} error:`, error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
 // ========== PUT ==========
-export async function PUT(
-  request: Request,
-  { params }: { params: { token: string } }
-) {
+export async function PUT(request: Request, { params }: { params: { token: string } }) {
   const { token } = await params;
 
   try {
@@ -163,18 +153,12 @@ export async function PUT(
     return NextResponse.json(updatedTask);
   } catch (error) {
     console.error(`PUT /api/tasks/${token} error:`, error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
 // ========== DELETE ==========
-export async function DELETE(
-  request: Request,
-  { params }: { params: { token: string } }
-) {
+export async function DELETE(request: Request, { params }: { params: { token: string } }) {
   const { token } = await params;
 
   const session = await getServerSession(authOptions);
@@ -207,9 +191,6 @@ export async function DELETE(
     return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error(`DELETE /api/tasks/${token} error:`, error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

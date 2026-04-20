@@ -133,9 +133,7 @@ const MobileAppExtension = () => {
   const toggleNotification = (id: string) => {
     setNotifications((notifications) =>
       notifications.map((notification) =>
-        notification.id === id
-          ? { ...notification, enabled: !notification.enabled }
-          : notification
+        notification.id === id ? { ...notification, enabled: !notification.enabled } : notification
       )
     );
   };
@@ -203,17 +201,13 @@ const MobileAppExtension = () => {
             title: "App Status",
             value: appInstalled ? "Installed" : "Not Installed",
             icon: Smartphone,
-            color: appInstalled
-              ? "from-emerald-500 to-teal-600"
-              : "from-slate-500 to-slate-600",
+            color: appInstalled ? "from-emerald-500 to-teal-600" : "from-slate-500 to-slate-600",
           },
           {
             title: "Connection",
             value: isOnline ? "Online" : "Offline",
             icon: isOnline ? Wifi : WifiOff,
-            color: isOnline
-              ? "from-blue-500 to-indigo-600"
-              : "from-red-500 to-pink-600",
+            color: isOnline ? "from-blue-500 to-indigo-600" : "from-red-500 to-pink-600",
           },
           {
             title: "Last Sync",
@@ -234,9 +228,7 @@ const MobileAppExtension = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             className={`rounded-3xl p-6 shadow-lg border ${
-              isDarkMode
-                ? "bg-slate-800 border-slate-700"
-                : "bg-white border-slate-100"
+              isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
             }`}
           >
             <div className="flex items-center justify-between">
@@ -267,15 +259,11 @@ const MobileAppExtension = () => {
       {/* Mobile Features */}
       <div
         className={`rounded-3xl p-8 shadow-lg border ${
-          isDarkMode
-            ? "bg-slate-800 border-slate-700"
-            : "bg-white border-slate-100"
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
         }`}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2
-            className={`text-2xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}
-          >
+          <h2 className={`text-2xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}>
             Mobile Features
           </h2>
           <button
@@ -323,9 +311,7 @@ const MobileAppExtension = () => {
                     >
                       {feature.name}
                     </h3>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                       {feature.description}
                     </p>
                   </div>
@@ -334,9 +320,7 @@ const MobileAppExtension = () => {
                 <button
                   onClick={() => toggleFeature(feature.id)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    feature.enabled
-                      ? "bg-indigo-600"
-                      : "bg-slate-300 dark:bg-slate-600"
+                    feature.enabled ? "bg-indigo-600" : "bg-slate-300 dark:bg-slate-600"
                   }`}
                 >
                   <span
@@ -350,9 +334,7 @@ const MobileAppExtension = () => {
               {feature.enabled && (
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span
-                      className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                    >
+                    <span className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                       Usage
                     </span>
                     <span
@@ -384,9 +366,7 @@ const MobileAppExtension = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div
           className={`rounded-3xl p-6 shadow-lg border ${
-            isDarkMode
-              ? "bg-slate-800 border-slate-700"
-              : "bg-white border-slate-100"
+            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
           }`}
         >
           <h2
@@ -405,23 +385,17 @@ const MobileAppExtension = () => {
                 className="flex items-center justify-between"
               >
                 <div>
-                  <h3
-                    className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
-                  >
+                  <h3 className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                     {notification.label}
                   </h3>
-                  <p
-                    className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                  >
+                  <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                     {notification.description}
                   </p>
                 </div>
                 <button
                   onClick={() => toggleNotification(notification.id)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    notification.enabled
-                      ? "bg-indigo-600"
-                      : "bg-slate-300 dark:bg-slate-600"
+                    notification.enabled ? "bg-indigo-600" : "bg-slate-300 dark:bg-slate-600"
                   }`}
                 >
                   <span
@@ -438,9 +412,7 @@ const MobileAppExtension = () => {
         {/* App Analytics */}
         <div
           className={`rounded-3xl p-6 shadow-lg border ${
-            isDarkMode
-              ? "bg-slate-800 border-slate-700"
-              : "bg-white border-slate-100"
+            isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
           }`}
         >
           <h2
@@ -476,23 +448,16 @@ const MobileAppExtension = () => {
                 icon: CheckCircle,
               },
             ].map((metric) => (
-              <div
-                key={metric.label}
-                className="flex items-center justify-between"
-              >
+              <div key={metric.label} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg">
                     <metric.icon className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <p
-                      className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
-                    >
+                    <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                       {metric.label}
                     </p>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                       {metric.value} ({metric.change})
                     </p>
                   </div>
@@ -506,9 +471,7 @@ const MobileAppExtension = () => {
       {/* App Download & Sharing */}
       <div
         className={`rounded-3xl p-6 shadow-lg border ${
-          isDarkMode
-            ? "bg-slate-800 border-slate-700"
-            : "bg-white border-slate-100"
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
         }`}
       >
         <h2
@@ -520,9 +483,7 @@ const MobileAppExtension = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div
             className={`p-6 rounded-2xl border text-center ${
-              isDarkMode
-                ? "bg-slate-700 border-slate-600"
-                : "bg-slate-50 border-slate-200"
+              isDarkMode ? "bg-slate-700 border-slate-600" : "bg-slate-50 border-slate-200"
             }`}
           >
             <QrCode
@@ -530,14 +491,10 @@ const MobileAppExtension = () => {
                 isDarkMode ? "text-slate-400" : "text-slate-500"
               }`}
             />
-            <h3
-              className={`font-semibold mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
-            >
+            <h3 className={`font-semibold mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               QR Code
             </h3>
-            <p
-              className={`text-sm mb-4 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-            >
+            <p className={`text-sm mb-4 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
               Let guests scan to download
             </p>
             <button className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors">
@@ -547,9 +504,7 @@ const MobileAppExtension = () => {
 
           <div
             className={`p-6 rounded-2xl border text-center ${
-              isDarkMode
-                ? "bg-slate-700 border-slate-600"
-                : "bg-slate-50 border-slate-200"
+              isDarkMode ? "bg-slate-700 border-slate-600" : "bg-slate-50 border-slate-200"
             }`}
           >
             <Share2
@@ -557,14 +512,10 @@ const MobileAppExtension = () => {
                 isDarkMode ? "text-slate-400" : "text-slate-500"
               }`}
             />
-            <h3
-              className={`font-semibold mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
-            >
+            <h3 className={`font-semibold mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Share Link
             </h3>
-            <p
-              className={`text-sm mb-4 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-            >
+            <p className={`text-sm mb-4 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
               Send direct download link
             </p>
             <button className="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors">
@@ -574,9 +525,7 @@ const MobileAppExtension = () => {
 
           <div
             className={`p-6 rounded-2xl border text-center ${
-              isDarkMode
-                ? "bg-slate-700 border-slate-600"
-                : "bg-slate-50 border-slate-200"
+              isDarkMode ? "bg-slate-700 border-slate-600" : "bg-slate-50 border-slate-200"
             }`}
           >
             <Globe
@@ -584,14 +533,10 @@ const MobileAppExtension = () => {
                 isDarkMode ? "text-slate-400" : "text-slate-500"
               }`}
             />
-            <h3
-              className={`font-semibold mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}
-            >
+            <h3 className={`font-semibold mb-2 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Web App
             </h3>
-            <p
-              className={`text-sm mb-4 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-            >
+            <p className={`text-sm mb-4 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
               Access via web browser
             </p>
             <button className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors">

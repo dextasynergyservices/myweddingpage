@@ -2,11 +2,7 @@ import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import RSVPForm from "@/components/RSVPForm";
 
-export default async function RSVPPage({
-  params,
-}: {
-  params: { token: string };
-}) {
+export default async function RSVPPage({ params }: { params: { token: string } }) {
   const { token } = await params;
 
   const guest = await prisma.guest.findUnique({

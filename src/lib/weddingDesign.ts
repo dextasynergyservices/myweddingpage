@@ -132,10 +132,7 @@ class WeddingDesignService {
       // Strategy 1: Try dynamic design creation (no template needed)
       try {
         console.log("Attempting dynamic design creation...");
-        const result = await CanvaAPI.createDynamicWeddingDesign(
-          accessToken,
-          weddingData
-        );
+        const result = await CanvaAPI.createDynamicWeddingDesign(accessToken, weddingData);
         console.log("Dynamic design created successfully");
         return result;
       } catch (dynamicError) {
@@ -145,10 +142,7 @@ class WeddingDesignService {
       // Strategy 2: Try public template search and creation
       try {
         console.log("Attempting public template creation...");
-        const result = await CanvaAPI.createFromPublicTemplate(
-          accessToken,
-          weddingData
-        );
+        const result = await CanvaAPI.createFromPublicTemplate(accessToken, weddingData);
         console.log("Public template design created successfully");
         return result;
       } catch (publicError) {
@@ -175,10 +169,7 @@ class WeddingDesignService {
       // Strategy 4: Create simple design as fallback
       try {
         console.log("Attempting simple design creation...");
-        const result = await CanvaAPI.createSimpleWeddingDesign(
-          accessToken,
-          weddingData
-        );
+        const result = await CanvaAPI.createSimpleWeddingDesign(accessToken, weddingData);
         console.log("Simple design created successfully");
         return result;
       } catch (simpleError) {
@@ -225,10 +216,7 @@ class WeddingDesignService {
 
   // Generate a professional wedding invitation-style thumbnail
   generateFallbackThumbnail(options: WeddingDesignOptions): string {
-    const coupleNames = this.formatCoupleNames(
-      options.brideName,
-      options.groomName
-    );
+    const coupleNames = this.formatCoupleNames(options.brideName, options.groomName);
 
     // If we have hero or story images, use them as CSS backgrounds instead of plain colors
     if (options.heroImageUrl || options.storyImageUrl) {
@@ -251,9 +239,7 @@ class WeddingDesignService {
     };
 
     const colorTheme = options.colorTheme?.toLowerCase() || "elegant";
-    const style =
-      themeStyles[colorTheme as keyof typeof themeStyles] ||
-      themeStyles.elegant;
+    const style = themeStyles[colorTheme as keyof typeof themeStyles] || themeStyles.elegant;
 
     // Simple text with just the couple names
     const text = coupleNames;

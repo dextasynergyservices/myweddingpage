@@ -6,10 +6,7 @@ interface ContactUpgradeModalProps {
   onClose: () => void;
 }
 
-export default function ContactUpgradeModal({
-  isOpen,
-  onClose,
-}: ContactUpgradeModalProps) {
+export default function ContactUpgradeModal({ isOpen, onClose }: ContactUpgradeModalProps) {
   if (!isOpen) return null;
 
   const whatsappUrl = "https://wa.me/2348103208297";
@@ -61,11 +58,7 @@ export default function ContactUpgradeModal({
           <div className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-yellow-50 hover:bg-yellow-100 dark:bg-slate-700 dark:hover:bg-slate-600 transition">
             <Mail className="h-8 w-8 text-amber-600" />
             <div className="flex flex-col items-center">
-              <a
-                href={mailtoPrimary}
-                onClick={onClose}
-                className="font-semibold text-white"
-              >
+              <a href={mailtoPrimary} onClick={onClose} className="font-semibold text-white">
                 info@dexta.services
               </a>
               <a

@@ -46,16 +46,8 @@
     hsl(355, 100%, 98%) 0%,
     hsl(340, 20%, 95%) 100%
   );
-  --bloom-gradient-rose: linear-gradient(
-    135deg,
-    hsl(340, 75%, 55%) 0%,
-    hsl(340, 60%, 65%) 100%
-  );
-  --bloom-gradient-blush: linear-gradient(
-    135deg,
-    hsl(340, 30%, 90%) 0%,
-    hsl(340, 20%, 95%) 100%
-  );
+  --bloom-gradient-rose: linear-gradient(135deg, hsl(340, 75%, 55%) 0%, hsl(340, 60%, 65%) 100%);
+  --bloom-gradient-blush: linear-gradient(135deg, hsl(340, 30%, 90%) 0%, hsl(340, 20%, 95%) 100%);
 
   /* Shadows */
   --bloom-shadow-elegant: 0 8px 32px -8px hsl(var(--bloom-foreground) / 0.1);
@@ -364,11 +356,7 @@
 
 /* Romantic Text Gradient */
 .textGradient {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--bloom-primary)) 0%,
-    hsl(var(--bloom-accent)) 100%
-  );
+  background: linear-gradient(135deg, hsl(var(--bloom-primary)) 0%, hsl(var(--bloom-accent)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -730,11 +718,7 @@
 .videoOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    hsl(var(--bloom-primary) / 0.4) 0%,
-    transparent 100%
-  );
+  background: linear-gradient(to top, hsl(var(--bloom-primary) / 0.4) 0%, transparent 100%);
 }
 
 .galleryOverlay {

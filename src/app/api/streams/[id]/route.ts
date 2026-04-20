@@ -3,10 +3,7 @@ import { getServerSession } from "next-auth/next";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/authOptions";
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   const { id } = await params;
 
   try {
@@ -20,10 +17,7 @@ export async function PATCH(
       where: { id: id },
     });
     if (!existingStream || existingStream.userId !== session.user.id) {
-      return NextResponse.json(
-        { error: "Stream not found or access denied" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Stream not found or access denied" }, { status: 404 });
     }
     const stream = await prisma.stream.update({
       where: { id: id },
@@ -32,17 +26,11 @@ export async function PATCH(
     return NextResponse.json(stream);
   } catch (error) {
     console.error("Error updating stream:", error);
-    return NextResponse.json(
-      { error: "Error updating stream" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error updating stream" }, { status: 500 });
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   const { id } = await params;
 
   try {
@@ -55,10 +43,7 @@ export async function DELETE(
       where: { id: id },
     });
     if (!existingStream || existingStream.userId !== session.user.id) {
-      return NextResponse.json(
-        { error: "Stream not found or access denied" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Stream not found or access denied" }, { status: 404 });
     }
     await prisma.stream.delete({
       where: { id: id },
@@ -66,9 +51,6 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting stream:", error);
-    return NextResponse.json(
-      { error: "Error deleting stream" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error deleting stream" }, { status: 500 });
   }
 }

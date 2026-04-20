@@ -20,10 +20,7 @@ export async function POST(req: Request) {
     const { email, whatsapp, planId, amount } = body;
 
     if (!email || !whatsapp || !planId || amount == null) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const koboAmount = Math.floor(Number(amount) * 100);
@@ -37,13 +34,11 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         email,
         amount: koboAmount,
-        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment/verify?${new URLSearchParams(
-          {
-            planId: String(planId),
-            whatsapp: String(whatsapp),
-            email: String(email),
-          }
-        ).toString()}`,
+        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment/verify?${new URLSearchParams({
+          planId: String(planId),
+          whatsapp: String(whatsapp),
+          email: String(email),
+        }).toString()}`,
         metadata: {
           // Still include as backup
           whatsapp,
@@ -68,9 +63,6 @@ export async function POST(req: Request) {
     });
   } catch (error: unknown) {
     console.error("Unexpected error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

@@ -10,10 +10,7 @@
  * deployment of misconfigured applications.
  */
 
-import {
-  validateEnvironmentOrThrow,
-  getValidationReport,
-} from "./env-validator";
+import { validateEnvironmentOrThrow, getValidationReport } from "./env-validator";
 
 /**
  * Validates all critical configurations at startup
@@ -46,9 +43,7 @@ export function validateStartupConfiguration(): void {
       err instanceof Error ? err.message : String(err)
     );
     console.warn(report);
-    console.warn(
-      "\nApp will continue, but some features may not work correctly."
-    );
+    console.warn("\nApp will continue, but some features may not work correctly.");
     console.warn('Run "pnpm validate:env" to see detailed issues.\n');
 
     // Don't throw error - allow app to start even with validation issues
@@ -83,12 +78,7 @@ export function checkStartupConfiguration(): boolean {
  * @throws Error if any critical variable is missing
  */
 export function validateCriticalSecurityConfig(): void {
-  const critical = [
-    "DATABASE_URL",
-    "NEXTAUTH_SECRET",
-    "JWT_SECRET",
-    "CSRF_SECRET",
-  ];
+  const critical = ["DATABASE_URL", "NEXTAUTH_SECRET", "JWT_SECRET", "CSRF_SECRET"];
 
   const missing = critical.filter((key) => !process.env[key]);
 

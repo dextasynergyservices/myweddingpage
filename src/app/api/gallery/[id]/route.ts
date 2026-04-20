@@ -82,9 +82,6 @@ export async function DELETE(request: NextRequest, { params }: Params) {
     return NextResponse.json({ message: "Media deleted successfully" });
   } catch (error) {
     console.error("Error deleting gallery media:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

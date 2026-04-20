@@ -25,10 +25,7 @@ export async function POST(req: Request) {
 
     if (!templateId) {
       console.log("No templateId provided, returning 400");
-      return NextResponse.json(
-        { error: "Template ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Template ID is required" }, { status: 400 });
     }
 
     const user = await prisma.user.findUnique({
@@ -54,10 +51,7 @@ export async function POST(req: Request) {
 
     const userTemplate = user.userTemplates[0];
     if (!userTemplate) {
-      return NextResponse.json(
-        { error: "User template not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User template not found" }, { status: 404 });
     }
 
     const existingWeddingPage = user.weddingPages[0];
@@ -72,14 +66,8 @@ export async function POST(req: Request) {
       let logoUrl = null;
       let logoAlt = null;
 
-      console.log(
-        "extractWeddingPageFields - userContent:",
-        JSON.stringify(userContent, null, 2)
-      );
-      console.log(
-        "extractWeddingPageFields - content keys:",
-        Object.keys(content)
-      );
+      console.log("extractWeddingPageFields - userContent:", JSON.stringify(userContent, null, 2));
+      console.log("extractWeddingPageFields - content keys:", Object.keys(content));
 
       // Also check if logo data is at the top level of userContent
       if (userContent && typeof userContent === "object") {
@@ -118,8 +106,7 @@ export async function POST(req: Request) {
             console.log(`Found hero section: ${sectionId}`);
             heroImage = (section.heroImage as string) || heroImage;
             venue = (section.venue as string) || venue;
-            welcomeMessage =
-              (section.welcomeMessage as string) || welcomeMessage;
+            welcomeMessage = (section.welcomeMessage as string) || welcomeMessage;
             logoUrl = (section.logoUrl as string) || logoUrl;
             logoAlt = (section.logoAlt as string) || logoAlt;
           }
@@ -138,41 +125,25 @@ export async function POST(req: Request) {
             // Handle Luxe template storyItems (both array and nested object structures)
             if (section.storyItems) {
               if (Array.isArray(section.storyItems)) {
-                console.log(
-                  `Found storyItems array in section ${sectionId}:`,
-                  section.storyItems
-                );
+                console.log(`Found storyItems array in section ${sectionId}:`, section.storyItems);
                 // For Luxe template, store the first image as story_image for compatibility
                 const firstStoryItem = section.storyItems[0];
                 if (firstStoryItem && firstStoryItem.image) {
                   storyImage = firstStoryItem.image as string;
-                  console.log(
-                    `Found story image in Luxe storyItems array: ${storyImage}`
-                  );
+                  console.log(`Found story image in Luxe storyItems array: ${storyImage}`);
                 } else {
                   console.log(`First storyItem has no image:`, firstStoryItem);
                 }
               } else if (typeof section.storyItems === "object") {
-                console.log(
-                  `Found storyItems object in section ${sectionId}:`,
-                  section.storyItems
-                );
+                console.log(`Found storyItems object in section ${sectionId}:`, section.storyItems);
                 // Handle nested object structure (stored in UserTemplate)
-                const storyItemsObj = section.storyItems as Record<
-                  string,
-                  { image?: string }
-                >;
+                const storyItemsObj = section.storyItems as Record<string, { image?: string }>;
                 const firstStoryItem = storyItemsObj[0] || storyItemsObj["0"];
                 if (firstStoryItem && firstStoryItem.image) {
                   storyImage = firstStoryItem.image as string;
-                  console.log(
-                    `Found story image in Luxe storyItems object: ${storyImage}`
-                  );
+                  console.log(`Found story image in Luxe storyItems object: ${storyImage}`);
                 } else {
-                  console.log(
-                    `First storyItem in object has no image:`,
-                    firstStoryItem
-                  );
+                  console.log(`First storyItem in object has no image:`, firstStoryItem);
                 }
               }
             } else {
@@ -186,26 +157,16 @@ export async function POST(req: Request) {
                 const firstStory = (section.stories as any)[0];
                 if (firstStory && firstStory.image) {
                   storyImage = firstStory.image as string;
-                  console.log(
-                    `Found story image in Elegance stories array: ${storyImage}`
-                  );
+                  console.log(`Found story image in Elegance stories array: ${storyImage}`);
                 }
               } else if (typeof section.stories === "object") {
-                console.log(
-                  `Found stories object in section ${sectionId}:`,
-                  section.stories
-                );
+                console.log(`Found stories object in section ${sectionId}:`, section.stories);
                 // Handle nested object structure (stored in UserTemplate)
-                const storiesObj = section.stories as Record<
-                  string,
-                  { image?: string }
-                >;
+                const storiesObj = section.stories as Record<string, { image?: string }>;
                 const firstStory = storiesObj[0] || storiesObj["0"];
                 if (firstStory && firstStory.image) {
                   storyImage = firstStory.image as string;
-                  console.log(
-                    `Found story image in Elegance stories object: ${storyImage}`
-                  );
+                  console.log(`Found story image in Elegance stories object: ${storyImage}`);
                 }
               }
             }
@@ -218,10 +179,7 @@ export async function POST(req: Request) {
           }
           if (!storyImage && section.storyImage) {
             storyImage = section.storyImage as string;
-            console.log(
-              `Found storyImage in section ${sectionId}:`,
-              storyImage
-            );
+            console.log(`Found storyImage in section ${sectionId}:`, storyImage);
           }
 
           // Check for story images in storyItems (Luxe template) - both array and object structures
@@ -244,10 +202,7 @@ export async function POST(req: Request) {
                 `Fallback: Found storyItems object in section ${sectionId}:`,
                 section.storyItems
               );
-              const storyItemsObj = section.storyItems as Record<
-                string,
-                { image?: string }
-              >;
+              const storyItemsObj = section.storyItems as Record<string, { image?: string }>;
               const firstStoryItem = storyItemsObj[0] || storyItemsObj["0"];
               if (firstStoryItem && firstStoryItem.image) {
                 storyImage = firstStoryItem.image as string;
@@ -276,10 +231,7 @@ export async function POST(req: Request) {
                 `Fallback: Found stories object in section ${sectionId}:`,
                 section.stories
               );
-              const storiesObj = section.stories as Record<
-                string,
-                { image?: string }
-              >;
+              const storiesObj = section.stories as Record<string, { image?: string }>;
               const firstStory = storiesObj[0] || storiesObj["0"];
               if (firstStory && firstStory.image) {
                 storyImage = firstStory.image as string;
@@ -296,24 +248,15 @@ export async function POST(req: Request) {
           }
           if (!welcomeMessage && section.welcomeMessage) {
             welcomeMessage = section.welcomeMessage as string;
-            console.log(
-              `Found welcomeMessage in section ${sectionId}:`,
-              welcomeMessage
-            );
+            console.log(`Found welcomeMessage in section ${sectionId}:`, welcomeMessage);
           }
 
           // Check for logo data with multiple possible field names
           if (!logoUrl) {
             const possibleLogoUrl =
-              section.logoUrl ||
-              section.logo_url ||
-              section.logoImage ||
-              section.logo_image;
+              section.logoUrl || section.logo_url || section.logoImage || section.logo_image;
             const possibleLogoAlt =
-              section.logoAlt ||
-              section.logo_alt ||
-              section.logoAltText ||
-              section.logo_alt_text;
+              section.logoAlt || section.logo_alt || section.logoAltText || section.logo_alt_text;
 
             if (possibleLogoUrl) {
               logoUrl = possibleLogoUrl as string;
@@ -416,23 +359,17 @@ export async function POST(req: Request) {
       });
 
       if (slugExists) {
-        return NextResponse.json(
-          { error: "Slug is already taken" },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Slug is already taken" }, { status: 400 });
       }
 
       // Create new wedding page
       const weddingPageData = {
         userId: user.id,
         templateId,
-        title:
-          title ||
-          `${user.groomName || "Groom"} & ${user.brideName || "Bride"} Wedding`,
+        title: title || `${user.groomName || "Groom"} & ${user.brideName || "Bride"} Wedding`,
         slug,
         ai_data: content || userTemplate.content,
-        layout_data:
-          userTemplate.content === null ? undefined : userTemplate.content,
+        layout_data: userTemplate.content === null ? undefined : userTemplate.content,
         color_theme: JSON.stringify(colorScheme || userTemplate.colorScheme),
         // Extract and copy specific fields
         hero_image: extractedFields.heroImage,
@@ -471,8 +408,7 @@ export async function POST(req: Request) {
       // Update existing wedding page
       const updateData = {
         ai_data: content || userTemplate.content,
-        layout_data:
-          userTemplate.content === null ? undefined : userTemplate.content,
+        layout_data: userTemplate.content === null ? undefined : userTemplate.content,
         color_theme: JSON.stringify(colorScheme || userTemplate.colorScheme),
         // Extract and update specific fields
         hero_image: extractedFields.heroImage,
@@ -510,10 +446,7 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     console.error("Error publishing wedding page:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
@@ -546,10 +479,7 @@ export async function GET() {
     const weddingPage = user.weddingPages[0];
 
     if (!weddingPage) {
-      return NextResponse.json(
-        { error: "No published wedding page found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "No published wedding page found" }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -558,9 +488,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Error fetching wedding page:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

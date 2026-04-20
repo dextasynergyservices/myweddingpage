@@ -49,18 +49,13 @@ export async function POST(request: NextRequest) {
     }
 
     if (!category || !type) {
-      return NextResponse.json(
-        { error: "Category and type are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Category and type are required" }, { status: 400 });
     }
 
     // Validate file types and sizes
     for (const file of files) {
       const isPhoto = type === "PHOTO";
-      const supportedTypes = isPhoto
-        ? SUPPORTED_IMAGE_TYPES
-        : SUPPORTED_VIDEO_TYPES;
+      const supportedTypes = isPhoto ? SUPPORTED_IMAGE_TYPES : SUPPORTED_VIDEO_TYPES;
       const maxSize = isPhoto ? MAX_IMAGE_SIZE : MAX_VIDEO_SIZE;
 
       if (!supportedTypes.includes(file.type)) {
@@ -90,10 +85,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user || !user.plan) {
-      return NextResponse.json(
-        { error: "User plan not found" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "User plan not found" }, { status: 400 });
     }
 
     // Count existing media
@@ -116,17 +108,11 @@ export async function POST(request: NextRequest) {
     const newVideos = type === "VIDEO" ? files.length : 0;
 
     if (existingPhotos + newPhotos > user.plan.max_photos) {
-      return NextResponse.json(
-        { error: "Photo upload limit exceeded" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Photo upload limit exceeded" }, { status: 400 });
     }
 
     if (existingVideos + newVideos > user.plan.max_videos) {
-      return NextResponse.json(
-        { error: "Video upload limit exceeded" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Video upload limit exceeded" }, { status: 400 });
     }
 
     // Upload files to Cloudinary and create database records
@@ -155,9 +141,7 @@ export async function POST(request: NextRequest) {
             if (error) {
               reject(error);
             } else {
-              resolve(
-                result as { secure_url?: string; [key: string]: unknown }
-              );
+              resolve(result as { secure_url?: string; [key: string]: unknown });
             }
           }
         );
@@ -187,9 +171,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(uploadedMedia);
   } catch (error) {
     console.error("Error uploading media:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -26,9 +26,7 @@ export async function GET(req: NextRequest) {
     `;
 
     // map into full series filling missing days with 0
-    const map = new Map(
-      rows.map((r) => [r.day.toISOString().split("T")[0], Number(r.count)])
-    );
+    const map = new Map(rows.map((r) => [r.day.toISOString().split("T")[0], Number(r.count)]));
     const series: Array<{ date: string; count: number }> = [];
     for (let i = days - 1; i >= 0; i--) {
       const d = new Date();

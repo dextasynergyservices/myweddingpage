@@ -36,8 +36,7 @@ const HomeTestimonials = () => {
               isDarkMode ? "text-white/50" : "text-black"
             }`}
           >
-            Join thousands of couples who&apos;ve created their perfect wedding
-            experience.
+            Join thousands of couples who&apos;ve created their perfect wedding experience.
           </p>
         </AnimatedSection>
 
@@ -110,9 +109,7 @@ const HomeTestimonials = () => {
                     className="w-12 h-12 rounded-full object-cover"
                     whileHover={{ scale: 1.1 }}
                   />
-                  <div
-                    className={`font-medium ${isDarkMode ? "text-white" : "text-black"}`}
-                  >
+                  <div className={`font-medium ${isDarkMode ? "text-white" : "text-black"}`}>
                     {testimonial.name}
                   </div>
                 </div>

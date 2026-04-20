@@ -67,9 +67,7 @@ const GoogleAuthButton = () => {
           />
         </svg>
       )}
-      <span className="font-medium">
-        {isLoading ? "Connecting..." : "Continue with Google"}
-      </span>
+      <span className="font-medium">{isLoading ? "Connecting..." : "Continue with Google"}</span>
     </motion.button>
   );
 };

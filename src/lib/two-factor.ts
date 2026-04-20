@@ -37,10 +37,7 @@ export function generateSecret(): string {
 /**
  * Generate a QR code data URL for setting up 2FA in authenticator apps
  */
-export async function generateQRCode(
-  email: string,
-  secret: string
-): Promise<string> {
+export async function generateQRCode(email: string, secret: string): Promise<string> {
   const otpauthUrl = authenticator.keyuri(email, APP_NAME, secret);
 
   try {
@@ -70,9 +67,7 @@ export function verifyToken(token: string, secret: string): boolean {
  * Generate backup codes for 2FA recovery
  * Returns plain text codes that should be shown to user once
  */
-export function generateBackupCodes(
-  count: number = BACKUP_CODE_COUNT
-): string[] {
+export function generateBackupCodes(count: number = BACKUP_CODE_COUNT): string[] {
   const codes: string[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -99,10 +94,7 @@ export async function hashBackupCode(code: string): Promise<string> {
 /**
  * Verify a backup code against a hash
  */
-export async function verifyBackupCode(
-  code: string,
-  hash: string
-): Promise<boolean> {
+export async function verifyBackupCode(code: string, hash: string): Promise<boolean> {
   try {
     return bcrypt.compare(code.toUpperCase(), hash);
   } catch (error) {
@@ -122,9 +114,7 @@ export async function enable2FA(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Hash all backup codes
-    const hashedCodes = await Promise.all(
-      backupCodes.map((code) => hashBackupCode(code))
-    );
+    const hashedCodes = await Promise.all(backupCodes.map((code) => hashBackupCode(code)));
 
     // Check if 2FA secret already exists
     const existing = await prisma.twoFactorSecret.findUnique({
@@ -176,9 +166,7 @@ export async function enable2FA(
 /**
  * Disable 2FA for a user
  */
-export async function disable2FA(
-  userId: string
-): Promise<{ success: boolean; error?: string }> {
+export async function disable2FA(userId: string): Promise<{ success: boolean; error?: string }> {
   try {
     await prisma.twoFactorSecret.update({
       where: { userId },
@@ -335,9 +323,7 @@ export async function regenerateBackupCodes(
 
     // Generate new codes
     const newCodes = generateBackupCodes();
-    const hashedCodes = await Promise.all(
-      newCodes.map((code) => hashBackupCode(code))
-    );
+    const hashedCodes = await Promise.all(newCodes.map((code) => hashBackupCode(code)));
 
     // Delete old codes and create new ones
     await prisma.twoFactorSecret.update({

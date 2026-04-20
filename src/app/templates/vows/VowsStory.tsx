@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  useScrollAnimation,
-  useScrollScale,
-} from "@/app/templates/vows/hooks/useScrollAnimation";
+import { useScrollAnimation, useScrollScale } from "@/app/templates/vows/hooks/useScrollAnimation";
 import Image from "next/image";
 import styles from "@/styles/templates/vows.module.css";
 
@@ -96,9 +93,7 @@ export const OurStorySection = (props: OurStorySectionProps) => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <h2
-            className={`${styles.fontHeading} text-5xl md:text-6xl lg:text-7xl text-black mb-6`}
-          >
+          <h2 className={`${styles.fontHeading} text-5xl md:text-6xl lg:text-7xl text-black mb-6`}>
             {title}
           </h2>
           <div className={`w-24 h-px ${styles.bgAccent} mx-auto mb-8`} />
@@ -113,20 +108,14 @@ export const OurStorySection = (props: OurStorySectionProps) => {
           {/* First Story Block */}
           <div
             className={`transition-all duration-1000 delay-400 ${
-              isVisible
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 -translate-x-8"
+              isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
             }`}
           >
             <div className={`${styles.elegantCard} p-8 md:p-12`}>
-              <h3
-                className={`${styles.fontHeading} text-2xl md:text-3xl text-black/80 mb-4`}
-              >
+              <h3 className={`${styles.fontHeading} text-2xl md:text-3xl text-black/80 mb-4`}>
                 {storyContent.howWeMet?.title}
               </h3>
-              <p
-                className={`${styles.fontBody} text-black/80 leading-relaxed mb-6`}
-              >
+              <p className={`${styles.fontBody} text-black/80 leading-relaxed mb-6`}>
                 {storyContent.howWeMet?.content}
               </p>
             </div>
@@ -135,15 +124,11 @@ export const OurStorySection = (props: OurStorySectionProps) => {
           <div
             ref={image1Ref}
             className={`transition-all duration-1000 delay-600 ${
-              isVisible
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 translate-x-8"
+              isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
             }`}
             style={{ transform: `scale(${image1Scale})` }}
           >
-            <div
-              className={`relative overflow-hidden ${styles.roundedLg} ${styles.shadowElegant}`}
-            >
+            <div className={`relative overflow-hidden ${styles.roundedLg} ${styles.shadowElegant}`}>
               <Image
                 src={safeStoryImages.image1}
                 alt="Our first photo together"
@@ -159,15 +144,11 @@ export const OurStorySection = (props: OurStorySectionProps) => {
           <div
             ref={image2Ref}
             className={`lg:order-3 transition-all duration-1000 delay-800 ${
-              isVisible
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 -translate-x-8"
+              isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
             }`}
             style={{ transform: `scale(${image2Scale})` }}
           >
-            <div
-              className={`relative overflow-hidden ${styles.roundedLg} ${styles.shadowElegant}`}
-            >
+            <div className={`relative overflow-hidden ${styles.roundedLg} ${styles.shadowElegant}`}>
               <Image
                 src={safeStoryImages.image2}
                 alt="During our engagement"
@@ -181,20 +162,14 @@ export const OurStorySection = (props: OurStorySectionProps) => {
 
           <div
             className={`lg:order-4 transition-all duration-1000 delay-1000 ${
-              isVisible
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 translate-x-8"
+              isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
             }`}
           >
             <div className={`${styles.elegantCard} p-8 md:p-12`}>
-              <h3
-                className={`${styles.fontHeading} text-2xl md:text-3xl text-black/80 mb-4`}
-              >
+              <h3 className={`${styles.fontHeading} text-2xl md:text-3xl text-black/80 mb-4`}>
                 {storyContent.theProposal?.title}
               </h3>
-              <p
-                className={`${styles.fontBody} text-black/80 leading-relaxed mb-6`}
-              >
+              <p className={`${styles.fontBody} text-black/80 leading-relaxed mb-6`}>
                 {storyContent.theProposal?.content}
               </p>
             </div>

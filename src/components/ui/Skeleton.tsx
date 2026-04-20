@@ -15,11 +15,7 @@ function SkeletonBase({
 }) {
   const animationStyles = animation === "pulse" ? "animate-pulse" : "";
   const shapeClass =
-    variant === "circular"
-      ? "rounded-full"
-      : variant === "text"
-        ? "rounded"
-        : "rounded-lg";
+    variant === "circular" ? "rounded-full" : variant === "text" ? "rounded" : "rounded-lg";
 
   return (
     <div
@@ -54,11 +50,7 @@ export function Skeleton({
           width={width}
           height={height || (variant === "text" ? 16 : undefined)}
           variant={
-            variant === "text"
-              ? "text"
-              : variant === "circular"
-                ? "circular"
-                : "rectangular"
+            variant === "text" ? "text" : variant === "circular" ? "circular" : "rectangular"
           }
         />
       ))}
@@ -82,12 +74,8 @@ export const SkeletonText: React.FC<{ lines?: number; className?: string }> = ({
   </div>
 );
 
-export const SkeletonCard: React.FC<{ className?: string }> = ({
-  className = "",
-}) => (
-  <div
-    className={`p-4 border border-gray-200 dark:border-gray-700 rounded-lg ${className}`}
-  >
+export const SkeletonCard: React.FC<{ className?: string }> = ({ className = "" }) => (
+  <div className={`p-4 border border-gray-200 dark:border-gray-700 rounded-lg ${className}`}>
     <SkeletonBase width="100%" height={160} className="mb-4 rounded-lg" />
     <SkeletonBase width="60%" height={16} className="mb-2 rounded" />
     <SkeletonText lines={2} />
@@ -95,9 +83,7 @@ export const SkeletonCard: React.FC<{ className?: string }> = ({
 );
 
 // Small helper components used as placeholders in the customization UI
-export const SkeletonColorPicker: React.FC<{ className?: string }> = ({
-  className = "",
-}) => (
+export const SkeletonColorPicker: React.FC<{ className?: string }> = ({ className = "" }) => (
   <div className={`space-y-2 ${className}`}>
     <SkeletonBase width="100%" height={24} className="rounded" />
     <div className="flex space-x-2">
@@ -108,9 +94,7 @@ export const SkeletonColorPicker: React.FC<{ className?: string }> = ({
   </div>
 );
 
-export const SkeletonFontPicker: React.FC<{ className?: string }> = ({
-  className = "",
-}) => (
+export const SkeletonFontPicker: React.FC<{ className?: string }> = ({ className = "" }) => (
   <div className={`space-y-2 ${className}`}>
     <SkeletonBase width="100%" height={40} className="rounded" />
     <SkeletonText lines={2} />

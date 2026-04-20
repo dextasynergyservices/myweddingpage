@@ -435,9 +435,7 @@ export const getAllFonts = (): FontDefinition[] => {
 /**
  * Get fonts by category
  */
-export const getFontsByCategory = (
-  category: FontCategory
-): FontDefinition[] => {
+export const getFontsByCategory = (category: FontCategory): FontDefinition[] => {
   return FONT_LIBRARY.filter((font) => font.category === category);
 };
 
@@ -452,9 +450,7 @@ export const getPopularFonts = (): FontDefinition[] => {
  * Get font by family name
  */
 export const getFontByFamily = (family: string): FontDefinition | undefined => {
-  return FONT_LIBRARY.find(
-    (font) => font.family.toLowerCase() === family.toLowerCase()
-  );
+  return FONT_LIBRARY.find((font) => font.family.toLowerCase() === family.toLowerCase());
 };
 
 /**
@@ -493,8 +489,7 @@ export const getRecommendedPairings = (
 
   // If heading is serif, recommend sans-serif for body
   // If heading is sans-serif, recommend serif or same sans-serif
-  const bodyCategory =
-    heading.category === "serif" ? "sans-serif" : "sans-serif";
+  const bodyCategory = heading.category === "serif" ? "sans-serif" : "sans-serif";
 
   return {
     body: getFontsByCategory(bodyCategory).slice(0, 3),

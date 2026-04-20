@@ -394,17 +394,13 @@ async function main() {
   for (const template of templateData) {
     const category = categories.find((c) => c.name === template.category);
     if (!category) {
-      console.warn(
-        `Category ${template.category} not found for template ${template.name}`
-      );
+      console.warn(`Category ${template.category} not found for template ${template.name}`);
       continue;
     }
 
     const plan = plans.find((p) => p.name === template.requiredPlan);
     if (!plan) {
-      console.warn(
-        `Plan ${template.requiredPlan} not found for template ${template.name}`
-      );
+      console.warn(`Plan ${template.requiredPlan} not found for template ${template.name}`);
       continue;
     }
 

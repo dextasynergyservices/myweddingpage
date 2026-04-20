@@ -9,12 +9,8 @@ export default function VerifyTokenPage() {
 
   const router = useRouter();
 
-  const [status, setStatus] = useState<"loading" | "verified" | "failed">(
-    "loading"
-  );
-  const [resendStatus, setResendStatus] = useState<
-    "idle" | "sending" | "sent" | "error"
-  >("idle");
+  const [status, setStatus] = useState<"loading" | "verified" | "failed">("loading");
+  const [resendStatus, setResendStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   useEffect(() => {
     if (!token) return;
@@ -69,9 +65,7 @@ export default function VerifyTokenPage() {
       <div className="text-center">
         {status === "loading" && <p>Verifying your account...</p>}
         {status === "verified" && (
-          <p className="text-green-600">
-            Your account is now verified! Redirecting...
-          </p>
+          <p className="text-green-600">Your account is now verified! Redirecting...</p>
         )}
         {status === "failed" && (
           <>

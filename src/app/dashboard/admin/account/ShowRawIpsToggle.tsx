@@ -18,8 +18,7 @@ export default function ShowRawIpsToggle() {
         // Only allow admins to see this control
         if (json?.role !== "ADMIN") return;
         // profile API may include showRawIps on session.user
-        if (json?.showRawIps !== undefined)
-          setEnabled(Boolean(json.showRawIps));
+        if (json?.showRawIps !== undefined) setEnabled(Boolean(json.showRawIps));
       } catch (e) {
         console.error("Failed to fetch user profile:", e);
       }
@@ -80,9 +79,7 @@ export default function ShowRawIpsToggle() {
             onChange={toggle}
             disabled={loading || csrfLoading}
           />
-          <span className="text-sm">
-            Allow viewing raw IPs in admin analytics
-          </span>
+          <span className="text-sm">Allow viewing raw IPs in admin analytics</span>
         </label>
         <button
           onClick={refreshToken}

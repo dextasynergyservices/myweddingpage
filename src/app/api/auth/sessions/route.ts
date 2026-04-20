@@ -67,23 +67,15 @@ export async function GET(request: NextRequest) {
         createdAt: s.createdAt,
         lastAccessedAt: s.lastAccessedAt,
         expiresAt: s.expiresAt,
-        isCurrent:
-          s.sessionToken ===
-          (session as { sessionToken?: string }).sessionToken,
+        isCurrent: s.sessionToken === (session as { sessionToken?: string }).sessionToken,
       })),
       currentSessionToken:
-        ((session as { sessionToken?: string }).sessionToken?.substring(
-          0,
-          10
-        ) || "") + "...",
+        ((session as { sessionToken?: string }).sessionToken?.substring(0, 10) || "") + "...",
       count: sessions.length,
     });
   } catch (error) {
     console.error("Session list error:", error);
-    return NextResponse.json(
-      { error: "Failed to retrieve sessions" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to retrieve sessions" }, { status: 500 });
   }
 }
 
@@ -117,10 +109,7 @@ export async function DELETE(request: NextRequest) {
     if (action === "terminate-one") {
       // Terminate specific session
       if (!sessionToken) {
-        return NextResponse.json(
-          { error: "sessionToken is required" },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "sessionToken is required" }, { status: 400 });
       }
 
       await terminateSession(sessionToken, "User requested termination");
@@ -138,9 +127,7 @@ export async function DELETE(request: NextRequest) {
 
       const count = await terminateAllSessions(
         session.user.id,
-        keepCurrent
-          ? (session as { sessionToken?: string }).sessionToken
-          : undefined
+        keepCurrent ? (session as { sessionToken?: string }).sessionToken : undefined
       );
 
       return NextResponse.json({
@@ -158,9 +145,6 @@ export async function DELETE(request: NextRequest) {
     );
   } catch (error) {
     console.error("Session termination error:", error);
-    return NextResponse.json(
-      { error: "Failed to terminate session" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to terminate session" }, { status: 500 });
   }
 }

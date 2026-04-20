@@ -14,8 +14,7 @@ export async function POST(req: Request) {
 
   const url = new URL(req.url);
   const stagingId = url.searchParams.get("stagingId");
-  if (!stagingId)
-    return NextResponse.json({ error: "missing stagingId" }, { status: 400 });
+  if (!stagingId) return NextResponse.json({ error: "missing stagingId" }, { status: 400 });
 
   const dir = path.join(staging.STAGING_ROOT, stagingId);
   if (!fs.existsSync(dir))
@@ -24,10 +23,7 @@ export async function POST(req: Request) {
   // read manifest
   const manifestPath = path.join(dir, "manifest.json");
   if (!fs.existsSync(manifestPath)) {
-    return NextResponse.json(
-      { error: "manifest.json not found in staging" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "manifest.json not found in staging" }, { status: 400 });
   }
 
   let manifestJson: unknown;
@@ -36,18 +32,12 @@ export async function POST(req: Request) {
     manifestJson = JSON.parse(buf.toString("utf-8"));
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json(
-      { error: `invalid manifest: ${msg}` },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: `invalid manifest: ${msg}` }, { status: 400 });
   }
 
   // stronger manifest validation
   if (typeof manifestJson !== "object" || manifestJson === null) {
-    return NextResponse.json(
-      { error: "manifest must be a JSON object" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "manifest must be a JSON object" }, { status: 400 });
   }
 
   const m = manifestJson as Record<string, unknown>;
@@ -139,22 +129,15 @@ export async function POST(req: Request) {
                       ts.isClassDeclaration(node) ||
                       ts.isVariableStatement(node)) &&
                     node.modifiers &&
-                    node.modifiers.some(
-                      (m) => m.kind === ts.SyntaxKind.ExportKeyword
-                    )
+                    node.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)
                   ) {
-                    if (
-                      ts.isFunctionDeclaration(node) ||
-                      ts.isClassDeclaration(node)
-                    ) {
+                    if (ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node)) {
                       const nameNode = node.name;
-                      if (nameNode && ts.isIdentifier(nameNode))
-                        namedExports.push(nameNode.text);
+                      if (nameNode && ts.isIdentifier(nameNode)) namedExports.push(nameNode.text);
                     } else if (ts.isVariableStatement(node)) {
-                      for (const decl of (node as ts.VariableStatement)
-                        .declarationList.declarations) {
-                        if (ts.isIdentifier(decl.name))
-                          namedExports.push(decl.name.text);
+                      for (const decl of (node as ts.VariableStatement).declarationList
+                        .declarations) {
+                        if (ts.isIdentifier(decl.name)) namedExports.push(decl.name.text);
                       }
                     }
                   }
@@ -180,10 +163,7 @@ export async function POST(req: Request) {
                     diags = program.getSyntacticDiagnostics(sourceFile) || [];
                   }
                   for (const d of diags) {
-                    const msg = ts.flattenDiagnosticMessageText(
-                      d.messageText,
-                      "\n"
-                    );
+                    const msg = ts.flattenDiagnosticMessageText(d.messageText, "\n");
                     const pos = d.start != null ? `@${d.start}` : "";
                     diagText.push(`${msg} ${pos}`);
                   }
@@ -200,17 +180,14 @@ export async function POST(req: Request) {
                   })
                 );
               } catch (e) {
-                componentsValidation.files.push(
-                  JSON.stringify({ path: rel, error: String(e) })
-                );
+                componentsValidation.files.push(JSON.stringify({ path: rel, error: String(e) }));
               }
             }
           }
         }
 
         walkAndValidate(extractDir);
-        componentsValidation.hasComponents =
-          componentsValidation.files.length > 0;
+        componentsValidation.hasComponents = componentsValidation.files.length > 0;
       }
     }
   } catch (err) {
@@ -219,9 +196,7 @@ export async function POST(req: Request) {
   }
 
   const stagedFiles = staging.listStagingFiles(dir);
-  const assetUrls = stagedFiles.map(
-    (f: string) => `/staging/${stagingId}/${f}`
-  );
+  const assetUrls = stagedFiles.map((f: string) => `/staging/${stagingId}/${f}`);
 
   const preview = {
     stagingId,

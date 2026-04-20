@@ -31,8 +31,7 @@ export function InstallPrompt({
   autoDismissDelay = 7,
   userId,
 }: InstallPromptProps) {
-  const { isInstallable, isInstalled, promptInstall, dismissPrompt } =
-    useInstallPrompt();
+  const { isInstallable, isInstalled, promptInstall, dismissPrompt } = useInstallPrompt();
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -123,8 +122,8 @@ export function InstallPrompt({
                 Install My Wedding Page
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                Install Myweddingpage app for quick access, offline support, and
-                the best experience!
+                Install Myweddingpage app for quick access, offline support, and the best
+                experience!
               </p>
 
               {/* Benefits list */}
@@ -152,11 +151,7 @@ export function InstallPrompt({
                   <Download className="w-4 h-4" />
                   Install
                 </Button>
-                <Button
-                  onClick={handleDismiss}
-                  variant="outline"
-                  className="px-4 py-2 text-sm"
-                >
+                <Button onClick={handleDismiss} variant="outline" className="px-4 py-2 text-sm">
                   Not now
                 </Button>
               </div>

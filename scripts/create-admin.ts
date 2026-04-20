@@ -190,15 +190,10 @@ async function createAdminUser() {
     log("=".repeat(80), "cyan");
     log("1. Start the server:        pnpm dev", "yellow");
     log("2. Login at:                http://localhost:3000/login", "yellow");
-    log(
-      "3. Access admin dashboard:  http://localhost:3000/dashboard/admin",
-      "yellow"
-    );
+    log("3. Access admin dashboard:  http://localhost:3000/dashboard/admin", "yellow");
     log("=".repeat(80) + "\n", "cyan");
   } catch (err) {
-    error(
-      `Failed to create admin user: ${err instanceof Error ? err.message : String(err)}`
-    );
+    error(`Failed to create admin user: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);
   } finally {
     await prisma.$disconnect();

@@ -16,10 +16,7 @@ export async function GET(
 
   const { stagingId, file } = params;
   if (!stagingId || !file || file.length === 0) {
-    return NextResponse.json(
-      { error: "Invalid staging path" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Invalid staging path" }, { status: 400 });
   }
 
   const relPath = path.join(...file);

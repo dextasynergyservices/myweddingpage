@@ -87,15 +87,7 @@ export default function MediaModal({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [
-    isOpen,
-    currentIndex,
-    mediaList.length,
-    media?.type,
-    onClose,
-    onNavigate,
-    togglePlayPause,
-  ]);
+  }, [isOpen, currentIndex, mediaList.length, media?.type, onClose, onNavigate, togglePlayPause]);
 
   const toggleMute = () => {
     if (!videoRef) return;
@@ -156,12 +148,7 @@ export default function MediaModal({
                     onClick={() => onNavigate(currentIndex - 1)}
                     className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
                   >
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -180,12 +167,7 @@ export default function MediaModal({
                     onClick={() => onNavigate(currentIndex + 1)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
                   >
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -223,11 +205,7 @@ export default function MediaModal({
                       onClick={togglePlayPause}
                       className="text-white hover:text-gray-300 transition-colors"
                     >
-                      {isPlaying ? (
-                        <Pause className="h-6 w-6" />
-                      ) : (
-                        <Play className="h-6 w-6" />
-                      )}
+                      {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
                     </motion.button>
 
                     <motion.button
@@ -236,11 +214,7 @@ export default function MediaModal({
                       onClick={toggleMute}
                       className="text-white hover:text-gray-300 transition-colors"
                     >
-                      {isMuted ? (
-                        <VolumeX className="h-5 w-5" />
-                      ) : (
-                        <Volume2 className="h-5 w-5" />
-                      )}
+                      {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
                     </motion.button>
                   </div>
                 </div>
@@ -260,9 +234,7 @@ export default function MediaModal({
             {/* Media Info */}
             <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm text-white px-4 py-2 rounded-lg">
               <div className="flex items-center gap-2">
-                <span className="text-lg">
-                  {media.type === "VIDEO" ? "🎥" : "📷"}
-                </span>
+                <span className="text-lg">{media.type === "VIDEO" ? "🎥" : "📷"}</span>
                 <span className="capitalize font-medium">
                   {media.type.toLowerCase()} - {media.category}
                 </span>

@@ -37,9 +37,6 @@ export async function GET() {
     return NextResponse.json(mockViewers);
   } catch (error) {
     console.error("Error fetching viewers:", error);
-    return NextResponse.json(
-      { error: "Error fetching viewers" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error fetching viewers" }, { status: 500 });
   }
 }

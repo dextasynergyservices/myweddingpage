@@ -49,10 +49,7 @@ async function generateIcons() {
     // Generate maskable icons (with safe zone padding)
     for (const size of MASKABLE_SIZES) {
       const paddedSize = Math.round(size * 1.2); // 20% padding
-      const outputPath = path.join(
-        OUTPUT_DIR,
-        `icon-maskable-${size}x${size}.png`
-      );
+      const outputPath = path.join(OUTPUT_DIR, `icon-maskable-${size}x${size}.png`);
 
       await sharp(INPUT_LOGO)
         .resize(size, size, {
@@ -78,9 +75,7 @@ async function generateIcons() {
     console.log("\n💡 Next steps:");
     console.log("   1. Review icons in public/icons/");
     console.log("   2. Test your PWA with: pnpm dev");
-    console.log(
-      "   3. Validate manifest at: https://manifest-validator.appspot.com/"
-    );
+    console.log("   3. Validate manifest at: https://manifest-validator.appspot.com/");
   } catch (error) {
     console.error("❌ Error generating icons:", error);
     process.exit(1);

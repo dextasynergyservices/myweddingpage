@@ -100,9 +100,7 @@ export const FontPreview: React.FC<FontPreviewProps> = ({
             ${loading ? "text-gray-300 dark:text-gray-600" : "text-gray-900 dark:text-gray-100"}
           `}
           style={{
-            fontFamily: loaded
-              ? `"${font.family}", ${font.fallback}`
-              : font.fallback,
+            fontFamily: loaded ? `"${font.family}", ${font.fallback}` : font.fallback,
           }}
         >
           {previewText}
@@ -132,9 +130,7 @@ export const FontPreview: React.FC<FontPreviewProps> = ({
 
       {/* Description (optional) */}
       {showMetadata && (
-        <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-          {font.description}
-        </p>
+        <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">{font.description}</p>
       )}
 
       {/* Best For Tags */}

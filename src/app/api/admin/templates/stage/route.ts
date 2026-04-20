@@ -17,9 +17,7 @@ export const runtime = "nodejs";
 // Type guard for manifest shape
 function hasPlanIds(obj: unknown): obj is { planIds: unknown } {
   return (
-    typeof obj === "object" &&
-    obj !== null &&
-    Object.prototype.hasOwnProperty.call(obj, "planIds")
+    typeof obj === "object" && obj !== null && Object.prototype.hasOwnProperty.call(obj, "planIds")
   );
 }
 
@@ -41,10 +39,7 @@ async function handle(req: NextRequest) {
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("Failed to parse formData:", msg);
-    return NextResponse.json(
-      { error: "Failed to parse multipart form data" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Failed to parse multipart form data" }, { status: 400 });
   }
 
   // Helper to collect files from FormData
@@ -66,16 +61,11 @@ async function handle(req: NextRequest) {
   // require manifest
   const manifestEntry = files.manifest;
   if (!manifestEntry) {
-    return NextResponse.json(
-      { error: "manifest file is required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "manifest file is required" }, { status: 400 });
   }
 
   // Support single or array
-  const manifestValue = Array.isArray(manifestEntry)
-    ? manifestEntry[0]
-    : manifestEntry;
+  const manifestValue = Array.isArray(manifestEntry) ? manifestEntry[0] : manifestEntry;
   const isFile = (v: unknown): v is File => {
     try {
       if (!v || typeof v !== "object") return false;
@@ -86,10 +76,7 @@ async function handle(req: NextRequest) {
   };
 
   if (!isFile(manifestValue)) {
-    return NextResponse.json(
-      { error: "manifest must be a file" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "manifest must be a file" }, { status: 400 });
   }
 
   let manifestJson: unknown;
@@ -99,10 +86,7 @@ async function handle(req: NextRequest) {
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("Invalid manifest JSON:", msg);
-    return NextResponse.json(
-      { error: "manifest is not valid JSON" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "manifest is not valid JSON" }, { status: 400 });
   }
 
   // enforce planIds
@@ -129,9 +113,7 @@ async function handle(req: NextRequest) {
     const origName = path.basename(file.name || "file");
     const size = file.size ?? 0;
     if (size > MAX_FILE_BYTES) {
-      throw new Error(
-        `${origName} exceeds max file size of ${MAX_FILE_BYTES} bytes`
-      );
+      throw new Error(`${origName} exceeds max file size of ${MAX_FILE_BYTES} bytes`);
     }
     const targetDir = path.join(dir, subdir);
     const dest = path.join(targetDir, origName);
@@ -154,9 +136,7 @@ async function handle(req: NextRequest) {
     // Save components.zip if provided
     const componentsEntry = files.components;
     if (componentsEntry) {
-      const comp = Array.isArray(componentsEntry)
-        ? componentsEntry[0]
-        : componentsEntry;
+      const comp = Array.isArray(componentsEntry) ? componentsEntry[0] : componentsEntry;
       if (isFile(comp)) await saveUploaded(comp, "components");
     }
   } catch (err: unknown) {
@@ -219,23 +199,17 @@ async function handle(req: NextRequest) {
                     ts.isClassDeclaration(node) ||
                     ts.isVariableStatement(node)) &&
                   node.modifiers &&
-                  node.modifiers.some(
-                    (m) => m.kind === ts.SyntaxKind.ExportKeyword
-                  )
+                  node.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword)
                 ) {
-                  if (
-                    ts.isFunctionDeclaration(node) ||
-                    ts.isClassDeclaration(node)
-                  ) {
+                  if (ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node)) {
                     const nameNode = node.name;
                     if (nameNode && ts.isIdentifier(nameNode)) {
                       namedExports.push(nameNode.text);
                     }
                   } else if (ts.isVariableStatement(node)) {
-                    for (const decl of (node as ts.VariableStatement)
-                      .declarationList.declarations) {
-                      if (ts.isIdentifier(decl.name))
-                        namedExports.push(decl.name.text);
+                    for (const decl of (node as ts.VariableStatement).declarationList
+                      .declarations) {
+                      if (ts.isIdentifier(decl.name)) namedExports.push(decl.name.text);
                     }
                   }
                 }
@@ -265,10 +239,7 @@ async function handle(req: NextRequest) {
                   diags = program.getSyntacticDiagnostics(sourceFile) || [];
                 }
                 for (const d of diags) {
-                  const msg = ts.flattenDiagnosticMessageText(
-                    d.messageText,
-                    "\n"
-                  );
+                  const msg = ts.flattenDiagnosticMessageText(d.messageText, "\n");
                   const pos = d.start != null ? `@${d.start}` : "";
                   diagText.push(`${msg} ${pos}`);
                 }
@@ -285,17 +256,14 @@ async function handle(req: NextRequest) {
                 })
               );
             } catch (e) {
-              componentsValidation.files.push(
-                JSON.stringify({ path: rel, error: String(e) })
-              );
+              componentsValidation.files.push(JSON.stringify({ path: rel, error: String(e) }));
             }
           }
         }
       }
 
       walkAndValidate(extractDir);
-      componentsValidation.hasComponents =
-        componentsValidation.files.length > 0;
+      componentsValidation.hasComponents = componentsValidation.files.length > 0;
     }
   } catch (err: unknown) {
     console.error("components zip extraction/validation failed:", err);
@@ -305,9 +273,7 @@ async function handle(req: NextRequest) {
 
   // Build preview JSON referencing staged assets
   const stagedFiles = staging.listStagingFiles(dir);
-  const assetUrls = stagedFiles.map(
-    (f: string) => `/staging/${path.basename(dir)}/${f}`
-  );
+  const assetUrls = stagedFiles.map((f: string) => `/staging/${path.basename(dir)}/${f}`);
 
   const preview = {
     stagingId: path.basename(dir),

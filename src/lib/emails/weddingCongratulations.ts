@@ -26,9 +26,7 @@ export async function sendWeddingCongratulationsEmail({
     day: "numeric",
   });
 
-  const pageLink = weddingPageSlug
-    ? `${process.env.NEXT_PUBLIC_APP_URL}/${weddingPageSlug}`
-    : null;
+  const pageLink = weddingPageSlug ? `${process.env.NEXT_PUBLIC_APP_URL}/${weddingPageSlug}` : null;
 
   const html = `
     <div style="font-family: 'Georgia', serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #fef7f0 0%, #fdf2f8 100%); border-radius: 12px; overflow: hidden;">

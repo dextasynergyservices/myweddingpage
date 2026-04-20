@@ -46,10 +46,8 @@ const envVarDefinitions: EnvVarConfig[] = [
   {
     name: "DATABASE_URL",
     required: true,
-    validation: (val) =>
-      val.startsWith("postgresql://") || val.startsWith("postgres://"),
-    validationMessage:
-      "DATABASE_URL must be a valid PostgreSQL connection string",
+    validation: (val) => val.startsWith("postgresql://") || val.startsWith("postgres://"),
+    validationMessage: "DATABASE_URL must be a valid PostgreSQL connection string",
   },
 
   // NextAuth
@@ -62,8 +60,7 @@ const envVarDefinitions: EnvVarConfig[] = [
   {
     name: "NEXTAUTH_URL",
     required: false,
-    validation: (val) =>
-      val.startsWith("http://") || val.startsWith("https://"),
+    validation: (val) => val.startsWith("http://") || val.startsWith("https://"),
     validationMessage: "NEXTAUTH_URL must be a valid URL",
     environments: ["production"],
   },
@@ -81,8 +78,7 @@ const envVarDefinitions: EnvVarConfig[] = [
     name: "CSRF_SECRET",
     required: true,
     minLength: 32,
-    validationMessage:
-      "CSRF_SECRET must be at least 32 characters for security",
+    validationMessage: "CSRF_SECRET must be at least 32 characters for security",
   },
 
   // reCAPTCHA v2
@@ -181,8 +177,7 @@ const envVarDefinitions: EnvVarConfig[] = [
   {
     name: "NEXT_PUBLIC_APP_URL",
     required: true,
-    validation: (val) =>
-      val.startsWith("http://") || val.startsWith("https://"),
+    validation: (val) => val.startsWith("http://") || val.startsWith("https://"),
     validationMessage: "NEXT_PUBLIC_APP_URL must be a valid URL",
   },
 
@@ -351,9 +346,7 @@ export function validateEnvironmentOrThrow(): void {
     result.warnings.forEach((warning) => console.warn(`  - ${warning}`));
   }
 
-  console.log(
-    `✅ Environment validation passed (${result.checked} variables checked)`
-  );
+  console.log(`✅ Environment validation passed (${result.checked} variables checked)`);
 }
 
 /**
@@ -401,13 +394,9 @@ export function getValidationReport(): string {
   }
 
   if (result.valid) {
-    lines.push(
-      "✅ All required environment variables are properly configured!"
-    );
+    lines.push("✅ All required environment variables are properly configured!");
   } else {
-    lines.push(
-      "❌ Please fix the errors above before running the application."
-    );
+    lines.push("❌ Please fix the errors above before running the application.");
   }
 
   lines.push("=".repeat(60));
@@ -465,9 +454,7 @@ export async function checkServiceConnectivity(): Promise<{
       email = response.status !== 401 && response.status !== 403;
 
       if (!email) {
-        errors.push(
-          "Email service authentication failed - check RESEND_API_KEY"
-        );
+        errors.push("Email service authentication failed - check RESEND_API_KEY");
       }
     }
   } catch (error) {
@@ -517,9 +504,7 @@ export function generateSecret(length: number = 32): string {
     return crypto.randomBytes(length).toString("hex");
   } catch {
     // Fallback to basic random string if crypto not available
-    return Array.from({ length }, () =>
-      Math.floor(Math.random() * 16).toString(16)
-    ).join("");
+    return Array.from({ length }, () => Math.floor(Math.random() * 16).toString(16)).join("");
   }
 }
 

@@ -93,10 +93,7 @@ export function getCSRFTokenFromCookie(): string | null {
  * @param token - CSRF token
  * @returns Modified FormData
  */
-export function addCSRFTokenToFormData(
-  formData: FormData,
-  token: string
-): FormData {
+export function addCSRFTokenToFormData(formData: FormData, token: string): FormData {
   formData.append("_csrf", token);
   return formData;
 }
@@ -108,10 +105,7 @@ export function addCSRFTokenToFormData(
  * @param token - CSRF token
  * @returns Modified headers
  */
-export function addCSRFTokenToHeaders(
-  headers: HeadersInit = {},
-  token: string
-): HeadersInit {
+export function addCSRFTokenToHeaders(headers: HeadersInit = {}, token: string): HeadersInit {
   return {
     ...headers,
     "x-csrf-token": token,

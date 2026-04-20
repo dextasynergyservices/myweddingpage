@@ -18,9 +18,4 @@ export { FontSelector } from "./FontSelector";
 export { CustomFontPicker } from "./CustomFontPicker";
 
 // Re-export types for convenience
-export type {
-  PresetTheme,
-  ColorScheme,
-  FontScheme,
-  TemplateType,
-} from "@/types/customization";
+export type { PresetTheme, ColorScheme, FontScheme, TemplateType } from "@/types/customization";

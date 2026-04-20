@@ -54,18 +54,13 @@ export default function EditPlanPage() {
 
   return (
     <div>
-      <h1
-        className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-      >
+      <h1 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
         Edit Plan
       </h1>
       <div className="mt-4">
         <div className="flex items-start gap-6">
           <div className="flex-1">
-            <PlanForm
-              initial={plan}
-              onSaved={() => router.push("/dashboard/admin/plans")}
-            />
+            <PlanForm initial={plan} onSaved={() => router.push("/dashboard/admin/plans")} />
           </div>
           <div className="w-56">
             <div className="rounded border p-4">
@@ -73,10 +68,7 @@ export default function EditPlanPage() {
               <p className="text-sm text-gray-500 mt-2">
                 Delete this plan. This action is irreversible if allowed.
               </p>
-              <DeletePlanWidget
-                onOpenDelete={() => setIsDeleteOpen(true)}
-                deleting={deleting}
-              />
+              <DeletePlanWidget onOpenDelete={() => setIsDeleteOpen(true)} deleting={deleting} />
             </div>
           </div>
         </div>

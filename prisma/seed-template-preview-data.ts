@@ -19,9 +19,7 @@ async function main() {
     console.log(`Found ${templates.length} templates to process`);
 
     for (const template of templates) {
-      console.log(
-        `\nProcessing template: ${template.name} (ID: ${template.id})`
-      );
+      console.log(`\nProcessing template: ${template.name} (ID: ${template.id})`);
 
       // Create previewData from template sections
       const previewData = {
@@ -44,11 +42,7 @@ async function main() {
         storyImage: "/default-story.jpg",
 
         // Gallery images for preview
-        gallery: [
-          "/preview-gallery-1.jpg",
-          "/preview-gallery-2.jpg",
-          "/preview-gallery-3.jpg",
-        ],
+        gallery: ["/preview-gallery-1.jpg", "/preview-gallery-2.jpg", "/preview-gallery-3.jpg"],
 
         // Sample gifts for preview
         gifts: [
@@ -122,9 +116,7 @@ async function main() {
       console.log(`   - Hero image: ${previewData.heroImage || "None"}`);
     }
 
-    console.log(
-      "\n🎉 Successfully seeded template preview data for all templates!"
-    );
+    console.log("\n🎉 Successfully seeded template preview data for all templates!");
   } catch (error) {
     console.error("❌ Error seeding template preview data:", error);
     throw error;

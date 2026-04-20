@@ -29,8 +29,7 @@ function tryParseJsonLine(line: string) {
 
 function parseNginxCombined(line: string) {
   // remote_addr - - [10/Oct/2025:12:27:35 +0000] "GET /slug HTTP/1.1" 200 123 "-" "User-Agent"
-  const re =
-    /^(\S+) \S+ \S+ \[([^\]]+)\] "([A-Z]+) ([^\s]+)[^\"]*" \d+ \d+ "[^"]*" "([^\"]*)"/;
+  const re = /^(\S+) \S+ \S+ \[([^\]]+)\] "([A-Z]+) ([^\s]+)[^\"]*" \d+ \d+ "[^"]*" "([^\"]*)"/;
   const m = line.match(re);
   if (!m) return null;
   const ip = m[1];
@@ -40,10 +39,7 @@ function parseNginxCombined(line: string) {
   const ua = m[5];
 
   // Convert dateStr like 10/Oct/2025:12:27:35 +0000 -> "10 Oct 2025 12:27:35 +0000"
-  const d = dateStr.replace(
-    /(\d{2})\/(\w{3})\/(\d{4}):(\d{2}:\d{2}:\d{2})/,
-    "$1 $2 $3 $4"
-  );
+  const d = dateStr.replace(/(\d{2})\/(\w{3})\/(\d{4}):(\d{2}:\d{2}:\d{2})/, "$1 $2 $3 $4");
   const parsed = new Date(d);
   if (isNaN(parsed.getTime())) return null;
   return { ip, path, ua, timestamp: parsed.toISOString() };
@@ -83,13 +79,7 @@ function extractFromJsonObject(j: any) {
     j.request_url ||
     null;
   const time =
-    j.timestampInMs ??
-    j.timestamp ??
-    j.time ??
-    j.TimeUTC ??
-    j.date ??
-    j["@timestamp"] ??
-    null;
+    j.timestampInMs ?? j.timestamp ?? j.time ?? j.TimeUTC ?? j.date ?? j["@timestamp"] ?? null;
   let ts: string | null = null;
   if (time != null) {
     if (typeof time === "number") {
@@ -152,9 +142,7 @@ async function main() {
     createdAt: p.createdAt,
   }));
 
-  console.log(
-    `Loaded ${targets.length} targets across ${pageIds.length} pages`
-  );
+  console.log(`Loaded ${targets.length} targets across ${pageIds.length} pages`);
 
   const parsedLines: Array<{
     ip: string | null;
@@ -268,9 +256,7 @@ async function main() {
 
   const outPath = "scripts/backfill-payload.json";
   fs.writeFileSync(outPath, JSON.stringify(results, null, 2), "utf8");
-  console.log(
-    `Wrote ${results.length} candidate backfill events to ${outPath}`
-  );
+  console.log(`Wrote ${results.length} candidate backfill events to ${outPath}`);
   console.log("Preview:", results.slice(0, 10));
 }
 

@@ -71,9 +71,7 @@ export const LiveStreamHero = ({
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const response = await fetch(
-          `/api/youtube-stats?videoId=${stream.youtubeId}`
-        );
+        const response = await fetch(`/api/youtube-stats?videoId=${stream.youtubeId}`);
         if (response.ok) {
           const data = await response.json();
           setViewerCount(data.viewerCount || viewerCount);
@@ -170,9 +168,7 @@ export const LiveStreamHero = ({
             {brideName} & {groomName}
           </h1>
 
-          {subtitle && (
-            <p className="text-xl md:text-2xl mb-6 opacity-90">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-xl md:text-2xl mb-6 opacity-90">{subtitle}</p>}
 
           {formattedDate && (
             <div className="flex items-center justify-center mb-4">
@@ -188,11 +184,7 @@ export const LiveStreamHero = ({
             </div>
           )}
 
-          {description && (
-            <p className="text-lg opacity-80 max-w-2xl mx-auto">
-              {description}
-            </p>
-          )}
+          {description && <p className="text-lg opacity-80 max-w-2xl mx-auto">{description}</p>}
         </div>
 
         {/* Call to Action */}
@@ -256,9 +248,7 @@ export const LiveStreamHero = ({
               }`}
               aria-hidden={!drawerOpen}
             >
-              <div
-                className={`h-full flex flex-col ${drawerOpen ? "w-96" : "w-0"}`}
-              >
+              <div className={`h-full flex flex-col ${drawerOpen ? "w-96" : "w-0"}`}>
                 <div className="flex items-center justify-between p-4 border-b">
                   <h3 className="text-lg font-semibold">Live Engagement</h3>
                   <button

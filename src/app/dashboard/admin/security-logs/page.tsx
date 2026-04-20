@@ -107,21 +107,13 @@ export default function SecurityLogsPage() {
         if (act) return act === actionFilter;
         // fallback: inspect message start
         const m = (log.message || "").toUpperCase();
-        if (actionFilter === "PLAN_CREATED")
-          return m.startsWith("PLAN_CREATED");
-        if (actionFilter === "PLAN_UPDATED")
-          return m.startsWith("PLAN_UPDATED");
-        if (actionFilter === "PLAN_DELETED")
-          return m.startsWith("PLAN_DELETED");
+        if (actionFilter === "PLAN_CREATED") return m.startsWith("PLAN_CREATED");
+        if (actionFilter === "PLAN_UPDATED") return m.startsWith("PLAN_UPDATED");
+        if (actionFilter === "PLAN_DELETED") return m.startsWith("PLAN_DELETED");
         if (actionFilter === "LOGIN_FAILED")
-          return (
-            m.includes("LOGIN") && (m.includes("FAIL") || m.includes("FAILURE"))
-          );
+          return m.includes("LOGIN") && (m.includes("FAIL") || m.includes("FAILURE"));
         if (actionFilter === "LOGIN_SUCCESS")
-          return (
-            m.includes("LOGIN") &&
-            (m.includes("SUCCESS") || m.includes("SUCCEED"))
-          );
+          return m.includes("LOGIN") && (m.includes("SUCCESS") || m.includes("SUCCEED"));
         if (actionFilter === "RATE_LIMIT_EXCEEDED")
           return m.includes("RATE") && m.includes("LIMIT");
         if (actionFilter === "ACCOUNT_LOCKED")
@@ -139,14 +131,7 @@ export default function SecurityLogsPage() {
   };
 
   const exportToCSV = () => {
-    const headers = [
-      "Timestamp",
-      "Severity",
-      "Action",
-      "User Email",
-      "IP Address",
-      "Message",
-    ];
+    const headers = ["Timestamp", "Severity", "Action", "User Email", "IP Address", "Message"];
     const rows = filteredLogs.map((log) => [
       new Date(log.timestamp).toLocaleString(),
       log.severity,
@@ -227,8 +212,7 @@ export default function SecurityLogsPage() {
     if (s.startsWith("PLAN_DELETED")) return "Plan deleted";
     if (s.startsWith("USER_LOCKED")) return "User locked";
     if (s.startsWith("LOGIN_SUCCESS")) return "Login succeeded";
-    if (s.startsWith("LOGIN_FAILURE") || s.startsWith("LOGIN_FAILED"))
-      return "Login failed";
+    if (s.startsWith("LOGIN_FAILURE") || s.startsWith("LOGIN_FAILED")) return "Login failed";
     // Fallback: make underscore-separated tokens nicer
     try {
       return s.replace(/_/g, " ");
@@ -252,14 +236,10 @@ export default function SecurityLogsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1
-            className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-          >
+          <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             Security Logs
           </h1>
-          <p
-            className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-          >
+          <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
             Monitor system security events and user activity
           </p>
         </div>
@@ -325,9 +305,7 @@ export default function SecurityLogsPage() {
             </button>
 
             {(severityFilter !== "ALL" || actionFilter !== "ALL") && (
-              <span
-                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-              >
+              <span className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                 {filteredLogs.length} of {logs.length} logs
               </span>
             )}
@@ -351,9 +329,7 @@ export default function SecurityLogsPage() {
                 </label>
                 <select
                   value={severityFilter}
-                  onChange={(e) =>
-                    setSeverityFilter(e.target.value as SeverityFilter)
-                  }
+                  onChange={(e) => setSeverityFilter(e.target.value as SeverityFilter)}
                   className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ab862b] ${
                     isDarkMode
                       ? "border-gray-700 bg-gray-800 text-white"
@@ -378,9 +354,7 @@ export default function SecurityLogsPage() {
                 </label>
                 <select
                   value={actionFilter}
-                  onChange={(e) =>
-                    setActionFilter(e.target.value as ActionFilter)
-                  }
+                  onChange={(e) => setActionFilter(e.target.value as ActionFilter)}
                   className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ab862b] ${
                     isDarkMode
                       ? "border-gray-700 bg-gray-800 text-white"
@@ -390,9 +364,7 @@ export default function SecurityLogsPage() {
                   <option value="ALL">All Actions</option>
                   <option value="LOGIN_SUCCESS">Login Success</option>
                   <option value="LOGIN_FAILED">Login Failed</option>
-                  <option value="RATE_LIMIT_EXCEEDED">
-                    Rate Limit Exceeded
-                  </option>
+                  <option value="RATE_LIMIT_EXCEEDED">Rate Limit Exceeded</option>
                   <option value="ACCOUNT_LOCKED">Account lockouts</option>
                   <option value="PLAN_CREATED">Plan created</option>
                   <option value="PLAN_UPDATED">Plan updated</option>
@@ -465,18 +437,14 @@ export default function SecurityLogsPage() {
                 </th>
               </tr>
             </thead>
-            <tbody
-              className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}
-            >
+            <tbody className={`divide-y ${isDarkMode ? "divide-gray-800" : "divide-gray-200"}`}>
               {currentLogs.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
                     <Shield
                       className={`mx-auto h-12 w-12 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`}
                     />
-                    <p
-                      className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       No security logs found
                     </p>
                   </td>
@@ -551,12 +519,9 @@ export default function SecurityLogsPage() {
               isDarkMode ? "border-gray-800" : "border-gray-200"
             }`}
           >
-            <div
-              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-            >
-              Showing {startIndex + 1} to{" "}
-              {Math.min(endIndex, filteredLogs.length)} of {filteredLogs.length}{" "}
-              logs
+            <div className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+              Showing {startIndex + 1} to {Math.min(endIndex, filteredLogs.length)} of{" "}
+              {filteredLogs.length} logs
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -574,15 +539,11 @@ export default function SecurityLogsPage() {
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <span
-                className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
-              >
+              <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
                 Page {currentPage} of {totalPages}
               </span>
               <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                }
+                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
                 className={`rounded-lg p-2 transition-colors ${
                   currentPage === totalPages
@@ -616,9 +577,7 @@ export default function SecurityLogsPage() {
             <Shield
               className={`mx-auto h-12 w-12 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`}
             />
-            <p
-              className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-            >
+            <p className={`mt-4 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
               No security logs found
             </p>
           </motion.div>
@@ -646,18 +605,14 @@ export default function SecurityLogsPage() {
                     {log.severity}
                   </span>
                 </div>
-                <span
-                  className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                >
+                <span className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                   {new Date(log.timestamp).toLocaleString()}
                 </span>
               </div>
 
               <div className="space-y-2">
                 <div>
-                  <p
-                    className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"} mb-1`}
-                  >
+                  <p className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"} mb-1`}>
                     Action
                   </p>
                   <p
@@ -668,37 +623,27 @@ export default function SecurityLogsPage() {
                 </div>
 
                 <div>
-                  <p
-                    className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"} mb-1`}
-                  >
+                  <p className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"} mb-1`}>
                     Message
                   </p>
-                  <p
-                    className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}
-                  >
+                  <p className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
                     {friendlyMessage(log.message)}
                   </p>
                 </div>
 
                 {log.userEmail && (
                   <div className="flex items-center justify-between pt-2 border-t ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}">
-                    <span
-                      className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}
-                    >
+                    <span className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}>
                       User
                     </span>
-                    <span
-                      className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-900"}`}
-                    >
+                    <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-900"}`}>
                       {log.userEmail}
                     </span>
                   </div>
                 )}
 
                 <div className="flex items-center justify-between">
-                  <span
-                    className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}
-                  >
+                  <span className={`text-xs ${isDarkMode ? "text-gray-500" : "text-gray-500"}`}>
                     IP Address
                   </span>
                   <span
@@ -715,9 +660,7 @@ export default function SecurityLogsPage() {
         {/* Mobile Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between pt-4">
-            <span
-              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-            >
+            <span className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
               Page {currentPage} of {totalPages}
             </span>
             <div className="flex items-center gap-2">
@@ -737,9 +680,7 @@ export default function SecurityLogsPage() {
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                }
+                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
                 className={`rounded-lg p-2 transition-colors ${
                   currentPage === totalPages

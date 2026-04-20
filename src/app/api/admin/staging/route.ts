@@ -64,13 +64,9 @@ export async function GET(req: Request) {
                 await walk(full, rel);
               } else if (rel.toLowerCase().endsWith(".tsx")) {
                 try {
-                  const content = fs.readFileSync(
-                    path.join(dirPath2, name),
-                    "utf-8"
-                  );
+                  const content = fs.readFileSync(path.join(dirPath2, name), "utf-8");
                   // Dynamically import typescript to avoid bundling issues
-                  const tsModule =
-                    (await import("typescript")) as typeof import("typescript");
+                  const tsModule = (await import("typescript")) as typeof import("typescript");
                   const sourceFile = tsModule.createSourceFile(
                     full,
                     content,
@@ -87,10 +83,7 @@ export async function GET(req: Request) {
                     }
 
                     // Handle exported function and class declarations
-                    if (
-                      tsModule.isFunctionDeclaration(node) ||
-                      tsModule.isClassDeclaration(node)
-                    ) {
+                    if (tsModule.isFunctionDeclaration(node) || tsModule.isClassDeclaration(node)) {
                       const decl = node;
                       const isExported = !!decl.modifiers?.some(
                         (m) => m.kind === tsModule.SyntaxKind.ExportKeyword
@@ -98,9 +91,7 @@ export async function GET(req: Request) {
                       if (isExported) {
                         const name = decl.name;
                         if (name && tsModule.isIdentifier(name)) {
-                          namedExports.push(
-                            String(name.escapedText ?? name.text)
-                          );
+                          namedExports.push(String(name.escapedText ?? name.text));
                         }
                       }
                     } else if (tsModule.isVariableStatement(node)) {
@@ -109,13 +100,10 @@ export async function GET(req: Request) {
                         (m) => m.kind === tsModule.SyntaxKind.ExportKeyword
                       );
                       if (isExported) {
-                        for (const decl of varStmt.declarationList
-                          .declarations) {
+                        for (const decl of varStmt.declarationList.declarations) {
                           const nm = decl.name;
                           if (tsModule.isIdentifier(nm)) {
-                            namedExports.push(
-                              String(nm.escapedText ?? nm.text)
-                            );
+                            namedExports.push(String(nm.escapedText ?? nm.text));
                           }
                         }
                       }
@@ -129,8 +117,7 @@ export async function GET(req: Request) {
                     allowJs: true,
                     jsx: tsModule.JsxEmit.React,
                   });
-                  const diags =
-                    tsModule.getPreEmitDiagnostics(program, sourceFile) || [];
+                  const diags = tsModule.getPreEmitDiagnostics(program, sourceFile) || [];
                   const diagText: string[] = diags.map((d) =>
                     tsModule.flattenDiagnosticMessageText(d.messageText, "\n")
                   );
@@ -157,9 +144,7 @@ export async function GET(req: Request) {
         componentsValidation = null;
       }
 
-      const staged = staging
-        .listStagingFiles(dirPath)
-        .map((f: string) => `/staging/${d}/${f}`);
+      const staged = staging.listStagingFiles(dirPath).map((f: string) => `/staging/${d}/${f}`);
       items.push({
         id: d,
         createdAt: stat.ctimeMs,
@@ -182,12 +167,10 @@ export async function DELETE(req: Request) {
   try {
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
-    if (!id)
-      return NextResponse.json({ error: "id required" }, { status: 400 });
+    if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
     const root = staging.STAGING_ROOT;
     const dir = path.join(root, id);
-    if (!fs.existsSync(dir))
-      return NextResponse.json({ error: "not found" }, { status: 404 });
+    if (!fs.existsSync(dir)) return NextResponse.json({ error: "not found" }, { status: 404 });
     // Recursively remove
     fs.rmSync(dir, { recursive: true, force: true });
     return NextResponse.json({ success: true });

@@ -8,10 +8,7 @@ export async function POST(req: Request) {
     const { templateId } = await req.json();
 
     if (!templateId) {
-      return NextResponse.json(
-        { error: "Template ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Template ID is required" }, { status: 400 });
     }
 
     // Get current user (adjust if your auth is different)
@@ -44,9 +41,6 @@ export async function POST(req: Request) {
     return NextResponse.json(userTemplate);
   } catch (error) {
     console.error("Failed to select template:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

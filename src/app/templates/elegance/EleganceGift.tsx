@@ -43,8 +43,7 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
   // Extract data from props with fallbacks
   const title = props.title || "Gift Registry";
   const description =
-    props.description ||
-    "Help us build our home together with these thoughtfully chosen items";
+    props.description || "Help us build our home together with these thoughtfully chosen items";
 
   // Extract gifts data from props (prioritize gifts over giftRegistry for consistency with API)
   const gifts = props.gifts || props.giftRegistry || [];
@@ -175,12 +174,8 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
           }`}
         >
           <Gift className="w-12 h-12 mx-auto mb-6 text-rose-600 animate-bounce" />
-          <h2 className="font-serif md:text-5xl text-2xl font-bold text-gray-900 mb-6">
-            {title}
-          </h2>
-          <p className="font-sans text-xl text-gray-600 max-w-3xl mx-auto">
-            {description}
-          </p>
+          <h2 className="font-serif md:text-5xl text-2xl font-bold text-gray-900 mb-6">{title}</h2>
+          <p className="font-sans text-xl text-gray-600 max-w-3xl mx-auto">{description}</p>
         </div>
 
         {/* Category Filter */}
@@ -198,9 +193,7 @@ const GiftRegistry: React.FC<GiftRegistryProps> = (props) => {
           ))}
         </div> */}
 
-        <div
-          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto`}
-        >
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto`}>
           {gifts.map((item, index) => {
             const isPurchased = purchasedItems.has(item.id);
 

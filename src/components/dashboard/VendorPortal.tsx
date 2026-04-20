@@ -130,10 +130,8 @@ const VendorPortal = () => {
     const matchesSearch =
       vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       vendor.category.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      categoryFilter === "all" || vendor.category === categoryFilter;
-    const matchesStatus =
-      statusFilter === "all" || vendor.status === statusFilter;
+    const matchesCategory = categoryFilter === "all" || vendor.category === categoryFilter;
+    const matchesStatus = statusFilter === "all" || vendor.status === statusFilter;
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
@@ -222,9 +220,7 @@ const VendorPortal = () => {
           },
           {
             title: "Booked",
-            value: vendors.filter(
-              (v) => v.status === "booked" || v.status === "paid"
-            ).length,
+            value: vendors.filter((v) => v.status === "booked" || v.status === "paid").length,
             icon: CheckCircle,
             color: "from-emerald-500 to-teal-600",
           },
@@ -247,9 +243,7 @@ const VendorPortal = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             className={`rounded-3xl p-6 shadow-lg border ${
-              isDarkMode
-                ? "bg-slate-800 border-slate-700"
-                : "bg-white border-slate-100"
+              isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
             }`}
           >
             <div className="flex items-center justify-between">
@@ -280,9 +274,7 @@ const VendorPortal = () => {
       {/* Filters */}
       <div
         className={`rounded-3xl p-6 shadow-lg border ${
-          isDarkMode
-            ? "bg-slate-800 border-slate-700"
-            : "bg-white border-slate-100"
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
         }`}
       >
         <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
@@ -371,9 +363,7 @@ const VendorPortal = () => {
                     >
                       {vendor.name}
                     </h3>
-                    <p
-                      className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                    >
+                    <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                       {vendor.category}
                     </p>
                   </div>
@@ -386,8 +376,7 @@ const VendorPortal = () => {
                     )}`}
                   >
                     {getStatusIcon(vendor.status)}
-                    {vendor.status.charAt(0).toUpperCase() +
-                      vendor.status.slice(1)}
+                    {vendor.status.charAt(0).toUpperCase() + vendor.status.slice(1)}
                   </span>
                 </div>
               </div>
@@ -407,9 +396,7 @@ const VendorPortal = () => {
                       />
                     ))}
                   </div>
-                  <span
-                    className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                  >
+                  <span className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                     {vendor.rating} ({vendor.reviews} reviews)
                   </span>
                 </div>
@@ -457,9 +444,7 @@ const VendorPortal = () => {
                     <span
                       key={i}
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        isDarkMode
-                          ? "bg-slate-700 text-slate-300"
-                          : "bg-slate-100 text-slate-600"
+                        isDarkMode ? "bg-slate-700 text-slate-300" : "bg-slate-100 text-slate-600"
                       }`}
                     >
                       {service}

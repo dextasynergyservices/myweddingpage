@@ -18,10 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!category || !type) {
-      return NextResponse.json(
-        { error: "Category and type are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Category and type are required" }, { status: 400 });
     }
 
     // Validate that all files have the required Cloudinary response data
@@ -41,10 +38,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user || !user.plan) {
-      return NextResponse.json(
-        { error: "User plan not found" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "User plan not found" }, { status: 400 });
     }
 
     // Count existing media
@@ -67,17 +61,11 @@ export async function POST(request: NextRequest) {
     const newVideos = type === "VIDEO" ? files.length : 0;
 
     if (existingPhotos + newPhotos > user.plan.max_photos) {
-      return NextResponse.json(
-        { error: "Photo upload limit exceeded" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Photo upload limit exceeded" }, { status: 400 });
     }
 
     if (existingVideos + newVideos > user.plan.max_videos) {
-      return NextResponse.json(
-        { error: "Video upload limit exceeded" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Video upload limit exceeded" }, { status: 400 });
     }
 
     // Create database records for the uploaded files
@@ -99,9 +87,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(savedMedia);
   } catch (error) {
     console.error("Error saving media metadata:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -22,10 +22,7 @@ export async function POST(req: Request) {
         const { userId, token, isBackupCode } = body;
 
         if (!userId || !token) {
-          return NextResponse.json(
-            { error: "Missing required fields" },
-            { status: 400 }
-          );
+          return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
         let result;
@@ -96,10 +93,7 @@ export async function POST(req: Request) {
       } catch (error) {
         console.error("2FA verification error:", error);
 
-        return NextResponse.json(
-          { error: "Verification failed" },
-          { status: 500 }
-        );
+        return NextResponse.json({ error: "Verification failed" }, { status: 500 });
       }
     },
     { sampleRate: 1, eventType: "LOGIN_SUCCESS" }

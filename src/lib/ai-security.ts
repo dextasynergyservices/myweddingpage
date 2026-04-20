@@ -17,8 +17,7 @@ import { logSecurityEvent } from "./security-logger";
 // Configuration
 const config = {
   maxPromptLength: parseInt(process.env.MAX_PROMPT_LENGTH || "4000", 10),
-  enableInjectionDetection:
-    process.env.DISABLE_AI_INJECTION_DETECTION !== "true",
+  enableInjectionDetection: process.env.DISABLE_AI_INJECTION_DETECTION !== "true",
   blockSuspiciousPrompts: process.env.BLOCK_SUSPICIOUS_AI_PROMPTS !== "false",
 };
 
@@ -197,12 +196,7 @@ export async function detectPromptInjection(
   if (suspicionLevel !== "none") {
     await logSecurityEvent({
       eventType: "SUSPICIOUS_ACTIVITY",
-      severity:
-        suspicionLevel === "high"
-          ? "HIGH"
-          : suspicionLevel === "medium"
-            ? "MEDIUM"
-            : "LOW",
+      severity: suspicionLevel === "high" ? "HIGH" : suspicionLevel === "medium" ? "MEDIUM" : "LOW",
       userId,
       ipAddress: "ai-input",
       message: `AI prompt injection attempt detected (${suspicionLevel} risk)`,
@@ -293,8 +287,7 @@ export async function safeOpenAICall(
       };
     }
 
-    const sanitizedPrompt =
-      validation.sanitizedInput || sanitizeAIInput(prompt);
+    const sanitizedPrompt = validation.sanitizedInput || sanitizeAIInput(prompt);
 
     // 2. Make OpenAI API call (dynamic import to avoid loading if not needed)
     const { default: OpenAI } = await import("openai");

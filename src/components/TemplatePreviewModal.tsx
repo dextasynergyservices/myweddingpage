@@ -72,10 +72,7 @@ const TemplatePreviewModal = ({
         console.log("TemplatePreviewModal - previewData:", data.previewData);
         console.log("TemplatePreviewModal - userTemplate prop:", userTemplate);
         console.log("TemplatePreviewModal - userData:", data.userData);
-        console.log(
-          "TemplatePreviewModal - userTemplate from API:",
-          data.userTemplate
-        );
+        console.log("TemplatePreviewModal - userTemplate from API:", data.userTemplate);
         setPreviewData(data);
       } catch (error) {
         console.error("Error fetching preview data:", error);
@@ -163,9 +160,7 @@ const TemplatePreviewModal = ({
   ): UserData | undefined => {
     if (!wp) return undefined;
     const ai =
-      (wp as Record<string, unknown>).ai_data ||
-      (wp as Record<string, unknown>).layout_data ||
-      {};
+      (wp as Record<string, unknown>).ai_data || (wp as Record<string, unknown>).layout_data || {};
     return {
       brideName: String(
         (ai as Record<string, unknown>)?.brideName ||
@@ -184,9 +179,7 @@ const TemplatePreviewModal = ({
           ""
       ),
       venue: String(
-        (wp as Record<string, unknown>)?.venue ||
-          (ai as Record<string, unknown>)?.venue ||
-          ""
+        (wp as Record<string, unknown>)?.venue || (ai as Record<string, unknown>)?.venue || ""
       ),
     };
   };
@@ -313,44 +306,26 @@ const TemplatePreviewModal = ({
             <div className="flex-1">
               <motion.button
                 whileHover={{
-                  scale:
-                    isSelecting || isAnotherTemplateSelected || csrfLoading
-                      ? 1
-                      : 1.02,
+                  scale: isSelecting || isAnotherTemplateSelected || csrfLoading ? 1 : 1.02,
                 }}
                 whileTap={{
-                  scale:
-                    isSelecting || isAnotherTemplateSelected || csrfLoading
-                      ? 1
-                      : 0.98,
+                  scale: isSelecting || isAnotherTemplateSelected || csrfLoading ? 1 : 0.98,
                 }}
                 onClick={handleSelectTemplate}
-                disabled={
-                  isSelecting ||
-                  isAnotherTemplateSelected ||
-                  csrfLoading ||
-                  !csrfToken
-                }
+                disabled={isSelecting || isAnotherTemplateSelected || csrfLoading || !csrfToken}
                 className={`w-full text-sm font-medium py-2 px-4 rounded-lg shadow-sm transition-colors ${
-                  isSelecting ||
-                  isAnotherTemplateSelected ||
-                  csrfLoading ||
-                  !csrfToken
+                  isSelecting || isAnotherTemplateSelected || csrfLoading || !csrfToken
                     ? "bg-indigo-400 text-white cursor-not-allowed opacity-70"
                     : "bg-indigo-600 hover:bg-indigo-700 text-white"
                 }`}
               >
-                {csrfLoading
-                  ? "Loading..."
-                  : isSelecting
-                    ? "Selecting..."
-                    : "Select Template"}
+                {csrfLoading ? "Loading..." : isSelecting ? "Selecting..." : "Select Template"}
               </motion.button>
 
               {isAnotherTemplateSelected && (
                 <p className="mt-2 text-xs font-bold text-slate-900 px-5 py-5">
-                  You already have a selected template. Delete it first to
-                  choose a different template.
+                  You already have a selected template. Delete it first to choose a different
+                  template.
                 </p>
               )}
             </div>

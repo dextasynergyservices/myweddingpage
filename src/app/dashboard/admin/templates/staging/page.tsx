@@ -57,10 +57,7 @@ export default function StagingListPage() {
 
   useEffect(() => {
     try {
-      localStorage.setItem(
-        "staging.expandedRows",
-        JSON.stringify(expandedRows)
-      );
+      localStorage.setItem("staging.expandedRows", JSON.stringify(expandedRows));
     } catch {
       // ignore
     }
@@ -168,20 +165,12 @@ export default function StagingListPage() {
           >
             Expand all
           </button>
-          <button
-            type="button"
-            className="btn btn-sm"
-            onClick={() => setExpandedRows({})}
-          >
+          <button type="button" className="btn btn-sm" onClick={() => setExpandedRows({})}>
             Collapse all
           </button>
         </div>
       </div>
-      {loading ? (
-        <PageSkeleton />
-      ) : entries.length === 0 ? (
-        <p>No staged packages</p>
-      ) : null}
+      {loading ? <PageSkeleton /> : entries.length === 0 ? <p>No staged packages</p> : null}
 
       <div className="space-y-6">
         {entries.map((e) => (
@@ -191,14 +180,9 @@ export default function StagingListPage() {
                 <div className="flex items-baseline gap-3">
                   <div className="font-medium text-lg">
                     {(() => {
-                      const manifestRecord = e.manifest as Record<
-                        string,
-                        unknown
-                      > | null;
+                      const manifestRecord = e.manifest as Record<string, unknown> | null;
                       const name =
-                        typeof manifestRecord?.name === "string"
-                          ? manifestRecord.name
-                          : undefined;
+                        typeof manifestRecord?.name === "string" ? manifestRecord.name : undefined;
                       return String(name ?? e.id);
                     })()}
                   </div>
@@ -214,26 +198,19 @@ export default function StagingListPage() {
                     <div>
                       <strong>Summary:</strong>{" "}
                       {(() => {
-                        const manifestRecord = e.manifest as Record<
-                          string,
-                          unknown
-                        > | null;
+                        const manifestRecord = e.manifest as Record<string, unknown> | null;
                         if (typeof manifestRecord?.description === "string")
                           return manifestRecord.description;
                         if (typeof manifestRecord?.summary === "string")
                           return manifestRecord.summary;
-                        if (typeof manifestRecord?.title === "string")
-                          return manifestRecord.title;
+                        if (typeof manifestRecord?.title === "string") return manifestRecord.title;
                         return "No summary";
                       })()}
                     </div>
                     <div className="mt-2">
                       <strong>Plans:</strong>{" "}
                       {(() => {
-                        const manifestRecord = e.manifest as Record<
-                          string,
-                          unknown
-                        > | null;
+                        const manifestRecord = e.manifest as Record<string, unknown> | null;
                         const planIdsRaw = manifestRecord?.planIds;
                         if (Array.isArray(planIdsRaw)) {
                           return planIdsRaw.slice(0, 3).map(String).join(", ");
@@ -248,15 +225,13 @@ export default function StagingListPage() {
                   <div className="mt-3">
                     <div className="font-semibold">Components</div>
                     <div className="text-sm">
-                      Has components:{" "}
-                      {e.componentsValidation.hasComponents ? "Yes" : "No"}
+                      Has components: {e.componentsValidation.hasComponents ? "Yes" : "No"}
                     </div>
                     {e.componentsValidation && (
                       <div className="mt-3">
                         <div className="font-semibold">Components</div>
                         <div className="text-sm">
-                          Has components:{" "}
-                          {e.componentsValidation.hasComponents ? "Yes" : "No"}
+                          Has components: {e.componentsValidation.hasComponents ? "Yes" : "No"}
                         </div>
                         {e.componentsValidation.files?.length > 0 && (
                           <div className="mt-2">
@@ -277,38 +252,27 @@ export default function StagingListPage() {
                                   } catch {
                                     // older string entry: show raw
                                   }
-                                  const named = Array.isArray(
-                                    parsed?.namedExports
-                                  )
+                                  const named = Array.isArray(parsed?.namedExports)
                                     ? parsed!.namedExports
                                     : [];
-                                  const diags = Array.isArray(
-                                    parsed?.diagnostics
-                                  )
+                                  const diags = Array.isArray(parsed?.diagnostics)
                                     ? parsed!.diagnostics
                                     : [];
                                   return (
                                     <tr key={f} className="border-t">
+                                      <td className="py-2 align-top">{parsed?.path || f}</td>
                                       <td className="py-2 align-top">
-                                        {parsed?.path || f}
+                                        {parsed?.hasDefaultExport ? "Yes" : "No"}
                                       </td>
                                       <td className="py-2 align-top">
-                                        {parsed?.hasDefaultExport
-                                          ? "Yes"
-                                          : "No"}
-                                      </td>
-                                      <td className="py-2 align-top">
-                                        {named.length > 0
-                                          ? named.join(", ")
-                                          : "—"}
+                                        {named.length > 0 ? named.join(", ") : "—"}
                                       </td>
                                       <td className="py-2 align-top">
                                         {diags.length > 0 ? (
                                           <div>
                                             {(() => {
                                               const key = `${e.id}:${parsed?.path ?? f}`;
-                                              const isExpanded =
-                                                !!expandedRows[key];
+                                              const isExpanded = !!expandedRows[key];
                                               const maxPreview = 3;
                                               const preview = isExpanded
                                                 ? diags
@@ -316,32 +280,21 @@ export default function StagingListPage() {
                                               return (
                                                 <div>
                                                   <ul className="list-disc pl-4">
-                                                    {preview.map(
-                                                      (
-                                                        d: string,
-                                                        i: number
-                                                      ) => (
-                                                        <li
-                                                          key={i}
-                                                          className="text-xs text-red-600"
-                                                        >
-                                                          {d}
-                                                        </li>
-                                                      )
-                                                    )}
+                                                    {preview.map((d: string, i: number) => (
+                                                      <li key={i} className="text-xs text-red-600">
+                                                        {d}
+                                                      </li>
+                                                    ))}
                                                   </ul>
-                                                  {diags.length >
-                                                    maxPreview && (
+                                                  {diags.length > maxPreview && (
                                                     <button
                                                       type="button"
                                                       className="text-xs text-blue-600 hover:underline mt-1"
                                                       onClick={() =>
-                                                        setExpandedRows(
-                                                          (s) => ({
-                                                            ...s,
-                                                            [key]: !s[key],
-                                                          })
-                                                        )
+                                                        setExpandedRows((s) => ({
+                                                          ...s,
+                                                          [key]: !s[key],
+                                                        }))
                                                       }
                                                     >
                                                       {isExpanded
@@ -367,16 +320,8 @@ export default function StagingListPage() {
                       </div>
                     )}
                     {e.assets.slice(0, 3).map((url) => (
-                      <div
-                        key={url}
-                        className="w-full h-20 relative rounded overflow-hidden"
-                      >
-                        <Image
-                          src={url}
-                          alt="asset"
-                          fill
-                          className="object-cover"
-                        />
+                      <div key={url} className="w-full h-20 relative rounded overflow-hidden">
+                        <Image src={url} alt="asset" fill className="object-cover" />
                       </div>
                     ))}
                   </div>
@@ -396,9 +341,7 @@ export default function StagingListPage() {
                       onClick={() => {
                         setCreatePRFor(e.id);
                         try {
-                          const name = (
-                            e.manifest as Record<string, unknown> | null
-                          )?.name;
+                          const name = (e.manifest as Record<string, unknown> | null)?.name;
                           setPrSlug(
                             name && typeof name === "string"
                               ? String(name)
@@ -511,9 +454,7 @@ export default function StagingListPage() {
                       try {
                         const d = JSON.stringify(json.details, null, 2);
                         console.error("PR creation details:", d);
-                        toast.error(
-                          String(json?.error || "Failed to create PR")
-                        );
+                        toast.error(String(json?.error || "Failed to create PR"));
                         // also attach details in a log for admins
                         // optionally show small preview
                         console.info("GitHub details:", json.details);
@@ -542,11 +483,7 @@ export default function StagingListPage() {
                   }
                 } catch (err: unknown) {
                   console.error(err);
-                  toast.error(
-                    (err as Error)?.message ||
-                      String(err) ||
-                      "Failed to create PR"
-                  );
+                  toast.error((err as Error)?.message || String(err) || "Failed to create PR");
                 } finally {
                   setCreatingPR(false);
                   if (!prDryRun) setCreatePRFor(null);

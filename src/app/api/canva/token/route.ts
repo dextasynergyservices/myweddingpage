@@ -14,8 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const finalRedirectUri =
-      redirectUri ||
-      `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/canva/callback`;
+      redirectUri || `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/canva/callback`;
 
     console.log("Exchanging code for token:");
     console.log("Code:", code);
@@ -23,18 +22,10 @@ export async function POST(request: NextRequest) {
     console.log("Redirect URI:", finalRedirectUri);
 
     // Exchange code for access token
-    const tokenData = await CanvaAPI.getAccessToken(
-      code,
-      finalRedirectUri,
-      codeVerifier
-    );
+    const tokenData = await CanvaAPI.getAccessToken(code, finalRedirectUri, codeVerifier);
 
     // Store tokens for use in the API
-    TokenStore.setTokens(
-      tokenData.access_token,
-      tokenData.refresh_token,
-      tokenData.expires_in
-    );
+    TokenStore.setTokens(tokenData.access_token, tokenData.refresh_token, tokenData.expires_in);
 
     return NextResponse.json({
       success: true,

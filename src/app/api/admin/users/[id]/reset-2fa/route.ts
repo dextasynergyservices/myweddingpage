@@ -6,10 +6,7 @@ import { requireAdmin, logAdminAction } from "@/lib/middleware/admin";
  * POST /api/admin/users/[id]/reset-2fa
  * Reset user's two-factor authentication
  */
-export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
     // Check admin authentication
     const adminUser = await requireAdmin();
@@ -26,10 +23,7 @@ export async function POST(
     });
 
     if (!user) {
-      return NextResponse.json(
-        { success: false, error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
     }
 
     // Delete all 2FA related data for the user

@@ -112,8 +112,7 @@ const nextConfig: NextConfig = {
           // Restrict browser features and APIs
           {
             key: "Permissions-Policy",
-            value:
-              "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
           },
           // Content Security Policy
           {

@@ -171,8 +171,7 @@ const Hero: React.FC<HeroProps> = (props) => {
               <h1
                 className={`${styles.fontDisplay} text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 leading-tight text-gray-900 text-center lg:text-left`}
               >
-                {brideName} <span className="text-amber-500">&</span>{" "}
-                {groomName}
+                {brideName} <span className="text-amber-500">&</span> {groomName}
               </h1>
 
               <div

@@ -1,14 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Heart,
-  Calendar,
-  MapPin,
-  Mail,
-  Instagram,
-  Facebook,
-} from "lucide-react";
+import { Heart, Calendar, MapPin, Mail, Instagram, Facebook } from "lucide-react";
 import Image from "next/image";
 
 interface WeddingPageFooterProps {
@@ -85,8 +78,8 @@ export default function WeddingPageFooter({
               </h3>
             </div>
             <p className="text-gray-600 text-sm">
-              Thank you for being part of our special day. Your love and support
-              mean the world to us.
+              Thank you for being part of our special day. Your love and support mean the world to
+              us.
             </p>
           </motion.div>
 
@@ -97,9 +90,7 @@ export default function WeddingPageFooter({
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-center md:text-left"
           >
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">
-              Wedding Details
-            </h4>
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">Wedding Details</h4>
             <div className="space-y-3">
               {weddingDate && (
                 <div className="flex items-center justify-center md:justify-start space-x-2 text-gray-600">
@@ -123,9 +114,7 @@ export default function WeddingPageFooter({
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-center md:text-left"
           >
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">
-              Get In Touch
-            </h4>
+            <h4 className="text-lg font-semibold text-gray-800 mb-4">Get In Touch</h4>
             <div className="space-y-3">
               {email && (
                 <div className="flex items-center justify-center md:justify-start space-x-2 text-gray-600">

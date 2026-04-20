@@ -171,9 +171,7 @@ export default function ThumbnailsAdminPage() {
                     onChange={(e) => onFile(t.id, e.target.files?.[0] || null)}
                   />
                   <Button
-                    onClick={() =>
-                      document.getElementById(`file-${t.id}`)?.click()
-                    }
+                    onClick={() => document.getElementById(`file-${t.id}`)?.click()}
                     isLoading={loadingId === t.id}
                   >
                     Upload
@@ -184,12 +182,7 @@ export default function ThumbnailsAdminPage() {
               <div className="mt-3">
                 {t.thumbnail ? (
                   <div className="relative h-40 w-full rounded overflow-hidden border">
-                    <Image
-                      src={t.thumbnail}
-                      alt={t.name}
-                      fill
-                      className="object-cover"
-                    />
+                    <Image src={t.thumbnail} alt={t.name} fill className="object-cover" />
                     <div className="absolute top-2 right-2">
                       {statusMap[t.id] === "success" && (
                         <div

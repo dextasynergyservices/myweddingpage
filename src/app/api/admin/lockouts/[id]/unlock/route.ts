@@ -6,10 +6,7 @@ import { requireAdmin, logAdminAction } from "@/lib/middleware/admin";
  * POST /api/admin/lockouts/[id]/unlock
  * Unlock a specific lockout
  */
-export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
     // Check admin authentication
     const adminCheck = await requireAdmin();
@@ -17,9 +14,7 @@ export async function POST(
       return adminCheck;
     }
 
-    const adminUser = await (
-      await import("@/lib/middleware/admin")
-    ).getAdminUser();
+    const adminUser = await (await import("@/lib/middleware/admin")).getAdminUser();
 
     const { id } = params;
 
@@ -29,10 +24,7 @@ export async function POST(
     });
 
     if (!lockout) {
-      return NextResponse.json(
-        { success: false, error: "Lockout not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ success: false, error: "Lockout not found" }, { status: 404 });
     }
 
     if (lockout.unlocked) {

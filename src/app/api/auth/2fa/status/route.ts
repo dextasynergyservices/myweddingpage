@@ -49,9 +49,6 @@ export async function GET() {
   } catch (error) {
     console.error("2FA status check error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to check 2FA status" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to check 2FA status" }, { status: 500 });
   }
 }

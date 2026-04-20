@@ -75,15 +75,11 @@ interface GrowthAnalytics {
 export default function BusinessIntelligencePage() {
   const { isDarkMode } = useTheme();
   const [revenueData, setRevenueData] = useState<RevenueData | null>(null);
-  const [engagementMetrics, setEngagementMetrics] =
-    useState<EngagementMetrics | null>(null);
-  const [growthAnalytics, setGrowthAnalytics] =
-    useState<GrowthAnalytics | null>(null);
+  const [engagementMetrics, setEngagementMetrics] = useState<EngagementMetrics | null>(null);
+  const [growthAnalytics, setGrowthAnalytics] = useState<GrowthAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<
-    "revenue" | "engagement" | "growth"
-  >("revenue");
+  const [activeTab, setActiveTab] = useState<"revenue" | "engagement" | "growth">("revenue");
 
   const fetchBusinessData = useCallback(async () => {
     try {
@@ -117,14 +113,12 @@ export default function BusinessIntelligencePage() {
           bounceRate: 50,
           conversionRate: 0,
           userGrowth: 0,
-          engagementByDay: (daily.series || []).map(
-            (d: { date: string; count: number }) => ({
-              date: d.date,
-              users: 0,
-              pageViews: d.count,
-              sessions: Math.round(d.count * 0.2),
-            })
-          ),
+          engagementByDay: (daily.series || []).map((d: { date: string; count: number }) => ({
+            date: d.date,
+            users: 0,
+            pageViews: d.count,
+            sessions: Math.round(d.count * 0.2),
+          })),
         };
 
         setEngagementMetrics(engagementData);
@@ -213,9 +207,7 @@ export default function BusinessIntelligencePage() {
   // Derived safe arrays to avoid runtime errors when API returns null/undefined
   const revenueMonths = revenueData?.revenueByMonth ?? [];
   const revenueLastSix = revenueMonths.slice(-6);
-  const maxRevenue = revenueMonths.length
-    ? Math.max(...revenueMonths.map((m) => m.revenue))
-    : 1;
+  const maxRevenue = revenueMonths.length ? Math.max(...revenueMonths.map((m) => m.revenue)) : 1;
 
   const tabs = [
     { id: "revenue", label: "Revenue Tracking", icon: DollarSign },
@@ -228,14 +220,10 @@ export default function BusinessIntelligencePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1
-            className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-          >
+          <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             Business Intelligence
           </h1>
-          <p
-            className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-          >
+          <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
             Revenue tracking, engagement metrics, and growth analytics
           </p>
         </div>
@@ -260,9 +248,7 @@ export default function BusinessIntelligencePage() {
                 : "bg-white text-gray-900 hover:bg-gray-50 border border-gray-300"
             } ${refreshing ? "opacity-50 cursor-not-allowed" : ""}`}
           >
-            <RefreshCw
-              className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
-            />
+            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
             Refresh
           </button>
         </div>
@@ -277,9 +263,7 @@ export default function BusinessIntelligencePage() {
           return (
             <button
               key={tab.id}
-              onClick={() =>
-                setActiveTab(tab.id as "revenue" | "engagement" | "growth")
-              }
+              onClick={() => setActiveTab(tab.id as "revenue" | "engagement" | "growth")}
               className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all ${
                 isActive
                   ? "bg-white text-gray-900 shadow-sm dark:bg-gray-700 dark:text-white"
@@ -316,9 +300,7 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Total Revenue
                     </p>
                     <p
@@ -343,9 +325,7 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Monthly Revenue
                     </p>
                     <p
@@ -374,28 +354,19 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Growth Rate
                     </p>
                     <p
                       className={`mt-1 text-2xl font-bold ${
-                        revenueData.growthRate >= 0
-                          ? "text-green-600"
-                          : "text-red-600"
+                        revenueData.growthRate >= 0 ? "text-green-600" : "text-red-600"
                       }`}
                     >
                       {revenueData.growthRate >= 0 ? "+" : ""}
                       {formatPercentage(safeNumber(revenueData.growthRate, 0))}
                     </p>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
-                      MoM:{" "}
-                      {formatPercentage(
-                        safeNumber(revenueData.monthOverMonth, 0)
-                      )}
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                      MoM: {formatPercentage(safeNumber(revenueData.monthOverMonth, 0))}
                     </p>
                   </div>
                   <TrendingUp className="h-8 w-8 text-purple-600" />
@@ -414,17 +385,13 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Top Template Revenue
                     </p>
                     <p
                       className={`mt-1 text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
                     >
-                      {formatCurrency(
-                        revenueData.topTemplates?.[0]?.revenue ?? 0
-                      )}
+                      {formatCurrency(revenueData.topTemplates?.[0]?.revenue ?? 0)}
                     </p>
                   </div>
                   <Target className="h-8 w-8 text-orange-600" />
@@ -452,10 +419,7 @@ export default function BusinessIntelligencePage() {
                 </h3>
                 <div className="space-y-4">
                   {revenueData.topTemplates.map((template, index) => (
-                    <div
-                      key={template.name}
-                      className="flex items-center justify-between"
-                    >
+                    <div key={template.name} className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ab862b] text-white text-sm font-semibold">
                           {index + 1}
@@ -469,16 +433,11 @@ export default function BusinessIntelligencePage() {
                           <p
                             className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
                           >
-                            {formatPercentage(
-                              safeNumber(template.percentage, 0)
-                            )}{" "}
-                            of total revenue
+                            {formatPercentage(safeNumber(template.percentage, 0))} of total revenue
                           </p>
                         </div>
                       </div>
-                      <p
-                        className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-                      >
+                      <p className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                         {formatCurrency(template.revenue)}
                       </p>
                     </div>
@@ -504,19 +463,12 @@ export default function BusinessIntelligencePage() {
                 </h3>
                 <div className="space-y-4">
                   {revenueLastSix.map((month) => (
-                    <div
-                      key={month.month}
-                      className="flex items-center justify-between"
-                    >
+                    <div key={month.month} className="flex items-center justify-between">
                       <div>
-                        <p
-                          className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
-                        >
+                        <p className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                           {month.month}
                         </p>
-                        <p
-                          className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                        >
+                        <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                           {formatNumber(month.users)} users
                         </p>
                       </div>
@@ -565,9 +517,7 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Total Users
                     </p>
                     <p
@@ -592,9 +542,7 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Active Users
                     </p>
                     <p
@@ -628,9 +576,7 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Page Views
                     </p>
                     <p
@@ -655,9 +601,7 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Avg Session
                     </p>
                     <p
@@ -691,44 +635,31 @@ export default function BusinessIntelligencePage() {
                 </h3>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span
-                      className={isDarkMode ? "text-gray-400" : "text-gray-600"}
-                    >
+                    <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>
                       Bounce Rate
                     </span>
                     <span
                       className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
                     >
-                      {formatPercentage(
-                        safeNumber(engagementMetrics.bounceRate, 0)
-                      )}
+                      {formatPercentage(safeNumber(engagementMetrics.bounceRate, 0))}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span
-                      className={isDarkMode ? "text-gray-400" : "text-gray-600"}
-                    >
+                    <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>
                       Conversion Rate
                     </span>
                     <span
                       className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
                     >
-                      {formatPercentage(
-                        safeNumber(engagementMetrics.conversionRate, 0)
-                      )}
+                      {formatPercentage(safeNumber(engagementMetrics.conversionRate, 0))}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span
-                      className={isDarkMode ? "text-gray-400" : "text-gray-600"}
-                    >
+                    <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>
                       User Growth
                     </span>
                     <span className={`font-semibold text-green-600`}>
-                      +
-                      {formatPercentage(
-                        safeNumber(engagementMetrics.userGrowth, 0)
-                      )}
+                      +{formatPercentage(safeNumber(engagementMetrics.userGrowth, 0))}
                     </span>
                   </div>
                 </div>
@@ -753,39 +684,34 @@ export default function BusinessIntelligencePage() {
                 <div className="space-y-3">
                   {engagementMetrics.engagementByDay
                     ?.slice(-7)
-                    .map(
-                      (day: (typeof engagementMetrics.engagementByDay)[0]) => (
-                        <div
-                          key={day.date}
-                          className="flex items-center justify-between"
-                        >
-                          <div>
-                            <p
-                              className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
-                            >
-                              {new Date(day.date).toLocaleDateString()}
-                            </p>
-                            <p
-                              className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                            >
-                              {formatNumber(day.sessions)} sessions
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p
-                              className={`text-sm font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-                            >
-                              {formatNumber(day.users)} users
-                            </p>
-                            <p
-                              className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                            >
-                              {formatNumber(day.pageViews)} views
-                            </p>
-                          </div>
+                    .map((day: (typeof engagementMetrics.engagementByDay)[0]) => (
+                      <div key={day.date} className="flex items-center justify-between">
+                        <div>
+                          <p
+                            className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                          >
+                            {new Date(day.date).toLocaleDateString()}
+                          </p>
+                          <p
+                            className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                          >
+                            {formatNumber(day.sessions)} sessions
+                          </p>
                         </div>
-                      )
-                    )}
+                        <div className="text-right">
+                          <p
+                            className={`text-sm font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                          >
+                            {formatNumber(day.users)} users
+                          </p>
+                          <p
+                            className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                          >
+                            {formatNumber(day.pageViews)} views
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </motion.div>
             </div>
@@ -828,17 +754,13 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Retention Rate
                     </p>
                     <p
                       className={`mt-1 text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
                     >
-                      {formatPercentage(
-                        safeNumber(growthAnalytics.retentionRate, 0)
-                      )}
+                      {formatPercentage(safeNumber(growthAnalytics.retentionRate, 0))}
                     </p>
                   </div>
                   <Users className="h-8 w-8 text-blue-600" />
@@ -857,15 +779,11 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Churn Rate
                     </p>
                     <p className={`mt-1 text-2xl font-bold text-red-600`}>
-                      {formatPercentage(
-                        safeNumber(growthAnalytics.churnRate, 0)
-                      )}
+                      {formatPercentage(safeNumber(growthAnalytics.churnRate, 0))}
                     </p>
                   </div>
                   <TrendingUp className="h-8 w-8 text-red-600" />
@@ -884,9 +802,7 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Lifetime Value
                     </p>
                     <p
@@ -911,9 +827,7 @@ export default function BusinessIntelligencePage() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                       Growth Rate
                     </p>
                     <p className={`mt-1 text-2xl font-bold text-green-600`}>
@@ -944,56 +858,52 @@ export default function BusinessIntelligencePage() {
                   User Acquisition Channels
                 </h3>
                 <div className="space-y-4">
-                  {Object.entries(growthAnalytics.userAcquisition).map(
-                    ([channel, count]) => (
-                      <div
-                        key={channel}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-3 h-3 rounded-full ${
-                              channel === "organic"
-                                ? "bg-green-500"
-                                : channel === "referral"
-                                  ? "bg-blue-500"
-                                  : channel === "social"
-                                    ? "bg-purple-500"
-                                    : "bg-orange-500"
-                            }`}
-                          />
-                          <span
-                            className={`capitalize ${isDarkMode ? "text-white" : "text-gray-900"}`}
-                          >
-                            {channel}
-                          </span>
-                        </div>
-                        <div className="text-right">
-                          <span
-                            className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-                          >
-                            {formatNumber(count)}
-                          </span>
-                          <span
-                            className={`text-sm ml-2 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                          >
-                            (
-                            {formatPercentage(
-                              safeNumber(
-                                (count /
-                                  Object.values(
-                                    growthAnalytics.userAcquisition
-                                  ).reduce((a, b) => a + b, 0)) *
-                                  100,
-                                0
-                              )
-                            )}
-                            )
-                          </span>
-                        </div>
+                  {Object.entries(growthAnalytics.userAcquisition).map(([channel, count]) => (
+                    <div key={channel} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-3 h-3 rounded-full ${
+                            channel === "organic"
+                              ? "bg-green-500"
+                              : channel === "referral"
+                                ? "bg-blue-500"
+                                : channel === "social"
+                                  ? "bg-purple-500"
+                                  : "bg-orange-500"
+                          }`}
+                        />
+                        <span
+                          className={`capitalize ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                        >
+                          {channel}
+                        </span>
                       </div>
-                    )
-                  )}
+                      <div className="text-right">
+                        <span
+                          className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                        >
+                          {formatNumber(count)}
+                        </span>
+                        <span
+                          className={`text-sm ml-2 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+                        >
+                          (
+                          {formatPercentage(
+                            safeNumber(
+                              (count /
+                                Object.values(growthAnalytics.userAcquisition).reduce(
+                                  (a, b) => a + b,
+                                  0
+                                )) *
+                                100,
+                              0
+                            )
+                          )}
+                          )
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
 
@@ -1014,39 +924,31 @@ export default function BusinessIntelligencePage() {
                   Growth Metrics (Last 6 Months)
                 </h3>
                 <div className="space-y-4">
-                  {growthAnalytics.growthMetrics
-                    .slice(-6)
-                    .map((metric, idx) => (
-                      <div
-                        key={`${metric.period}-${metric.newUsers}-${idx}`}
-                        className="flex items-center justify-between"
-                      >
-                        <div>
-                          <p
-                            className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
-                          >
-                            {metric.period}
-                          </p>
-                          <p
-                            className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                          >
-                            {formatNumber(metric.retainedUsers)} retained
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p
-                            className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-                          >
-                            {formatNumber(metric.newUsers)} new
-                          </p>
-                          <p
-                            className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                          >
-                            {formatCurrency(metric.revenue)}
-                          </p>
-                        </div>
+                  {growthAnalytics.growthMetrics.slice(-6).map((metric, idx) => (
+                    <div
+                      key={`${metric.period}-${metric.newUsers}-${idx}`}
+                      className="flex items-center justify-between"
+                    >
+                      <div>
+                        <p className={`font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                          {metric.period}
+                        </p>
+                        <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                          {formatNumber(metric.retainedUsers)} retained
+                        </p>
                       </div>
-                    ))}
+                      <div className="text-right">
+                        <p
+                          className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                        >
+                          {formatNumber(metric.newUsers)} new
+                        </p>
+                        <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                          {formatCurrency(metric.revenue)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </motion.div>
             </div>

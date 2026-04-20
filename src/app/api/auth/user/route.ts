@@ -27,9 +27,6 @@ export async function GET(req: Request) {
     return NextResponse.json(user);
   } catch (err) {
     console.error("Error fetching user:", err);
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

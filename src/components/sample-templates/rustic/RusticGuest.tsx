@@ -42,9 +42,7 @@ export default function RusticGuest(props: RusticGuestProps) {
 
     setLoadingComments(true);
     try {
-      const response = await fetch(
-        `/api/guests/comments?slug=${encodeURIComponent(slug)}`
-      );
+      const response = await fetch(`/api/guests/comments?slug=${encodeURIComponent(slug)}`);
       if (response.ok) {
         const commentsData = await response.json();
         setMessages(commentsData);
@@ -80,9 +78,7 @@ export default function RusticGuest(props: RusticGuestProps) {
     }
 
     if (!slug) {
-      toast.error(
-        "Unable to identify wedding page. Please refresh and try again."
-      );
+      toast.error("Unable to identify wedding page. Please refresh and try again.");
       return;
     }
 
@@ -113,9 +109,7 @@ export default function RusticGuest(props: RusticGuestProps) {
 
       if (response.ok) {
         toast.dismiss(loadingToast);
-        toast.success(
-          "Thank you for your message! It will be visible after approval."
-        );
+        toast.success("Thank you for your message! It will be visible after approval.");
         setNewMessage("");
         setGuestName("");
         fetchComments();
@@ -135,9 +129,7 @@ export default function RusticGuest(props: RusticGuestProps) {
   return (
     <div
       className={`rounded-3xl p-12 shadow-lg border mb-16 ${
-        isDarkMode
-          ? "bg-slate-800 border-slate-700"
-          : "bg-white border-slate-100"
+        isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
       }`}
     >
       <div className="text-center mb-12">
@@ -149,9 +141,7 @@ export default function RusticGuest(props: RusticGuestProps) {
           Wedding Guestbook
         </h2>
         <div className="w-24 h-1 bg-gradient-to-r from-indigo-600 to-purple-600 mx-auto rounded-full mb-6"></div>
-        <p
-          className={`text-lg font-light ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-        >
+        <p className={`text-lg font-light ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
           Leave us a message and share in our joy!
         </p>
       </div>
@@ -223,17 +213,14 @@ export default function RusticGuest(props: RusticGuestProps) {
       {/* Messages */}
       {messages.length === 0 ? (
         <div className="text-center py-12">
-          <p
-            className={`text-lg ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-          >
+          <p className={`text-lg ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
             No messages yet. Be the first to leave a message!
           </p>
         </div>
       ) : (
         <div className="space-y-8">
           {messages.map((message) => {
-            const dateString =
-              message.created_at || message.date || new Date().toISOString();
+            const dateString = message.created_at || message.date || new Date().toISOString();
             const messageDate = new Date(dateString);
             const formattedDate = messageDate.toLocaleDateString("en-US", {
               month: "short",
@@ -256,9 +243,7 @@ export default function RusticGuest(props: RusticGuestProps) {
                   </h3>
                   <span
                     className={`text-sm px-3 py-1 rounded-full ${
-                      isDarkMode
-                        ? "text-slate-400 bg-slate-600"
-                        : "text-slate-500 bg-white"
+                      isDarkMode ? "text-slate-400 bg-slate-600" : "text-slate-500 bg-white"
                     }`}
                   >
                     {formattedDate}

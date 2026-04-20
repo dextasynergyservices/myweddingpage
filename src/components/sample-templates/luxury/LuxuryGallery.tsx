@@ -28,9 +28,7 @@ export default function LuxuryGallery(props: LuxuryGalleryProps) {
   const media = props.gallery || props.galleryPhotos || [];
 
   const filteredMedia =
-    selectedCategory === "all"
-      ? media
-      : media.filter((item) => item.category === selectedCategory);
+    selectedCategory === "all" ? media : media.filter((item) => item.category === selectedCategory);
 
   const handleMediaClick = (item: GalleryMedia, index: number) => {
     setSelectedMedia(item);
@@ -49,9 +47,7 @@ export default function LuxuryGallery(props: LuxuryGalleryProps) {
   return (
     <div
       className={`rounded-3xl p-12 shadow-lg border mb-16 ${
-        isDarkMode
-          ? "bg-slate-800 border-slate-700"
-          : "bg-white border-slate-100"
+        isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
       }`}
     >
       <div className="text-center mb-12">
@@ -87,9 +83,7 @@ export default function LuxuryGallery(props: LuxuryGalleryProps) {
 
       {filteredMedia.length === 0 ? (
         <div className="text-center py-12">
-          <p
-            className={`text-lg ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-          >
+          <p className={`text-lg ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
             No media found in this category
           </p>
         </div>
@@ -132,11 +126,7 @@ export default function LuxuryGallery(props: LuxuryGalleryProps) {
                 {item.type === "VIDEO" && (
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="bg-black/50 rounded-full p-4">
-                      <svg
-                        className="h-8 w-8 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
+                      <svg className="h-8 w-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z" />
                       </svg>
                     </div>

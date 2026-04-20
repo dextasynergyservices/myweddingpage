@@ -26,14 +26,9 @@ const HowToFAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section
-      id="faq"
-      className={`py-16 px-6 ${isDarkMode ? "bg-[#000000]/5" : " bg-white"}`}
-    >
+    <section id="faq" className={`py-16 px-6 ${isDarkMode ? "bg-[#000000]/5" : " bg-white"}`}>
       <div className="max-w-3xl mx-auto">
-        <h2
-          className={`text-3xl font-bold mb-10 ${isDarkMode ? "text-white" : "text-slate-900"}`}
-        >
+        <h2 className={`text-3xl font-bold mb-10 ${isDarkMode ? "text-white" : "text-slate-900"}`}>
           Frequently Asked Questions
         </h2>
         <div className="space-y-4">
@@ -57,9 +52,7 @@ const HowToFAQ = () => {
                 />
               </button>
               {openIndex === index && (
-                <div
-                  className={`px-4 pb-4 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
-                >
+                <div className={`px-4 pb-4 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
                   {faq.a}
                 </div>
               )}

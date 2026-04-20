@@ -22,11 +22,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
 } from "lucide-react";
-import type {
-  UserCustomization,
-  ColorScheme,
-  FontScheme,
-} from "@/types/customization";
+import type { UserCustomization, ColorScheme, FontScheme } from "@/types/customization";
 import { DEFAULT_CUSTOMIZATION } from "@/types/customization";
 import { PresetSelector } from "@/components/customization";
 import { CustomColorPicker } from "@/components/customization";
@@ -35,11 +31,7 @@ import { loadFontsFromScheme } from "@/lib/font-utils";
 import { DynamicTemplateRenderer } from "@/components/DynamicTemplateRenderer";
 import { injectCSSVariables } from "@/lib/css-variable-injection";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import {
-  Skeleton,
-  SkeletonColorPicker,
-  SkeletonFontPicker,
-} from "@/components/ui/Skeleton";
+import { Skeleton, SkeletonColorPicker, SkeletonFontPicker } from "@/components/ui/Skeleton";
 import { KeyboardShortcutsHelp } from "@/components/ui/KeyboardShortcutsHelp";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { toast } from "sonner";
@@ -139,8 +131,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
     // Otherwise, use DEFAULT_CUSTOMIZATION
     return DEFAULT_CUSTOMIZATION;
   });
-  const [activeSubTab, setActiveSubTab] =
-    useState<CustomizationSubTab>("presets");
+  const [activeSubTab, setActiveSubTab] = useState<CustomizationSubTab>("presets");
   const [saving, setSaving] = useState(false);
   const [showMobileSheet, setShowMobileSheet] = useState(false);
   const [showFullPreview, setShowFullPreview] = useState(false);
@@ -196,11 +187,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
       containerIds.forEach((containerId) => {
         const element = document.getElementById(containerId);
         if (element) {
-          injectCSSVariables(
-            containerId,
-            customization.colors,
-            customization.fonts
-          );
+          injectCSSVariables(containerId, customization.colors, customization.fonts);
         }
       });
     }
@@ -219,8 +206,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (hasChanges) {
         e.preventDefault();
-        e.returnValue =
-          "You have unsaved changes. Are you sure you want to leave?";
+        e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
         return e.returnValue;
       }
     };
@@ -296,11 +282,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
     }));
   };
 
-  const handlePresetSelect = (
-    presetId: string,
-    colors: ColorScheme,
-    fonts: FontScheme
-  ) => {
+  const handlePresetSelect = (presetId: string, colors: ColorScheme, fonts: FontScheme) => {
     setCustomization({
       mode: "preset",
       presetId,
@@ -344,8 +326,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
       toast.success("Customization saved successfully! 🎨");
     } catch (error) {
       console.error("Failed to save customization:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Please try again.";
+      const errorMessage = error instanceof Error ? error.message : "Please try again.";
 
       // Revert optimistic update on failure
       setHasChanges(true);
@@ -355,12 +336,8 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
         retryCount < MAX_RETRIES &&
         (error instanceof TypeError || errorMessage.includes("fetch"))
       ) {
-        toast.error(
-          `Failed to save. Retrying... (${retryCount + 1}/${MAX_RETRIES})`
-        );
-        await new Promise((resolve) =>
-          setTimeout(resolve, 1000 * (retryCount + 1))
-        ); // Exponential backoff
+        toast.error(`Failed to save. Retrying... (${retryCount + 1}/${MAX_RETRIES})`);
+        await new Promise((resolve) => setTimeout(resolve, 1000 * (retryCount + 1))); // Exponential backoff
         return handleSave(retryCount + 1);
       }
 
@@ -445,14 +422,10 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
         >
           {/* Header */}
           <div className="border-b border-gray-200 p-6 dark:border-gray-700">
-            <h2
-              className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-black"}`}
-            >
+            <h2 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-black"}`}>
               Customize
             </h2>
-            <p
-              className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-black"}`}
-            >
+            <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-black"}`}>
               Personalize colors and fonts
             </p>
           </div>
@@ -519,9 +492,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                       {tab.description}
                     </div>
                   </div>
-                  {isActive && (
-                    <ChevronRight className="h-4 w-4 text-primary" />
-                  )}
+                  {isActive && <ChevronRight className="h-4 w-4 text-primary" />}
                 </button>
               );
             })}
@@ -544,11 +515,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                       <>
                         <div className="grid grid-cols-2 gap-4">
                           {[1, 2, 3, 4].map((i) => (
-                            <Skeleton
-                              key={i}
-                              variant="rectangular"
-                              height="8rem"
-                            />
+                            <Skeleton key={i} variant="rectangular" height="8rem" />
                           ))}
                         </div>
                       </>
@@ -562,11 +529,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                       <PresetSelector
                         selectedPresetId={customization.presetId}
                         onSelect={(preset) =>
-                          handlePresetSelect(
-                            preset.id,
-                            preset.colors,
-                            preset.fonts
-                          )
+                          handlePresetSelect(preset.id, preset.colors, preset.fonts)
                         }
                       />
                     )}
@@ -645,12 +608,8 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
         </motion.div>
 
         {/* Right Panel: Live Preview */}
-        <div
-          className={`flex flex-1 flex-col ${isDarkMode ? "bg-gray-900" : "bg-white"}`}
-        >
-          <div
-            className={`border-b p-4 ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}
-          >
+        <div className={`flex flex-1 flex-col ${isDarkMode ? "bg-gray-900" : "bg-white"}`}>
+          <div className={`border-b p-4 ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {/* Collapse/Expand Button */}
@@ -662,9 +621,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                       : "bg-white text-black hover:bg-gray-50"
                   }`}
                   title={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
-                  aria-label={
-                    sidebarCollapsed ? "Show sidebar" : "Hide sidebar"
-                  }
+                  aria-label={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
                 >
                   {sidebarCollapsed ? (
                     <PanelLeftOpen className="h-5 w-5" />
@@ -672,9 +629,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                     <PanelLeftClose className="h-5 w-5" />
                   )}
                 </button>
-                <h3
-                  className={`font-semibold ${isDarkMode ? "text-white" : "text-black"}`}
-                >
+                <h3 className={`font-semibold ${isDarkMode ? "text-white" : "text-black"}`}>
                   Live Preview
                 </h3>
               </div>
@@ -698,9 +653,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                 <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/80 backdrop-blur-sm">
                   <div className="text-center">
                     <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                    <p className="mt-3 text-sm font-medium text-gray-600">
-                      Loading fonts...
-                    </p>
+                    <p className="mt-3 text-sm font-medium text-gray-600">Loading fonts...</p>
                   </div>
                 </div>
               )}
@@ -727,9 +680,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
       <div className="hidden h-full flex-col md:flex lg:hidden">
         {/* Header */}
         <div className="border-b border-gray-200 p-4 dark:border-gray-700">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-            Customize Template
-          </h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Customize Template</h2>
         </div>
 
         {/* Mode Toggle */}
@@ -805,11 +756,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                       {activeSubTab === "presets" && (
                         <div className="grid grid-cols-2 gap-4">
                           {[1, 2, 3, 4].map((i) => (
-                            <Skeleton
-                              key={i}
-                              variant="rectangular"
-                              height="8rem"
-                            />
+                            <Skeleton key={i} variant="rectangular" height="8rem" />
                           ))}
                         </div>
                       )}
@@ -822,11 +769,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                         <PresetSelector
                           selectedPresetId={customization.presetId}
                           onSelect={(preset) =>
-                            handlePresetSelect(
-                              preset.id,
-                              preset.colors,
-                              preset.fonts
-                            )
+                            handlePresetSelect(preset.id, preset.colors, preset.fonts)
                           }
                         />
                       )}
@@ -864,15 +807,11 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                   <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/80 backdrop-blur-sm">
                     <div className="text-center">
                       <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                      <p className="mt-3 text-sm font-medium text-gray-600">
-                        Loading fonts...
-                      </p>
+                      <p className="mt-3 text-sm font-medium text-gray-600">Loading fonts...</p>
                     </div>
                   </div>
                 )}
-                <h3
-                  className={`mb-4 font-semibold ${isDarkMode ? "text-white" : "text-black"}`}
-                >
+                <h3 className={`mb-4 font-semibold ${isDarkMode ? "text-white" : "text-black"}`}>
                   Preview
                 </h3>
                 <div className="bg-white rounded-lg overflow-hidden">
@@ -920,9 +859,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
           ============================================================================ */}
       <div className="flex h-full flex-col md:hidden">
         {/* Full-screen Preview */}
-        <div
-          className={`flex-1 overflow-auto p-4 ${isDarkMode ? "bg-gray-900" : "bg-white"}`}
-        >
+        <div className={`flex-1 overflow-auto p-4 ${isDarkMode ? "bg-gray-900" : "bg-white"}`}>
           <div
             className={`relative rounded-lg border ${isDarkMode ? "border-gray-700 bg-gray-900" : "border-gray-200 bg-white"} p-6`}
           >
@@ -931,9 +868,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
               <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/80 backdrop-blur-sm">
                 <div className="text-center">
                   <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                  <p className="mt-3 text-sm font-medium text-gray-600">
-                    Loading fonts...
-                  </p>
+                  <p className="mt-3 text-sm font-medium text-gray-600">Loading fonts...</p>
                 </div>
               </div>
             )}
@@ -1000,9 +935,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
 
                 {/* Sheet Header */}
                 <div className="flex items-center justify-between border-b border-gray-200 px-4 pb-4 dark:border-gray-700">
-                  <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                    Customize
-                  </h2>
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Customize</h2>
                   <button
                     onClick={() => setShowMobileSheet(false)}
                     className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600"
@@ -1048,9 +981,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                         className={`border-b ${isDarkMode ? "border-gray-700" : "border-gray-100"}`}
                       >
                         <button
-                          onClick={() =>
-                            setActiveSubTab(isActive ? activeSubTab : tab.id)
-                          }
+                          onClick={() => setActiveSubTab(isActive ? activeSubTab : tab.id)}
                           className="flex w-full items-center gap-3 p-4 text-left"
                         >
                           <Icon
@@ -1093,28 +1024,18 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                                     {activeSubTab === "presets" && (
                                       <div className="grid grid-cols-2 gap-4">
                                         {[1, 2].map((i) => (
-                                          <Skeleton
-                                            key={i}
-                                            variant="rectangular"
-                                            height="6rem"
-                                          />
+                                          <Skeleton key={i} variant="rectangular" height="6rem" />
                                         ))}
                                       </div>
                                     )}
-                                    {activeSubTab === "colors" && (
-                                      <SkeletonColorPicker />
-                                    )}
-                                    {activeSubTab === "fonts" && (
-                                      <SkeletonFontPicker />
-                                    )}
+                                    {activeSubTab === "colors" && <SkeletonColorPicker />}
+                                    {activeSubTab === "fonts" && <SkeletonFontPicker />}
                                   </div>
                                 ) : (
                                   <>
                                     {activeSubTab === "presets" && (
                                       <PresetSelector
-                                        selectedPresetId={
-                                          customization.presetId
-                                        }
+                                        selectedPresetId={customization.presetId}
                                         onSelect={(preset) => {
                                           handlePresetSelect(
                                             preset.id,
@@ -1201,9 +1122,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
             >
               {/* Modal Header */}
               <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
-                <h2 className="text-xl font-bold text-gray-900">
-                  Full Preview
-                </h2>
+                <h2 className="text-xl font-bold text-gray-900">Full Preview</h2>
                 <button
                   onClick={() => setShowFullPreview(false)}
                   className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
@@ -1391,9 +1310,8 @@ const PreviewContent: React.FC<PreviewContentProps> = ({
               color: colors.text,
             }}
           >
-            This is a preview of how your body text will look with your selected
-            fonts and colors. The heading above uses your heading font, and this
-            paragraph uses your body font.
+            This is a preview of how your body text will look with your selected fonts and colors.
+            The heading above uses your heading font, and this paragraph uses your body font.
           </p>
           <p
             className="mt-3 text-center text-lg italic md:text-xl"

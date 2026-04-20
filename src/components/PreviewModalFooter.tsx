@@ -6,9 +6,7 @@ interface PreviewModalFooterProps {
   isModal?: boolean;
 }
 
-export default function PreviewModalFooter({
-  isModal = false,
-}: PreviewModalFooterProps) {
+export default function PreviewModalFooter({ isModal = false }: PreviewModalFooterProps) {
   const handleCloseModal = () => {
     window.parent?.postMessage({ action: "close-modal" }, "*");
   };
@@ -18,9 +16,7 @@ export default function PreviewModalFooter({
   return (
     <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-600">
-          This wedding page is no longer live
-        </p>
+        <p className="text-sm text-gray-600">This wedding page is no longer live</p>
         <div className="flex space-x-3">
           <button
             onClick={handleCloseModal}

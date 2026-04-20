@@ -8,10 +8,7 @@ import Modal from "@/components/ui/Modal";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { uploadToApiWithProgress } from "@/lib/upload-with-progress";
-import {
-  useUploadProgress,
-  UploadProgress,
-} from "@/components/ui/UploadProgress";
+import { useUploadProgress, UploadProgress } from "@/components/ui/UploadProgress";
 import { useCSRFToken } from "@/hooks/useCSRFToken";
 import {
   getStoryComponent,
@@ -30,10 +27,7 @@ interface EditWeddingDetailsModalProps {
   };
   templateId: string;
   weddingPage?: unknown;
-  onSave: (
-    sectionId: string,
-    content: Record<string, unknown>
-  ) => Promise<void>;
+  onSave: (sectionId: string, content: Record<string, unknown>) => Promise<void>;
   isSaving: boolean;
 }
 
@@ -70,21 +64,12 @@ const EditWeddingDetailsModal = ({
   const progressHandler = useUploadProgress();
 
   // Story-specific state
-  const [storyFormData, setStoryFormData] = useState<Record<string, unknown>>(
-    {}
-  );
-  const [storyImagePreviews, setStoryImagePreviews] = useState<
-    Record<string, string>
-  >({});
+  const [storyFormData, setStoryFormData] = useState<Record<string, unknown>>({});
+  const [storyImagePreviews, setStoryImagePreviews] = useState<Record<string, string>>({});
 
   // Get story component configuration
-  const [storyConfig, setStoryConfig] = useState<Record<
-    string,
-    unknown
-  > | null>(null);
-  const [storyFormFields, setStoryFormFields] = useState<
-    Record<string, unknown>[]
-  >([]);
+  const [storyConfig, setStoryConfig] = useState<Record<string, unknown> | null>(null);
+  const [storyFormFields, setStoryFormFields] = useState<Record<string, unknown>[]>([]);
 
   // Load story configuration when modal opens
   useEffect(() => {
@@ -126,20 +111,14 @@ const EditWeddingDetailsModal = ({
 
           if (section.type === "STORY" && storyConfig) {
             // Initialize story form data with template defaults and existing content
-            const initialStoryData = await createInitialStoryData(
-              templateId,
-              content
-            );
+            const initialStoryData = await createInitialStoryData(templateId, content);
             setStoryFormData(initialStoryData);
 
             // Set up image previews for story images
             const imagePreviews: Record<string, string> = {};
             storyFormFields.forEach((field) => {
               if (field.type === "file") {
-                const value = getNestedValue(
-                  initialStoryData,
-                  field.key as string
-                );
+                const value = getNestedValue(initialStoryData, field.key as string);
                 if (value && typeof value === "string") {
                   imagePreviews[field.key as string] = value;
                 }
@@ -182,10 +161,7 @@ const EditWeddingDetailsModal = ({
   const getNestedValue = (obj: Record<string, unknown>, path: string) => {
     return path
       .split(".")
-      .reduce(
-        (current: unknown, key) => (current as Record<string, unknown>)?.[key],
-        obj
-      );
+      .reduce((current: unknown, key) => (current as Record<string, unknown>)?.[key], obj);
   };
 
   const handleImageUpload = async (
@@ -227,18 +203,14 @@ const EditWeddingDetailsModal = ({
         // Add upload to progress tracker
         progressHandler.addUpload(file.name, file.size);
 
-        const data = await uploadToApiWithProgress(
-          "/api/upload-image",
-          uploadData,
-          {
-            onProgress: (loaded, total, speed) => {
-              progressHandler.updateProgress(file.name, loaded, speed);
-            },
-            headers: {
-              "x-csrf-token": csrfToken || "",
-            },
-          }
-        );
+        const data = await uploadToApiWithProgress("/api/upload-image", uploadData, {
+          onProgress: (loaded, total, speed) => {
+            progressHandler.updateProgress(file.name, loaded, speed);
+          },
+          headers: {
+            "x-csrf-token": csrfToken || "",
+          },
+        });
 
         const uploadResult = data as { secure_url: string };
         const imageUrl = uploadResult.secure_url;
@@ -293,9 +265,7 @@ const EditWeddingDetailsModal = ({
           });
         }
 
-        toast.success(
-          "Image uploaded successfully! Click 'Update Section' to save it."
-        );
+        toast.success("Image uploaded successfully! Click 'Update Section' to save it.");
       } catch (error) {
         console.error("Error uploading image:", error);
         progressHandler.setUploadError(
@@ -348,10 +318,7 @@ const EditWeddingDetailsModal = ({
         if (storyConfig) {
           // Convert form data to the structure expected by the component
           content = convertFormDataForComponent(storyFormData);
-          console.log(
-            "EditWeddingDetailsModal - Saving STORY content:",
-            content
-          );
+          console.log("EditWeddingDetailsModal - Saving STORY content:", content);
         } else {
           // Fallback to simple story format
           content = {
@@ -361,18 +328,11 @@ const EditWeddingDetailsModal = ({
             imageUrl: formData.storyImage,
             storyImage: formData.storyImage,
           };
-          console.log(
-            "EditWeddingDetailsModal - Saving STORY content (fallback):",
-            content
-          );
+          console.log("EditWeddingDetailsModal - Saving STORY content (fallback):", content);
         }
       }
 
-      console.log(
-        "EditWeddingDetailsModal - Calling onSave with:",
-        section.id,
-        content
-      );
+      console.log("EditWeddingDetailsModal - Calling onSave with:", section.id, content);
       await onSave(section.id, content);
       toast.success("Section updated successfully!");
     } catch (error) {
@@ -411,9 +371,7 @@ const EditWeddingDetailsModal = ({
   const renderStoryPreview = () => {
     if (section.type !== "STORY" || !storyConfig) return null;
 
-    const StoryComponent = storyConfig.component as React.ComponentType<
-      Record<string, unknown>
-    >;
+    const StoryComponent = storyConfig.component as React.ComponentType<Record<string, unknown>>;
     const previewProps = {
       ...(storyConfig.props as Record<string, unknown>),
       ...storyFormData,
@@ -441,9 +399,7 @@ const EditWeddingDetailsModal = ({
 
     return (
       <div className="space-y-4">
-        <h3 className="text-sm font-medium text-gray-700 mb-3">
-          Edit Story Content
-        </h3>
+        <h3 className="text-sm font-medium text-gray-700 mb-3">Edit Story Content</h3>
         {storyFormFields.map((field, index) => (
           <div key={index}>
             <label
@@ -453,15 +409,8 @@ const EditWeddingDetailsModal = ({
             </label>
             {field.type === "textarea" ? (
               <textarea
-                value={
-                  (getNestedValue(
-                    storyFormData,
-                    field.key as string
-                  ) as string) || ""
-                }
-                onChange={(e) =>
-                  handleStoryFieldChange(field.key as string, e.target.value)
-                }
+                value={(getNestedValue(storyFormData, field.key as string) as string) || ""}
+                onChange={(e) => handleStoryFieldChange(field.key as string, e.target.value)}
                 rows={4}
                 className={`w-full px-3 py-2 rounded-lg border text-sm ${
                   isDarkMode
@@ -520,15 +469,8 @@ const EditWeddingDetailsModal = ({
                     | "reset"
                     | "button"
                 }
-                value={
-                  (getNestedValue(
-                    storyFormData,
-                    field.key as string
-                  ) as string) || ""
-                }
-                onChange={(e) =>
-                  handleStoryFieldChange(field.key as string, e.target.value)
-                }
+                value={(getNestedValue(storyFormData, field.key as string) as string) || ""}
+                onChange={(e) => handleStoryFieldChange(field.key as string, e.target.value)}
                 className={`w-full px-3 py-2 rounded-lg border text-sm ${
                   isDarkMode
                     ? "bg-slate-700 border-slate-600 text-white"
@@ -549,9 +491,7 @@ const EditWeddingDetailsModal = ({
         className={`p-6 rounded-xl max-w-6xl mx-auto ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2
-            className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
-          >
+          <h2 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
             Edit {section.type === "STORY" ? "Story" : "Wedding"} Details
           </h2>
           <motion.button
@@ -663,9 +603,7 @@ const EditWeddingDetailsModal = ({
                     <input
                       type="text"
                       value={formData.venue}
-                      onChange={(e) =>
-                        setFormData({ ...formData, venue: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, venue: e.target.value })}
                       className={`w-full px-3 py-2 rounded-lg border text-sm ${
                         isDarkMode
                           ? "bg-slate-700 border-slate-600 text-white"
@@ -752,43 +690,31 @@ const EditWeddingDetailsModal = ({
                                 // Also update logo alt text in WeddingPage if logo URL exists
                                 if (formData.logoUrl) {
                                   try {
-                                    const logoResponse = await fetch(
-                                      "/api/wedding-pages/logo",
-                                      {
-                                        method: "POST",
-                                        credentials: "include",
-                                        headers: {
-                                          "Content-Type": "application/json",
-                                          "x-csrf-token": csrfToken || "",
-                                        },
-                                        body: JSON.stringify({
-                                          logoUrl: formData.logoUrl,
-                                          logoAlt: newAltText || "Wedding Logo",
-                                        }),
-                                      }
-                                    );
+                                    const logoResponse = await fetch("/api/wedding-pages/logo", {
+                                      method: "POST",
+                                      credentials: "include",
+                                      headers: {
+                                        "Content-Type": "application/json",
+                                        "x-csrf-token": csrfToken || "",
+                                      },
+                                      body: JSON.stringify({
+                                        logoUrl: formData.logoUrl,
+                                        logoAlt: newAltText || "Wedding Logo",
+                                      }),
+                                    });
 
                                     if (logoResponse.ok) {
-                                      console.log(
-                                        "Logo alt text updated successfully"
-                                      );
+                                      console.log("Logo alt text updated successfully");
                                     } else {
-                                      const errorText =
-                                        await logoResponse.text();
-                                      console.error(
-                                        "Failed to update logo alt text:",
-                                        {
-                                          status: logoResponse.status,
-                                          statusText: logoResponse.statusText,
-                                          error: errorText,
-                                        }
-                                      );
+                                      const errorText = await logoResponse.text();
+                                      console.error("Failed to update logo alt text:", {
+                                        status: logoResponse.status,
+                                        statusText: logoResponse.statusText,
+                                        error: errorText,
+                                      });
                                     }
                                   } catch (error) {
-                                    console.error(
-                                      "Error updating logo alt text:",
-                                      error
-                                    );
+                                    console.error("Error updating logo alt text:", error);
                                   }
                                 }
                               }}
@@ -814,9 +740,7 @@ const EditWeddingDetailsModal = ({
               whileTap={{ scale: 0.98 }}
               disabled={isSaving}
               className={`w-full px-4 py-2 rounded-lg text-white text-sm ${
-                isDarkMode
-                  ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-blue-600 hover:bg-blue-700"
+                isDarkMode ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-600 hover:bg-blue-700"
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {isSaving ? "Updating..." : "Update Section"}

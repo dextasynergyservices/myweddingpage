@@ -22,9 +22,7 @@ const NoWeddings = ({ isDarkMode, handleCreateWedding }: NoWeddingsProps) => {
       >
         No wedding pages yet
       </h3>
-      <p
-        className={`font-light mb-4 md:mb-6 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-      >
+      <p className={`font-light mb-4 md:mb-6 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
         Create your first wedding page to get started.
       </p>
       <button

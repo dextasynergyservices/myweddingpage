@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  Users,
-  CheckCircle,
-  XCircle,
-  Clock,
-  Edit,
-  Trash2,
-  Search,
-  UserPlus,
-} from "lucide-react";
+import { Users, CheckCircle, XCircle, Clock, Edit, Trash2, Search, UserPlus } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useCSRFToken } from "@/hooks/useCSRFToken";
 import axios from "axios";
@@ -141,8 +132,7 @@ const GuestManagement = () => {
     const matchesSearch =
       (guest.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
       (guest.email?.toLowerCase() || "").includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" || guest.rsvpStatus === statusFilter;
+    const matchesStatus = statusFilter === "all" || guest.rsvpStatus === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -220,9 +210,7 @@ const GuestManagement = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Check for duplicates
-    const duplicate = guests.some(
-      (g) => g.email === formData.email || g.phone === formData.phone
-    );
+    const duplicate = guests.some((g) => g.email === formData.email || g.phone === formData.phone);
 
     if (duplicate) {
       toast.error("Guest with this email or phone already exists");
@@ -294,13 +282,8 @@ const GuestManagement = () => {
 
       let updatedGuests;
       if (editingGuest) {
-        const response = await axios.put(
-          `/api/guests/${editingGuest.id}`,
-          guestData
-        );
-        updatedGuests = guests.map((g) =>
-          g.id === editingGuest.id ? response.data : g
-        );
+        const response = await axios.put(`/api/guests/${editingGuest.id}`, guestData);
+        updatedGuests = guests.map((g) => (g.id === editingGuest.id ? response.data : g));
         toast.success("Guest updated successfully");
       } else {
         const response = await axios.post("/api/guests", guestData);
@@ -329,9 +312,7 @@ const GuestManagement = () => {
           >
             Guest Management
           </h1>
-          <p
-            className={`text-sm sm:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-          >
+          <p className={`text-sm sm:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
             Manage your wedding guest list, RSVPs, and seating arrangements
           </p>
         </div>
@@ -383,9 +364,7 @@ const GuestManagement = () => {
                   type="text"
                   name="name"
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full border rounded-xl px-4 py-2 bg-transparent"
                 />
               </div>
@@ -397,9 +376,7 @@ const GuestManagement = () => {
                   type="email"
                   name="email"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full border rounded-xl px-4 py-2 bg-transparent"
                 />
               </div>
@@ -411,17 +388,13 @@ const GuestManagement = () => {
                   type="tel"
                   name="phone"
                   value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="w-full border rounded-xl px-4 py-2 bg-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm mb-1">
-                  Custom Invitation Message
-                </label>
+                <label className="block text-sm mb-1">Custom Invitation Message</label>
                 <textarea
                   value={customMessage}
                   onChange={(e) => setCustomMessage(e.target.value)}
@@ -439,9 +412,7 @@ const GuestManagement = () => {
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      tableAssignment: e.target.value
-                        ? parseInt(e.target.value)
-                        : undefined,
+                      tableAssignment: e.target.value ? parseInt(e.target.value) : undefined,
                     })
                   }
                   className="w-full border rounded-xl px-4 py-2 bg-transparent"
@@ -449,9 +420,7 @@ const GuestManagement = () => {
               </div>
 
               <div>
-                <label className="block text-sm mb-1">
-                  Invitation Card (Optional)
-                </label>
+                <label className="block text-sm mb-1">Invitation Card (Optional)</label>
                 <input
                   type="file"
                   accept="image/jpeg, image/png, image/gif, image/webp"
@@ -465,16 +434,9 @@ const GuestManagement = () => {
                         return;
                       }
                       if (
-                        ![
-                          "image/jpeg",
-                          "image/png",
-                          "image/gif",
-                          "image/webp",
-                        ].includes(file.type)
+                        !["image/jpeg", "image/png", "image/gif", "image/webp"].includes(file.type)
                       ) {
-                        toast.error(
-                          "Only JPEG, PNG, GIF, and WebP images are allowed"
-                        );
+                        toast.error("Only JPEG, PNG, GIF, and WebP images are allowed");
                         e.target.value = ""; // Clear the input
                         return;
                       }
@@ -514,9 +476,7 @@ const GuestManagement = () => {
                   type="checkbox"
                   id="plusOne"
                   checked={formData.plusOne}
-                  onChange={(e) =>
-                    setFormData({ ...formData, plusOne: e.target.checked })
-                  }
+                  onChange={(e) => setFormData({ ...formData, plusOne: e.target.checked })}
                   className="h-4 w-4 rounded"
                 />
                 <label htmlFor="plusOne" className="text-sm">
@@ -562,22 +522,19 @@ const GuestManagement = () => {
           },
           {
             title: "Attending",
-            value: guests.filter((g: Guest) => g.rsvpStatus === "ATTENDING")
-              .length,
+            value: guests.filter((g: Guest) => g.rsvpStatus === "ATTENDING").length,
             icon: CheckCircle,
             color: "from-emerald-500 to-teal-600",
           },
           {
             title: "Pending",
-            value: guests.filter((g: Guest) => g.rsvpStatus === "PENDING")
-              .length,
+            value: guests.filter((g: Guest) => g.rsvpStatus === "PENDING").length,
             icon: Clock,
             color: "from-amber-500 to-orange-600",
           },
           {
             title: "Declined",
-            value: guests.filter((g: Guest) => g.rsvpStatus === "DECLINED")
-              .length,
+            value: guests.filter((g: Guest) => g.rsvpStatus === "DECLINED").length,
             icon: XCircle,
             color: "from-red-500 to-pink-600",
           },
@@ -588,9 +545,7 @@ const GuestManagement = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             className={`rounded-3xl p-6 shadow-lg border ${
-              isDarkMode
-                ? "bg-slate-800 border-slate-700"
-                : "bg-white border-slate-100"
+              isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
             }`}
           >
             <div className="flex items-center justify-between">
@@ -662,18 +617,16 @@ const GuestManagement = () => {
           <table className="w-full">
             <thead className={isDarkMode ? "bg-slate-700" : "bg-slate-50"}>
               <tr>
-                {["Guest", "RSVP Status", "Table", "Meal", "Actions"].map(
-                  (title) => (
-                    <th
-                      key={title}
-                      className={`px-6 py-4 text-${title === "Actions" ? "right" : "left"} text-sm font-medium ${
-                        isDarkMode ? "text-slate-300" : "text-slate-700"
-                      }`}
-                    >
-                      {title}
-                    </th>
-                  )
-                )}
+                {["Guest", "RSVP Status", "Table", "Meal", "Actions"].map((title) => (
+                  <th
+                    key={title}
+                    className={`px-6 py-4 text-${title === "Actions" ? "right" : "left"} text-sm font-medium ${
+                      isDarkMode ? "text-slate-300" : "text-slate-700"
+                    }`}
+                  >
+                    {title}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
@@ -684,14 +637,10 @@ const GuestManagement = () => {
                   animate={{ opacity: 1 }}
                 >
                   <td className="px-6 py-4">
-                    <p
-                      className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
-                    >
+                    <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                       {guest.name}
                     </p>
-                    <p
-                      className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                    >
+                    <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                       {guest.email}
                     </p>
                   </td>
@@ -701,28 +650,17 @@ const GuestManagement = () => {
                     >
                       {getStatusIcon(guest.rsvpStatus)}
                       {guest.rsvpStatus
-                        ? guest.rsvpStatus.charAt(0) +
-                          guest.rsvpStatus.slice(1).toLowerCase()
+                        ? guest.rsvpStatus.charAt(0) + guest.rsvpStatus.slice(1).toLowerCase()
                         : "Pending"}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm">
-                    <span
-                      className={
-                        isDarkMode ? "text-slate-300" : "text-slate-700"
-                      }
-                    >
-                      {guest.tableAssignment
-                        ? `Table ${guest.tableAssignment}`
-                        : "Not assigned"}
+                    <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
+                      {guest.tableAssignment ? `Table ${guest.tableAssignment}` : "Not assigned"}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm">
-                    <span
-                      className={
-                        isDarkMode ? "text-slate-300" : "text-slate-700"
-                      }
-                    >
+                    <span className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
                       {guest.mealPreference || "Not selected"}
                     </span>
                   </td>
@@ -767,9 +705,7 @@ const GuestManagement = () => {
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <p
-                      className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
-                    >
+                    <p className={`font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                       {guest.name}
                     </p>
                     <span
@@ -777,43 +713,28 @@ const GuestManagement = () => {
                     >
                       {getStatusIcon(guest.rsvpStatus)}
                       {guest.rsvpStatus
-                        ? guest.rsvpStatus.charAt(0) +
-                          guest.rsvpStatus.slice(1).toLowerCase()
+                        ? guest.rsvpStatus.charAt(0) + guest.rsvpStatus.slice(1).toLowerCase()
                         : "Pending"}
                     </span>
                   </div>
-                  <p
-                    className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-3`}
-                  >
+                  <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"} mb-3`}>
                     {guest.email}
                   </p>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p
-                        className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
-                      >
+                      <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
                         Table
                       </p>
-                      <p
-                        className={
-                          isDarkMode ? "text-slate-300" : "text-slate-700"
-                        }
-                      >
+                      <p className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
                         {guest.tableAssignment || "Not assigned"}
                       </p>
                     </div>
                     <div>
-                      <p
-                        className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}
-                      >
+                      <p className={`text-xs ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
                         Meal
                       </p>
-                      <p
-                        className={
-                          isDarkMode ? "text-slate-300" : "text-slate-700"
-                        }
-                      >
+                      <p className={isDarkMode ? "text-slate-300" : "text-slate-700"}>
                         {guest.mealPreference || "Not selected"}
                       </p>
                     </div>

@@ -25,10 +25,7 @@ export async function POST(request: Request) {
       authToken: !!authToken,
       twilioPhoneNumber: !!twilioPhoneNumber,
     });
-    return NextResponse.json(
-      { error: "Twilio credentials not configured" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Twilio credentials not configured" }, { status: 500 });
   }
 
   try {
@@ -45,10 +42,7 @@ export async function POST(request: Request) {
 
     // Validate phone number format
     if (!/^\+?[1-9]\d{1,14}$/.test(to)) {
-      return NextResponse.json(
-        { error: "Invalid phone number format" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid phone number format" }, { status: 400 });
     }
 
     console.log("Attempting to connect to Twilio API...");
@@ -67,10 +61,7 @@ export async function POST(request: Request) {
     // Race between message sending and timeout
     const timeoutPromise = new Promise<never>((_, reject) => {
       setTimeout(
-        () =>
-          reject(
-            new Error("Twilio request timeout - network connectivity issue")
-          ),
+        () => reject(new Error("Twilio request timeout - network connectivity issue")),
         10000
       );
     });
@@ -91,10 +82,7 @@ export async function POST(request: Request) {
       const twilioError = error as TwilioError;
 
       // Handle specific network/DNS errors
-      if (
-        error.message.includes("EAI_AGAIN") ||
-        error.message.includes("getaddrinfo")
-      ) {
+      if (error.message.includes("EAI_AGAIN") || error.message.includes("getaddrinfo")) {
         return NextResponse.json(
           {
             error:
@@ -107,14 +95,10 @@ export async function POST(request: Request) {
       }
 
       // Handle timeout errors
-      if (
-        error.message.includes("timeout") ||
-        error.message.includes("Twilio request timeout")
-      ) {
+      if (error.message.includes("timeout") || error.message.includes("Twilio request timeout")) {
         return NextResponse.json(
           {
-            error:
-              "Twilio request timed out. WhatsApp service temporarily unavailable.",
+            error: "Twilio request timed out. WhatsApp service temporarily unavailable.",
             code: "timeout_error",
             details: "Request to Twilio API exceeded 10 second timeout",
           },

@@ -34,9 +34,7 @@ const DashboardSidebar = ({
       animate={{ width: collapsed ? 80 : 288 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className={`hidden md:block min-h-screen border-r relative ${
-        isDarkMode
-          ? "bg-slate-800 border-slate-700"
-          : "bg-white border-slate-200"
+        isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
       } ${collapsed ? "overflow-hidden" : ""}`}
     >
       {/* Collapse/Expand Button */}
@@ -50,11 +48,7 @@ const DashboardSidebar = ({
           }`}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <ChevronLeft className="h-4 w-4" />
-          )}
+          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </button>
       )}
 
@@ -127,9 +121,7 @@ const DashboardSidebar = ({
             key={item.id}
             onClick={() => {
               if (item.disabled) {
-                alert(
-                  item.disabledReason || "This feature is currently disabled."
-                );
+                alert(item.disabledReason || "This feature is currently disabled.");
                 return;
               }
               setActiveTab(item.id);

@@ -86,8 +86,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
               {/* Error Description */}
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                We&apos;re sorry, but something went wrong. Please try
-                refreshing the page or contact support if the problem persists.
+                We&apos;re sorry, but something went wrong. Please try refreshing the page or
+                contact support if the problem persists.
               </p>
 
               {/* Error Details (Development only) */}
@@ -98,8 +98,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   </h3>
                   <pre className="text-xs text-red-700 dark:text-red-300 overflow-auto max-h-40">
                     {this.state.error.toString()}
-                    {this.state.errorInfo &&
-                      this.state.errorInfo.componentStack}
+                    {this.state.errorInfo && this.state.errorInfo.componentStack}
                   </pre>
                 </div>
               )}
@@ -126,8 +125,7 @@ export class ErrorBoundary extends Component<Props, State> {
               {/* Support Info */}
               <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                  If this problem persists, please contact support with the
-                  error details above.
+                  If this problem persists, please contact support with the error details above.
                 </p>
               </div>
             </div>
@@ -160,8 +158,7 @@ export function SimpleErrorFallback({
             Error Loading Content
           </h3>
           <p className="text-sm text-red-700 dark:text-red-300 mb-3">
-            {error?.message ||
-              "Something went wrong while loading this section."}
+            {error?.message || "Something went wrong while loading this section."}
           </p>
           {resetError && (
             <button

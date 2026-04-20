@@ -48,10 +48,7 @@ export async function POST(request: NextRequest) {
 
     if (!logoUrl) {
       console.log("Logo API - No logo URL provided, returning 400");
-      return NextResponse.json(
-        { error: "Logo URL is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Logo URL is required" }, { status: 400 });
     }
 
     // Validate the logo URL
@@ -73,17 +70,11 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("Logo API - User found:", !!user);
-    console.log(
-      "Logo API - User wedding pages:",
-      user?.weddingPages?.length || 0
-    );
+    console.log("Logo API - User wedding pages:", user?.weddingPages?.length || 0);
 
     if (!user || !user.weddingPages.length) {
       console.log("Logo API - No user or wedding pages found, returning 404");
-      return NextResponse.json(
-        { error: "No wedding page found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "No wedding page found" }, { status: 404 });
     }
 
     const weddingPage = user.weddingPages[0];
@@ -101,10 +92,7 @@ export async function POST(request: NextRequest) {
       data: updateData,
     });
 
-    console.log(
-      "Logo API - Wedding page updated successfully:",
-      updatedWeddingPage
-    );
+    console.log("Logo API - Wedding page updated successfully:", updatedWeddingPage);
 
     return NextResponse.json({
       success: true,
@@ -113,10 +101,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error saving logo:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
@@ -135,10 +120,7 @@ export async function DELETE() {
     });
 
     if (!user || !user.weddingPages.length) {
-      return NextResponse.json(
-        { error: "No wedding page found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "No wedding page found" }, { status: 404 });
     }
 
     const weddingPage = user.weddingPages[0];
@@ -158,9 +140,6 @@ export async function DELETE() {
     });
   } catch (error) {
     console.error("Error removing logo:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

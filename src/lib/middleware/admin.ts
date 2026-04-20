@@ -81,10 +81,7 @@ export async function requireAdmin(): Promise<NextResponse | null> {
  * ```
  */
 export function withAdmin(
-  handler: (
-    request: NextRequest,
-    session: Session
-  ) => Promise<NextResponse> | NextResponse
+  handler: (request: NextRequest, session: Session) => Promise<NextResponse> | NextResponse
 ) {
   return async (request: NextRequest): Promise<NextResponse> => {
     const session = await getSession();

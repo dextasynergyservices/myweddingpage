@@ -18,12 +18,7 @@ const ContactHero = () => {
         className="flex justify-center mb-8"
       >
         <div className="p-6 bg-white rounded-3xl shadow-xl">
-          <Image
-            src="/logoicon.png"
-            alt="my wedding page"
-            width={60}
-            height={60}
-          />
+          <Image src="/logoicon.png" alt="my wedding page" width={60} height={60} />
         </div>
       </motion.div>
       <h1
@@ -38,8 +33,7 @@ const ContactHero = () => {
           isDarkMode ? "text-white/50" : "text-black"
         }`}
       >
-        We&apos;re here to help make your wedding dreams come true. Reach out to
-        us anytime.
+        We&apos;re here to help make your wedding dreams come true. Reach out to us anytime.
       </p>
     </AnimatedSection>
   );

@@ -101,9 +101,7 @@ const DashboardContent = ({
                   >
                     Security Settings
                   </h1>
-                  <p
-                    className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                  >
+                  <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                     Manage your account security and authentication methods
                   </p>
                 </div>
@@ -115,9 +113,7 @@ const DashboardContent = ({
               {/* Password Protection */}
               <div
                 className={`rounded-lg border p-5 ${
-                  isDarkMode
-                    ? "border-gray-700 bg-gray-800"
-                    : "border-gray-200 bg-white"
+                  isDarkMode ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"
                 }`}
               >
                 <div className="mb-3 flex items-center gap-3">
@@ -137,26 +133,20 @@ const DashboardContent = ({
                       />
                     </svg>
                   </div>
-                  <h3
-                    className={`font-semibold ${isDarkMode ? "text-gray-100" : "text-gray-900"}`}
-                  >
+                  <h3 className={`font-semibold ${isDarkMode ? "text-gray-100" : "text-gray-900"}`}>
                     Password Protection
                   </h3>
                 </div>
-                <p
-                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                >
-                  Your account is secured with a strong password. You can change
-                  it anytime in your profile settings.
+                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  Your account is secured with a strong password. You can change it anytime in your
+                  profile settings.
                 </p>
               </div>
 
               {/* Session Management */}
               <div
                 className={`rounded-lg border p-5 ${
-                  isDarkMode
-                    ? "border-gray-700 bg-gray-800"
-                    : "border-gray-200 bg-white"
+                  isDarkMode ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"
                 }`}
               >
                 <div className="mb-3 flex items-center gap-3">
@@ -176,17 +166,13 @@ const DashboardContent = ({
                       />
                     </svg>
                   </div>
-                  <h3
-                    className={`font-semibold ${isDarkMode ? "text-gray-100" : "text-gray-900"}`}
-                  >
+                  <h3 className={`font-semibold ${isDarkMode ? "text-gray-100" : "text-gray-900"}`}>
                     Active Sessions
                   </h3>
                 </div>
-                <p
-                  className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                >
-                  You can view and manage your active sessions. Sessions expire
-                  automatically after 30 days of inactivity.
+                <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  You can view and manage your active sessions. Sessions expire automatically after
+                  30 days of inactivity.
                 </p>
               </div>
             </div>
@@ -194,24 +180,18 @@ const DashboardContent = ({
             {/* Two-Factor Authentication Section */}
             <div
               className={`rounded-xl border shadow-sm ${
-                isDarkMode
-                  ? "border-gray-700 bg-gray-800"
-                  : "border-gray-200 bg-white"
+                isDarkMode ? "border-gray-700 bg-gray-800" : "border-gray-200 bg-white"
               }`}
             >
-              <div
-                className={`border-b p-6 ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}
-              >
+              <div className={`border-b p-6 ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}>
                 <h2
                   className={`text-xl font-semibold ${isDarkMode ? "text-gray-100" : "text-gray-900"}`}
                 >
                   Two-Factor Authentication (2FA)
                 </h2>
-                <p
-                  className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                >
-                  Add an extra layer of security to your account by requiring a
-                  verification code in addition to your password.
+                <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                  Add an extra layer of security to your account by requiring a verification code in
+                  addition to your password.
                 </p>
               </div>
 
@@ -223,9 +203,7 @@ const DashboardContent = ({
             {/* Security Tips */}
             <div
               className={`rounded-lg border p-5 ${
-                isDarkMode
-                  ? "border-yellow-800 bg-yellow-950"
-                  : "border-yellow-200 bg-yellow-50"
+                isDarkMode ? "border-yellow-800 bg-yellow-950" : "border-yellow-200 bg-yellow-50"
               }`}
             >
               <h3
@@ -242,16 +220,11 @@ const DashboardContent = ({
               >
                 <li className="flex gap-2">
                   <span className="font-medium">•</span>
-                  <span>
-                    Never share your password or 2FA codes with anyone
-                  </span>
+                  <span>Never share your password or 2FA codes with anyone</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="font-medium">•</span>
-                  <span>
-                    Use a unique password that you don&apos;t use on other
-                    websites
-                  </span>
+                  <span>Use a unique password that you don&apos;t use on other websites</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="font-medium">•</span>

@@ -35,11 +35,7 @@ const HomeWeddingCard = ({ wedding, index, isDarkMode }: WeddingCardProps) => {
 
     if (isLive) {
       // Navigate to live page in new tab
-      window.open(
-        `/${wedding.slug || wedding.id}`,
-        "_blank",
-        "noopener,noreferrer"
-      );
+      window.open(`/${wedding.slug || wedding.id}`, "_blank", "noopener,noreferrer");
     } else {
       // Open preview modal for not-live pages
       setIsModalOpen(true);
@@ -58,9 +54,7 @@ const HomeWeddingCard = ({ wedding, index, isDarkMode }: WeddingCardProps) => {
         <div
           onClick={handleClick}
           className={`block h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-300 cursor-pointer ${
-            isDarkMode
-              ? "bg-black/50 hover:bg-black/70"
-              : "bg-white/80 hover:bg-amber-50"
+            isDarkMode ? "bg-black/50 hover:bg-black/70" : "bg-white/80 hover:bg-amber-50"
           }`}
         >
           <div className="relative h-48 w-full">
@@ -96,19 +90,13 @@ const HomeWeddingCard = ({ wedding, index, isDarkMode }: WeddingCardProps) => {
             >
               {wedding.title}
             </h3>
-            <p
-              className={`text-sm mb-1 ${isDarkMode ? "text-[#ab862b]" : "text-[#ab862b]"}`}
-            >
+            <p className={`text-sm mb-1 ${isDarkMode ? "text-[#ab862b]" : "text-[#ab862b]"}`}>
               {wedding.date}
             </p>
-            <p
-              className={`text-sm mb-3 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-            >
+            <p className={`text-sm mb-3 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
               {wedding.location}
             </p>
-            <p
-              className={`text-sm ${isDarkMode ? "text-slate-300" : "text-slate-500"}`}
-            >
+            <p className={`text-sm ${isDarkMode ? "text-slate-300" : "text-slate-500"}`}>
               {wedding.excerpt}
             </p>
           </div>

@@ -14,10 +14,7 @@ export async function GET(request: NextRequest) {
     const streamId = searchParams.get("streamId");
 
     if (!streamId) {
-      return NextResponse.json(
-        { error: "Stream ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Stream ID is required" }, { status: 400 });
     }
 
     // Check if stream belongs to user
@@ -97,10 +94,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching stream summary:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch stream summary" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch stream summary" }, { status: 500 });
   }
 }
 
@@ -116,10 +110,7 @@ export async function POST(request: NextRequest) {
     const { streamId, currentViewers, streamStarted } = body;
 
     if (!streamId) {
-      return NextResponse.json(
-        { error: "Stream ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Stream ID is required" }, { status: 400 });
     }
 
     // Get or create summary
@@ -162,9 +153,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, summary });
   } catch (error) {
     console.error("Error updating stream summary:", error);
-    return NextResponse.json(
-      { error: "Failed to update stream summary" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to update stream summary" }, { status: 500 });
   }
 }

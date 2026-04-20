@@ -7,10 +7,7 @@ export async function POST(req: NextRequest) {
     const { reference, planId, whatsapp } = await req.json();
 
     if (!reference || !planId || !whatsapp) {
-      return NextResponse.json(
-        { error: "Missing required fields." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
     }
 
     const existingSub = await prisma.subscription.findFirst({
@@ -27,23 +24,17 @@ export async function POST(req: NextRequest) {
 
     const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
-    const verifyRes = await fetch(
-      `https://api.paystack.co/transaction/verify/${reference}`,
-      {
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const verifyRes = await fetch(`https://api.paystack.co/transaction/verify/${reference}`, {
+      headers: {
+        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     const verifyData = await verifyRes.json();
 
     if (!verifyData.status || verifyData.data.status !== "success") {
-      return NextResponse.json(
-        { error: "Payment not successful" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Payment not successful" }, { status: 400 });
     }
 
     const email = verifyData.data.customer.email;
@@ -52,10 +43,7 @@ export async function POST(req: NextRequest) {
     // Fetch plan
     const plan = await prisma.plan.findUnique({ where: { id: planId } });
     if (!plan) {
-      return NextResponse.json(
-        { error: "Invalid plan selected." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Invalid plan selected." }, { status: 404 });
     }
 
     // Create subscription
@@ -100,9 +88,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error("Verification error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -17,10 +17,7 @@ export async function POST(request: NextRequest) {
     // Validate reaction type
     const validTypes = ["heart", "clap", "fire", "tada"];
     if (!validTypes.includes(type)) {
-      return NextResponse.json(
-        { error: "Invalid reaction type" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid reaction type" }, { status: 400 });
     }
 
     // Check if stream exists
@@ -57,9 +54,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error sending reaction:", error);
-    return NextResponse.json(
-      { error: "Failed to send reaction" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to send reaction" }, { status: 500 });
   }
 }

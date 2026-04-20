@@ -17,10 +17,7 @@ interface UseCustomizationReturn {
   isSaving: boolean;
   error: string | null;
   fetchCustomization: (templateId: string) => Promise<void>;
-  saveCustomization: (
-    templateId: string,
-    customization: UserCustomization
-  ) => Promise<boolean>;
+  saveCustomization: (templateId: string, customization: UserCustomization) => Promise<boolean>;
   resetToDefaults: () => void;
 }
 
@@ -28,9 +25,7 @@ interface UseCustomizationReturn {
  * Hook for managing template customization
  */
 export function useCustomization(): UseCustomizationReturn {
-  const [customization, setCustomization] = useState<UserCustomization | null>(
-    null
-  );
+  const [customization, setCustomization] = useState<UserCustomization | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,18 +38,13 @@ export function useCustomization(): UseCustomizationReturn {
     setError(null);
 
     try {
-      const response = await fetch(
-        `/api/user/templates/${templateId}/customization`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`/api/user/templates/${templateId}/customization`, {
+        method: "GET",
+        credentials: "include",
+      });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to fetch customization: ${response.statusText}`
-        );
+        throw new Error(`Failed to fetch customization: ${response.statusText}`);
       }
 
       const data: GetCustomizationResponse = await response.json();
@@ -79,10 +69,7 @@ export function useCustomization(): UseCustomizationReturn {
    * Saves customization for a template
    */
   const saveCustomization = useCallback(
-    async (
-      templateId: string,
-      customization: UserCustomization
-    ): Promise<boolean> => {
+    async (templateId: string, customization: UserCustomization): Promise<boolean> => {
       setIsSaving(true);
       setError(null);
 
@@ -102,8 +89,7 @@ export function useCustomization(): UseCustomizationReturn {
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(
-            errorData.error ||
-              `Failed to save customization: ${response.statusText}`
+            errorData.error || `Failed to save customization: ${response.statusText}`
           );
         }
 
@@ -116,8 +102,7 @@ export function useCustomization(): UseCustomizationReturn {
           throw new Error(data.message || "Failed to save customization");
         }
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Unknown error";
+        const errorMessage = err instanceof Error ? err.message : "Unknown error";
         setError(errorMessage);
         console.error("Error saving customization:", err);
         return false;

@@ -9,10 +9,7 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please log in." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized. Please log in." }, { status: 401 });
     }
 
     const { userId } = await request.json();
@@ -42,16 +39,12 @@ export async function POST(request: NextRequest) {
     }
 
     const now = new Date();
-    const subscriptionEnd = user.subscription_end
-      ? new Date(user.subscription_end)
-      : null;
+    const subscriptionEnd = user.subscription_end ? new Date(user.subscription_end) : null;
 
     // Check if user has active subscription or is within account retention period (30 days)
-    const hasActiveSubscription =
-      subscriptionEnd && subscriptionEnd.getTime() > now.getTime();
+    const hasActiveSubscription = subscriptionEnd && subscriptionEnd.getTime() > now.getTime();
     const isWithinRetentionPeriod = user.gracePeriodEnd
-      ? now.getTime() - new Date(user.gracePeriodEnd).getTime() <
-        30 * 24 * 60 * 60 * 1000
+      ? now.getTime() - new Date(user.gracePeriodEnd).getTime() < 30 * 24 * 60 * 60 * 1000
       : false;
 
     if (!hasActiveSubscription && !isWithinRetentionPeriod) {
@@ -122,9 +115,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the restoration
-    console.log(
-      `Restored ${restoreResult.count} wedding pages for user ${userId}`
-    );
+    console.log(`Restored ${restoreResult.count} wedding pages for user ${userId}`);
 
     return NextResponse.json({
       success: true,
@@ -154,10 +145,7 @@ export async function GET(request: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please log in." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized. Please log in." }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);

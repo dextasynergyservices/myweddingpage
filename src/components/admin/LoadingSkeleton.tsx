@@ -20,10 +20,7 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
           className="grid grid-cols-4 gap-4 px-4 py-4 border border-gray-200 dark:border-gray-700 rounded-lg"
         >
           {[...Array(4)].map((_, colIndex) => (
-            <div
-              key={colIndex}
-              className="h-4 bg-gray-200 dark:bg-gray-700 rounded"
-            />
+            <div key={colIndex} className="h-4 bg-gray-200 dark:bg-gray-700 rounded" />
           ))}
         </div>
       ))}
@@ -79,10 +76,7 @@ export function ChartSkeleton({ height = "300px" }: { height?: string }) {
       {/* X-axis labels */}
       <div className="flex justify-between mt-4">
         {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-16"
-          />
+          <div key={i} className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-16" />
         ))}
       </div>
     </div>

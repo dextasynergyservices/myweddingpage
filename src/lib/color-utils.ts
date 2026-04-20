@@ -97,8 +97,7 @@ export function validateColor(color: string): ColorValidationResult {
 
   return {
     valid: false,
-    error:
-      "Invalid color format. Use hex (#RRGGBB), rgb(r, g, b), or hsl(h, s%, l%)",
+    error: "Invalid color format. Use hex (#RRGGBB), rgb(r, g, b), or hsl(h, s%, l%)",
   };
 }
 
@@ -344,10 +343,7 @@ export function getContrastRatio(color1: string, color2: string): number {
 /**
  * Checks if contrast meets WCAG standards
  */
-export function checkContrast(
-  foreground: string,
-  background: string
-): ContrastCheckResult {
+export function checkContrast(foreground: string, background: string): ContrastCheckResult {
   const ratio = getContrastRatio(foreground, background);
 
   const wcagAA = ratio >= 4.5; // WCAG AA for normal text
@@ -355,11 +351,9 @@ export function checkContrast(
 
   let recommendation: string | undefined;
   if (!wcagAA) {
-    recommendation =
-      "Poor contrast. Consider using darker text or lighter background.";
+    recommendation = "Poor contrast. Consider using darker text or lighter background.";
   } else if (!wcagAAA) {
-    recommendation =
-      "Good contrast, but could be improved for better accessibility.";
+    recommendation = "Good contrast, but could be improved for better accessibility.";
   }
 
   return {

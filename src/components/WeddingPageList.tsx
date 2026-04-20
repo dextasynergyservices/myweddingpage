@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Search,
-  MapPin,
-  Calendar,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Search, MapPin, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -44,10 +38,7 @@ const WeddingPageList = () => {
   // Calculate pagination
   const indexOfLastWedding = currentPage * weddingsPerPage;
   const indexOfFirstWedding = indexOfLastWedding - weddingsPerPage;
-  const currentWeddings = filteredWeddings.slice(
-    indexOfFirstWedding,
-    indexOfLastWedding
-  );
+  const currentWeddings = filteredWeddings.slice(indexOfFirstWedding, indexOfLastWedding);
   const totalPages = Math.ceil(filteredWeddings.length / weddingsPerPage);
 
   // Update your pagination functions
@@ -133,11 +124,7 @@ const WeddingPageList = () => {
 
     if (isLive) {
       // Navigate to live page in new tab
-      window.open(
-        `/${wedding.slug || wedding.id}`,
-        "_blank",
-        "noopener,noreferrer"
-      );
+      window.open(`/${wedding.slug || wedding.id}`, "_blank", "noopener,noreferrer");
     } else {
       // Open preview modal for not-live pages
       setModalWedding(wedding);
@@ -169,9 +156,7 @@ const WeddingPageList = () => {
                 transition={{ duration: 0.6 }}
                 className="text-center"
               >
-                <h1 className="text-4xl md:text-5xl font-light mb-6">
-                  Wedding Celebrations
-                </h1>
+                <h1 className="text-4xl md:text-5xl font-light mb-6">Wedding Celebrations</h1>
                 <p className="text-xl max-w-2xl mx-auto mb-8">
                   Browse beautiful weddings from around the world
                 </p>
@@ -185,9 +170,7 @@ const WeddingPageList = () => {
               {/* Search */}
               <div className="relative max-w-2xl mx-auto mb-8">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search
-                    className={`h-5 w-5 ${isDarkMode ? "text-gray-300" : "text-gray-500"}`}
-                  />
+                  <Search className={`h-5 w-5 ${isDarkMode ? "text-gray-300" : "text-gray-500"}`} />
                 </div>
                 <input
                   type="text"
@@ -211,9 +194,7 @@ const WeddingPageList = () => {
                     key={i}
                     className={`${cardBgClass} rounded-xl shadow-md overflow-hidden animate-pulse`}
                   >
-                    <div
-                      className={`h-48 ${isDarkMode ? "bg-gray-700" : "bg-gray-200"}`}
-                    ></div>
+                    <div className={`h-48 ${isDarkMode ? "bg-gray-700" : "bg-gray-200"}`}></div>
                     <div className="p-6">
                       <div
                         className={`h-6 rounded w-3/4 mb-4 ${isDarkMode ? "bg-gray-700" : "bg-gray-200"}`}
@@ -287,19 +268,14 @@ const WeddingPageList = () => {
                           >
                             <Calendar className="mr-2" />
                             <span>
-                              {new Date(wedding.date).toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                }
-                              )}
+                              {new Date(wedding.date).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}
                             </span>
                           </div>
-                          <p
-                            className={`${isDarkMode ? "text-gray-300" : "text-gray-600"} mb-4`}
-                          >
+                          <p className={`${isDarkMode ? "text-gray-300" : "text-gray-600"} mb-4`}>
                             {wedding.excerpt}
                           </p>
                           <div className="flex flex-wrap gap-2">
@@ -311,9 +287,7 @@ const WeddingPageList = () => {
                                 {tag}
                               </span>
                             ))} */}
-                            <span
-                              className={`text-xs px-5 py-3 rounded-full ${tagBgClass}`}
-                            >
+                            <span className={`text-xs px-5 py-3 rounded-full ${tagBgClass}`}>
                               {wedding.location}
                             </span>
                           </div>
@@ -341,21 +315,19 @@ const WeddingPageList = () => {
                         />
                       </button>
 
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                        (number) => (
-                          <button
-                            key={number}
-                            onClick={() => paginate(number)}
-                            className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                              number === currentPage
-                                ? "bg-black text-white"
-                                : `hover:bg-black dark:hover:bg-black ${isDarkMode ? "text-white" : "text-black"}`
-                            }`}
-                          >
-                            {number}
-                          </button>
-                        )
-                      )}
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                        <button
+                          key={number}
+                          onClick={() => paginate(number)}
+                          className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            number === currentPage
+                              ? "bg-black text-white"
+                              : `hover:bg-black dark:hover:bg-black ${isDarkMode ? "text-white" : "text-black"}`
+                          }`}
+                        >
+                          {number}
+                        </button>
+                      ))}
 
                       <button
                         onClick={nextPage}

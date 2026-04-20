@@ -1,12 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 
 interface GracePeriodStatus {
-  status:
-    | "active"
-    | "grace-period"
-    | "just-expired"
-    | "deletion-pending"
-    | "no-plan";
+  status: "active" | "grace-period" | "just-expired" | "deletion-pending" | "no-plan";
   isExpired: boolean;
   graceDaysLeft: number;
   message: string;
@@ -85,9 +80,7 @@ export function useGracePeriod(options: UseGracePeriodOptions = {}) {
       return true;
     } catch (err) {
       console.error("Error activating grace period:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to activate grace period"
-      );
+      setError(err instanceof Error ? err.message : "Failed to activate grace period");
       return false;
     }
   };

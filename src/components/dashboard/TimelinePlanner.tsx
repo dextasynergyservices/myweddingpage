@@ -127,9 +127,7 @@ const TimelinePlanner = () => {
 
   const toggleEventCompletion = (id: string) => {
     setEvents(
-      events.map((event) =>
-        event.id === id ? { ...event, completed: !event.completed } : event
-      )
+      events.map((event) => (event.id === id ? { ...event, completed: !event.completed } : event))
     );
   };
 
@@ -160,9 +158,7 @@ const TimelinePlanner = () => {
         {showAddEvent && (
           <div
             className={`rounded-2xl border p-6 mt-4 ${
-              isDarkMode
-                ? "bg-slate-700 border-slate-600"
-                : "bg-white border-slate-200"
+              isDarkMode ? "bg-slate-700 border-slate-600" : "bg-white border-slate-200"
             }`}
           >
             <h3
@@ -220,9 +216,7 @@ const TimelinePlanner = () => {
             >
               Wedding Day Schedule
             </h2>
-            <p
-              className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-            >
+            <p className={`${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
               {new Date(selectedDate).toLocaleDateString("en-US", {
                 weekday: "long",
                 year: "numeric",
@@ -247,9 +241,7 @@ const TimelinePlanner = () => {
       {/* Timeline */}
       <div
         className={`rounded-xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg border ${
-          isDarkMode
-            ? "bg-slate-800 border-slate-700"
-            : "bg-white border-slate-100"
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
         }`}
       >
         <div className="space-y-4 sm:space-y-6">
@@ -395,11 +387,8 @@ const TimelinePlanner = () => {
               />
             </div>
           </div>
-          <span
-            className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}
-          >
-            {events.filter((e) => e.completed).length} of {events.length}{" "}
-            completed
+          <span className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+            {events.filter((e) => e.completed).length} of {events.length} completed
           </span>
         </div>
       </div>

@@ -83,11 +83,7 @@ export default function ResetPasswordPage() {
                   : "text-slate-400 hover:text-slate-600"
               } transition-colors duration-200`}
             >
-              {showPassword ? (
-                <EyeOff className="h-5 w-5" />
-              ) : (
-                <Eye className="h-5 w-5" />
-              )}
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
             </button>
           </div>
           {errors.password && (
@@ -124,11 +120,7 @@ export default function ResetPasswordPage() {
                   : "text-slate-400 hover:text-slate-600"
               } transition-colors duration-200`}
             >
-              {showConfirmPassword ? (
-                <EyeOff className="h-5 w-5" />
-              ) : (
-                <Eye className="h-5 w-5" />
-              )}
+              {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
             </button>
           </div>
           {errors.confirmPassword && (

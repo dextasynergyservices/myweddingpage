@@ -20,17 +20,12 @@ export async function POST(request: NextRequest) {
         const { userId, code } = body;
 
         if (!userId || !code) {
-          return NextResponse.json(
-            { error: "User ID and code are required" },
-            { status: 400 }
-          );
+          return NextResponse.json({ error: "User ID and code are required" }, { status: 400 });
         }
 
         // Get request metadata
         const ipAddress =
-          request.headers.get("x-forwarded-for") ||
-          request.headers.get("x-real-ip") ||
-          "unknown";
+          request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
         const userAgent = request.headers.get("user-agent") || "unknown";
 
         // Verify the code
@@ -75,10 +70,7 @@ export async function POST(request: NextRequest) {
         });
       } catch (error) {
         console.error("Error verifying email 2FA code:", error);
-        return NextResponse.json(
-          { error: "Internal server error" },
-          { status: 500 }
-        );
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
       }
     },
     { sampleRate: 1, eventType: "TWO_FA_EMAIL_VERIFY_SUCCESS" }

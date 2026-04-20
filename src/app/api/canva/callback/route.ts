@@ -9,10 +9,7 @@ export async function GET(request: NextRequest) {
 
     // Handle OAuth error
     if (error) {
-      return NextResponse.json(
-        { success: false, error: `OAuth error: ${error}` },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: `OAuth error: ${error}` }, { status: 400 });
     }
 
     // Validate required parameters
@@ -40,9 +37,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error in Canva OAuth callback:", error);
-    return NextResponse.json(
-      { success: false, error: "OAuth callback failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: "OAuth callback failed" }, { status: 500 });
   }
 }

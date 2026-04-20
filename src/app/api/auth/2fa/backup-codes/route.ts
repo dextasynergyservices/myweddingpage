@@ -42,10 +42,7 @@ export async function POST(req: Request) {
     });
 
     if (!user?.password) {
-      return NextResponse.json(
-        { error: "Invalid credentials" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
@@ -59,8 +56,7 @@ export async function POST(req: Request) {
         userAgent: req.headers.get("user-agent") || undefined,
         endpoint: "/api/auth/2fa/backup-codes",
         method: "POST",
-        message:
-          "Failed attempt to regenerate backup codes with wrong password",
+        message: "Failed attempt to regenerate backup codes with wrong password",
       });
 
       return NextResponse.json({ error: "Invalid password" }, { status: 401 });
@@ -91,15 +87,11 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       backupCodes: formattedCodes,
-      message:
-        "Backup codes regenerated successfully. Save them in a secure location.",
+      message: "Backup codes regenerated successfully. Save them in a secure location.",
     });
   } catch (error) {
     console.error("Backup codes regeneration error:", error);
 
-    return NextResponse.json(
-      { error: "Failed to regenerate backup codes" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to regenerate backup codes" }, { status: 500 });
   }
 }

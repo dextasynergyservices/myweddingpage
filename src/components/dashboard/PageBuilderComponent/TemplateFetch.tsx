@@ -46,12 +46,8 @@ const getTemplateThumbnailUrl = (template: Template): string => {
   });
 
   // Ensure we're working with strings and handle null/undefined
-  const thumbnailUrl = template.thumbnail
-    ? String(template.thumbnail).trim()
-    : null;
-  const heroImageUrl = template.hero_image
-    ? String(template.hero_image).trim()
-    : null;
+  const thumbnailUrl = template.thumbnail ? String(template.thumbnail).trim() : null;
+  const heroImageUrl = template.hero_image ? String(template.hero_image).trim() : null;
 
   console.log(`Template ${template.name} processed URLs:`, {
     thumbnailUrl,
@@ -83,18 +79,13 @@ const TemplateSelection = ({
   const { token: csrfToken } = useCSRFToken();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [filteredTemplates, setFilteredTemplates] = useState<Template[]>([]);
-  const [templateToPreview, setTemplateToPreview] = useState<Template | null>(
-    null
-  );
+  const [templateToPreview, setTemplateToPreview] = useState<Template | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [showTemplatePreviewModal, setShowTemplatePreviewModal] =
-    useState(false);
+  const [showTemplatePreviewModal, setShowTemplatePreviewModal] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-  const [pendingDeleteTemplateId, setPendingDeleteTemplateId] = useState<
-    string | null
-  >(null);
+  const [pendingDeleteTemplateId, setPendingDeleteTemplateId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -140,9 +131,7 @@ const TemplateSelection = ({
     let filtered = templates;
 
     if (activeCategory !== "all") {
-      filtered = filtered.filter(
-        (template) => template.category.name === activeCategory
-      );
+      filtered = filtered.filter((template) => template.category.name === activeCategory);
     }
 
     if (searchTerm) {
@@ -158,12 +147,10 @@ const TemplateSelection = ({
 
   const templateCategories = [
     { id: "all", name: "All Templates" },
-    ...Array.from(new Set(templates.map((t) => t.category.name))).map(
-      (category) => ({
-        id: category,
-        name: category.charAt(0).toUpperCase() + category.slice(1),
-      })
-    ),
+    ...Array.from(new Set(templates.map((t) => t.category.name))).map((category) => ({
+      id: category,
+      name: category.charAt(0).toUpperCase() + category.slice(1),
+    })),
   ];
 
   const handlePreviewTemplate = (template: Template) => {
@@ -200,9 +187,7 @@ const TemplateSelection = ({
     <>
       <div
         className={`rounded-xl p-4 md:p-6 shadow-lg border mb-4 ${
-          isDarkMode
-            ? "bg-slate-800 border-slate-700"
-            : "bg-white border-slate-100"
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
         }`}
       >
         {/* Header */}
@@ -270,9 +255,7 @@ const TemplateSelection = ({
           </div>
         ) : filteredTemplates.length === 0 ? (
           <div className="text-center py-8">
-            <p
-              className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-            >
+            <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
               No templates available for your current plan.
             </p>
           </div>
@@ -348,9 +331,7 @@ const TemplateSelection = ({
                 >
                   {template.description}
                 </p>
-                <p
-                  className={`text-xs mt-1 ${isDarkMode ? "text-slate-500" : "text-slate-500"}`}
-                >
+                <p className={`text-xs mt-1 ${isDarkMode ? "text-slate-500" : "text-slate-500"}`}>
                   {template.sections?.length || 0} sections
                 </p>
 
@@ -420,13 +401,9 @@ const TemplateSelection = ({
               ? {
                   ...userTemplate,
                   userId: (userTemplate as { userId?: string }).userId ?? "",
-                  isSelected:
-                    (userTemplate as { isSelected?: boolean }).isSelected ??
-                    false,
-                  createdAt:
-                    (userTemplate as { createdAt?: string }).createdAt ?? "",
-                  updatedAt:
-                    (userTemplate as { updatedAt?: string }).updatedAt ?? "",
+                  isSelected: (userTemplate as { isSelected?: boolean }).isSelected ?? false,
+                  createdAt: (userTemplate as { createdAt?: string }).createdAt ?? "",
+                  updatedAt: (userTemplate as { updatedAt?: string }).updatedAt ?? "",
                 }
               : undefined
           }

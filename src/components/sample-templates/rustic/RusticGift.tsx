@@ -112,9 +112,7 @@ export default function RusticGift(props: RusticGiftProps) {
   return (
     <div
       className={`rounded-3xl p-12 shadow-lg border mb-16 ${
-        isDarkMode
-          ? "bg-slate-800 border-slate-700"
-          : "bg-white border-slate-100"
+        isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
       }`}
     >
       <div className="text-center mb-12">
@@ -131,16 +129,14 @@ export default function RusticGift(props: RusticGiftProps) {
             isDarkMode ? "text-slate-400" : "text-slate-600"
           }`}
         >
-          Your presence is the only present we need, but if you&apos;d like to
-          give a gift, here are some ideas.
+          Your presence is the only present we need, but if you&apos;d like to give a gift, here are
+          some ideas.
         </p>
       </div>
 
       {gifts.length === 0 ? (
         <div className="text-center py-12">
-          <p
-            className={`text-lg ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-          >
+          <p className={`text-lg ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
             No gift items found in the registry
           </p>
         </div>
@@ -170,9 +166,7 @@ export default function RusticGift(props: RusticGiftProps) {
                   {gift.item}
                 </h3>
                 {gift.description && (
-                  <p
-                    className={`mb-2 text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                  >
+                  <p className={`mb-2 text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                     {gift.description}
                   </p>
                 )}

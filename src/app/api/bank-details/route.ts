@@ -35,10 +35,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     if (!body.bankName || !body.accountNumber || !body.accountName) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const bankDetail = await prisma.bankDetail.create({
@@ -72,10 +69,7 @@ export async function PUT(request: Request) {
 
     const { id, ...data } = await request.json();
     if (!id) {
-      return NextResponse.json(
-        { error: "Missing bank detail ID" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing bank detail ID" }, { status: 400 });
     }
 
     const existingDetail = await prisma.bankDetail.findUnique({
@@ -83,10 +77,7 @@ export async function PUT(request: Request) {
     });
 
     if (!existingDetail) {
-      return NextResponse.json(
-        { error: "Bank detail not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Bank detail not found" }, { status: 404 });
     }
 
     const updatedDetail = await prisma.bankDetail.update({
@@ -120,10 +111,7 @@ export async function DELETE(request: Request) {
 
     const { id } = await request.json();
     if (!id) {
-      return NextResponse.json(
-        { error: "Missing bank detail ID" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing bank detail ID" }, { status: 400 });
     }
 
     await prisma.bankDetail.delete({

@@ -21,12 +21,8 @@ const LOCALE_LABELS: Record<string, string> = {
 export default function LocaleSwitcher() {
   const [locale, setLocale] = useState<string>(() => {
     if (typeof window === "undefined") return "en";
-    const m = document.cookie.match(
-      new RegExp(`(^| )${LOCALE_COOKIE_NAME}=([^;]+)`)
-    );
-    return m
-      ? decodeURIComponent(m[2])
-      : (process.env.NEXT_DEFAULT_LOCALE ?? "en");
+    const m = document.cookie.match(new RegExp(`(^| )${LOCALE_COOKIE_NAME}=([^;]+)`));
+    return m ? decodeURIComponent(m[2]) : (process.env.NEXT_DEFAULT_LOCALE ?? "en");
   });
 
   const [open, setOpen] = useState(false);
@@ -36,9 +32,7 @@ export default function LocaleSwitcher() {
 
   useEffect(() => {
     // ensure default locale is set once on mount
-    setLocale(
-      (prev) => prev ?? (process.env.NEXT_DEFAULT_LOCALE as string) ?? "en"
-    );
+    setLocale((prev) => prev ?? (process.env.NEXT_DEFAULT_LOCALE as string) ?? "en");
   }, []);
 
   useEffect(() => {
@@ -81,17 +75,11 @@ export default function LocaleSwitcher() {
     }
   };
 
-  const handleItemKeyDown = (
-    e: React.KeyboardEvent,
-    idx: number,
-    value: string
-  ) => {
+  const handleItemKeyDown = (e: React.KeyboardEvent, idx: number, value: string) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setFocusedIndex((i) =>
-        i == null
-          ? 0
-          : Math.min((i as number) + 1, SUPPORTED_LOCALES.length - 1)
+        i == null ? 0 : Math.min((i as number) + 1, SUPPORTED_LOCALES.length - 1)
       );
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
@@ -117,9 +105,7 @@ export default function LocaleSwitcher() {
         aria-label="Select language"
       >
         <Globe className="h-3 w-3 md:h-4 md:w-4" />
-        <span className="hidden md:inline">
-          {LOCALE_LABELS[locale] ?? locale}
-        </span>
+        <span className="hidden md:inline">{LOCALE_LABELS[locale] ?? locale}</span>
       </button>
 
       {open && (
@@ -139,9 +125,7 @@ export default function LocaleSwitcher() {
                 onKeyDown={(e) => handleItemKeyDown(e, i, l)}
                 onClick={() => handleSelect(l)}
                 className={`w-full text-left px-3 py-2 text-sm ${
-                  l === locale
-                    ? "font-semibold bg-black text-white dark:bg-black"
-                    : ""
+                  l === locale ? "font-semibold bg-black text-white dark:bg-black" : ""
                 }`}
               >
                 {LOCALE_LABELS[l] ?? l}

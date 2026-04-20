@@ -31,9 +31,7 @@ const DashboardMobileHeader = ({
               <ArrowLeft className="h-5 w-5" />
             </motion.button>
           </Link>
-          <h1
-            className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
-          >
+          <h1 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
             Wedding Dashboard
           </h1>
         </div>
@@ -44,11 +42,7 @@ const DashboardMobileHeader = ({
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-white"
         >
-          {mobileMenuOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
-          )}
+          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
     </div>

@@ -49,10 +49,7 @@ export const useScrollScale = () => {
       if (elementTop < windowHeight && elementTop + elementHeight > 0) {
         // Calculate scroll progress (0 to 1)
         const scrollProgress = Math.min(
-          Math.max(
-            (windowHeight - elementTop) / (windowHeight + elementHeight),
-            0
-          ),
+          Math.max((windowHeight - elementTop) / (windowHeight + elementHeight), 0),
           1
         );
 

@@ -83,22 +83,17 @@ export class UploadMonitor {
         }
         return acc;
       },
-      {} as Record<
-        string,
-        { total: number; successful: number; failed: number }
-      >
+      {} as Record<string, { total: number; successful: number; failed: number }>
     );
 
     const avgUploadTime =
       filteredMetrics.length > 0
-        ? filteredMetrics.reduce((sum, m) => sum + m.uploadTime, 0) /
-          filteredMetrics.length
+        ? filteredMetrics.reduce((sum, m) => sum + m.uploadTime, 0) / filteredMetrics.length
         : 0;
 
     const avgFileSize =
       filteredMetrics.length > 0
-        ? filteredMetrics.reduce((sum, m) => sum + m.fileSize, 0) /
-          filteredMetrics.length
+        ? filteredMetrics.reduce((sum, m) => sum + m.fileSize, 0) / filteredMetrics.length
         : 0;
 
     const compressionSavings = filteredMetrics
@@ -217,14 +212,11 @@ export function trackUploadComplete(
 
 // Hook for React components
 export function useUploadMetrics() {
-  const getStats = (timeRange?: { start: Date; end: Date }) =>
-    uploadMonitor.getStats(timeRange);
+  const getStats = (timeRange?: { start: Date; end: Date }) => uploadMonitor.getStats(timeRange);
 
-  const getRecentFailures = (limit?: number) =>
-    uploadMonitor.getRecentFailures(limit);
+  const getRecentFailures = (limit?: number) => uploadMonitor.getRecentFailures(limit);
 
-  const exportData = (format?: "json" | "csv") =>
-    uploadMonitor.exportMetrics(format);
+  const exportData = (format?: "json" | "csv") => uploadMonitor.exportMetrics(format);
 
   return {
     getStats,

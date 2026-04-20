@@ -17,13 +17,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  NavigationItem,
-  StatItem,
-  QuickAction,
-  Wedding,
-  DashboardProps,
-} from "@/types/dashboard";
+import { NavigationItem, StatItem, QuickAction, Wedding, DashboardProps } from "@/types/dashboard";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardMobileHeader from "@/components/dashboard/DashboardMobileHeader";
 import DashboardMobileSidebar from "@/components/dashboard/DashboardMobileSidebar";
@@ -142,9 +136,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
           // Narrow items that have a completed property
           const hasCompleted = (x: unknown): x is { completed?: boolean } =>
             typeof x === "object" && x !== null && "completed" in x;
-          setTasksCompleted(
-            data.filter(hasCompleted).filter((t) => !!t.completed).length
-          );
+          setTasksCompleted(data.filter(hasCompleted).filter((t) => !!t.completed).length);
         }
       } catch (error) {
         console.error("Failed to fetch tasks for dashboard stats:", error);
@@ -179,16 +171,13 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
         const hasRsvpStatus = (x: unknown): x is { rsvpStatus?: string } =>
           typeof x === "object" && x !== null && "rsvpStatus" in x;
         const rsvpCount = guests.filter(
-          (g: unknown) =>
-            hasRsvpStatus(g) && !!g.rsvpStatus && g.rsvpStatus !== "PENDING"
+          (g: unknown) => hasRsvpStatus(g) && !!g.rsvpStatus && g.rsvpStatus !== "PENDING"
         ).length;
 
         const hasPurchased = (x: unknown): x is { purchased?: boolean } =>
           typeof x === "object" && x !== null && "purchased" in x;
         const giftsReceived =
-          gifts
-            .filter(hasPurchased)
-            .filter((g: { purchased?: boolean }) => !!g.purchased).length ||
+          gifts.filter(hasPurchased).filter((g: { purchased?: boolean }) => !!g.purchased).length ||
           gifts.length ||
           0;
 
@@ -207,11 +196,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
             ? new Date(wp.wedding_date).toISOString().split("T")[0]
             : "";
 
-        const status = wp?.is_live
-          ? "published"
-          : data?.userTemplate
-            ? "customizing"
-            : "draft";
+        const status = wp?.is_live ? "published" : data?.userTemplate ? "customizing" : "draft";
 
         // Set template status for navigation
         setHasTemplate(!!data?.userTemplate);
@@ -260,10 +245,8 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
           const hasRsvpStatus = (x: unknown): x is { rsvpStatus?: string } =>
             typeof x === "object" && x !== null && "rsvpStatus" in x;
           setGuestsResponded(
-            data.filter(
-              (g) =>
-                hasRsvpStatus(g) && !!g.rsvpStatus && g.rsvpStatus !== "PENDING"
-            ).length
+            data.filter((g) => hasRsvpStatus(g) && !!g.rsvpStatus && g.rsvpStatus !== "PENDING")
+              .length
           );
         }
       } catch (error) {
@@ -331,20 +314,14 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
       id: "page-builder",
       label: "Page Builder",
       icon: Layout,
-      description: weddingPageDeleted
-        ? "Page deleted - renew to restore"
-        : "Wedding page builder",
+      description: weddingPageDeleted ? "Page deleted - renew to restore" : "Wedding page builder",
       disabled: weddingPageDeleted,
       disabledReason: weddingPageDeleted
         ? "Wedding page has been deleted. Please renew your subscription to restore access."
         : undefined,
     };
 
-    return [
-      ...navigationItems.slice(0, 1),
-      pageBuilderItem,
-      ...navigationItems.slice(1),
-    ];
+    return [...navigationItems.slice(0, 1), pageBuilderItem, ...navigationItems.slice(1)];
   }, [navigationItems, weddingPageDeleted]);
 
   const baseStats: StatItem[] = [
@@ -362,10 +339,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
     {
       title: "Check List",
       value: `${tasksCompleted}/${tasksTotal}`,
-      change:
-        tasksTotal > 0
-          ? `+${Math.round((tasksCompleted / tasksTotal) * 100)}%`
-          : "+0%",
+      change: tasksTotal > 0 ? `+${Math.round((tasksCompleted / tasksTotal) * 100)}%` : "+0%",
       icon: CheckSquare,
       color: "from-purple-500 to-pink-500",
       allowedPlans: ["Dazzle", "Dynasty Royale"],
@@ -470,9 +444,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${
-        isDarkMode
-          ? "bg-slate-900"
-          : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
+        isDarkMode ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-100"
       }`}
     >
       <DashboardMobileHeader
@@ -528,10 +500,7 @@ const Dashboard = ({ onSelectCouple }: DashboardProps) => {
 
           {/* ✅ AI Assistant is shown only for Dynasty Royale */}
           {planName === "Dynasty Royale" && (
-            <DashboardAIAssistant
-              showAIAssistant={showAIAssistant}
-              isDarkMode={isDarkMode}
-            />
+            <DashboardAIAssistant showAIAssistant={showAIAssistant} isDarkMode={isDarkMode} />
           )}
         </div>
       </div>

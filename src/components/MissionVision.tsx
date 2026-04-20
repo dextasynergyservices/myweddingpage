@@ -19,9 +19,7 @@ const MissionVision = () => {
         >
           <div className="flex items-center gap-4 mb-8">
             <Target className="h-8 w-8 text-indigo-600" />
-            <h2
-              className={`text-3xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}
-            >
+            <h2 className={`text-3xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Our Mission
             </h2>
           </div>
@@ -30,10 +28,9 @@ const MissionVision = () => {
               isDarkMode ? "text-slate-300" : "text-slate-700"
             }`}
           >
-            To empower couples with the tools and platform they need to create,
-            share, and celebrate their perfect wedding day. We&apos;re committed
-            to making wedding planning stress-free and joyful, allowing couples
-            to focus on what matters most - their love story.
+            To empower couples with the tools and platform they need to create, share, and celebrate
+            their perfect wedding day. We&apos;re committed to making wedding planning stress-free
+            and joyful, allowing couples to focus on what matters most - their love story.
           </p>
         </div>
       </AnimatedSection>
@@ -48,9 +45,7 @@ const MissionVision = () => {
         >
           <div className="flex items-center gap-4 mb-8">
             <Eye className="h-8 w-8 text-purple-600" />
-            <h2
-              className={`text-3xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}
-            >
+            <h2 className={`text-3xl font-light ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Our Vision
             </h2>
           </div>
@@ -59,10 +54,9 @@ const MissionVision = () => {
               isDarkMode ? "text-slate-300" : "text-slate-700"
             }`}
           >
-            To become the world&apos;s most trusted wedding platform, where
-            every couple can create their dream wedding experience. We envision
-            a future where technology seamlessly enhances the most important
-            moments in people&apos;s lives.
+            To become the world&apos;s most trusted wedding platform, where every couple can create
+            their dream wedding experience. We envision a future where technology seamlessly
+            enhances the most important moments in people&apos;s lives.
           </p>
         </div>
       </AnimatedSection>

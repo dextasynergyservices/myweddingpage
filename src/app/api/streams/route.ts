@@ -16,10 +16,7 @@ export async function GET() {
     return NextResponse.json(streams);
   } catch (error) {
     console.error("Error fetching streams:", error);
-    return NextResponse.json(
-      { error: "Error fetching streams" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error fetching streams" }, { status: 500 });
   }
 }
 
@@ -37,8 +34,7 @@ export async function POST(request: NextRequest) {
     if (!body.name || !body.youtubeUrl || !body.camera) {
       return NextResponse.json(
         {
-          error:
-            "Missing required fields: name, youtubeUrl, and camera are required",
+          error: "Missing required fields: name, youtubeUrl, and camera are required",
         },
         { status: 400 }
       );
@@ -81,10 +77,7 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error("Error creating stream:", error);
-    return NextResponse.json(
-      { error: "Error creating stream" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error creating stream" }, { status: 500 });
   }
 }
 

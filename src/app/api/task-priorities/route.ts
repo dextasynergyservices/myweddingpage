@@ -9,10 +9,7 @@ export async function GET() {
     return NextResponse.json(priorities);
   } catch (error) {
     console.error("GET /api/task-priorities error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -21,10 +18,7 @@ export async function POST(request: Request) {
     const { name, level, color } = await request.json();
 
     if (!name || level === undefined) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const priority = await prisma.taskPriority.create({
@@ -34,9 +28,6 @@ export async function POST(request: Request) {
     return NextResponse.json(priority, { status: 201 });
   } catch (error) {
     console.error("POST /api/task-priorities error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

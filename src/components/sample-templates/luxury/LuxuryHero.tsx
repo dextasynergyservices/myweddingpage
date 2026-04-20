@@ -72,10 +72,7 @@ export default function LuxuryHero(props: LuxuryHeroProps) {
           <div className="text-center pt-12">
             <div className="flex justify-center mb-8">
               <div className="relative p-6 bg-white/5 backdrop-blur-sm rounded-full border border-gold-400/30 shadow-lg">
-                <Heart
-                  className="h-20 w-20 text-gold-400"
-                  fill="currentColor"
-                />
+                <Heart className="h-20 w-20 text-gold-400" fill="currentColor" />
                 <div className="absolute -top-3 -right-3 w-8 h-8 bg-gradient-to-r from-gold-500 to-amber-600 rounded-full animate-pulse shadow-gold"></div>
               </div>
             </div>

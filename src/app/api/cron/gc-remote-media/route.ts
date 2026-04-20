@@ -36,9 +36,7 @@ export async function GET(request: Request) {
         });
         // Cloudinary returns { result: 'ok' } on success, or 'not_found' etc.
         const resultField =
-          (res as unknown) &&
-          typeof res === "object" &&
-          (res as { [k: string]: unknown }).result
+          (res as unknown) && typeof res === "object" && (res as { [k: string]: unknown }).result
             ? (res as { [k: string]: unknown }).result
             : null;
         const ok = resultField === "ok" || resultField === "not_found";
@@ -91,9 +89,6 @@ export async function GET(request: Request) {
     return NextResponse.json({ processed: results.length, results });
   } catch (error) {
     console.error("GC cron failed:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

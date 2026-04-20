@@ -19,13 +19,8 @@ export async function GET(request: Request) {
 
     // Read pagination params for template stats from query string
     const url = new URL(request.url);
-    const templatePerPage = Number(
-      url.searchParams.get("templatePerPage") ?? "10"
-    );
-    const tplPer = Math.max(
-      1,
-      isFinite(templatePerPage) ? templatePerPage : 10
-    );
+    const templatePerPage = Number(url.searchParams.get("templatePerPage") ?? "10");
+    const tplPer = Math.max(1, isFinite(templatePerPage) ? templatePerPage : 10);
     const templateCursor = url.searchParams.get("templateCursor");
     // templateCursor is a base64-encoded JSON: { count: number, template: string }
     let cursorObj: { count: number; template: string } | null = null;
@@ -183,9 +178,7 @@ export async function GET(request: Request) {
     ]);
 
     // Count total template groups for pagination metadata
-    const templateGroupsCountResult = await prisma.$queryRaw<
-      Array<{ count: bigint }>
-    >`
+    const templateGroupsCountResult = await prisma.$queryRaw<Array<{ count: bigint }>>`
       SELECT COUNT(*) as count FROM (
         SELECT t.name FROM "WeddingPage" wp JOIN "Template" t ON wp."templateId" = t.id GROUP BY t.name
       ) as sub
@@ -238,9 +231,7 @@ export async function GET(request: Request) {
             : page.views
               ? (page.created_at?.toISOString() ?? null)
               : null,
-          engagement_rate: Number.isFinite(engagementRate)
-            ? Number(engagementRate.toFixed(1))
-            : 0,
+          engagement_rate: Number.isFinite(engagementRate) ? Number(engagementRate.toFixed(1)) : 0,
         };
       })
     );
@@ -263,9 +254,7 @@ export async function GET(request: Request) {
         }
 
         const engagementRate = averageViewsPerPage
-          ? Math.round(
-              (Number(page.views) / Math.max(1, averageViewsPerPage)) * 100
-            )
+          ? Math.round((Number(page.views) / Math.max(1, averageViewsPerPage)) * 100)
           : 0;
 
         return {

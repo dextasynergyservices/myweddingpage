@@ -23,21 +23,13 @@ async function main() {
       console.log(`   ID: ${template.id}`);
       console.log(`   Category: ${template.category?.name || "Unknown"}`);
       console.log(`   Sections: ${template.sections.length}`);
-      console.log(
-        `   Has previewData: ${template.previewData ? "✅ Yes" : "❌ No"}`
-      );
+      console.log(`   Has previewData: ${template.previewData ? "✅ Yes" : "❌ No"}`);
 
       if (template.previewData) {
         const previewData = template.previewData as any;
-        console.log(
-          `   Preview sections: ${Object.keys(previewData.sections || {}).length}`
-        );
-        console.log(
-          `   Preview brideName: ${previewData.brideName || "Not set"}`
-        );
-        console.log(
-          `   Preview groomName: ${previewData.groomName || "Not set"}`
-        );
+        console.log(`   Preview sections: ${Object.keys(previewData.sections || {}).length}`);
+        console.log(`   Preview brideName: ${previewData.brideName || "Not set"}`);
+        console.log(`   Preview groomName: ${previewData.groomName || "Not set"}`);
       }
 
       console.log(`   Hero image: ${template.hero_image || "None"}`);
@@ -51,9 +43,7 @@ async function main() {
     console.log("📊 Summary:");
     console.log(`   Total templates: ${templates.length}`);
     console.log(`   With previewData: ${templatesWithPreviewData.length}`);
-    console.log(
-      `   Without previewData: ${templatesWithoutPreviewData.length}`
-    );
+    console.log(`   Without previewData: ${templatesWithoutPreviewData.length}`);
 
     if (templatesWithoutPreviewData.length > 0) {
       console.log("\n❌ Templates missing previewData:");

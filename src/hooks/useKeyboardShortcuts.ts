@@ -66,13 +66,7 @@ export const useKeyboardShortcuts = ({
         const altMatches = alt ? event.altKey : !event.altKey;
         const metaMatches = meta ? event.metaKey : true; // Meta is optional
 
-        if (
-          keyMatches &&
-          ctrlMatches &&
-          shiftMatches &&
-          altMatches &&
-          metaMatches
-        ) {
+        if (keyMatches && ctrlMatches && shiftMatches && altMatches && metaMatches) {
           if (preventDefault) {
             event.preventDefault();
           }

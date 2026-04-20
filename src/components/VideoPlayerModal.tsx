@@ -1,16 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  X,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize2,
-  SkipBack,
-  SkipForward,
-} from "lucide-react";
+import { X, Play, Pause, Volume2, VolumeX, Maximize2, SkipBack, SkipForward } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 
@@ -51,8 +42,7 @@ const VideoPlayerModal = ({
 
   // Helper function to extract YouTube video ID
   const getYouTubeId = (url: string): string => {
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
     return match && match[2].length === 11 ? match[2] : "";
   };
@@ -148,19 +138,13 @@ const VideoPlayerModal = ({
   // Seek forward/backward functions - for local videos only
   const seekForward = () => {
     if (videoRef.current) {
-      videoRef.current.currentTime = Math.min(
-        videoRef.current.currentTime + 10,
-        duration
-      );
+      videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 10, duration);
     }
   };
 
   const seekBackward = () => {
     if (videoRef.current) {
-      videoRef.current.currentTime = Math.max(
-        videoRef.current.currentTime - 10,
-        0
-      );
+      videoRef.current.currentTime = Math.max(videoRef.current.currentTime - 10, 0);
     }
   };
 
@@ -244,10 +228,7 @@ const VideoPlayerModal = ({
                       transition={{ duration: 0.2 }}
                       className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center shadow-lg"
                     >
-                      <Play
-                        className="w-8 h-8 text-black ml-1"
-                        fill="currentColor"
-                      />
+                      <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
                     </motion.div>
                   </motion.button>
                 </>
@@ -256,9 +237,7 @@ const VideoPlayerModal = ({
 
             {/* Controls - Show only for local videos */}
             {videoType === "local" && (
-              <div
-                className={`p-4 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}
-              >
+              <div className={`p-4 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
                 {/* Progress Bar */}
                 <div className="mb-4">
                   <input
@@ -279,16 +258,10 @@ const VideoPlayerModal = ({
                       whileTap={{ scale: 0.9 }}
                       onClick={togglePlay}
                       className={`p-2 rounded-full ${
-                        isDarkMode
-                          ? "bg-gray-700 text-white"
-                          : "bg-gray-200 text-black"
+                        isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
                       } hover:bg-gray-600 transition-colors`}
                     >
-                      {isPlaying ? (
-                        <Pause className="w-5 h-5" />
-                      ) : (
-                        <Play className="w-5 h-5" />
-                      )}
+                      {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
                     </motion.button>
 
                     {/* Seek buttons */}
@@ -297,9 +270,7 @@ const VideoPlayerModal = ({
                       whileTap={{ scale: 0.9 }}
                       onClick={seekBackward}
                       className={`p-2 rounded-full ${
-                        isDarkMode
-                          ? "bg-gray-700 text-white"
-                          : "bg-gray-200 text-black"
+                        isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
                       } hover:bg-gray-600 transition-colors`}
                       title="Skip back 10s"
                     >
@@ -311,9 +282,7 @@ const VideoPlayerModal = ({
                       whileTap={{ scale: 0.9 }}
                       onClick={seekForward}
                       className={`p-2 rounded-full ${
-                        isDarkMode
-                          ? "bg-gray-700 text-white"
-                          : "bg-gray-200 text-black"
+                        isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
                       } hover:bg-gray-600 transition-colors`}
                       title="Skip forward 10s"
                     >
@@ -326,22 +295,14 @@ const VideoPlayerModal = ({
                       whileTap={{ scale: 0.9 }}
                       onClick={toggleMute}
                       className={`p-2 rounded-full ${
-                        isDarkMode
-                          ? "bg-gray-700 text-white"
-                          : "bg-gray-200 text-black"
+                        isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
                       } hover:bg-gray-600 transition-colors`}
                     >
-                      {isMuted ? (
-                        <VolumeX className="w-5 h-5" />
-                      ) : (
-                        <Volume2 className="w-5 h-5" />
-                      )}
+                      {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                     </motion.button>
 
                     {/* Time display */}
-                    <span
-                      className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
-                    >
+                    <span className={`text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
                       {formatTime(currentTime)} / {formatTime(duration)}
                     </span>
                   </div>
@@ -351,9 +312,7 @@ const VideoPlayerModal = ({
                     whileTap={{ scale: 0.9 }}
                     onClick={toggleFullscreen}
                     className={`p-2 rounded-full ${
-                      isDarkMode
-                        ? "bg-gray-700 text-white"
-                        : "bg-gray-200 text-black"
+                      isDarkMode ? "bg-gray-700 text-white" : "bg-gray-200 text-black"
                     } hover:bg-gray-600 transition-colors`}
                   >
                     <Maximize2 className="w-5 h-5" />

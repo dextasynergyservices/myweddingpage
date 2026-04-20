@@ -21,10 +21,7 @@ interface TemplateEditorProps {
   };
   userPlan: { id: string; name: string; maxComponents: number };
   userData: UserData;
-  onSave: (
-    content: Record<string, unknown>,
-    colorScheme: ColorScheme
-  ) => Promise<void>;
+  onSave: (content: Record<string, unknown>, colorScheme: ColorScheme) => Promise<void>;
   onBack: () => void;
 }
 
@@ -35,11 +32,8 @@ export default function TemplateEditor({
   onSave,
   onBack,
 }: TemplateEditorProps) {
-  const [selectedColorScheme, setSelectedColorScheme] =
-    useState<ColorScheme | null>(null);
-  const [customContent, setCustomContent] = useState<Record<string, unknown>>(
-    {}
-  );
+  const [selectedColorScheme, setSelectedColorScheme] = useState<ColorScheme | null>(null);
+  const [customContent, setCustomContent] = useState<Record<string, unknown>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
 
@@ -50,10 +44,7 @@ export default function TemplateEditor({
     }
   }, [template]);
 
-  const handleContentUpdate = (
-    componentId: string,
-    content: Record<string, unknown>
-  ) => {
+  const handleContentUpdate = (componentId: string, content: Record<string, unknown>) => {
     setCustomContent((prev) => ({
       ...prev,
       [componentId]: content,
@@ -82,10 +73,7 @@ export default function TemplateEditor({
       <div className="editor-header bg-white p-4 border-b shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200"
-            >
+            <button onClick={onBack} className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200">
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
@@ -109,36 +97,34 @@ export default function TemplateEditor({
                 <div className="absolute right-0 top-full mt-2 bg-white border rounded-lg shadow-lg z-10 p-3 min-w-48">
                   <h3 className="font-medium mb-2">Choose Color Scheme</h3>
                   <div className="space-y-2">
-                    {template.colorSchemes.map(
-                      (scheme: ColorScheme, index: number) => (
-                        <div
-                          key={index}
-                          className={`p-2 rounded border cursor-pointer ${
-                            selectedColorScheme.name === scheme.name
-                              ? "border-blue-500 bg-blue-50"
-                              : "border-gray-200 hover:bg-gray-50"
-                          }`}
-                          onClick={() => {
-                            setSelectedColorScheme(scheme);
-                            setShowColorPicker(false);
-                          }}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="flex gap-1">
-                              <div
-                                className="w-4 h-4 rounded-full border"
-                                style={{ backgroundColor: scheme.primary }}
-                              />
-                              <div
-                                className="w-4 h-4 rounded-full border"
-                                style={{ backgroundColor: scheme.secondary }}
-                              />
-                            </div>
-                            <span className="text-sm">{scheme.name}</span>
+                    {template.colorSchemes.map((scheme: ColorScheme, index: number) => (
+                      <div
+                        key={index}
+                        className={`p-2 rounded border cursor-pointer ${
+                          selectedColorScheme.name === scheme.name
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 hover:bg-gray-50"
+                        }`}
+                        onClick={() => {
+                          setSelectedColorScheme(scheme);
+                          setShowColorPicker(false);
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex gap-1">
+                            <div
+                              className="w-4 h-4 rounded-full border"
+                              style={{ backgroundColor: scheme.primary }}
+                            />
+                            <div
+                              className="w-4 h-4 rounded-full border"
+                              style={{ backgroundColor: scheme.secondary }}
+                            />
                           </div>
+                          <span className="text-sm">{scheme.name}</span>
                         </div>
-                      )
-                    )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -166,8 +152,7 @@ export default function TemplateEditor({
               ...section,
               // ensure required fields for TemplateSection
               layout:
-                (section as unknown as { layout?: string }).layout ??
-                (section.type as string),
+                (section as unknown as { layout?: string }).layout ?? (section.type as string),
               type: section.type as unknown as SectionType,
               order: (section as unknown as { order?: number }).order ?? 0,
               components: {

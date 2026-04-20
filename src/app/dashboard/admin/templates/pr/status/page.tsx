@@ -1,10 +1,6 @@
 import PRStatusClient from "./PRStatusClient";
 
-export default function PRStatusPage({
-  searchParams,
-}: {
-  searchParams?: { prUrl?: string };
-}) {
+export default function PRStatusPage({ searchParams }: { searchParams?: { prUrl?: string } }) {
   const prUrl = (searchParams?.prUrl as string) || "";
 
   return (

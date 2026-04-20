@@ -6,10 +6,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useCSRFToken } from "@/hooks/useCSRFToken";
 import { ColorScheme } from "@/lib/component-registry";
 import { SectionType } from "@/generated/prisma";
-import {
-  injectCSSVariables,
-  removeCSSVariables,
-} from "@/lib/css-variable-injection";
+import { injectCSSVariables, removeCSSVariables } from "@/lib/css-variable-injection";
 import { loadFontsFromScheme } from "@/lib/font-utils";
 import type { FontScheme } from "@/types/customization";
 import {
@@ -38,10 +35,7 @@ interface TemplateEditorProps {
   weddingPage: WeddingPage | null;
   userPlan: UserPlan | null;
   onTemplateUpdate: (template: Template) => void;
-  onContentUpdate: (
-    sectionId: string,
-    content: Record<string, unknown>
-  ) => void;
+  onContentUpdate: (sectionId: string, content: Record<string, unknown>) => void;
   editedSections: string[];
   onWeddingPageUpdate?: (weddingPage: WeddingPage | null) => void;
   onUserTemplateUpdate?: (userTemplate: UserTemplate | null) => void;
@@ -124,10 +118,7 @@ const TemplateEditor = ({
         const response = await fetch("/api/wedding-data");
         if (response.ok) {
           const data = await response.json();
-          console.log(
-            "TemplateEditor - API response wedding date:",
-            data.userData?.weddingDate
-          );
+          console.log("TemplateEditor - API response wedding date:", data.userData?.weddingDate);
           setUserData({
             ...data.userData,
             // Ensure we have all required fields with fallbacks
@@ -236,11 +227,7 @@ const TemplateEditor = ({
     const containerId = "template-editor-preview";
     const element = document.getElementById(containerId);
     if (element) {
-      injectCSSVariables(
-        containerId,
-        customization.colors,
-        customization.fonts as FontScheme
-      );
+      injectCSSVariables(containerId, customization.colors, customization.fonts as FontScheme);
     }
 
     // Cleanup on unmount or when modal closes
@@ -259,10 +246,7 @@ const TemplateEditor = ({
 
   // Debug logging
   console.log("TemplateEditor - selectedTemplate:", selectedTemplate);
-  console.log(
-    "TemplateEditor - selectedTemplate.sections:",
-    selectedTemplate.sections
-  );
+  console.log("TemplateEditor - selectedTemplate.sections:", selectedTemplate.sections);
   console.log("TemplateEditor - userTemplate:", userTemplate);
   console.log("TemplateEditor - userTemplate.content:", userTemplate?.content);
   console.log("TemplateEditor - userData:", userData);
@@ -352,10 +336,7 @@ const TemplateEditor = ({
       };
 
       console.log("TemplateEditor - Publishing with data:", publishData);
-      console.log(
-        "TemplateEditor - userTemplate content:",
-        userTemplate?.content
-      );
+      console.log("TemplateEditor - userTemplate content:", userTemplate?.content);
 
       const response = await fetch("/api/wedding-pages/publish", {
         method: "POST",
@@ -391,11 +372,7 @@ const TemplateEditor = ({
       }
     } catch (err: unknown) {
       console.error("Error publishing template:", err);
-      toast.error(
-        (err as Error)?.message ||
-          String(err) ||
-          "Failed to publish wedding page"
-      );
+      toast.error((err as Error)?.message || String(err) || "Failed to publish wedding page");
     } finally {
       setIsPublishing(false);
     }
@@ -431,9 +408,7 @@ const TemplateEditor = ({
       }
     } catch (err: unknown) {
       console.error("Error updating live site:", err);
-      toast.error(
-        (err as Error)?.message || String(err) || "Failed to update live site"
-      );
+      toast.error((err as Error)?.message || String(err) || "Failed to update live site");
     } finally {
       setIsPublishing(false);
     }
@@ -475,11 +450,7 @@ const TemplateEditor = ({
       }
     } catch (err: unknown) {
       console.error("Error deleting wedding page:", err);
-      toast.error(
-        (err as Error)?.message ||
-          String(err) ||
-          "Failed to delete wedding page"
-      );
+      toast.error((err as Error)?.message || String(err) || "Failed to delete wedding page");
     } finally {
       setIsDeleting(false);
     }
@@ -503,15 +474,8 @@ const TemplateEditor = ({
     setShowEditModal(true);
   };
 
-  const handleSectionContentUpdate = (
-    sectionId: string,
-    content: Record<string, unknown>
-  ) => {
-    console.log(
-      "TemplateEditor - handleSectionContentUpdate called with:",
-      sectionId,
-      content
-    );
+  const handleSectionContentUpdate = (sectionId: string, content: Record<string, unknown>) => {
+    console.log("TemplateEditor - handleSectionContentUpdate called with:", sectionId, content);
     onContentUpdate(sectionId, content);
   };
 
@@ -521,22 +485,13 @@ const TemplateEditor = ({
     components: Record<string, unknown>;
   }) => {
     const content =
-      (userTemplate?.content?.[section.id] as
-        | Record<string, unknown>
-        | undefined) ||
+      (userTemplate?.content?.[section.id] as Record<string, unknown> | undefined) ||
       (section.components as Record<string, unknown> | undefined) ||
       {};
 
-    const renderText = (
-      value: unknown,
-      fallback?: string
-    ): string | undefined => {
+    const renderText = (value: unknown, fallback?: string): string | undefined => {
       if (value === null || value === undefined) return fallback ?? undefined;
-      if (
-        typeof value === "string" ||
-        typeof value === "number" ||
-        typeof value === "boolean"
-      )
+      if (typeof value === "string" || typeof value === "number" || typeof value === "boolean")
         return String(value);
       return fallback ?? undefined;
     };
@@ -557,24 +512,14 @@ const TemplateEditor = ({
               className={`flex items-center justify-center gap-2 text-lg md:text-xl ${isDarkMode ? "text-white" : "text-black"}`}
             >
               <Calendar className="h-5 w-5" />
-              <p>
-                {renderText(
-                  content.subtitle,
-                  renderText(content.date, userData.weddingDate)
-                )}
-              </p>
+              <p>{renderText(content.subtitle, renderText(content.date, userData.weddingDate))}</p>
             </div>
             {(content.venue || content.location || userData.venue) && (
               <div
                 className={`flex items-center justify-center gap-2 text-sm md:text-base mt-2 ${isDarkMode ? "text-white" : "text-black"}`}
               >
                 <MapPin className="h-4 w-4" />
-                <p>
-                  {renderText(
-                    content.venue,
-                    renderText(content.location, userData.venue)
-                  )}
-                </p>
+                <p>{renderText(content.venue, renderText(content.location, userData.venue))}</p>
               </div>
             )}
           </div>
@@ -588,9 +533,7 @@ const TemplateEditor = ({
               <Heart className="h-5 w-5 text-pink-500" />
               {renderText(content.title, "Our Story")}
             </h2>
-            <p
-              className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}
-            >
+            <p className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}>
               {renderText(
                 content.text,
                 renderText(content.content, "Your love story goes here...")
@@ -613,9 +556,7 @@ const TemplateEditor = ({
             >
               Photo Gallery
             </h2>
-            <p
-              className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}
-            >
+            <p className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}>
               {renderText(content.content, "Add photos and videos ...")}
             </p>
           </div>
@@ -636,9 +577,7 @@ const TemplateEditor = ({
               <Gift className="h-5 w-5 text-amber-500" />
               Gift Registry
             </h2>
-            <p
-              className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}
-            >
+            <p className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}>
               {renderText(content.content, "Browse our gift registry...")}
             </p>
           </div>
@@ -659,13 +598,8 @@ const TemplateEditor = ({
               <Users className="h-5 w-5 text-blue-500" />
               Guest Wishes
             </h2>
-            <p
-              className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}
-            >
-              {renderText(
-                content.content,
-                "Leave your wishes for the couple..."
-              )}
+            <p className={`text-sm md:text-base ${isDarkMode ? "text-white" : "text-black"}`}>
+              {renderText(content.content, "Leave your wishes for the couple...")}
             </p>
           </div>
         );
@@ -679,20 +613,14 @@ const TemplateEditor = ({
       {/* Header with template name and actions */}
       <div
         className={`flex flex-col md:flex-row items-center justify-between p-4 rounded-xl mb-4 ${
-          isDarkMode
-            ? "bg-slate-800 border-slate-700"
-            : "bg-white border-slate-200"
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
         } border shadow-lg gap-4 md:gap-0`}
       >
         <div>
-          <h2
-            className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
-          >
+          <h2 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
             Editing: {selectedTemplate.name}
           </h2>
-          <p
-            className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-          >
+          <p className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
             Customize your wedding website with your details
           </p>
         </div>
@@ -708,14 +636,11 @@ const TemplateEditor = ({
             }}
             disabled={
               isSaving ||
-              (weddingPage?.deleted_at !== null &&
-                weddingPage?.deleted_at !== undefined)
+              (weddingPage?.deleted_at !== null && weddingPage?.deleted_at !== undefined)
             }
             type="button"
             className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-colors text-sm ${
-              isSaving
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
+              isSaving ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"
             } text-white`}
           >
             <Save className="h-3 w-3 md:h-4 md:w-4" />
@@ -751,8 +676,7 @@ const TemplateEditor = ({
             disabled={
               isSaving ||
               isPublishing ||
-              (weddingPage?.deleted_at !== null &&
-                weddingPage?.deleted_at !== undefined)
+              (weddingPage?.deleted_at !== null && weddingPage?.deleted_at !== undefined)
             }
             type="button"
             className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg transition-colors text-sm ${
@@ -800,9 +724,7 @@ const TemplateEditor = ({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span
-              className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-            >
+            <span className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
               URL:
             </span>
             <a
@@ -853,18 +775,14 @@ const TemplateEditor = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className={`min-h-64 md:min-h-96 rounded-xl border-2 border-dashed ${
-              isDarkMode
-                ? "border-slate-600 bg-slate-800/50"
-                : "border-slate-300 bg-slate-50"
+              isDarkMode ? "border-slate-600 bg-slate-800/50" : "border-slate-300 bg-slate-50"
             }`}
           >
             <div className="p-4 md:p-6 space-y-4 md:space-y-6">
               <AnimatePresence>
                 {selectedTemplate.sections?.map((section) => {
                   const isEdited = editedSections.includes(section.id);
-                  const sectionStatusData = sectionStatus.find(
-                    (s) => s.sectionId === section.id
-                  );
+                  const sectionStatusData = sectionStatus.find((s) => s.sectionId === section.id);
                   const isComplete = sectionStatusData?.isComplete || false;
 
                   return (
@@ -879,17 +797,13 @@ const TemplateEditor = ({
                         damping: 30,
                       }}
                       className={`relative p-4 md:p-6 rounded-xl border-2 border-dashed transition-all duration-300 cursor-pointer group ${isDarkMode ? "hover:bg-slate-800" : "hover:bg-slate-300"} ${
-                        isComplete
-                          ? "border-green-400 bg-green-50 dark:bg-green-900/20"
-                          : ""
+                        isComplete ? "border-green-400 bg-green-50 dark:bg-green-900/20" : ""
                       }`}
                       onClick={() => openEditModal(section)}
                       style={{
                         backgroundColor: selectedColorScheme?.background,
                         color: selectedColorScheme?.text,
-                        borderColor: isComplete
-                          ? "#10b981"
-                          : selectedColorScheme?.primary,
+                        borderColor: isComplete ? "#10b981" : selectedColorScheme?.primary,
                       }}
                     >
                       {isComplete && (
@@ -921,8 +835,7 @@ const TemplateEditor = ({
                           </h3> */}
                         </div>
                         {/* Edit button for editable sections */}
-                        {(section.type === "HERO" ||
-                          section.type === "STORY") && (
+                        {(section.type === "HERO" || section.type === "STORY") && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -935,9 +848,7 @@ const TemplateEditor = ({
                         )}
                       </div>
 
-                      <div className="text-xs md:text-sm">
-                        {renderSectionContent(section)}
-                      </div>
+                      <div className="text-xs md:text-sm">{renderSectionContent(section)}</div>
                     </motion.div>
                   );
                 })}
@@ -953,13 +864,9 @@ const TemplateEditor = ({
         onClose={() => setShowPreviewModal(false)}
         maxWidth="max-w-[95vw]"
       >
-        <div
-          className={`p-6 h-full ${isDarkMode ? "bg-slate-900" : "bg-white"}`}
-        >
+        <div className={`p-6 h-full ${isDarkMode ? "bg-slate-900" : "bg-white"}`}>
           <div className="flex items-center justify-between mb-6">
-            <h2
-              className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
-            >
+            <h2 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Template Preview
             </h2>
             <motion.button
@@ -971,18 +878,14 @@ const TemplateEditor = ({
             </motion.button>
           </div>
 
-          <div
-            id="template-editor-preview"
-            className="h-[calc(100%-4rem)] overflow-auto"
-          >
+          <div id="template-editor-preview" className="h-[calc(100%-4rem)] overflow-auto">
             <DynamicTemplateRenderer
               template={{
                 ...selectedTemplate,
                 sections: selectedTemplate.sections.map((section) => ({
                   ...section,
                   layout:
-                    (section as unknown as { layout?: string }).layout ??
-                    (section.type as string),
+                    (section as unknown as { layout?: string }).layout ?? (section.type as string),
                   type: section.type as unknown as SectionType,
                   order: (section as unknown as { order?: number }).order ?? 0,
                   components: {
@@ -1003,21 +906,18 @@ const TemplateEditor = ({
                 // Extract hero image from template content if available
                 heroImage: (() => {
                   // First check if there's a hero image in the template content
-                  const heroSection = selectedTemplate.sections?.find(
-                    (s) => s.type === "HERO"
-                  );
+                  const heroSection = selectedTemplate.sections?.find((s) => s.type === "HERO");
                   console.log("TemplateEditor - heroSection:", heroSection);
                   console.log(
                     "TemplateEditor - heroSection content:",
-                    heroSection
-                      ? userTemplate?.content?.[heroSection.id]
-                      : "No hero section"
+                    heroSection ? userTemplate?.content?.[heroSection.id] : "No hero section"
                   );
 
                   if (heroSection && userTemplate?.content?.[heroSection.id]) {
-                    const sectionContent = userTemplate.content[
-                      heroSection.id
-                    ] as Record<string, unknown>;
+                    const sectionContent = userTemplate.content[heroSection.id] as Record<
+                      string,
+                      unknown
+                    >;
                     if (sectionContent.heroImage) {
                       const heroImage = sectionContent.heroImage as string;
                       console.log(
@@ -1036,26 +936,19 @@ const TemplateEditor = ({
                 })(),
                 // Extract story image from template content if available
                 storyImage: (() => {
-                  const storySection = selectedTemplate.sections?.find(
-                    (s) => s.type === "STORY"
-                  );
-                  if (
-                    storySection &&
-                    userTemplate?.content?.[storySection.id]
-                  ) {
-                    const sectionContent = userTemplate.content[
-                      storySection.id
-                    ] as Record<string, unknown>;
+                  const storySection = selectedTemplate.sections?.find((s) => s.type === "STORY");
+                  if (storySection && userTemplate?.content?.[storySection.id]) {
+                    const sectionContent = userTemplate.content[storySection.id] as Record<
+                      string,
+                      unknown
+                    >;
                     if (sectionContent.storyImage) {
                       return sectionContent.storyImage as string;
                     }
                   }
                   return userData.storyImage;
                 })(),
-                sections: (userTemplate?.content || {}) as Record<
-                  string,
-                  Record<string, unknown>
-                >, // Pass userTemplate content as sections
+                sections: (userTemplate?.content || {}) as Record<string, Record<string, unknown>>, // Pass userTemplate content as sections
               }}
               colorScheme={((): ColorScheme | undefined => {
                 if (selectedColorScheme) return selectedColorScheme;
@@ -1086,9 +979,7 @@ const TemplateEditor = ({
           className={`p-6 rounded-xl max-w-md mx-auto ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2
-              className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
-            >
+            <h2 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Create Your Wedding Page
             </h2>
             <motion.button
@@ -1108,9 +999,7 @@ const TemplateEditor = ({
                 Wedding Page URL
               </label>
               <div className="flex items-center gap-2">
-                <span
-                  className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-                >
+                <span className={`text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                   {process.env.NEXT_PUBLIC_APP_URL}/
                 </span>
                 <input
@@ -1125,9 +1014,7 @@ const TemplateEditor = ({
                   placeholder="your-wedding-slug"
                 />
               </div>
-              <p
-                className={`text-xs mt-1 ${isDarkMode ? "text-slate-500" : "text-slate-500"}`}
-              >
+              <p className={`text-xs mt-1 ${isDarkMode ? "text-slate-500" : "text-slate-500"}`}>
                 This will be your unique wedding page URL
               </p>
             </div>
@@ -1138,9 +1025,7 @@ const TemplateEditor = ({
               onClick={() => handlePublish(slug)}
               disabled={isPublishing || !slug.trim()}
               className={`w-full px-4 py-2 rounded-lg text-white text-sm ${
-                isDarkMode
-                  ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-blue-600 hover:bg-blue-700"
+                isDarkMode ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-600 hover:bg-blue-700"
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {isPublishing ? "Publishing..." : "Publish Wedding Page"}
@@ -1155,9 +1040,7 @@ const TemplateEditor = ({
           className={`p-6 rounded-xl max-w-md mx-auto ${isDarkMode ? "bg-slate-800" : "bg-white"}`}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2
-              className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}
-            >
+            <h2 className={`text-xl font-semibold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Delete Wedding Page
             </h2>
             <motion.button
@@ -1171,11 +1054,9 @@ const TemplateEditor = ({
 
           <div className="space-y-4">
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-              <p
-                className={`text-sm ${isDarkMode ? "text-red-300" : "text-red-700"}`}
-              >
-                <strong>Warning:</strong> This action cannot be undone. This
-                will permanently delete your wedding page and template.
+              <p className={`text-sm ${isDarkMode ? "text-red-300" : "text-red-700"}`}>
+                <strong>Warning:</strong> This action cannot be undone. This will permanently delete
+                your wedding page and template.
               </p>
             </div>
 

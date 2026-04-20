@@ -13,10 +13,7 @@ let vapidConfigured = false;
 function ensureVapidConfigured() {
   if (vapidConfigured) return;
 
-  if (
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY &&
-    process.env.VAPID_PRIVATE_KEY
-  ) {
+  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
     webPush.setVapidDetails(
       process.env.VAPID_SUBJECT || "mailto:support@myweddingpage.com",
       process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
@@ -41,14 +38,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { userId, title, body, icon, badge, tag, data } =
-      await request.json();
+    const { userId, title, body, icon, badge, tag, data } = await request.json();
 
     if (!title || !body) {
-      return NextResponse.json(
-        { error: "Title and body are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Title and body are required" }, { status: 400 });
     }
 
     // Get current user
@@ -138,10 +131,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Send notification error:", error);
-    return NextResponse.json(
-      { error: "Failed to send notification" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to send notification" }, { status: 500 });
   }
 }
 
@@ -151,8 +141,7 @@ export async function POST(request: NextRequest) {
  */
 export async function GET() {
   const isConfigured =
-    !!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY &&
-    !!process.env.VAPID_PRIVATE_KEY;
+    !!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && !!process.env.VAPID_PRIVATE_KEY;
 
   return NextResponse.json({
     configured: isConfigured,

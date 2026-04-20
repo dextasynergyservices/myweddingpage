@@ -50,16 +50,11 @@ export default function ShowRawIpsAuditPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1
-          className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-        >
+        <h1 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
           Admins with Raw IPs Enabled
         </h1>
-        <p
-          className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-        >
-          These admins have the ability to view raw IP addresses in analytics.
-          Audit regularly.
+        <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+          These admins have the ability to view raw IP addresses in analytics. Audit regularly.
         </p>
       </div>
 
@@ -83,22 +78,16 @@ export default function ShowRawIpsAuditPage() {
                   <td className="px-4 py-2">{a.name || "(no name)"}</td>
                   <td className="px-4 py-2">{a.email}</td>
                   <td className="px-4 py-2">{a.role}</td>
+                  <td className="px-4 py-2">{new Date(a.createdAt).toLocaleString()}</td>
                   <td className="px-4 py-2">
-                    {new Date(a.createdAt).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-2">
-                    {a.lastLoginAt
-                      ? new Date(a.lastLoginAt).toLocaleString()
-                      : "Never"}
+                    {a.lastLoginAt ? new Date(a.lastLoginAt).toLocaleString() : "Never"}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p
-            className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-          >
+          <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
             No admins have raw IPs enabled.
           </p>
         )}

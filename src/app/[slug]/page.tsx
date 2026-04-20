@@ -15,9 +15,7 @@ type PageProps = {
   };
 };
 
-export default async function WeddingPage({
-  params,
-}: PageProps): Promise<JSX.Element> {
+export default async function WeddingPage({ params }: PageProps): Promise<JSX.Element> {
   const { slug } = await params;
 
   try {
@@ -55,10 +53,7 @@ export default async function WeddingPage({
     return (
       <div className="min-h-screen bg-white">
         {/* Apply user's customization (colors/fonts) to the entire page */}
-        <PublicPageCustomization
-          customization={userTemplate?.colorScheme}
-          slug={slug}
-        />
+        <PublicPageCustomization customization={userTemplate?.colorScheme} slug={slug} />
 
         {/* Wedding Page Header */}
         <WeddingPageHeader
@@ -82,9 +77,7 @@ export default async function WeddingPage({
           {/* Render the wedding page using DynamicTemplateRenderer */}
           <DynamicTemplateRenderer
             template={template}
-            userPlan={
-              plan || { id: "public", name: "Public", maxComponents: 10 }
-            }
+            userPlan={plan || { id: "public", name: "Public", maxComponents: 10 }}
             userData={userData}
             colorScheme={userTemplate?.colorScheme}
             editable={false} // Public pages are not editable

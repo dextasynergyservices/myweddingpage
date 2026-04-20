@@ -2,8 +2,7 @@ import fs from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
 
-const STAGING_ROOT =
-  process.env.TEMPLATE_STAGING_ROOT || path.join(process.cwd(), "staging");
+const STAGING_ROOT = process.env.TEMPLATE_STAGING_ROOT || path.join(process.cwd(), "staging");
 
 export function ensureStagingRoot() {
   if (!fs.existsSync(STAGING_ROOT)) {

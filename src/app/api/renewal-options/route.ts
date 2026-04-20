@@ -38,10 +38,7 @@ export async function GET(req: Request) {
     const planId = url.searchParams.get("planId");
 
     if (!planId) {
-      return NextResponse.json(
-        { error: "planId is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "planId is required" }, { status: 400 });
     }
 
     const options = await prisma.planRenewalOption.findMany({
@@ -53,9 +50,6 @@ export async function GET(req: Request) {
     return NextResponse.json(options);
   } catch (err) {
     console.error("[renewal-options] error:", err);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

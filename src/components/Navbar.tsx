@@ -50,8 +50,7 @@ const Navbar = () => {
           : "bg-transparent"
       }`}
       style={{
-        backgroundColor:
-          isScrolled && isDarkMode ? "rgba(7, 7, 7, 0.9)" : undefined,
+        backgroundColor: isScrolled && isDarkMode ? "rgba(7, 7, 7, 0.9)" : undefined,
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -81,17 +80,10 @@ const Navbar = () => {
                 <motion.button
                   onClick={handleNavClick}
                   className={`font-medium transition-colors duration-300 relative cursor-pointer ${
-                    isDarkMode
-                      ? "text-slate-300"
-                      : isScrolled
-                        ? "text-slate-700"
-                        : "text-slate-900"
+                    isDarkMode ? "text-slate-300" : isScrolled ? "text-slate-700" : "text-slate-900"
                   } ${pathname === item.href ? (isDarkMode ? "font-bold" : "font-bold") : ""}`}
                   style={{
-                    color:
-                      isDarkMode && pathname === item.href
-                        ? "var(--foreground)"
-                        : undefined,
+                    color: isDarkMode && pathname === item.href ? "var(--foreground)" : undefined,
                   }}
                   onMouseEnter={(e) => {
                     if (isDarkMode) {
@@ -103,12 +95,9 @@ const Navbar = () => {
                   onMouseLeave={(e) => {
                     if (isDarkMode) {
                       e.currentTarget.style.color =
-                        pathname === item.href
-                          ? "var(--foreground)"
-                          : "#cbd5e1";
+                        pathname === item.href ? "var(--foreground)" : "#cbd5e1";
                     } else {
-                      e.currentTarget.style.color =
-                        pathname === item.href ? "var(--black)" : "";
+                      e.currentTarget.style.color = pathname === item.href ? "var(--black)" : "";
                     }
                   }}
                   whileHover={{ y: -2 }}
@@ -186,10 +175,7 @@ const Navbar = () => {
                         : "text-slate-700 hover:bg-slate-50"
                   }`}
                   style={{
-                    color:
-                      isDarkMode && pathname === item.href
-                        ? "var(--foreground)"
-                        : undefined,
+                    color: isDarkMode && pathname === item.href ? "var(--foreground)" : undefined,
                   }}
                   onMouseEnter={(e) => {
                     if (isDarkMode) {
@@ -201,12 +187,9 @@ const Navbar = () => {
                   onMouseLeave={(e) => {
                     if (isDarkMode) {
                       e.currentTarget.style.color =
-                        pathname === item.href
-                          ? "var(--foreground)"
-                          : "#cbd5e1";
+                        pathname === item.href ? "var(--foreground)" : "#cbd5e1";
                     } else {
-                      e.currentTarget.style.color =
-                        pathname === item.href ? "var(--black)" : "";
+                      e.currentTarget.style.color = pathname === item.href ? "var(--black)" : "";
                     }
                   }}
                 >
@@ -214,11 +197,7 @@ const Navbar = () => {
                 </button>
               </Link>
             ))}
-            <CTAButton
-              isScrolled={isScrolled}
-              isMobile
-              setIsMobileMenuOpen={setIsMobileMenuOpen}
-            />
+            <CTAButton isScrolled={isScrolled} isMobile setIsMobileMenuOpen={setIsMobileMenuOpen} />
           </div>
         </motion.div>
       </div>

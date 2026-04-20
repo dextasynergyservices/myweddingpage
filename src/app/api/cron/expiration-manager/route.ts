@@ -175,13 +175,8 @@ export async function GET(request: NextRequest) {
 
         results.sevenDayWarnings++;
       } catch (error) {
-        console.error(
-          `Error processing 7-day warning for user ${user.id}:`,
-          error
-        );
-        results.errors.push(
-          `Failed to process 7-day warning for user ${user.id}: ${error}`
-        );
+        console.error(`Error processing 7-day warning for user ${user.id}:`, error);
+        results.errors.push(`Failed to process 7-day warning for user ${user.id}: ${error}`);
       }
     }
 
@@ -210,9 +205,7 @@ export async function GET(request: NextRequest) {
     for (const user of newlyExpiredUsers) {
       try {
         const gracePeriodStart = now;
-        const gracePeriodEnd = new Date(
-          now.getTime() + 3 * 24 * 60 * 60 * 1000
-        ); // 3 days
+        const gracePeriodEnd = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000); // 3 days
 
         await prisma.user.update({
           where: { id: user.id },
@@ -370,13 +363,8 @@ export async function GET(request: NextRequest) {
 
         results.gracePeriodReminders++;
       } catch (error) {
-        console.error(
-          `Error sending final day warning to user ${user.id}:`,
-          error
-        );
-        results.errors.push(
-          `Failed to send final warning to user ${user.id}: ${error}`
-        );
+        console.error(`Error sending final day warning to user ${user.id}:`, error);
+        results.errors.push(`Failed to send final warning to user ${user.id}: ${error}`);
       }
     }
 
@@ -506,9 +494,7 @@ export async function GET(request: NextRequest) {
         results.deletionsProcessed++;
       } catch (error) {
         console.error(`Error processing deletion for user ${user.id}:`, error);
-        results.errors.push(
-          `Failed to delete wedding page for user ${user.id}: ${error}`
-        );
+        results.errors.push(`Failed to delete wedding page for user ${user.id}: ${error}`);
       }
     }
 
@@ -555,9 +541,7 @@ export async function GET(request: NextRequest) {
       try {
         // CRITICAL FIX: Double-check user has active wedding pages before sending
         if (!user.weddingPages || user.weddingPages.length === 0) {
-          console.log(
-            `[GRACE PERIOD] Skipping user ${user.id} - no active wedding pages found`
-          );
+          console.log(`[GRACE PERIOD] Skipping user ${user.id} - no active wedding pages found`);
           continue;
         }
 
@@ -569,12 +553,7 @@ export async function GET(request: NextRequest) {
         // ENHANCEMENT: Send reminders on ALL 3 days of grace period (days 3, 2, and 1)
         // Day 0 users are processed for deletion in Step 3
         if ([3, 2, 1].includes(daysLeft)) {
-          const urgencyLevel =
-            daysLeft === 1
-              ? "URGENT"
-              : daysLeft === 2
-                ? "CRITICAL"
-                : "REMINDER";
+          const urgencyLevel = daysLeft === 1 ? "URGENT" : daysLeft === 2 ? "CRITICAL" : "REMINDER";
 
           console.log(
             `[GRACE PERIOD] Sending ${urgencyLevel} reminder to user ${user.id} - ${daysLeft} day(s) left`
@@ -646,13 +625,8 @@ export async function GET(request: NextRequest) {
           results.gracePeriodReminders++;
         }
       } catch (error) {
-        console.error(
-          `Error sending grace period reminder to user ${user.id}:`,
-          error
-        );
-        results.errors.push(
-          `Failed to send reminder to user ${user.id}: ${error}`
-        );
+        console.error(`Error sending grace period reminder to user ${user.id}:`, error);
+        results.errors.push(`Failed to send reminder to user ${user.id}: ${error}`);
       }
     }
 
@@ -665,9 +639,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error in expiration management cron job:", error);
-    return NextResponse.json(
-      { error: "Internal server error", details: error },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error", details: error }, { status: 500 });
   }
 }

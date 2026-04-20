@@ -76,8 +76,7 @@ export async function uploadWithSignature(
   file: File,
   options: SignedUploadOptions
 ): Promise<SignedUploadResult> {
-  const { uploadType, onProgress, onProgressUpdate, onSuccess, onError } =
-    options;
+  const { uploadType, onProgress, onProgressUpdate, onSuccess, onError } = options;
 
   try {
     // Validate file
@@ -86,11 +85,7 @@ export async function uploadWithSignature(
     }
 
     // Get signature from server
-    const signature = await getUploadSignature(
-      uploadType,
-      file.name,
-      file.size
-    );
+    const signature = await getUploadSignature(uploadType, file.name, file.size);
 
     // Prepare form data for Cloudinary
     const formData = new FormData();
@@ -200,10 +195,7 @@ export async function uploadWithSignature(
       });
 
       // Start upload
-      xhr.open(
-        "POST",
-        `https://api.cloudinary.com/v1_1/${signature.cloud_name}/image/upload`
-      );
+      xhr.open("POST", `https://api.cloudinary.com/v1_1/${signature.cloud_name}/image/upload`);
       xhr.send(formData);
     });
 
@@ -216,8 +208,7 @@ export async function uploadWithSignature(
 
     return result;
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Upload failed";
+    const errorMessage = error instanceof Error ? error.message : "Upload failed";
 
     // Call error callback
     if (onError) {
@@ -231,10 +222,7 @@ export async function uploadWithSignature(
 /**
  * Validate file before upload
  */
-export function validateUploadFile(
-  file: File,
-  uploadType: string
-): string | null {
+export function validateUploadFile(file: File, uploadType: string): string | null {
   // Size limits based on upload type
   const sizeLimits = {
     profile: 5 * 1024 * 1024, // 5MB

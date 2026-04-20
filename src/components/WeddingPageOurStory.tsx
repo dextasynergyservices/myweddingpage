@@ -21,13 +21,10 @@ export default function WeddingPageOurStory({
   const { isDarkMode } = useTheme();
 
   const defaultContent = `Our journey began five years ago when we met at a coffee shop...`;
-  const defaultImage =
-    "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg";
+  const defaultImage = "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg";
 
   // Ensure we handle multiple paragraphs
-  const paragraphs = (content || defaultContent)
-    .split("\n")
-    .filter((p) => p.trim() !== "");
+  const paragraphs = (content || defaultContent).split("\n").filter((p) => p.trim() !== "");
 
   return (
     <motion.div
@@ -37,8 +34,7 @@ export default function WeddingPageOurStory({
         isDarkMode ? "border-slate-700" : "border-slate-100"
       }`}
       style={{
-        backgroundColor:
-          styles?.backgroundColor || (isDarkMode ? "#1e293b" : "#ffffff"),
+        backgroundColor: styles?.backgroundColor || (isDarkMode ? "#1e293b" : "#ffffff"),
         color: styles?.textColor || (isDarkMode ? "#e2e8f0" : "#1e293b"),
       }}
     >

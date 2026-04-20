@@ -13,10 +13,7 @@ let vapidConfigured = false;
 function ensureVapidConfigured() {
   if (vapidConfigured) return;
 
-  if (
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY &&
-    process.env.VAPID_PRIVATE_KEY
-  ) {
+  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
     webPush.setVapidDetails(
       process.env.VAPID_SUBJECT || "mailto:support@myweddingpage.com",
       process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
@@ -43,10 +40,7 @@ export async function POST(request: NextRequest) {
     const { subscription } = await request.json();
 
     if (!subscription || !subscription.endpoint) {
-      return NextResponse.json(
-        { error: "Invalid subscription data" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid subscription data" }, { status: 400 });
     }
 
     // Find user
@@ -84,10 +78,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Push subscription error:", error);
-    return NextResponse.json(
-      { error: "Failed to save subscription" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to save subscription" }, { status: 500 });
   }
 }
 
@@ -132,9 +123,6 @@ export async function DELETE(request: NextRequest) {
     });
   } catch (error) {
     console.error("Push unsubscribe error:", error);
-    return NextResponse.json(
-      { error: "Failed to unsubscribe" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to unsubscribe" }, { status: 500 });
   }
 }

@@ -45,22 +45,13 @@ const LoginPage: React.FC = () => {
             className="flex justify-center mb-6"
           >
             <div className="p-4 bg-white rounded-2xl shadow-lg">
-              <Image
-                src="/logoicon.png"
-                alt="my wedding page"
-                width={60}
-                height={60}
-              />
+              <Image src="/logoicon.png" alt="my wedding page" width={60} height={60} />
             </div>
           </motion.div>
-          <h1
-            className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-black"}`}
-          >
+          <h1 className={`text-3xl font-light mb-2 ${isDarkMode ? "text-white" : "text-black"}`}>
             Welcome Back
           </h1>
-          <p
-            className={`${isDarkMode ? "text-white/50" : "text-black"} font-light`}
-          >
+          <p className={`${isDarkMode ? "text-white/50" : "text-black"} font-light`}>
             Sign in to your wedding dashboard
           </p>
         </div>

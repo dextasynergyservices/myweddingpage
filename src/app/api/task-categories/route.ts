@@ -9,10 +9,7 @@ export async function GET() {
     return NextResponse.json(categories);
   } catch (error) {
     console.error("GET /api/task-categories error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -21,10 +18,7 @@ export async function POST(request: Request) {
     const { name, color, icon } = await request.json();
 
     if (!name || !color || !icon) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const category = await prisma.taskCategory.create({
@@ -34,9 +28,6 @@ export async function POST(request: Request) {
     return NextResponse.json(category, { status: 201 });
   } catch (error) {
     console.error("POST /api/task-categories error:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

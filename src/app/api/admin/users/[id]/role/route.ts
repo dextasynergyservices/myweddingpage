@@ -6,10 +6,7 @@ import { requireAdmin, logAdminAction } from "@/lib/middleware/admin";
  * PATCH /api/admin/users/[id]/role
  * Change user role (USER <-> ADMIN)
  */
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
     // Check admin authentication
     const adminCheck = await requireAdmin();
@@ -17,9 +14,7 @@ export async function PATCH(
       return adminCheck;
     }
 
-    const adminUser = await (
-      await import("@/lib/middleware/admin")
-    ).getAdminUser();
+    const adminUser = await (await import("@/lib/middleware/admin")).getAdminUser();
 
     const { id } = params;
     const body = await request.json();
@@ -27,10 +22,7 @@ export async function PATCH(
 
     // Validate role
     if (!role || !["USER", "ADMIN"].includes(role)) {
-      return NextResponse.json(
-        { success: false, error: "Invalid role" },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: "Invalid role" }, { status: 400 });
     }
 
     // Check if user exists
@@ -40,10 +32,7 @@ export async function PATCH(
     });
 
     if (!user) {
-      return NextResponse.json(
-        { success: false, error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
     }
 
     // Prevent demoting yourself
@@ -62,15 +51,12 @@ export async function PATCH(
     });
 
     // Log admin action
-    await logAdminAction(
-      `Changed user role: ${user.email} from ${user.role} to ${role}`,
-      {
-        userId: id,
-        userEmail: user.email,
-        oldRole: user.role,
-        newRole: role,
-      }
-    );
+    await logAdminAction(`Changed user role: ${user.email} from ${user.role} to ${role}`, {
+      userId: id,
+      userEmail: user.email,
+      oldRole: user.role,
+      newRole: role,
+    });
 
     return NextResponse.json({
       success: true,

@@ -91,8 +91,7 @@ export default function AdminOverviewPage() {
   const { isDarkMode } = useTheme();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [chartData, setChartData] = useState<ChartData[]>([]);
-  const [weddingAnalytics, setWeddingAnalytics] =
-    useState<WeddingAnalytics | null>(null);
+  const [weddingAnalytics, setWeddingAnalytics] = useState<WeddingAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [rawStatsResponse, setRawStatsResponse] = useState<unknown>(null);
   const [rawWeddingResponse, setRawWeddingResponse] = useState<unknown>(null);
@@ -278,17 +277,13 @@ export default function AdminOverviewPage() {
         </summary>
         <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <h4 className="text-sm font-semibold">
-              /api/admin/dashboard/stats
-            </h4>
+            <h4 className="text-sm font-semibold">/api/admin/dashboard/stats</h4>
             <pre className="text-xs max-h-48 overflow-auto mt-2 p-2 bg-white/50 rounded border">
               {JSON.stringify(rawStatsResponse, null, 2)}
             </pre>
           </div>
           <div>
-            <h4 className="text-sm font-semibold">
-              /api/admin/dashboard/wedding-analytics
-            </h4>
+            <h4 className="text-sm font-semibold">/api/admin/dashboard/wedding-analytics</h4>
             <pre className="text-xs max-h-48 overflow-auto mt-2 p-2 bg-white/50 rounded border">
               {JSON.stringify(rawWeddingResponse, null, 2)}
             </pre>
@@ -297,14 +292,10 @@ export default function AdminOverviewPage() {
       </details>
       {/* Header */}
       <div>
-        <h1
-          className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-        >
+        <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
           Dashboard Overview
         </h1>
-        <p
-          className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-        >
+        <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
           Monitor your wedding platform&apos;s key metrics and system health
         </p>
       </div>
@@ -351,9 +342,7 @@ export default function AdminOverviewPage() {
                       {isPositive ? "+" : ""}
                       {card.change}%
                     </span>
-                    <span
-                      className={isDarkMode ? "text-gray-500" : "text-gray-500"}
-                    >
+                    <span className={isDarkMode ? "text-gray-500" : "text-gray-500"}>
                       {card.changeLabel}
                     </span>
                   </div>
@@ -380,14 +369,10 @@ export default function AdminOverviewPage() {
               : "border-gray-200 bg-white shadow-sm"
           }`}
         >
-          <h3
-            className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-          >
+          <h3 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             Weekly Activity
           </h3>
-          <p
-            className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-          >
+          <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
             User registrations and login activity
           </p>
           <div className="mt-6 h-80">
@@ -399,13 +384,7 @@ export default function AdminOverviewPage() {
                       <stop offset="5%" stopColor="#ab862b" stopOpacity={0.8} />
                       <stop offset="95%" stopColor="#ab862b" stopOpacity={0} />
                     </linearGradient>
-                    <linearGradient
-                      id="colorLogins"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
+                    <linearGradient id="colorLogins" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
                       <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                     </linearGradient>
@@ -419,10 +398,7 @@ export default function AdminOverviewPage() {
                     stroke={isDarkMode ? "#9ca3af" : "#6b7280"}
                     style={{ fontSize: "12px" }}
                   />
-                  <YAxis
-                    stroke={isDarkMode ? "#9ca3af" : "#6b7280"}
-                    style={{ fontSize: "12px" }}
-                  />
+                  <YAxis stroke={isDarkMode ? "#9ca3af" : "#6b7280"} style={{ fontSize: "12px" }} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: isDarkMode ? "#1f2937" : "#ffffff",
@@ -451,9 +427,7 @@ export default function AdminOverviewPage() {
               </ResponsiveContainer>
             ) : (
               <div className="flex h-full items-center justify-center">
-                <p
-                  className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                >
+                <p className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                   No activity data to display
                 </p>
               </div>
@@ -472,14 +446,10 @@ export default function AdminOverviewPage() {
               : "border-gray-200 bg-white shadow-sm"
           }`}
         >
-          <h3
-            className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-          >
+          <h3 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             Two-Factor Authentication
           </h3>
-          <p
-            className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-          >
+          <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
             Security adoption across user base
           </p>
           <div className="mt-6 h-80 flex items-center justify-center">
@@ -513,40 +483,28 @@ export default function AdminOverviewPage() {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <p
-                className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-              >
+              <p className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                 No 2FA data to display
               </p>
             )}
           </div>
           <div className="mt-4 grid grid-cols-2 gap-4">
             <div className="text-center">
-              <p
-                className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-              >
-                {(
-                  ((stats?.twoFactorEnabled || 534) /
-                    (stats?.totalUsers || 1247)) *
-                  100
-                ).toFixed(1)}
+              <p className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                {(((stats?.twoFactorEnabled || 534) / (stats?.totalUsers || 1247)) * 100).toFixed(
+                  1
+                )}
                 %
               </p>
-              <p
-                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-              >
+              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                 Adoption Rate
               </p>
             </div>
             <div className="text-center">
-              <p
-                className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-              >
+              <p className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                 {stats?.twoFactorEnabled || 534}
               </p>
-              <p
-                className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-              >
+              <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                 Users Protected
               </p>
             </div>
@@ -564,14 +522,10 @@ export default function AdminOverviewPage() {
               : "border-gray-200 bg-white shadow-sm"
           }`}
         >
-          <h3
-            className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-          >
+          <h3 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             Security Events Trend
           </h3>
-          <p
-            className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-          >
+          <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
             Weekly security event distribution
           </p>
           <div className="mt-6 h-80">
@@ -587,10 +541,7 @@ export default function AdminOverviewPage() {
                     stroke={isDarkMode ? "#9ca3af" : "#6b7280"}
                     style={{ fontSize: "12px" }}
                   />
-                  <YAxis
-                    stroke={isDarkMode ? "#9ca3af" : "#6b7280"}
-                    style={{ fontSize: "12px" }}
-                  />
+                  <YAxis stroke={isDarkMode ? "#9ca3af" : "#6b7280"} style={{ fontSize: "12px" }} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: isDarkMode ? "#1f2937" : "#ffffff",
@@ -609,9 +560,7 @@ export default function AdminOverviewPage() {
               </ResponsiveContainer>
             ) : (
               <div className="flex h-full items-center justify-center">
-                <p
-                  className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                >
+                <p className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                   No security events data to display
                 </p>
               </div>
@@ -623,16 +572,11 @@ export default function AdminOverviewPage() {
       {/* Wedding Analytics Section */}
       <div className="space-y-6">
         <div>
-          <h2
-            className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-          >
+          <h2 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             Wedding Page Analytics
           </h2>
-          <p
-            className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-          >
-            Track engagement and performance of wedding pages across your
-            platform
+          <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+            Track engagement and performance of wedding pages across your platform
           </p>
         </div>
 
@@ -649,39 +593,20 @@ export default function AdminOverviewPage() {
                 : "border-gray-200 bg-white shadow-sm"
             }`}
           >
-            <h3
-              className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-            >
+            <h3 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
               Weekly Page Views
             </h3>
-            <p
-              className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-            >
+            <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
               Total views across all wedding pages
             </p>
             <div className="mt-6 h-80">
-              {weddingAnalytics?.viewsChartData &&
-              weddingAnalytics.viewsChartData.length > 0 ? (
+              {weddingAnalytics?.viewsChartData && weddingAnalytics.viewsChartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={weddingAnalytics.viewsChartData}>
                     <defs>
-                      <linearGradient
-                        id="colorViews"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="5%"
-                          stopColor="#ec4899"
-                          stopOpacity={0.8}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="#ec4899"
-                          stopOpacity={0}
-                        />
+                      <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#ec4899" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid
@@ -716,9 +641,7 @@ export default function AdminOverviewPage() {
                 </ResponsiveContainer>
               ) : (
                 <div className="flex h-full items-center justify-center">
-                  <p
-                    className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                  >
+                  <p className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                     No page views data to display
                   </p>
                 </div>
@@ -737,14 +660,10 @@ export default function AdminOverviewPage() {
                 : "border-gray-200 bg-white shadow-sm"
             }`}
           >
-            <h3
-              className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-            >
+            <h3 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
               Template Popularity
             </h3>
-            <p
-              className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-            >
+            <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
               Most used templates and their total views
             </p>
             <div className="mt-6 h-80">
@@ -792,9 +711,7 @@ export default function AdminOverviewPage() {
                 </ResponsiveContainer>
               ) : (
                 <div className="flex h-full items-center justify-center">
-                  <p
-                    className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                  >
+                  <p className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                     No template usage data to display
                   </p>
                 </div>
@@ -814,14 +731,10 @@ export default function AdminOverviewPage() {
               : "border-gray-200 bg-white shadow-sm"
           }`}
         >
-          <h3
-            className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-          >
+          <h3 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             Top Performing Wedding Pages
           </h3>
-          <p
-            className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-          >
+          <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
             Most viewed wedding pages on your platform
           </p>
           <div className="mt-6 overflow-x-auto">
@@ -829,9 +742,7 @@ export default function AdminOverviewPage() {
             weddingAnalytics.topPerformingPages.length > 0 ? (
               <table className="w-full">
                 <thead>
-                  <tr
-                    className={`border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}
-                  >
+                  <tr className={`border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}>
                     <th
                       className={`text-left py-3 px-4 text-sm font-medium ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
                     >
@@ -855,48 +766,42 @@ export default function AdminOverviewPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {weddingAnalytics.topPerformingPages
-                    .slice(0, 5)
-                    .map((page) => (
-                      <tr
-                        key={page.id}
-                        className={`border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}
+                  {weddingAnalytics.topPerformingPages.slice(0, 5).map((page) => (
+                    <tr
+                      key={page.id}
+                      className={`border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}
+                    >
+                      <td className={`py-3 px-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                        {page.couple_name}
+                      </td>
+                      <td
+                        className={`py-3 px-4 text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
                       >
-                        <td
-                          className={`py-3 px-4 ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                        {page.template_name}
+                      </td>
+                      <td
+                        className={`py-3 px-4 font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
+                      >
+                        {page.views.toLocaleString()}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            page.is_live
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
                         >
-                          {page.couple_name}
-                        </td>
-                        <td
-                          className={`py-3 px-4 text-sm ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}
-                        >
-                          {page.template_name}
-                        </td>
-                        <td
-                          className={`py-3 px-4 font-medium ${isDarkMode ? "text-white" : "text-gray-900"}`}
-                        >
-                          {page.views.toLocaleString()}
-                        </td>
-                        <td className="py-3 px-4">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              page.is_live
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {page.is_live ? "Live" : "Draft"}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                          {page.is_live ? "Live" : "Draft"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             ) : (
               <div className="flex h-32 items-center justify-center">
-                <p
-                  className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-                >
+                <p className={`text-center ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
                   No wedding pages data to display
                 </p>
               </div>
@@ -912,24 +817,18 @@ export default function AdminOverviewPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9 }}
           className={`rounded-xl border p-6 ${
-            isDarkMode
-              ? "border-red-900/50 bg-red-900/10"
-              : "border-red-200 bg-red-50"
+            isDarkMode ? "border-red-900/50 bg-red-900/10" : "border-red-200 bg-red-50"
           }`}
         >
           <div className="flex items-start gap-4">
             <AlertCircle className="h-6 w-6 text-red-600" />
             <div className="flex-1">
-              <h4
-                className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-              >
+              <h4 className={`font-semibold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                 Security Incidents Detected
               </h4>
-              <p
-                className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-              >
-                {stats.securityIncidents} security incidents require attention.
-                Check the Security Logs page for details.
+              <p className={`mt-1 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
+                {stats.securityIncidents} security incidents require attention. Check the Security
+                Logs page for details.
               </p>
             </div>
           </div>

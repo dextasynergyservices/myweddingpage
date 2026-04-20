@@ -64,12 +64,9 @@ export default function RemoteMediaGCPage() {
         if (statusFilter) params.set("status", statusFilter);
         if (qterm) params.set("q", qterm);
 
-        const res = await fetch(
-          `/api/admin/remote-media-gc?${params.toString()}`,
-          {
-            credentials: "include",
-          }
-        );
+        const res = await fetch(`/api/admin/remote-media-gc?${params.toString()}`, {
+          credentials: "include",
+        });
         const json = await res.json();
         setRows(json.rows || []);
         setTotal(json.total || 0);
@@ -102,9 +99,7 @@ export default function RemoteMediaGCPage() {
       });
       const json = await res.json();
       if (json.results) {
-        const okCount = (json.results as Array<{ ok: boolean }>).filter(
-          (r) => r.ok
-        ).length;
+        const okCount = (json.results as Array<{ ok: boolean }>).filter((r) => r.ok).length;
         toast.success(`Retried ${okCount}/${ids.length}`);
       } else {
         toast.error("Retry failed");
@@ -181,10 +176,7 @@ export default function RemoteMediaGCPage() {
           ) : (
             <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
               {(counts?.byTemplate || []).map((t) => (
-                <div
-                  key={String(t.templateId)}
-                  className="flex justify-between"
-                >
+                <div key={String(t.templateId)} className="flex justify-between">
                   <div className="truncate pr-2">{t.label}</div>
                   <div className="font-semibold">{t.count}</div>
                 </div>
@@ -196,9 +188,7 @@ export default function RemoteMediaGCPage() {
       <div className="mb-3 flex gap-2">
         <button
           className="btn"
-          onClick={() =>
-            retryIds(Object.keys(selected).filter((id) => selected[id]))
-          }
+          onClick={() => retryIds(Object.keys(selected).filter((id) => selected[id]))}
           disabled={!Object.values(selected).some(Boolean)}
         >
           Retry selected
@@ -230,15 +220,9 @@ export default function RemoteMediaGCPage() {
             {rows.map((r) => (
               <tr key={r.id} className="border-t">
                 <td className="p-2 text-center">
-                  <input
-                    type="checkbox"
-                    checked={!!selected[r.id]}
-                    onChange={() => toggle(r.id)}
-                  />
+                  <input type="checkbox" checked={!!selected[r.id]} onChange={() => toggle(r.id)} />
                 </td>
-                <td className="p-2 monospace break-words max-w-xs">
-                  {r.publicId}
-                </td>
+                <td className="p-2 monospace break-words max-w-xs">{r.publicId}</td>
                 <td className="p-2">{r.source || "-"}</td>
                 <td className="p-2">
                   {r.templateId ? (
@@ -269,9 +253,7 @@ export default function RemoteMediaGCPage() {
                     "-"
                   )}
                 </td>
-                <td className="p-2">
-                  {new Date(r.createdAt).toLocaleString()}
-                </td>
+                <td className="p-2">{new Date(r.createdAt).toLocaleString()}</td>
                 <td className="p-2">
                   <button
                     className="btn"
@@ -290,8 +272,7 @@ export default function RemoteMediaGCPage() {
       <div className="flex items-center justify-between mt-3">
         <div>
           <span className="text-sm text-gray-600">
-            Showing {(page - 1) * take + 1} - {Math.min(page * take, total)} of{" "}
-            {total}
+            Showing {(page - 1) * take + 1} - {Math.min(page * take, total)} of {total}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -337,14 +318,8 @@ export default function RemoteMediaGCPage() {
         </div>
       </div>
 
-      <Modal
-        isOpen={errorModalOpen}
-        onClose={() => setErrorModalOpen(false)}
-        title="Last error"
-      >
-        <pre className="whitespace-pre-wrap text-sm text-red-700">
-          {errorModalText}
-        </pre>
+      <Modal isOpen={errorModalOpen} onClose={() => setErrorModalOpen(false)} title="Last error">
+        <pre className="whitespace-pre-wrap text-sm text-red-700">{errorModalText}</pre>
       </Modal>
     </div>
   );

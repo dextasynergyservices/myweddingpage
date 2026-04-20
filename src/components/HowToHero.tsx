@@ -21,12 +21,7 @@ const HowToHero = () => {
         className="flex justify-center mt-12 mb-8"
       >
         <div className="p-6 bg-white rounded-3xl shadow-xl">
-          <Image
-            src="/logoicon.png"
-            alt="my wedding page"
-            width={60}
-            height={60}
-          />
+          <Image src="/logoicon.png" alt="my wedding page" width={60} height={60} />
         </div>
       </motion.div>
 
@@ -43,8 +38,7 @@ const HowToHero = () => {
           isDarkMode ? "text-white" : "text-slate-900"
         }`}
       >
-        Follow these easy steps to get started and make the most out of
-        myweddingpage.
+        Follow these easy steps to get started and make the most out of myweddingpage.
       </p>
 
       <motion.button

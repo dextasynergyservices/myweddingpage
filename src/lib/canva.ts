@@ -15,19 +15,14 @@ class CanvaAPI {
   // Check if credentials are configured (call this before using the API)
   private checkCredentials(): void {
     if (!this.clientId || !this.clientSecret) {
-      throw new Error(
-        "Canva API credentials not found in environment variables"
-      );
+      throw new Error("Canva API credentials not found in environment variables");
     }
   }
 
   // Generate PKCE values
   private generatePKCE(): { codeVerifier: string; codeChallenge: string } {
     const codeVerifier = crypto.randomBytes(96).toString("base64url");
-    const codeChallenge = crypto
-      .createHash("sha256")
-      .update(codeVerifier)
-      .digest("base64url");
+    const codeChallenge = crypto.createHash("sha256").update(codeVerifier).digest("base64url");
 
     return { codeVerifier, codeChallenge };
   }
@@ -109,10 +104,7 @@ class CanvaAPI {
 
       return response.data;
     } catch (error) {
-      console.error(
-        "Error exchanging authorization code for access token:",
-        error
-      );
+      console.error("Error exchanging authorization code for access token:", error);
       if (axios.isAxiosError(error)) {
         console.error("Response data:", error.response?.data);
         console.error("Response status:", error.response?.status);
@@ -122,11 +114,7 @@ class CanvaAPI {
   }
 
   // Upload an asset to Canva
-  async uploadAsset(
-    accessToken: string,
-    imageUrl: string,
-    name: string
-  ): Promise<string> {
+  async uploadAsset(accessToken: string, imageUrl: string, name: string): Promise<string> {
     try {
       const assetResponse = await axios.post(
         `${this.baseURL}/assets`,
@@ -165,17 +153,11 @@ class CanvaAPI {
     }
   ): Promise<{ designId: string; thumbnailUrl: string; editUrl: string }> {
     try {
-      console.log(
-        "Creating wedding design from brand template:",
-        brandTemplateId
-      );
+      console.log("Creating wedding design from brand template:", brandTemplateId);
 
       // Prepare autofill data with common field names
       const autofillData: Record<string, { type: string; text: string }> = {};
-      const coupleNames = this.formatCoupleNames(
-        weddingData.brideName,
-        weddingData.groomName
-      );
+      const coupleNames = this.formatCoupleNames(weddingData.brideName, weddingData.groomName);
 
       // Try multiple common field names for each piece of data
       if (coupleNames) {
@@ -203,14 +185,11 @@ class CanvaAPI {
       }
 
       if (weddingData.date) {
-        const formattedDate = new Date(weddingData.date).toLocaleDateString(
-          "en-US",
-          {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }
-        );
+        const formattedDate = new Date(weddingData.date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
         autofillData.wedding_date = { type: "text", text: formattedDate };
         autofillData.DATE = { type: "text", text: formattedDate };
         autofillData.date = { type: "text", text: formattedDate };
@@ -243,14 +222,11 @@ class CanvaAPI {
         await new Promise((resolve) => setTimeout(resolve, 2000));
 
         try {
-          const jobResponse = await axios.get(
-            `${this.baseURL}/autofills/${jobId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
+          const jobResponse = await axios.get(`${this.baseURL}/autofills/${jobId}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
 
           const job = jobResponse.data.job;
           console.log("Job status:", job.status);
@@ -259,18 +235,13 @@ class CanvaAPI {
             const design = job.result.design;
             return {
               designId: design.id,
-              thumbnailUrl:
-                design.thumbnail?.url ||
-                design.urls?.view_url ||
-                design.urls?.edit_url,
+              thumbnailUrl: design.thumbnail?.url || design.urls?.view_url || design.urls?.edit_url,
               editUrl: design.urls?.edit_url,
             };
           }
 
           if (job.status === "failed") {
-            throw new Error(
-              `Autofill job failed: ${job.error?.message || "Unknown error"}`
-            );
+            throw new Error(`Autofill job failed: ${job.error?.message || "Unknown error"}`);
           }
 
           attempts++;
@@ -282,10 +253,7 @@ class CanvaAPI {
 
       throw new Error("Autofill job timed out");
     } catch (error) {
-      console.error(
-        "Error creating wedding design from brand template:",
-        error
-      );
+      console.error("Error creating wedding design from brand template:", error);
       if (axios.isAxiosError(error) && error.response) {
         console.error("Response status:", error.response.status);
         console.error("Response data:", error.response.data);
@@ -308,10 +276,7 @@ class CanvaAPI {
     }
   ): Promise<{ designId: string; thumbnailUrl: string; editUrl: string }> {
     try {
-      const coupleNames = this.formatCoupleNames(
-        weddingData.brideName,
-        weddingData.groomName
-      );
+      const coupleNames = this.formatCoupleNames(weddingData.brideName, weddingData.groomName);
       console.log("Creating dynamic wedding design for:", coupleNames);
 
       // Create a new design with proper format based on theme
@@ -351,10 +316,7 @@ class CanvaAPI {
           );
           console.log("Background image added to design");
         } catch (bgError) {
-          console.warn(
-            "Could not add background image, continuing without it:",
-            bgError
-          );
+          console.warn("Could not add background image, continuing without it:", bgError);
         }
       }
 
@@ -362,14 +324,11 @@ class CanvaAPI {
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
       try {
-        const designResponse = await axios.get(
-          `${this.baseURL}/designs/${designId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        const designResponse = await axios.get(`${this.baseURL}/designs/${designId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
         return {
           designId,
@@ -379,9 +338,7 @@ class CanvaAPI {
           editUrl,
         };
       } catch {
-        console.warn(
-          "Could not get design thumbnail, using themed placeholder"
-        );
+        console.warn("Could not get design thumbnail, using themed placeholder");
         return {
           designId,
           thumbnailUrl: this.generateFallbackThumbnail(weddingData),
@@ -414,9 +371,7 @@ class CanvaAPI {
     try {
       // Skip background image for now since the upload API is returning 400
       // This is a Canva API limitation - we'll focus on getting the design thumbnails working first
-      console.log(
-        "Skipping background image upload for now due to API limitations"
-      );
+      console.log("Skipping background image upload for now due to API limitations");
       return;
 
       /*
@@ -479,10 +434,7 @@ class CanvaAPI {
     }
   ): Promise<{ designId: string; thumbnailUrl: string; editUrl: string }> {
     try {
-      const coupleNames = this.formatCoupleNames(
-        weddingData.brideName,
-        weddingData.groomName
-      );
+      const coupleNames = this.formatCoupleNames(weddingData.brideName, weddingData.groomName);
       console.log("Creating design using available design types...");
 
       // Try different design types that might work better for weddings
@@ -516,14 +468,11 @@ class CanvaAPI {
           await new Promise((resolve) => setTimeout(resolve, 3000));
 
           try {
-            const designResponse = await axios.get(
-              `${this.baseURL}/designs/${designId}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                },
-              }
-            );
+            const designResponse = await axios.get(`${this.baseURL}/designs/${designId}`, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
 
             return {
               designId,
@@ -567,10 +516,7 @@ class CanvaAPI {
   ): Promise<{ designId: string; thumbnailUrl: string; editUrl: string }> {
     try {
       // Create a presentation design which should work for most cases
-      const coupleNames = this.formatCoupleNames(
-        weddingData.brideName,
-        weddingData.groomName
-      );
+      const coupleNames = this.formatCoupleNames(weddingData.brideName, weddingData.groomName);
 
       const createResponse = await axios.post(
         `${this.baseURL}/designs`,
@@ -598,14 +544,11 @@ class CanvaAPI {
       await new Promise((resolve) => setTimeout(resolve, 3000));
 
       try {
-        const designResponse = await axios.get(
-          `${this.baseURL}/designs/${designId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        const designResponse = await axios.get(`${this.baseURL}/designs/${designId}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
         return {
           designId,
@@ -615,9 +558,7 @@ class CanvaAPI {
           editUrl,
         };
       } catch {
-        console.warn(
-          "Could not get design thumbnail, using themed placeholder"
-        );
+        console.warn("Could not get design thumbnail, using themed placeholder");
         return {
           designId,
           thumbnailUrl: this.generateFallbackThumbnail(weddingData),
@@ -656,10 +597,7 @@ class CanvaAPI {
     heroImageUrl?: string;
     storyImageUrl?: string;
   }): string {
-    const coupleNames = this.formatCoupleNames(
-      weddingData.brideName,
-      weddingData.groomName
-    );
+    const coupleNames = this.formatCoupleNames(weddingData.brideName, weddingData.groomName);
 
     // If we have hero or story images, use them directly instead of placeholder
     if (weddingData.heroImageUrl || weddingData.storyImageUrl) {
@@ -680,8 +618,7 @@ class CanvaAPI {
       modern: { bg: "34495e", fg: "ecf0f1", emoji: "💎" },
     };
 
-    const style =
-      themeStyles[theme as keyof typeof themeStyles] || themeStyles.elegant;
+    const style = themeStyles[theme as keyof typeof themeStyles] || themeStyles.elegant;
 
     // Simple text with just couple names
     const text = coupleNames;

@@ -59,16 +59,11 @@ export default function ForgotPasswordModal({
         className="bg-white/50 p-6 rounded-lg w-full max-w-md relative"
       >
         {/* ✅ Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-black hover:text-black"
-        >
+        <button onClick={onClose} className="absolute top-3 right-3 text-black hover:text-black">
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-xl font-semibold mb-4 text-black">
-          Reset Password
-        </h2>
+        <h2 className="text-xl font-semibold mb-4 text-black">Reset Password</h2>
 
         {/* Form with no extra background */}
         <form onSubmit={handleSubmit} className="space-y-4 bg-transparent">

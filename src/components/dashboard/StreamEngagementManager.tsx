@@ -17,9 +17,9 @@ export default function StreamEngagementManager({
   streamName,
   weddingPageUrl,
 }: StreamEngagementManagerProps) {
-  const [activeTab, setActiveTab] = useState<
-    "notifications" | "invitations" | "summary"
-  >("notifications");
+  const [activeTab, setActiveTab] = useState<"notifications" | "invitations" | "summary">(
+    "notifications"
+  );
 
   const tabs = [
     { id: "notifications", label: "Send Notifications" },
@@ -28,18 +28,13 @@ export default function StreamEngagementManager({
   ] as const;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="mt-8"
-    >
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
       <div className="mb-6">
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
           Engagement & Notifications
         </h2>
         <p className="text-gray-600 dark:text-gray-400">
-          Manage guest notifications, create invitation cards, and view stream
-          analytics
+          Manage guest notifications, create invitation cards, and view stream analytics
         </p>
       </div>
 
@@ -48,11 +43,7 @@ export default function StreamEngagementManager({
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() =>
-              setActiveTab(
-                tab.id as "notifications" | "invitations" | "summary"
-              )
-            }
+            onClick={() => setActiveTab(tab.id as "notifications" | "invitations" | "summary")}
             className={`
               px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium whitespace-nowrap transition-all
               ${
@@ -78,10 +69,7 @@ export default function StreamEngagementManager({
           />
         )}
         {activeTab === "invitations" && (
-          <InvitationCardDesigner
-            streamId={streamId}
-            weddingPageUrl={weddingPageUrl}
-          />
+          <InvitationCardDesigner streamId={streamId} weddingPageUrl={weddingPageUrl} />
         )}
         {activeTab === "summary" && <StreamSummary streamId={streamId} />}
       </div>

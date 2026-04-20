@@ -42,8 +42,7 @@ export const eleganceTemplate = {
       type: "elegance_guest",
       content: {
         title: "Well Wishes",
-        description:
-          "Share your love, memories, and well wishes for our special day",
+        description: "Share your love, memories, and well wishes for our special day",
         existingMessages: [],
       },
     },

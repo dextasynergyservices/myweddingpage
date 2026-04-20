@@ -4,12 +4,7 @@
  */
 
 export interface UploadProgressCallback {
-  onProgress?: (
-    loaded: number,
-    total: number,
-    percentage: number,
-    speed?: number
-  ) => void;
+  onProgress?: (loaded: number, total: number, percentage: number, speed?: number) => void;
   onSuccess?: (response: unknown) => void;
   onError?: (error: string) => void;
   onStart?: () => void;
@@ -153,11 +148,7 @@ export const uploadMultipleWithProgress = async (
     options?: UploadOptions;
   }>,
   globalOptions?: {
-    onOverallProgress?: (
-      completed: number,
-      total: number,
-      percentage: number
-    ) => void;
+    onOverallProgress?: (completed: number, total: number, percentage: number) => void;
     onFileComplete?: (index: number, response: unknown) => void;
     onFileError?: (index: number, error: string) => void;
     concurrent?: boolean;
@@ -233,8 +224,7 @@ export const uploadToCloudinaryWithProgress = async (
     tags?: string[];
   } = {}
 ): Promise<unknown> => {
-  const cloudName =
-    options.cloudName || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const cloudName = options.cloudName || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
   if (!cloudName) {
     throw new Error("Cloudinary cloud name is required");
   }
@@ -245,10 +235,8 @@ export const uploadToCloudinaryWithProgress = async (
 
   if (options.folder) formData.append("folder", options.folder);
   if (options.publicId) formData.append("public_id", options.publicId);
-  if (options.transformation)
-    formData.append("transformation", options.transformation);
-  if (options.resourceType)
-    formData.append("resource_type", options.resourceType);
+  if (options.transformation) formData.append("transformation", options.transformation);
+  if (options.resourceType) formData.append("resource_type", options.resourceType);
   if (options.tags) formData.append("tags", options.tags.join(","));
 
   const url = `https://api.cloudinary.com/v1_1/${cloudName}/${options.resourceType || "auto"}/upload`;

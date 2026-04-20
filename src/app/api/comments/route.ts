@@ -51,12 +51,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const {
-      name: rawName,
-      message: rawMessage,
-      created_at,
-      weddingPageId,
-    } = body;
+    const { name: rawName, message: rawMessage, created_at, weddingPageId } = body;
 
     // Sanitize inputs to prevent XSS attacks
     const name = rawName ? sanitizeBasicHTML(rawName) : "";
@@ -74,10 +69,7 @@ export async function POST(request: Request) {
         field: err.path[0]?.toString() || "unknown",
         message: err.message,
       }));
-      return NextResponse.json(
-        { error: "Validation failed", details: errors },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Validation failed", details: errors }, { status: 400 });
     }
 
     const validatedData = validationResult.data;
@@ -120,10 +112,7 @@ export async function PUT(request: Request) {
 
     const { id, approved } = await request.json();
     if (id === undefined || approved === undefined) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const existingComment = await prisma.comment.findUnique({
@@ -131,10 +120,7 @@ export async function PUT(request: Request) {
     });
 
     if (!existingComment) {
-      return NextResponse.json(
-        { error: "Well wish not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Well wish not found" }, { status: 404 });
     }
 
     const updatedComment = await prisma.comment.update({
@@ -170,10 +156,7 @@ export async function DELETE(request: Request) {
 
     const { id } = await request.json();
     if (!id) {
-      return NextResponse.json(
-        { error: "Missing well wish ID" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing well wish ID" }, { status: 400 });
     }
 
     await prisma.comment.delete({

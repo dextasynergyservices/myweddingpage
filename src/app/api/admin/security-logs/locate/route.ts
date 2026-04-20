@@ -15,12 +15,10 @@ export async function GET(request: NextRequest) {
     const logId = searchParams.get("logId");
     const limit = parseInt(searchParams.get("limit") || "25", 10);
 
-    if (!logId)
-      return NextResponse.json({ error: "logId required" }, { status: 400 });
+    if (!logId) return NextResponse.json({ error: "logId required" }, { status: 400 });
 
     const log = await prisma.securityLog.findUnique({ where: { id: logId } });
-    if (!log)
-      return NextResponse.json({ error: "Log not found" }, { status: 404 });
+    if (!log) return NextResponse.json({ error: "Log not found" }, { status: 404 });
 
     // Count number of logs strictly newer than this log (timestamp > or same timestamp with id >)
     const newerCount = await prisma.securityLog.count({
@@ -39,9 +37,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ offset, page });
   } catch (error) {
     console.error("Failed to locate log:", error);
-    return NextResponse.json(
-      { error: "Failed to locate log" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to locate log" }, { status: 500 });
   }
 }

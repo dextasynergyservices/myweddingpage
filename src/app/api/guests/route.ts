@@ -22,10 +22,7 @@ export async function GET() {
     return NextResponse.json(guests);
   } catch (error) {
     console.error("Failed to fetch guests:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch guests" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch guests" }, { status: 500 });
   }
 }
 
@@ -79,8 +76,7 @@ export async function POST(request: Request) {
     };
 
     const rsvpLink = `${process.env.NEXT_PUBLIC_APP_URL}/rsvp/${invitationToken}`;
-    const customMessage =
-      body.customMessage || "You're invited to our wedding!";
+    const customMessage = body.customMessage || "You're invited to our wedding!";
 
     if (guest.email) {
       try {
@@ -157,15 +153,9 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json(
-      { guest, notifications: notificationResults },
-      { status: 201 }
-    );
+    return NextResponse.json({ guest, notifications: notificationResults }, { status: 201 });
   } catch (error) {
     console.error("Failed to create guest:", error);
-    return NextResponse.json(
-      { error: "Failed to create guest" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create guest" }, { status: 500 });
   }
 }

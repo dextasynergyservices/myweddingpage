@@ -107,11 +107,7 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
     if (lower.includes("timeline")) {
       return {
         content: `Here's a simple wedding timeline...`,
-        suggestions: [
-          "Create detailed timeline",
-          "Coordinate vendors",
-          "Backup plans",
-        ],
+        suggestions: ["Create detailed timeline", "Coordinate vendors", "Backup plans"],
       };
     }
     if (lower.includes("budget")) {
@@ -135,12 +131,8 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
               <Bot className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-900 dark:text-white">
-                AI Wedding Assistant
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
-                Always here to help
-              </p>
+              <h3 className="font-semibold text-slate-900 dark:text-white">AI Wedding Assistant</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400">Always here to help</p>
             </div>
           </div>
           <button
@@ -174,9 +166,7 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
               exit={{ opacity: 0, y: -20 }}
               className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}
             >
-              <div
-                className={`max-w-[80%] ${msg.type === "user" ? "order-2" : "order-1"}`}
-              >
+              <div className={`max-w-[80%] ${msg.type === "user" ? "order-2" : "order-1"}`}>
                 {msg.type === "assistant" && (
                   <div className="flex items-center gap-2 mb-2">
                     <div className="p-1 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg">
@@ -227,9 +217,7 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
             className="flex items-center gap-2"
           >
             <Bot className="h-4 w-4 text-slate-400" />
-            <span className="text-sm text-slate-400">
-              AI Assistant is typing...
-            </span>
+            <span className="text-sm text-slate-400">AI Assistant is typing...</span>
           </motion.div>
         )}
         <div ref={messagesEndRef} />

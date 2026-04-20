@@ -30,8 +30,7 @@ export default function OurStory(props: OurStoryProps) {
   // Extract data from props with fallbacks
   const title = props.title || "Our Love Story";
   const description =
-    props.description ||
-    "Every love story is beautiful, but ours is our favorite";
+    props.description || "Every love story is beautiful, but ours is our favorite";
   // Ensure storyItems is always an array
   let storyItems = props.storyItems;
   if (!Array.isArray(storyItems)) {
@@ -100,10 +99,7 @@ export default function OurStory(props: OurStoryProps) {
         const rect = imageRef.getBoundingClientRect();
         const scrollProgress = Math.max(
           0,
-          Math.min(
-            1,
-            (window.innerHeight - rect.top) / (window.innerHeight + rect.height)
-          )
+          Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + rect.height))
         );
         const scale = 1 + scrollProgress * 0.15;
         setImageScales((prev) => ({ ...prev, [index]: scale }));
@@ -135,9 +131,7 @@ export default function OurStory(props: OurStoryProps) {
           <h2 className="text-2xl md:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-6">
             {title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            {description}
-          </p>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">{description}</p>
         </div>
 
         <div className="space-y-24">

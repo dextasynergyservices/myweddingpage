@@ -70,15 +70,10 @@ export default function ModernHero(props: ModernHeroProps) {
         )}
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-          <div
-            className={`text-center pt-12 ${props.heroImage ? "text-white" : "text-slate-900"}`}
-          >
+          <div className={`text-center pt-12 ${props.heroImage ? "text-white" : "text-slate-900"}`}>
             <div className="flex justify-center mb-8">
               <div className="relative p-6 bg-white rounded-full shadow-lg border border-slate-200">
-                <Heart
-                  className="h-16 w-16 text-rose-500"
-                  fill="currentColor"
-                />
+                <Heart className="h-16 w-16 text-rose-500" fill="currentColor" />
                 <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full animate-pulse"></div>
               </div>
             </div>

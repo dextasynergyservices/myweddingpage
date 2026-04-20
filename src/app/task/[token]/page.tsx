@@ -2,13 +2,7 @@
 
 import { useEffect, useState, use } from "react"; // Added `use`
 import { useRouter } from "next/navigation";
-import {
-  CheckSquare,
-  Square,
-  Calendar,
-  AlertTriangle,
-  Loader2,
-} from "lucide-react";
+import { CheckSquare, Square, Calendar, AlertTriangle, Loader2 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import AnimatedSection from "@/components/AnimatedSection";
 
@@ -62,9 +56,7 @@ const TaskUpdatePage = ({ params }: { params: Promise<{ token: string }> }) => {
     }
     if (task?.completedAt) {
       try {
-        setFormattedCompletedAt(
-          new Date(task.completedAt).toLocaleDateString()
-        );
+        setFormattedCompletedAt(new Date(task.completedAt).toLocaleDateString());
       } catch {
         setFormattedCompletedAt("Invalid date");
       }
@@ -166,9 +158,7 @@ const TaskUpdatePage = ({ params }: { params: Promise<{ token: string }> }) => {
     return (
       <AnimatedSection className="flex flex-col items-center justify-center h-64 space-y-4">
         <AlertTriangle className="h-12 w-12 text-red-500" />
-        <p className="text-lg text-center text-slate-800 dark:text-slate-200">
-          {error}
-        </p>
+        <p className="text-lg text-center text-slate-800 dark:text-slate-200">{error}</p>
         <button
           onClick={() => router.push("/")}
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
@@ -183,9 +173,7 @@ const TaskUpdatePage = ({ params }: { params: Promise<{ token: string }> }) => {
     return (
       <AnimatedSection className="flex flex-col items-center justify-center h-64 space-y-4">
         <AlertTriangle className="h-12 w-12 text-amber-500" />
-        <p className="text-lg text-center text-slate-800 dark:text-slate-200">
-          Task not found
-        </p>
+        <p className="text-lg text-center text-slate-800 dark:text-slate-200">Task not found</p>
         <button
           onClick={() => router.push("/")}
           className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
@@ -202,9 +190,7 @@ const TaskUpdatePage = ({ params }: { params: Promise<{ token: string }> }) => {
     <AnimatedSection className="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <div
         className={`p-8 rounded-3xl shadow-lg border ${
-          isDarkMode
-            ? "bg-slate-800 border-slate-700"
-            : "bg-white border-slate-100"
+          isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
         }`}
       >
         <h1
@@ -251,9 +237,7 @@ const TaskUpdatePage = ({ params }: { params: Promise<{ token: string }> }) => {
               >
                 {task.title}
               </h2>
-              <p
-                className={`text-sm ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}
-              >
+              <p className={`text-sm ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>
                 {task.description}
               </p>
             </div>
@@ -277,11 +261,7 @@ const TaskUpdatePage = ({ params }: { params: Promise<{ token: string }> }) => {
                   <p className={isDarkMode ? "text-white" : "text-slate-900"}>
                     {formattedDueDate || "Loading date..."}
                   </p>
-                  {overdue && (
-                    <span className="text-red-500 text-sm font-medium">
-                      Overdue
-                    </span>
-                  )}
+                  {overdue && <span className="text-red-500 text-sm font-medium">Overdue</span>}
                 </div>
               </div>
 
@@ -327,9 +307,7 @@ const TaskUpdatePage = ({ params }: { params: Promise<{ token: string }> }) => {
                   <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">
                     Contact Email
                   </p>
-                  <p className={isDarkMode ? "text-white" : "text-slate-900"}>
-                    {task.email}
-                  </p>
+                  <p className={isDarkMode ? "text-white" : "text-slate-900"}>{task.email}</p>
                 </div>
               )}
             </div>

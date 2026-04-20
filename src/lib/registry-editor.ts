@@ -1,9 +1,4 @@
-import {
-  Project,
-  SyntaxKind,
-  ObjectLiteralExpression,
-  PropertyAssignment,
-} from "ts-morph";
+import { Project, SyntaxKind, ObjectLiteralExpression, PropertyAssignment } from "ts-morph";
 
 export interface RegistryEditOptions {
   slug: string;
@@ -15,9 +10,7 @@ export interface RegistryEditOptions {
  * with imports and componentMap entries for the given slug. Returns null if
  * no changes were necessary.
  */
-export function addTemplateToRegistry(
-  opts: RegistryEditOptions
-): string | null {
+export function addTemplateToRegistry(opts: RegistryEditOptions): string | null {
   const { slug, fileContent } = opts;
   const project = new Project({ useInMemoryFileSystem: true });
   const sf = project.createSourceFile("component-registry.ts", fileContent, {
@@ -34,10 +27,7 @@ export function addTemplateToRegistry(
   // Check if the hero import already exists (use as marker)
   const alreadyImported = sf
     .getImportDeclarations()
-    .some(
-      (d) =>
-        d.getModuleSpecifierValue() === `@/app/templates/${slug}/${pascal}Hero`
-    );
+    .some((d) => d.getModuleSpecifierValue() === `@/app/templates/${slug}/${pascal}Hero`);
 
   if (!alreadyImported) {
     // add import declarations
@@ -65,9 +55,7 @@ export function addTemplateToRegistry(
 
   // Find componentMap variable
   const varStmts = sf.getVariableStatements();
-  const componentMapStmt = varStmts.find((v) =>
-    v.getText().includes("componentMap")
-  );
+  const componentMapStmt = varStmts.find((v) => v.getText().includes("componentMap"));
   if (!componentMapStmt) return null;
   const decl = componentMapStmt.getDeclarations()[0];
   const initializer = decl.getInitializer();

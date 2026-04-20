@@ -100,9 +100,6 @@ export async function POST(req: Request) {
     return NextResponse.json(userTemplate);
   } catch (error) {
     console.error("Failed to select template:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

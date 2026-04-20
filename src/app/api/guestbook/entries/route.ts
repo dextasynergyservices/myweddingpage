@@ -9,10 +9,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "20");
 
     if (!streamId) {
-      return NextResponse.json(
-        { error: "Stream ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Stream ID is required" }, { status: 400 });
     }
 
     const skip = (page - 1) * limit;
@@ -39,9 +36,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching guestbook entries:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch guestbook entries" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch guestbook entries" }, { status: 500 });
   }
 }

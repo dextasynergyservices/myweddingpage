@@ -31,9 +31,7 @@ async function main() {
   try {
     const now = new Date();
     const anonBefore = new Date(now.getTime() - anonDays * 24 * 60 * 60 * 1000);
-    const deleteBefore = new Date(
-      now.getTime() - deleteDays * 24 * 60 * 60 * 1000
-    );
+    const deleteBefore = new Date(now.getTime() - deleteDays * 24 * 60 * 60 * 1000);
 
     // Count candidate rows for anonymization: ipAddress not null and not already a 64-char hex sha256
     const anonCountRows = (await prisma.$queryRawUnsafe(
@@ -65,9 +63,7 @@ async function main() {
     );
 
     if (dryRun) {
-      console.log(
-        "Dry-run mode: no changes will be made. Run with --apply to perform changes."
-      );
+      console.log("Dry-run mode: no changes will be made. Run with --apply to perform changes.");
       await prisma.$disconnect();
       return;
     }
@@ -112,9 +108,7 @@ async function main() {
       where: { createdAt: { lt: deleteBefore } },
     });
 
-    console.log(
-      `Anonymization and deletion complete. Deleted ${delRes.count} rows.`
-    );
+    console.log(`Anonymization and deletion complete. Deleted ${delRes.count} rows.`);
     await prisma.$disconnect();
   } catch (e) {
     console.error(e);

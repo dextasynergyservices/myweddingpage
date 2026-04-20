@@ -37,8 +37,7 @@ const HomeFeatures = () => {
               isDarkMode ? "text-slate-300" : "text-slate-600"
             }`}
           >
-            Powerful tools designed for modern couples who want elegance and
-            simplicity.
+            Powerful tools designed for modern couples who want elegance and simplicity.
           </p>
         </AnimatedSection>
 
@@ -54,31 +53,23 @@ const HomeFeatures = () => {
             {
               icon: Gift,
               title: "Gift Management",
-              description:
-                "Seamless gift tracking with automated thank you notes and analytics",
+              description: "Seamless gift tracking with automated thank you notes and analytics",
               color: "from-blue-600 to-indigo-700",
             },
             {
               icon: MessageCircle,
               title: "Guest Engagement",
-              description:
-                "Interactive guestbook with real-time moderation and sentiment analysis",
+              description: "Interactive guestbook with real-time moderation and sentiment analysis",
               color: "from-orange-600 to-amber-700",
             },
             {
               icon: Users,
               title: "Couple Dashboard",
-              description:
-                "Intuitive control center with insights and collaboration tools",
+              description: "Intuitive control center with insights and collaboration tools",
               color: "from-green-600 to-emerald-700",
             },
           ].map((feature, index) => (
-            <AnimatedSection
-              key={index}
-              animation="fadeUp"
-              delay={index * 0.2}
-              className="group"
-            >
+            <AnimatedSection key={index} animation="fadeUp" delay={index * 0.2} className="group">
               <motion.div
                 className={`relative rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border overflow-hidden ${
                   isDarkMode

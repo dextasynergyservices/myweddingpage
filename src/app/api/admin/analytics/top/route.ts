@@ -17,9 +17,7 @@ export async function GET(req: NextRequest) {
     const since = new Date();
     since.setDate(since.getDate() - (days - 1));
 
-    const groups = await prisma.$queryRaw<
-      Array<{ weddingPageId: string; count: bigint }>
-    >`
+    const groups = await prisma.$queryRaw<Array<{ weddingPageId: string; count: bigint }>>`
       SELECT "weddingPageId", COUNT(*) as count
       FROM "PageView"
       WHERE "createdAt" >= ${since}

@@ -6,10 +6,7 @@ export async function POST(request: NextRequest) {
     const { accessToken, expiresIn } = await request.json();
 
     if (!accessToken) {
-      return NextResponse.json(
-        { success: false, error: "Access token required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: "Access token required" }, { status: 400 });
     }
 
     // Manually store the token (for testing purposes)
@@ -22,9 +19,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error storing token:", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to store token" },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: "Failed to store token" }, { status: 500 });
   }
 }

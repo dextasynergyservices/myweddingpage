@@ -20,9 +20,7 @@ console.log("VAPID_PRIVATE_KEY=" + vapidKeys.privateKey);
 console.log("\n⚠️  IMPORTANT SECURITY NOTES:");
 console.log("   1. NEVER commit the private key to version control");
 console.log("   2. The public key can be safely shared with clients");
-console.log(
-  "   3. Generate new keys for each environment (dev, staging, prod)"
-);
+console.log("   3. Generate new keys for each environment (dev, staging, prod)");
 console.log("   4. Store private keys securely (use secrets management)");
 
 // Optionally save to a file (for reference, not for production)

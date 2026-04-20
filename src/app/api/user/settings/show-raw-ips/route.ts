@@ -13,12 +13,7 @@ export async function PUT(req: NextRequest) {
     const body = await req.json();
     const enable = Boolean(body?.showRawIps);
 
-    console.log(
-      "show-raw-ips PUT called by userId:",
-      session.user.id,
-      "body:",
-      body
-    );
+    console.log("show-raw-ips PUT called by userId:", session.user.id, "body:", body);
 
     const updated = await prisma.user.update({
       where: { id: session.user.id },
@@ -28,9 +23,6 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ showRawIps: updated.showRawIps });
   } catch (e) {
     console.error("Failed to update showRawIps:", e);
-    return NextResponse.json(
-      { error: "Failed to update setting" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to update setting" }, { status: 500 });
   }
 }

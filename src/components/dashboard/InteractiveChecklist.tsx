@@ -101,22 +101,15 @@ const InteractiveChecklist = () => {
       try {
         const [tasksRes, categoriesRes, prioritiesRes] = await Promise.all([
           fetch("/api/tasks").then((res) => {
-            if (!res.ok)
-              throw new Error(`Tasks API failed with status ${res.status}`);
+            if (!res.ok) throw new Error(`Tasks API failed with status ${res.status}`);
             return res.json();
           }),
           fetch("/api/task-categories").then((res) => {
-            if (!res.ok)
-              throw new Error(
-                `Categories API failed with status ${res.status}`
-              );
+            if (!res.ok) throw new Error(`Categories API failed with status ${res.status}`);
             return res.json();
           }),
           fetch("/api/task-priorities").then((res) => {
-            if (!res.ok)
-              throw new Error(
-                `Priorities API failed with status ${res.status}`
-              );
+            if (!res.ok) throw new Error(`Priorities API failed with status ${res.status}`);
             return res.json();
           }),
         ]);
@@ -130,15 +123,13 @@ const InteractiveChecklist = () => {
             ...prev,
             TaskCategoryId: categoriesRes[0].id,
             TaskPriorityId:
-              prioritiesRes.find((p: TaskPriority) => p.name === "Medium")
-                ?.id || prioritiesRes[0].id,
+              prioritiesRes.find((p: TaskPriority) => p.name === "Medium")?.id ||
+              prioritiesRes[0].id,
           }));
         }
       } catch (error) {
         console.error("Failed to fetch data:", error);
-        setError(
-          error instanceof Error ? error.message : "Failed to fetch data"
-        );
+        setError(error instanceof Error ? error.message : "Failed to fetch data");
         toast.error("Failed to load tasks");
         setTasks([]);
         setCategories([]);
@@ -205,21 +196,16 @@ const InteractiveChecklist = () => {
         )
       );
 
-      toast.success(
-        `Task marked as ${updatedTask.completed ? "completed" : "incomplete"}!`,
-        {
-          icon: updatedTask.completed ? (
-            <CheckCircle className="text-green-500" />
-          ) : (
-            <Square className="text-blue-500" />
-          ),
-        }
-      );
+      toast.success(`Task marked as ${updatedTask.completed ? "completed" : "incomplete"}!`, {
+        icon: updatedTask.completed ? (
+          <CheckCircle className="text-green-500" />
+        ) : (
+          <Square className="text-blue-500" />
+        ),
+      });
     } catch (error) {
       console.error("Failed to update task:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to update task"
-      );
+      setError(error instanceof Error ? error.message : "Failed to update task");
       toast.error("Failed to update task status");
     } finally {
       setTaskLoading(null);
@@ -251,10 +237,7 @@ const InteractiveChecklist = () => {
       }
 
       setTasks(
-        tasks.filter(
-          (task) =>
-            task.id !== taskToDelete.id && task.token !== taskToDelete.token
-        )
+        tasks.filter((task) => task.id !== taskToDelete.id && task.token !== taskToDelete.token)
       );
       toast.success("Task deleted successfully!", {
         icon: <CheckCircle className="text-green-500" />,
@@ -272,10 +255,7 @@ const InteractiveChecklist = () => {
     setTaskToDelete(null);
   };
 
-  const sendTaskNotification = async (
-    task: ChecklistItem,
-    isUpdate = false
-  ) => {
+  const sendTaskNotification = async (task: ChecklistItem, isUpdate = false) => {
     const sendNotification = async (
       endpoint: string,
       payload: NotificationPayload,
@@ -295,9 +275,7 @@ const InteractiveChecklist = () => {
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
           throw new Error(
-            errorData.error ||
-              response.statusText ||
-              `Failed to send ${serviceName}`
+            errorData.error || response.statusText || `Failed to send ${serviceName}`
           );
         }
 
@@ -356,9 +334,7 @@ const InteractiveChecklist = () => {
                 `Priority: ${task.TaskPriority?.name || "Not specified"}\n` +
                 `Status: ${task.completed ? "Completed" : "Pending"}\n\n` +
                 `View: ${process.env.NEXT_PUBLIC_APP_URL}/task/${task.token}` +
-                (isUpdate
-                  ? "\n\nThis task has been updated. Please review the changes."
-                  : ""),
+                (isUpdate ? "\n\nThis task has been updated. Please review the changes." : ""),
             },
             "WhatsApp"
           );
@@ -370,9 +346,7 @@ const InteractiveChecklist = () => {
             whatsappError instanceof Error &&
             whatsappError.message.includes("Network connectivity")
           ) {
-            notificationResults.push(
-              "WhatsApp temporarily unavailable (network issue)"
-            );
+            notificationResults.push("WhatsApp temporarily unavailable (network issue)");
           } else {
             notificationResults.push("WhatsApp failed");
           }
@@ -391,10 +365,7 @@ const InteractiveChecklist = () => {
 
       if (failedNotifications.length === 0) {
         // All notifications succeeded
-        console.log(
-          "All notifications sent successfully:",
-          notificationResults
-        );
+        console.log("All notifications sent successfully:", notificationResults);
       } else if (failedNotifications.length < notificationResults.length) {
         // Some succeeded, some failed
         toast(
@@ -464,9 +435,7 @@ const InteractiveChecklist = () => {
       });
     } catch (error) {
       console.error("Failed to create task:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to create task"
-      );
+      setError(error instanceof Error ? error.message : "Failed to create task");
       toast.error("Failed to create task");
     } finally {
       setTaskLoading(null);
@@ -506,9 +475,7 @@ const InteractiveChecklist = () => {
       }
 
       const updatedTask = await response.json();
-      setTasks(
-        tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-      );
+      setTasks(tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
       setEditingTask(null);
       setShowModal(false);
 
@@ -520,9 +487,7 @@ const InteractiveChecklist = () => {
       });
     } catch (error) {
       console.error("Failed to update task:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to update task"
-      );
+      setError(error instanceof Error ? error.message : "Failed to update task");
       toast.error("Failed to update task");
     } finally {
       setTaskLoading(null);
@@ -577,25 +542,18 @@ const InteractiveChecklist = () => {
     !completed && new Date(dueDate) < new Date();
 
   const filteredTasks = tasks.filter((task) => {
-    const matchesCategory =
-      selectedCategory === "all" || task.TaskCategory.id === selectedCategory;
-    const matchesPriority =
-      selectedPriority === "all" || task.TaskPriority.id === selectedPriority;
+    const matchesCategory = selectedCategory === "all" || task.TaskCategory.id === selectedCategory;
+    const matchesPriority = selectedPriority === "all" || task.TaskPriority.id === selectedPriority;
     const matchesSearch =
       task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (task.description &&
-        task.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCompletion = showCompleted || !task.completed;
 
-    return (
-      matchesCategory && matchesPriority && matchesSearch && matchesCompletion
-    );
+    return matchesCategory && matchesPriority && matchesSearch && matchesCompletion;
   });
 
   const completedTasks = tasks.filter((t) => t.completed).length;
-  const overdueTasks = tasks.filter((t) =>
-    isOverdue(t.dueDate, t.completed)
-  ).length;
+  const overdueTasks = tasks.filter((t) => isOverdue(t.dueDate, t.completed)).length;
   const totalTasks = tasks.length;
 
   if (loading) {
@@ -616,9 +574,7 @@ const InteractiveChecklist = () => {
           >
             Wedding Checklist
           </h1>
-          <p
-            className={`text-sm sm:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-          >
+          <p className={`text-sm sm:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
             Track tasks, mark progress, and keep your big day stress-free.
           </p>
         </div>
@@ -664,9 +620,7 @@ const InteractiveChecklist = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             className={`p-6 rounded-3xl shadow-lg border ${
-              isDarkMode
-                ? "bg-slate-800 border-slate-700"
-                : "bg-white border-slate-100"
+              isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
             }`}
           >
             <div className="flex justify-between items-center">
@@ -765,9 +719,7 @@ const InteractiveChecklist = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className={`p-5 rounded-2xl shadow-md border flex justify-between items-start ${
-                isDarkMode
-                  ? "bg-slate-800 border-slate-700"
-                  : "bg-white border-slate-100"
+                isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
               } ${isTaskLoading ? "opacity-70" : ""}`}
             >
               <div className="flex items-start gap-4 w-full">
@@ -820,9 +772,7 @@ const InteractiveChecklist = () => {
                     </div>
                   </div>
                   {task.description && (
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {task.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground mb-2">{task.description}</p>
                   )}
                   <div className="flex flex-wrap gap-2 text-xs items-center">
                     <span
@@ -840,9 +790,7 @@ const InteractiveChecklist = () => {
                       Assigned: {task.assignedTo || "Unassigned"}
                     </span>
                     {task.estimatedTime && (
-                      <span className="text-muted-foreground">
-                        Est: {task.estimatedTime}h
-                      </span>
+                      <span className="text-muted-foreground">Est: {task.estimatedTime}h</span>
                     )}
                   </div>
                 </div>
@@ -856,9 +804,7 @@ const InteractiveChecklist = () => {
           );
         })}
         {filteredTasks.length === 0 && (
-          <p className="text-center text-sm text-muted-foreground">
-            No tasks found.
-          </p>
+          <p className="text-center text-sm text-muted-foreground">No tasks found.</p>
         )}
       </div>
 
@@ -882,8 +828,7 @@ const InteractiveChecklist = () => {
 
             <p className="text-slate-600 dark:text-slate-300 mb-6">
               Are you sure you want to delete the task{" "}
-              <strong>&quot;{taskToDelete.title}&quot;</strong>? This action
-              cannot be undone.
+              <strong>&quot;{taskToDelete.title}&quot;</strong>? This action cannot be undone.
             </p>
 
             <div className="flex justify-end gap-3">
@@ -957,11 +902,7 @@ const InteractiveChecklist = () => {
                 </label>
                 <textarea
                   placeholder="Task Description"
-                  value={
-                    editingTask
-                      ? editingTask.description || ""
-                      : newTask.description
-                  }
+                  value={editingTask ? editingTask.description || "" : newTask.description}
                   onChange={(e) =>
                     editingTask
                       ? setEditingTask({
@@ -980,11 +921,7 @@ const InteractiveChecklist = () => {
                     Category*
                   </label>
                   <select
-                    value={
-                      editingTask
-                        ? editingTask.TaskCategory.id
-                        : newTask.TaskCategoryId
-                    }
+                    value={editingTask ? editingTask.TaskCategory.id : newTask.TaskCategoryId}
                     onChange={(e) =>
                       editingTask
                         ? setEditingTask({
@@ -1014,11 +951,7 @@ const InteractiveChecklist = () => {
                     Priority*
                   </label>
                   <select
-                    value={
-                      editingTask
-                        ? editingTask.TaskPriority.id
-                        : newTask.TaskPriorityId
-                    }
+                    value={editingTask ? editingTask.TaskPriority.id : newTask.TaskPriorityId}
                     onChange={(e) =>
                       editingTask
                         ? setEditingTask({
@@ -1050,11 +983,7 @@ const InteractiveChecklist = () => {
                 </label>
                 <input
                   type="date"
-                  value={
-                    editingTask
-                      ? editingTask.dueDate.split("T")[0]
-                      : newTask.dueDate
-                  }
+                  value={editingTask ? editingTask.dueDate.split("T")[0] : newTask.dueDate}
                   onChange={(e) =>
                     editingTask
                       ? setEditingTask({
@@ -1075,11 +1004,7 @@ const InteractiveChecklist = () => {
                 <input
                   type="text"
                   placeholder="Name"
-                  value={
-                    editingTask
-                      ? editingTask.assignedTo || ""
-                      : newTask.assignedTo
-                  }
+                  value={editingTask ? editingTask.assignedTo || "" : newTask.assignedTo}
                   onChange={(e) =>
                     editingTask
                       ? setEditingTask({
@@ -1139,11 +1064,7 @@ const InteractiveChecklist = () => {
                 <input
                   type="number"
                   min="1"
-                  value={
-                    editingTask
-                      ? editingTask.estimatedTime || ""
-                      : newTask.estimatedTime
-                  }
+                  value={editingTask ? editingTask.estimatedTime || "" : newTask.estimatedTime}
                   onChange={(e) =>
                     editingTask
                       ? setEditingTask({
@@ -1183,9 +1104,7 @@ const InteractiveChecklist = () => {
                 onClick={editingTask ? updateTask : createTask}
                 disabled={!!taskLoading}
                 className={`bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-xl text-sm transition duration-300 ${
-                  taskLoading
-                    ? "opacity-70 cursor-not-allowed"
-                    : "hover:opacity-90 cursor-pointer"
+                  taskLoading ? "opacity-70 cursor-not-allowed" : "hover:opacity-90 cursor-pointer"
                 }`}
               >
                 {taskLoading ? (

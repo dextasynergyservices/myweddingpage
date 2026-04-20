@@ -15,10 +15,7 @@ export async function GET(request: NextRequest) {
   console.log("🎥 YouTube stats request for videoId:", videoId);
 
   if (!videoId) {
-    return NextResponse.json(
-      { error: "Video ID is required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Video ID is required" }, { status: 400 });
   }
 
   try {
@@ -81,11 +78,7 @@ export async function GET(request: NextRequest) {
     });
 
     // If video is not live or has no live details, return mock data
-    if (
-      !liveDetails ||
-      !liveDetails.actualStartTime ||
-      liveDetails.actualEndTime
-    ) {
+    if (!liveDetails || !liveDetails.actualStartTime || liveDetails.actualEndTime) {
       console.warn("⚠️ Video is not currently live. Returning mock data.");
       return NextResponse.json({
         viewerCount: Math.floor(Math.random() * 500) + 50,
@@ -110,8 +103,7 @@ export async function GET(request: NextRequest) {
       videoId,
       title: snippet.title,
       description: snippet.description,
-      thumbnailUrl:
-        snippet.thumbnails?.high?.url || snippet.thumbnails?.default?.url,
+      thumbnailUrl: snippet.thumbnails?.high?.url || snippet.thumbnails?.default?.url,
 
       // Live streaming details
       isLive: liveDetails?.actualStartTime && !liveDetails?.actualEndTime,
@@ -127,10 +119,7 @@ export async function GET(request: NextRequest) {
 
       // Stream health indicator
       health,
-      status:
-        liveDetails?.actualStartTime && !liveDetails?.actualEndTime
-          ? "live"
-          : "offline",
+      status: liveDetails?.actualStartTime && !liveDetails?.actualEndTime ? "live" : "offline",
 
       // Legacy field name for backward compatibility
       viewerCount: parseInt(liveDetails?.concurrentViewers || "0"),

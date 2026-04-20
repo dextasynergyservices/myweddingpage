@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-function parseCookieHeader(
-  cookieHeader: string | null,
-  name: string
-): string | null {
+function parseCookieHeader(cookieHeader: string | null, name: string): string | null {
   if (!cookieHeader) return null;
   const parts = cookieHeader.split(";").map((p) => p.trim());
   for (const p of parts) {
@@ -31,10 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!token) {
-      return NextResponse.json(
-        { ok: false, reason: "no-session-token" },
-        { status: 401 }
-      );
+      return NextResponse.json({ ok: false, reason: "no-session-token" }, { status: 401 });
     }
 
     await prisma.session.updateMany({
@@ -45,9 +39,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Session ping error:", err);
-    return NextResponse.json(
-      { ok: false, error: "server_error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
   }
 }

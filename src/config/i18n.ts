@@ -1,13 +1,6 @@
 export const DEFAULT_LOCALE = process.env.NEXT_DEFAULT_LOCALE ?? "en";
 
-export const SUPPORTED_LOCALES = [
-  "en",
-  "fr",
-  "es",
-  "yoruba",
-  "igbo",
-  "hausa",
-] as const;
+export const SUPPORTED_LOCALES = ["en", "fr", "es", "yoruba", "igbo", "hausa"] as const;
 
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 

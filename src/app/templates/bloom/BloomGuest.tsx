@@ -80,29 +80,14 @@ const Comments = (props: CommentsProps) => {
   const initialComments = useMemo(() => {
     if (slug) {
       // When we have a slug (real wedding page), don't use guests prop - only use API data
-      return (
-        props.initialComments ||
-        props.guestMessages ||
-        props.existingComments ||
-        []
-      );
+      return props.initialComments || props.guestMessages || props.existingComments || [];
     } else {
       // When no slug (preview mode), use all available props
       return (
-        props.initialComments ||
-        props.guests ||
-        props.guestMessages ||
-        props.existingComments ||
-        []
+        props.initialComments || props.guests || props.guestMessages || props.existingComments || []
       );
     }
-  }, [
-    props.initialComments,
-    props.guests,
-    props.guestMessages,
-    props.existingComments,
-    slug,
-  ]);
+  }, [props.initialComments, props.guests, props.guestMessages, props.existingComments, slug]);
 
   // const _placeholder = props.placeholder || {
   //   name: "Your Name",
@@ -116,9 +101,7 @@ const Comments = (props: CommentsProps) => {
 
     setLoadingComments(true);
     try {
-      const response = await fetch(
-        `/api/guests/comments?slug=${encodeURIComponent(slug)}`
-      );
+      const response = await fetch(`/api/guests/comments?slug=${encodeURIComponent(slug)}`);
 
       if (response.ok) {
         const commentsData = await response.json();
@@ -155,9 +138,7 @@ const Comments = (props: CommentsProps) => {
     }
 
     if (!slug) {
-      toast.error(
-        "Unable to identify wedding page. Please refresh and try again."
-      );
+      toast.error("Unable to identify wedding page. Please refresh and try again.");
       return;
     }
 
@@ -189,9 +170,7 @@ const Comments = (props: CommentsProps) => {
 
       if (response.ok) {
         toast.dismiss(loadingToast);
-        toast.success(
-          "Thank you for your message! It will be visible after approval."
-        );
+        toast.success("Thank you for your message! It will be visible after approval.");
         setNewMessage("");
         setGuestName("");
 
@@ -214,24 +193,16 @@ const Comments = (props: CommentsProps) => {
   const addHeart = (commentId: string) => {
     setComments(
       comments.map((comment) =>
-        comment.id === commentId
-          ? { ...comment, hearts: (comment.hearts || 0) + 1 }
-          : comment
+        comment.id === commentId ? { ...comment, hearts: (comment.hearts || 0) + 1 } : comment
       )
     );
   };
 
   return (
-    <section
-      className={`${styles.sectionPadding} ${styles.bgBackground} relative overflow-hidden`}
-    >
+    <section className={`${styles.sectionPadding} ${styles.bgBackground} relative overflow-hidden`}>
       {/* Background Elements */}
-      <div
-        className={`${styles.floatingElement} absolute top-32 right-10 opacity-5`}
-      >
-        <MessageCircle
-          className={`w-36 h-36 text-primary ${styles.animateRomanticFloat}`}
-        />
+      <div className={`${styles.floatingElement} absolute top-32 right-10 opacity-5`}>
+        <MessageCircle className={`w-36 h-36 text-primary ${styles.animateRomanticFloat}`} />
       </div>
 
       <div className={`${styles.containerBloom} mx-auto px-4`}>
@@ -242,33 +213,21 @@ const Comments = (props: CommentsProps) => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <h2
-            className={`${styles.fontHeading} text-black/80 text-2xl md:text-6xl font-bold mb-6`}
-          >
+          <h2 className={`${styles.fontHeading} text-black/80 text-2xl md:text-6xl font-bold mb-6`}>
             {title}
           </h2>
-          <div
-            className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}
-          ></div>
-          <p
-            className={`text-lg text-black/80 max-w-2xl mx-auto leading-relaxed`}
-          >
-            {description}
-          </p>
+          <div className={`${styles.bgGradientRose} w-24 h-1 mx-auto mb-8`}></div>
+          <p className={`text-lg text-black/80 max-w-2xl mx-auto leading-relaxed`}>{description}</p>
         </div>
 
         <div className={`${styles.guestContainer} max-w-4xl mx-auto`}>
           {/* Comment Form */}
           <div
             className={`mb-16 transition-all duration-1000 delay-300 ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             }`}
           >
-            <div
-              className={`${styles.bgCard} p-8 ${styles.roundedLg} ${styles.shadowSoft}`}
-            >
+            <div className={`${styles.bgCard} p-8 ${styles.roundedLg} ${styles.shadowSoft}`}>
               <h3
                 className={`${styles.fontHeading} text-2xl font-semibold text-black/80 mb-6 text-center`}
               >
@@ -283,9 +242,7 @@ const Comments = (props: CommentsProps) => {
                 className={`${styles.commentForm} space-y-6`}
               >
                 <div>
-                  <label
-                    className={`block text-sm font-medium text-black/80 mb-2`}
-                  >
+                  <label className={`block text-sm font-medium text-black/80 mb-2`}>
                     Your Name
                   </label>
                   <input
@@ -299,9 +256,7 @@ const Comments = (props: CommentsProps) => {
                 </div>
 
                 <div>
-                  <label
-                    className={`block text-sm font-medium text-black/80 mb-2`}
-                  >
+                  <label className={`block text-sm font-medium text-black/80 mb-2`}>
                     Your Message
                   </label>
                   <textarea
@@ -359,9 +314,7 @@ const Comments = (props: CommentsProps) => {
                   <div
                     key={comment.id}
                     className={`transition-all duration-700 ${
-                      isVisible
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-10"
+                      isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
                     }`}
                     style={{ transitionDelay: `${(index + 2) * 200}ms` }}
                   >
@@ -377,9 +330,7 @@ const Comments = (props: CommentsProps) => {
                           >
                             {comment.name}
                           </h4>
-                          <p
-                            className={`${styles.commentTimestamp} text-sm text-black/80`}
-                          >
+                          <p className={`${styles.commentTimestamp} text-sm text-black/80`}>
                             {formattedDate}
                           </p>
                         </div>
@@ -391,17 +342,13 @@ const Comments = (props: CommentsProps) => {
                           <Heart
                             className={`${styles.commentHeartIcon} w-5 h-5 group-hover:scale-110 transition-transform`}
                           />
-                          <span
-                            className={`${styles.commentHeartCount} text-sm font-medium`}
-                          >
+                          <span className={`${styles.commentHeartCount} text-sm font-medium`}>
                             {comment.hearts || 0}
                           </span>
                         </button>
                       </div>
 
-                      <p
-                        className={`${styles.commentMessage} text-black/80 leading-relaxed`}
-                      >
+                      <p className={`${styles.commentMessage} text-black/80 leading-relaxed`}>
                         {comment.message}
                       </p>
                     </div>
@@ -429,21 +376,19 @@ const Comments = (props: CommentsProps) => {
                 </button>
 
                 <div className="flex items-center space-x-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <button
-                        key={page}
-                        onClick={() => handlePageClick(page)}
-                        className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
-                          currentPage === page
-                            ? "bg-black text-white"
-                            : "bg-gray-200 text-gray-600 hover:bg-gray-300"
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    )
-                  )}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => handlePageClick(page)}
+                      className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                        currentPage === page
+                          ? "bg-black text-white"
+                          : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
                 </div>
 
                 <button
@@ -461,8 +406,7 @@ const Comments = (props: CommentsProps) => {
 
               {/* Page Info */}
               <p className="text-sm text-black/60">
-                Page {currentPage} of {totalPages} • {comments.length} total
-                comments
+                Page {currentPage} of {totalPages} • {comments.length} total comments
               </p>
             </div>
           )}
@@ -470,28 +414,22 @@ const Comments = (props: CommentsProps) => {
           {/* Thank You Note */}
           <div
             className={`text-center mt-16 transition-all duration-1000 delay-700 ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
+              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
             }`}
           >
             <div
               className={`${styles.thankYouCard} bg-gradient-to-r from-primary/10 to-accent/10 p-8 ${styles.roundedLg} text-black/80`}
             >
-              <Heart
-                className={`${styles.thankYouIcon} w-12 h-12 text-primary mx-auto mb-4`}
-              />
-              <h3
-                className={`${styles.fontHeading} text-2xl font-semibold text-black/80 mb-4`}
-              >
+              <Heart className={`${styles.thankYouIcon} w-12 h-12 text-primary mx-auto mb-4`} />
+              <h3 className={`${styles.fontHeading} text-2xl font-semibold text-black/80 mb-4`}>
                 Thank You for Your Love
               </h3>
               <p
                 className={`${styles.thankYouMessage} text-black/80 leading-relaxed max-w-2xl mx-auto`}
               >
-                Every message fills our hearts with so much joy. Thank you for
-                being part of our journey and for sharing in our happiness. We
-                can&apos;t wait to celebrate with all of you!
+                Every message fills our hearts with so much joy. Thank you for being part of our
+                journey and for sharing in our happiness. We can&apos;t wait to celebrate with all
+                of you!
               </p>
               <p
                 className={`${styles.thankYouSignature} text-primary font-medium mt-4 text-black/80`}

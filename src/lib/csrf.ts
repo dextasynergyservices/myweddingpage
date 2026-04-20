@@ -54,9 +54,7 @@ const defaultConfig: CSRFConfig = {
  * @param config - CSRF configuration
  * @returns Generated token string
  */
-export async function generateCSRFToken(
-  config: Partial<CSRFConfig> = {}
-): Promise<string> {
+export async function generateCSRFToken(config: Partial<CSRFConfig> = {}): Promise<string> {
   const conf = { ...defaultConfig, ...config };
 
   // Generate random token using Web Crypto API (works in both environments)
@@ -85,11 +83,7 @@ export async function generateCSRFToken(
     ["sign"]
   );
 
-  const signatureBuffer = await globalThis.crypto.subtle.sign(
-    "HMAC",
-    cryptoKey,
-    messageData
-  );
+  const signatureBuffer = await globalThis.crypto.subtle.sign("HMAC", cryptoKey, messageData);
   const signatureArray = new Uint8Array(signatureBuffer);
   const signature = btoa(String.fromCharCode(...signatureArray))
     .replace(/\+/g, "-")
@@ -153,11 +147,7 @@ export async function validateCSRFToken(
     );
 
     // Sign the message
-    const signatureBuffer = await cryptoAPI.subtle.sign(
-      "HMAC",
-      cryptoKey,
-      messageData
-    );
+    const signatureBuffer = await cryptoAPI.subtle.sign("HMAC", cryptoKey, messageData);
 
     // Convert to base64url
     const signatureArray = new Uint8Array(signatureBuffer);
@@ -280,9 +270,7 @@ export async function csrfMiddleware(
     // Log CSRF violation
     if (typeof window === "undefined") {
       import("./security-logger").then(({ logCSRFViolation }) => {
-        logCSRFViolation(request, "Token invalid or expired").catch(
-          console.error
-        );
+        logCSRFViolation(request, "Token invalid or expired").catch(console.error);
       });
     }
 
@@ -327,10 +315,7 @@ export async function getCSRFTokenResponse(): Promise<NextResponse> {
  * @param bodyToken - Token from request body (optional)
  * @returns True if valid, throws error if invalid
  */
-export async function verifyCSRFToken(
-  request: NextRequest,
-  bodyToken?: string
-): Promise<boolean> {
+export async function verifyCSRFToken(request: NextRequest, bodyToken?: string): Promise<boolean> {
   // Get token from header or cookie
   const headerToken = getCSRFTokenFromRequest(request);
 
@@ -385,10 +370,7 @@ export function withCSRFProtection(
  * @param exemptPaths - Array of paths to exempt
  * @returns True if request is exempt
  */
-export function isCSRFExempt(
-  request: NextRequest,
-  exemptPaths: string[] = []
-): boolean {
+export function isCSRFExempt(request: NextRequest, exemptPaths: string[] = []): boolean {
   const pathname = request.nextUrl.pathname;
 
   // Default exempt paths

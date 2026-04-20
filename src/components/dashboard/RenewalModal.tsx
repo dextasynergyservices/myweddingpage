@@ -47,9 +47,7 @@ export default function RenewalModal({
     const params = new URLSearchParams(window.location.search);
     const failedReference = params.get("renewalFailed");
     if (failedReference) {
-      toast.error(
-        "Your previous transaction was not completed or failed. Please try again."
-      );
+      toast.error("Your previous transaction was not completed or failed. Please try again.");
       setInitializing(null);
       const url = new URL(window.location.href);
       url.searchParams.delete("renewalFailed");
@@ -82,8 +80,7 @@ export default function RenewalModal({
       });
 
       const data = await res.json();
-      if (!res.ok)
-        throw new Error(data.error || "Failed to initialize payment");
+      if (!res.ok) throw new Error(data.error || "Failed to initialize payment");
 
       window.location.href = data.authorization_url;
     } catch (e) {

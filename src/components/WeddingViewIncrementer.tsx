@@ -7,9 +7,9 @@ interface Props {
 }
 
 export default function WeddingViewIncrementer({ slug }: Props) {
-  const [status, setStatus] = useState<
-    "idle" | "skipped" | "posting" | "success" | "failed"
-  >("idle");
+  const [status, setStatus] = useState<"idle" | "skipped" | "posting" | "success" | "failed">(
+    "idle"
+  );
   const [debugInfo, setDebugInfo] = useState<unknown>(null);
 
   useEffect(() => {
@@ -20,18 +20,12 @@ export default function WeddingViewIncrementer({ slug }: Props) {
 
       // sessionStorage setup (ignore errors)
       try {
-        if (
-          typeof window !== "undefined" &&
-          sessionStorage.getItem(sessionKey)
-        ) {
-          console.debug(
-            "WeddingViewIncrementer: already posted in this session, skipping"
-          );
+        if (typeof window !== "undefined" && sessionStorage.getItem(sessionKey)) {
+          console.debug("WeddingViewIncrementer: already posted in this session, skipping");
           setStatus("skipped");
           return;
         }
-        if (typeof window !== "undefined")
-          sessionStorage.setItem(sessionKey, "1");
+        if (typeof window !== "undefined") sessionStorage.setItem(sessionKey, "1");
       } catch {
         // ignore sessionStorage errors
       }
@@ -42,14 +36,11 @@ export default function WeddingViewIncrementer({ slug }: Props) {
         console.info("WeddingViewIncrementer: posting to /api/wedding-views", {
           slug,
         });
-        const res = await fetch(
-          `/api/wedding-views?slug=${encodeURIComponent(slug)}`,
-          {
-            method: "POST",
-            credentials: "same-origin",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        const res = await fetch(`/api/wedding-views?slug=${encodeURIComponent(slug)}`, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+        });
 
         if (!mounted) return;
 
@@ -72,8 +63,7 @@ export default function WeddingViewIncrementer({ slug }: Props) {
         setDebugInfo({ error: String(err) });
         // clear optimistic flag so retries can occur
         try {
-          if (typeof window !== "undefined")
-            sessionStorage.removeItem(sessionKey);
+          if (typeof window !== "undefined") sessionStorage.removeItem(sessionKey);
         } catch {
           // ignore
         }
@@ -93,16 +83,11 @@ export default function WeddingViewIncrementer({ slug }: Props) {
 
   if (process.env.NODE_ENV !== "production") {
     return (
-      <div
-        aria-hidden
-        className="fixed left-2 bottom-2 z-50 pointer-events-none"
-      >
+      <div aria-hidden className="fixed left-2 bottom-2 z-50 pointer-events-none">
         <div className="text-xs font-mono bg-black/60 text-white px-2 py-1 rounded">
           WV: {slug} — {status}
           {debugText && (
-            <div className="mt-1 text-[10px] text-white/80 max-w-xs break-words">
-              {debugText}
-            </div>
+            <div className="mt-1 text-[10px] text-white/80 max-w-xs break-words">{debugText}</div>
           )}
         </div>
       </div>

@@ -30,11 +30,7 @@ export async function POST(req: Request) {
 
     // Verify reCAPTCHA v3 (minimum score: 0.6)
     if (recaptchaToken) {
-      const recaptchaResult = await verifyRecaptchaV3(
-        recaptchaToken,
-        "forgot_password",
-        0.6
-      );
+      const recaptchaResult = await verifyRecaptchaV3(recaptchaToken, "forgot_password", 0.6);
       if (!recaptchaResult.success) {
         return NextResponse.json(
           { error: "reCAPTCHA verification failed. Please try again." },
@@ -66,8 +62,7 @@ export async function POST(req: Request) {
     if (!user) {
       // Return success even if user not found (security best practice)
       return NextResponse.json({
-        message:
-          "If an account with that email exists, a password reset link has been sent.",
+        message: "If an account with that email exists, a password reset link has been sent.",
       });
     }
 
@@ -107,8 +102,7 @@ export async function POST(req: Request) {
 
     // Return success message (generic for security)
     return NextResponse.json({
-      message:
-        "If an account with that email exists, a password reset link has been sent.",
+      message: "If an account with that email exists, a password reset link has been sent.",
     });
   } catch (error) {
     console.error("Forgot password error:", error);

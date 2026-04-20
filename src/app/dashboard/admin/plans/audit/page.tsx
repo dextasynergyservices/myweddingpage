@@ -20,18 +20,14 @@ type AuditEntry = {
 
 type AdminMeta = { email?: string; id?: string; role?: string };
 
-function getAdminFromMeta(
-  meta?: Record<string, unknown>
-): AdminMeta | undefined {
+function getAdminFromMeta(meta?: Record<string, unknown>): AdminMeta | undefined {
   if (!meta) return undefined;
   const admin = meta["admin"];
   if (admin && typeof admin === "object" && !Array.isArray(admin)) {
     const a = admin as Record<string, unknown>;
-    const email =
-      typeof a["email"] === "string" ? (a["email"] as string) : undefined;
+    const email = typeof a["email"] === "string" ? (a["email"] as string) : undefined;
     const id = typeof a["id"] === "string" ? (a["id"] as string) : undefined;
-    const role =
-      typeof a["role"] === "string" ? (a["role"] as string) : undefined;
+    const role = typeof a["role"] === "string" ? (a["role"] as string) : undefined;
     return { email, id, role };
   }
   return undefined;
@@ -42,19 +38,14 @@ function getPlanInfoFromMeta(meta?: Record<string, unknown>): {
   name?: string;
 } {
   if (!meta) return {};
-  const planId =
-    typeof meta["planId"] === "string" ? (meta["planId"] as string) : undefined;
-  const plan_id =
-    typeof meta["plan_id"] === "string"
-      ? (meta["plan_id"] as string)
-      : undefined;
+  const planId = typeof meta["planId"] === "string" ? (meta["planId"] as string) : undefined;
+  const plan_id = typeof meta["plan_id"] === "string" ? (meta["plan_id"] as string) : undefined;
   if (planId || plan_id) return { id: planId || plan_id };
   const plan = meta["plan"];
   if (plan && typeof plan === "object" && !Array.isArray(plan)) {
     const p = plan as Record<string, unknown>;
     const id = typeof p["id"] === "string" ? (p["id"] as string) : undefined;
-    const name =
-      typeof p["name"] === "string" ? (p["name"] as string) : undefined;
+    const name = typeof p["name"] === "string" ? (p["name"] as string) : undefined;
     return { id, name };
   }
   const name =
@@ -170,10 +161,7 @@ function friendlyMessageLabel(msg: string | undefined) {
 function escapeHtml(input: string) {
   return input.replace(
     /[&<>"']/g,
-    (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
-        c
-      ] || c
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] || c
   );
 }
 
@@ -197,10 +185,7 @@ function buildPrintableHtml(opts: {
     .map((admin) => {
       const rows = groups[admin]
         .map((s) => {
-          const planName =
-            (s.metadata?.planName as string) ||
-            (s.metadata?.planId as string) ||
-            "";
+          const planName = (s.metadata?.planName as string) || (s.metadata?.planId as string) || "";
           return `<tr><td>${escapeHtml(String(s.id))}</td><td>${escapeHtml(new Date(s.timestamp || s.createdAt || Date.now()).toLocaleString())}</td><td>${escapeHtml(String(s.eventType || ""))}</td><td>${escapeHtml(String(s.message || ""))}</td><td>${escapeHtml(planName)}</td><td><pre style="white-space:pre-wrap">${escapeHtml(JSON.stringify(s.metadata || s.details || {}, null, 2))}</pre></td></tr>`;
         })
         .join("");
@@ -243,10 +228,7 @@ function ChangeList({ items }: { items: [string, unknown][] }) {
         ))}
       </ul>
       {showToggle && (
-        <button
-          className="text-sm text-blue-600 mt-1"
-          onClick={() => setExpanded((s) => !s)}
-        >
+        <button className="text-sm text-blue-600 mt-1" onClick={() => setExpanded((s) => !s)}>
           {expanded ? "Show less" : `Show ${items.length - limit} more`}
         </button>
       )}
@@ -254,10 +236,7 @@ function ChangeList({ items }: { items: [string, unknown][] }) {
   );
 }
 
-function renderAuditDetails(
-  metadata: Record<string, unknown> | undefined,
-  logEntry: AuditEntry
-) {
+function renderAuditDetails(metadata: Record<string, unknown> | undefined, logEntry: AuditEntry) {
   // Render admin info
   const admin = getAdminFromMeta(metadata);
   const planInfo = getPlanInfoFromMeta(metadata);
@@ -269,9 +248,7 @@ function renderAuditDetails(
     <div>
       <div className="text-sm">
         <strong>Admin:</strong>{" "}
-        {admin
-          ? `${admin.email || admin.id} (${admin.role || "-"})`
-          : logEntry.userId || "-"}
+        {admin ? `${admin.email || admin.id} (${admin.role || "-"})` : logEntry.userId || "-"}
       </div>
       {planId && (
         <div className="text-sm">
@@ -288,9 +265,7 @@ function renderAuditDetails(
 
       {/* Raw JSON toggle */}
       <details className="mt-2">
-        <summary className="text-sm text-muted-foreground">
-          Show raw JSON
-        </summary>
+        <summary className="text-sm text-muted-foreground">Show raw JSON</summary>
         <pre className="whitespace-pre-wrap text-xs mt-2 bg-gray-50 p-2 rounded">
           {JSON.stringify(metadata, null, 2)}
         </pre>
@@ -303,9 +278,7 @@ export default function PlansAuditPage() {
   const { isDarkMode } = useTheme();
   const [logs, setLogs] = useState<AuditEntry[]>([]);
   // Persist selected entries across pages: map id -> entry
-  const [selectedMap, setSelectedMap] = useState<Record<string, AuditEntry>>(
-    {}
-  );
+  const [selectedMap, setSelectedMap] = useState<Record<string, AuditEntry>>({});
   const [loading, setLoading] = useState(true);
 
   // Load persisted selection from localStorage
@@ -355,9 +328,7 @@ export default function PlansAuditPage() {
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [, setPrevCursors] = useState<string[]>([]); // legacy stack (kept for compatibility)
-  const [pageCursors, setPageCursors] = useState<Record<number, string | null>>(
-    { 1: null }
-  );
+  const [pageCursors, setPageCursors] = useState<Record<number, string | null>>({ 1: null });
   const pageCursorsRef = useRef<Record<number, string | null>>({ 1: null });
 
   useEffect(() => {
@@ -377,12 +348,9 @@ export default function PlansAuditPage() {
         if (startDate) params.set("startDate", startDate);
         if (endDate) params.set("endDate", endDate);
 
-        const res = await fetch(
-          `/api/admin/security-logs?${params.toString()}`,
-          {
-            credentials: "include",
-          }
-        );
+        const res = await fetch(`/api/admin/security-logs?${params.toString()}`, {
+          credentials: "include",
+        });
         if (!mounted) return;
         if (res.ok) {
           const j = await res.json();
@@ -418,8 +386,7 @@ export default function PlansAuditPage() {
       if (e.key === "ArrowLeft") {
         if (page > 1) setPage((p) => p - 1);
       } else if (e.key === "ArrowRight") {
-        if (page < totalPages && (pageCursors[page + 1] || nextCursor))
-          setPage((p) => p + 1);
+        if (page < totalPages && (pageCursors[page + 1] || nextCursor)) setPage((p) => p + 1);
       }
     }
     window.addEventListener("keydown", onKey);
@@ -438,10 +405,7 @@ export default function PlansAuditPage() {
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
         el.classList.add("ring", "ring-2", "ring-blue-300");
-        setTimeout(
-          () => el.classList.remove("ring", "ring-2", "ring-blue-300"),
-          3000
-        );
+        setTimeout(() => el.classList.remove("ring", "ring-2", "ring-blue-300"), 3000);
       }
     }, 250);
   }, [searchParams, logs]);
@@ -531,9 +495,7 @@ export default function PlansAuditPage() {
               s.eventType || "",
               (s.message || "").replace(/\n/g, " "),
               (() => {
-                const a = getAdminFromMeta(
-                  s.metadata as Record<string, unknown> | undefined
-                );
+                const a = getAdminFromMeta(s.metadata as Record<string, unknown> | undefined);
                 return a ? a.email || a.id || "" : "";
               })(),
               (s.metadata as Record<string, unknown> | undefined)?.planId ||
@@ -545,9 +507,7 @@ export default function PlansAuditPage() {
               JSON.stringify(s.metadata || s.details || {}),
             ]);
             const csv = [header, ...rows]
-              .map((r) =>
-                r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")
-              )
+              .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
               .join("\n");
             const blob = new Blob([csv], { type: "text/csv" });
             const url = URL.createObjectURL(blob);
@@ -650,14 +610,10 @@ export default function PlansAuditPage() {
         </button>
       </div>
       <div>
-        <h1
-          className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-        >
+        <h1 className={`text-3xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
           Plans Audit
         </h1>
-        <p
-          className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-        >
+        <p className={`mt-2 text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
           Administrative audit events for plan actions
         </p>
       </div>
@@ -681,13 +637,8 @@ export default function PlansAuditPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">
-            Admin (filter)
-          </label>
-          <AdminUserAutocomplete
-            value={filterUser}
-            onChange={(v) => setFilterUser(v)}
-          />
+          <label className="block text-sm font-medium mb-1">Admin (filter)</label>
+          <AdminUserAutocomplete value={filterUser} onChange={(v) => setFilterUser(v)} />
         </div>
 
         <div className="flex gap-2">
@@ -765,11 +716,7 @@ export default function PlansAuditPage() {
               </tr>
             ) : (
               logs.map((l) => (
-                <tr
-                  id={`log-${l.id}`}
-                  key={l.id}
-                  className="border-t hover:bg-gray-50"
-                >
+                <tr id={`log-${l.id}`} key={l.id} className="border-t hover:bg-gray-50">
                   <td className="py-2 align-top">
                     <input
                       type="checkbox"
@@ -785,26 +732,20 @@ export default function PlansAuditPage() {
                       }}
                     />
                   </td>
-                  <td className="py-2 align-top">
-                    {friendlyEventLabel(l.eventType)}
-                  </td>
+                  <td className="py-2 align-top">{friendlyEventLabel(l.eventType)}</td>
                   <td className="py-2 align-top">
                     <MessageCell message={l.message} />
                   </td>
                   <td className="py-2 align-top">
                     {(() => {
-                      const admin = (
-                        l.metadata as Record<string, unknown> | undefined
-                      )?.admin as AdminMeta | undefined;
-                      return (
-                        (admin && (admin.email || admin.id)) || l.userId || "-"
-                      );
+                      const admin = (l.metadata as Record<string, unknown> | undefined)?.admin as
+                        | AdminMeta
+                        | undefined;
+                      return (admin && (admin.email || admin.id)) || l.userId || "-";
                     })()}
                   </td>
                   <td className="py-2 align-top">
-                    {new Date(
-                      l.timestamp || l.createdAt || Date.now()
-                    ).toLocaleString()}
+                    {new Date(l.timestamp || l.createdAt || Date.now()).toLocaleString()}
                   </td>
                   <td className="py-2 align-top">
                     <details>
@@ -820,9 +761,7 @@ export default function PlansAuditPage() {
                               try {
                                 const url = new URL(window.location.href);
                                 url.searchParams.set("highlight", l.id);
-                                await navigator.clipboard.writeText(
-                                  url.toString()
-                                );
+                                await navigator.clipboard.writeText(url.toString());
                                 toast({
                                   title: "Link copied",
                                   description: "Deep link copied to clipboard",
@@ -885,12 +824,7 @@ export default function PlansAuditPage() {
             max={totalPages}
             value={page}
             onChange={(e) =>
-              setPage(
-                Math.min(
-                  Math.max(1, parseInt(e.target.value || "1", 10)),
-                  totalPages
-                )
-              )
+              setPage(Math.min(Math.max(1, parseInt(e.target.value || "1", 10)), totalPages))
             }
             className="input w-20"
           />

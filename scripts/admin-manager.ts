@@ -84,9 +84,7 @@ async function promoteToAdmin(email: string): Promise<void> {
     success(`User ${email} has been promoted to ADMIN! 🎉`);
     info(`User ID: ${user.id}`);
   } catch (err) {
-    error(
-      `Failed to promote user: ${err instanceof Error ? err.message : String(err)}`
-    );
+    error(`Failed to promote user: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);
   }
 }
@@ -140,9 +138,7 @@ async function demoteFromAdmin(email: string): Promise<void> {
     success(`User ${email} has been demoted to USER`);
     info(`Remaining admins: ${adminCount - 1}`);
   } catch (err) {
-    error(
-      `Failed to demote user: ${err instanceof Error ? err.message : String(err)}`
-    );
+    error(`Failed to demote user: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);
   }
 }
@@ -177,8 +173,7 @@ async function listAdmins(): Promise<void> {
     log(`${"=".repeat(80)}\n`, "cyan");
 
     admins.forEach((admin, index) => {
-      const name =
-        [admin.groomName, admin.brideName].filter(Boolean).join(" & ") || "N/A";
+      const name = [admin.groomName, admin.brideName].filter(Boolean).join(" & ") || "N/A";
 
       log(`${index + 1}. ${name}`, "bright");
       log(`   Email:      ${admin.email}`, "cyan");
@@ -189,9 +184,7 @@ async function listAdmins(): Promise<void> {
 
     success(`Total admins: ${admins.length}`);
   } catch (err) {
-    error(
-      `Failed to list admins: ${err instanceof Error ? err.message : String(err)}`
-    );
+    error(`Failed to list admins: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);
   }
 }
@@ -218,8 +211,7 @@ async function checkAdmin(email: string): Promise<void> {
       process.exit(1);
     }
 
-    const name =
-      [user.groomName, user.brideName].filter(Boolean).join(" & ") || "N/A";
+    const name = [user.groomName, user.brideName].filter(Boolean).join(" & ") || "N/A";
 
     log(`\n${"=".repeat(60)}`, "cyan");
     log("USER INFORMATION", "bright");
@@ -239,9 +231,7 @@ async function checkAdmin(email: string): Promise<void> {
       info(`Use 'pnpm admin:promote ${email}' to promote to admin`);
     }
   } catch (err) {
-    error(
-      `Failed to check user: ${err instanceof Error ? err.message : String(err)}`
-    );
+    error(`Failed to check user: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);
   }
 }
@@ -322,9 +312,7 @@ async function main() {
         process.exit(1);
     }
   } catch (err) {
-    error(
-      `Command failed: ${err instanceof Error ? err.message : String(err)}`
-    );
+    error(`Command failed: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);
   } finally {
     await prisma.$disconnect();

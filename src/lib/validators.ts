@@ -27,10 +27,7 @@ export const registerSchema = z.object({
   email: z.string().email("Invalid email address").toLowerCase().trim(),
   whatsapp: z
     .string()
-    .regex(
-      /^\+?[1-9]\d{1,14}$/,
-      "Invalid phone number format (use E.164 format: +1234567890)"
-    )
+    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format (use E.164 format: +1234567890)")
     .trim(),
   password: z
     .string()
@@ -152,25 +149,14 @@ export const guestSchema = z
       .min(2, "Name must be at least 2 characters")
       .max(100, "Name must be less than 100 characters")
       .trim(),
-    email: z
-      .string()
-      .email("Invalid email address")
-      .optional()
-      .or(z.literal("")),
+    email: z.string().email("Invalid email address").optional().or(z.literal("")),
     phone: z
       .string()
       .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format")
       .optional()
       .or(z.literal("")),
-    customMessage: z
-      .string()
-      .max(500, "Message must be less than 500 characters")
-      .optional(),
-    invitationCard: z
-      .string()
-      .url("Invalid invitation card URL")
-      .optional()
-      .or(z.literal("")),
+    customMessage: z.string().max(500, "Message must be less than 500 characters").optional(),
+    invitationCard: z.string().url("Invalid invitation card URL").optional().or(z.literal("")),
     mealPreference: z.string().max(100).optional(),
     tableAssignment: z.number().int().positive().optional(),
     plusOne: z.boolean().optional(),
@@ -208,10 +194,7 @@ export const paymentInitiationSchema = z.object({
     .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format")
     .trim(),
   planId: z.string().uuid("Invalid plan ID"),
-  amount: z
-    .number()
-    .positive("Amount must be positive")
-    .finite("Amount must be a valid number"),
+  amount: z.number().positive("Amount must be positive").finite("Amount must be a valid number"),
 });
 
 /**
@@ -241,10 +224,7 @@ export const weddingPageSchema = z.object({
     .string()
     .min(3, "Slug must be at least 3 characters")
     .max(100, "Slug must be less than 100 characters")
-    .regex(
-      /^[a-z0-9-]+$/,
-      "Slug can only contain lowercase letters, numbers, and hyphens"
-    )
+    .regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens")
     .trim(),
   templateId: z.string().uuid("Invalid template ID"),
   venue: z.string().max(200).optional(),
@@ -260,9 +240,7 @@ export const weddingPageSchema = z.object({
  * Used in: /api/upload-image
  */
 export const uploadSchema = z.object({
-  uploadType: z
-    .enum(["profile", "hero", "logo", "story", "gallery", "general"])
-    .default("general"),
+  uploadType: z.enum(["profile", "hero", "logo", "story", "gallery", "general"]).default("general"),
 });
 
 // ============================================
@@ -279,10 +257,7 @@ export const taskSchema = z.object({
     .min(3, "Title must be at least 3 characters")
     .max(200, "Title must be less than 200 characters")
     .trim(),
-  description: z
-    .string()
-    .max(1000, "Description must be less than 1000 characters")
-    .trim(),
+  description: z.string().max(1000, "Description must be less than 1000 characters").trim(),
   TaskCategoryId: z.string().cuid("Invalid category ID"),
   TaskPriorityId: z.string().cuid("Invalid priority ID"),
   dueDate: z.string().datetime("Invalid date format"),
@@ -331,9 +306,7 @@ export function validate<T>(schema: z.ZodSchema<T>, data: unknown): T {
 export function validateSafe<T>(
   schema: z.ZodSchema<T>,
   data: unknown
-):
-  | { success: true; data: T }
-  | { success: false; errors: Record<string, string[]> } {
+): { success: true; data: T } | { success: false; errors: Record<string, string[]> } {
   const result = schema.safeParse(data);
 
   if (result.success) {

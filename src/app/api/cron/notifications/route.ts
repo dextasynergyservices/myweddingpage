@@ -61,10 +61,7 @@ export async function GET(request: NextRequest) {
 
     for (const user of users7Days) {
       if (user.pushSubscriptions.length > 0) {
-        const result = await sendNotificationToUser(
-          user.id,
-          subscriptionNotifications.sevenDays
-        );
+        const result = await sendNotificationToUser(user.id, subscriptionNotifications.sevenDays);
         results.subscriptionNotifications++;
         results.totalSent += result.sent;
         results.totalFailed += result.failed;
@@ -89,10 +86,7 @@ export async function GET(request: NextRequest) {
 
     for (const user of users3Days) {
       if (user.pushSubscriptions.length > 0) {
-        const result = await sendNotificationToUser(
-          user.id,
-          subscriptionNotifications.threeDays
-        );
+        const result = await sendNotificationToUser(user.id, subscriptionNotifications.threeDays);
         results.subscriptionNotifications++;
         results.totalSent += result.sent;
         results.totalFailed += result.failed;
@@ -117,10 +111,7 @@ export async function GET(request: NextRequest) {
 
     for (const user of users1Day) {
       if (user.pushSubscriptions.length > 0) {
-        const result = await sendNotificationToUser(
-          user.id,
-          subscriptionNotifications.oneDay
-        );
+        const result = await sendNotificationToUser(user.id, subscriptionNotifications.oneDay);
         results.subscriptionNotifications++;
         results.totalSent += result.sent;
         results.totalFailed += result.failed;
@@ -143,10 +134,7 @@ export async function GET(request: NextRequest) {
 
     for (const user of usersExpiredToday) {
       if (user.pushSubscriptions.length > 0) {
-        const result = await sendNotificationToUser(
-          user.id,
-          subscriptionNotifications.expired
-        );
+        const result = await sendNotificationToUser(user.id, subscriptionNotifications.expired);
         results.subscriptionNotifications++;
         results.totalSent += result.sent;
         results.totalFailed += result.failed;
@@ -208,9 +196,7 @@ export async function GET(request: NextRequest) {
 
       const weddingDate = new Date(user.weddingDate);
       weddingDate.setHours(0, 0, 0, 0);
-      const daysUntil = Math.ceil(
-        (weddingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-      );
+      const daysUntil = Math.ceil((weddingDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
       // Send reminders at 7 days, 3 days, 1 day, and day of wedding
       if ([7, 3, 1, 0].includes(daysUntil)) {
@@ -252,9 +238,7 @@ export async function GET(request: NextRequest) {
 
       for (const user of usersWithTasks) {
         if (user.tasks.length > 0 && user.pushSubscriptions.length > 0) {
-          const notification = createTaskReminderNotification(
-            user.tasks.length
-          );
+          const notification = createTaskReminderNotification(user.tasks.length);
           const result = await sendNotificationToUser(user.id, notification);
           results.taskReminders++;
           results.totalSent += result.sent;

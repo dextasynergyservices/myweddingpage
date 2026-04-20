@@ -55,9 +55,7 @@ export default function WeddingPageGallery() {
   return (
     <div
       className={`rounded-3xl p-12 shadow-lg border mb-16 ${
-        isDarkMode
-          ? "bg-slate-800 border-slate-700"
-          : "bg-white border-slate-100"
+        isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
       }`}
     >
       <div className="text-center mb-12">

@@ -72,9 +72,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string;
         // expose showRawIps flag to the session
         // @ts-expect-error - token may have custom properties added in jwt callback
-        session.user.showRawIps = Boolean(
-          (token as JWT & { showRawIps?: boolean }).showRawIps
-        );
+        session.user.showRawIps = Boolean((token as JWT & { showRawIps?: boolean }).showRawIps);
       }
 
       console.log("Session callback - final session:", session);
@@ -87,8 +85,7 @@ export const authOptions: NextAuthOptions = {
         return true; // Allow sign in
       } catch (error: unknown) {
         // Return error message so NextAuth appends it to the URL
-        const errorMessage =
-          error instanceof Error ? error.message : "Authentication failed";
+        const errorMessage = error instanceof Error ? error.message : "Authentication failed";
         return `/auth/login?error=${encodeURIComponent(errorMessage)}`;
       }
     },

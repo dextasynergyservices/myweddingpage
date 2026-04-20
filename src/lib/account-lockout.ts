@@ -45,20 +45,12 @@ export interface LockoutConfig {
  */
 const defaultConfig: LockoutConfig = {
   firstThreshold: parseInt(process.env.LOCKOUT_FIRST_THRESHOLD || "5"),
-  firstDuration: parseInt(
-    process.env.LOCKOUT_FIRST_DURATION || String(15 * 60 * 1000)
-  ), // 15 minutes
+  firstDuration: parseInt(process.env.LOCKOUT_FIRST_DURATION || String(15 * 60 * 1000)), // 15 minutes
   secondThreshold: parseInt(process.env.LOCKOUT_SECOND_THRESHOLD || "10"),
-  secondDuration: parseInt(
-    process.env.LOCKOUT_SECOND_DURATION || String(60 * 60 * 1000)
-  ), // 1 hour
+  secondDuration: parseInt(process.env.LOCKOUT_SECOND_DURATION || String(60 * 60 * 1000)), // 1 hour
   maxThreshold: parseInt(process.env.LOCKOUT_MAX_THRESHOLD || "15"),
-  maxDuration: parseInt(
-    process.env.LOCKOUT_MAX_DURATION || String(24 * 60 * 60 * 1000)
-  ), // 24 hours
-  attemptWindow: parseInt(
-    process.env.LOCKOUT_ATTEMPT_WINDOW || String(60 * 60 * 1000)
-  ), // 1 hour
+  maxDuration: parseInt(process.env.LOCKOUT_MAX_DURATION || String(24 * 60 * 60 * 1000)), // 24 hours
+  attemptWindow: parseInt(process.env.LOCKOUT_ATTEMPT_WINDOW || String(60 * 60 * 1000)), // 1 hour
 };
 
 /**
@@ -124,10 +116,7 @@ export async function trackLoginAttempt(
  * @param ipAddress - IP address
  * @returns Lockout status
  */
-export async function checkLockoutStatus(
-  email: string,
-  ipAddress: string
-): Promise<LockoutStatus> {
+export async function checkLockoutStatus(email: string, ipAddress: string): Promise<LockoutStatus> {
   try {
     const now = new Date();
 
@@ -235,9 +224,7 @@ export async function applyLockoutIfNeeded(email: string, ipAddress: string) {
       });
 
       // Send notification email (async, don't await)
-      sendLockoutNotification(email, lockedUntil, attemptCount).catch(
-        console.error
-      );
+      sendLockoutNotification(email, lockedUntil, attemptCount).catch(console.error);
 
       return lockout;
     }
@@ -328,10 +315,7 @@ export async function unlockAccount(email: string, unlockedBy: string) {
  * @param limit - Number of records to return
  * @returns Array of lockout records
  */
-export async function getLockoutHistory(
-  identifier: string,
-  limit: number = 10
-) {
+export async function getLockoutHistory(identifier: string, limit: number = 10) {
   try {
     return await prisma.accountLockout.findMany({
       where: {
@@ -355,10 +339,7 @@ export async function getLockoutHistory(
  * @param limit - Number of records to return
  * @returns Array of login attempts
  */
-export async function getLoginAttemptHistory(
-  identifier: string,
-  limit: number = 20
-) {
+export async function getLoginAttemptHistory(identifier: string, limit: number = 20) {
   try {
     return await prisma.loginAttempt.findMany({
       where: {
@@ -382,19 +363,13 @@ export async function getLoginAttemptHistory(
  * @param lockedUntil - Lockout expiry date
  * @param attemptCount - Number of failed attempts
  */
-async function sendLockoutNotification(
-  email: string,
-  lockedUntil: Date,
-  attemptCount: number
-) {
+async function sendLockoutNotification(email: string, lockedUntil: Date, attemptCount: number) {
   try {
     // Import Resend dynamically to avoid circular dependencies
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const lockoutMinutes = Math.ceil(
-      (lockedUntil.getTime() - Date.now()) / 60000
-    );
+    const lockoutMinutes = Math.ceil((lockedUntil.getTime() - Date.now()) / 60000);
 
     await resend.emails.send({
       from: "Myweddingpage <info@myweddingpage.online>",
@@ -490,10 +465,7 @@ export async function cleanupOldRecords(daysToKeep: number = 30) {
  * @param email - Email address
  * @returns Lockout response if locked, null otherwise
  */
-export async function checkLockoutMiddleware(
-  request: NextRequest,
-  email: string
-) {
+export async function checkLockoutMiddleware(request: NextRequest, email: string) {
   const ipAddress = getClientIP(request);
   const status = await checkLockoutStatus(email, ipAddress);
 
@@ -567,11 +539,7 @@ export async function handleFailedLogin(
  * @param email - Email address
  * @param userId - User ID
  */
-export async function handleSuccessfulLogin(
-  request: NextRequest,
-  email: string,
-  userId: string
-) {
+export async function handleSuccessfulLogin(request: NextRequest, email: string, userId: string) {
   const ipAddress = getClientIP(request);
   const userAgent = getUserAgent(request);
 

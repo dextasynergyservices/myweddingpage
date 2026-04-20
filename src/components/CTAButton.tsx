@@ -38,11 +38,7 @@ const CTAButton = ({
       <div className="pt-4 border-t border-slate-200/20">
         {user ? (
           <div className="space-y-2">
-            <Link
-              href={
-                user.role === "admin" ? "/admin/AdminDashboard" : "/dashboard"
-              }
-            >
+            <Link href={user.role === "admin" ? "/admin/AdminDashboard" : "/dashboard"}>
               <button
                 onClick={() => setIsMobileMenuOpen?.(false)}
                 className={`w-full flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-colors duration-200 ${
@@ -101,11 +97,7 @@ const CTAButton = ({
 
       {user ? (
         <div className="flex items-center gap-3">
-          <Link
-            href={
-              user.role === "admin" ? "/admin/AdminDashboard" : "/dashboard"
-            }
-          >
+          <Link href={user.role === "admin" ? "/admin/AdminDashboard" : "/dashboard"}>
             <motion.button
               className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
                 isDarkMode

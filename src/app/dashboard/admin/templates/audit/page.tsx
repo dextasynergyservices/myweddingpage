@@ -19,15 +19,9 @@ export default function TemplatesAuditPage() {
   const [page, setPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(50);
   const [total, setTotal] = React.useState(0);
-  const [filterAction, setFilterAction] = React.useState<string | undefined>(
-    undefined
-  );
-  const [filterActionsMulti, setFilterActionsMulti] = React.useState<string[]>(
-    []
-  );
-  const [filterStaging, setFilterStaging] = React.useState<string | undefined>(
-    undefined
-  );
+  const [filterAction, setFilterAction] = React.useState<string | undefined>(undefined);
+  const [filterActionsMulti, setFilterActionsMulti] = React.useState<string[]>([]);
+  const [filterStaging, setFilterStaging] = React.useState<string | undefined>(undefined);
   const [dateFrom, setDateFrom] = React.useState<string | undefined>(undefined);
   const [dateTo, setDateTo] = React.useState<string | undefined>(undefined);
   const toasts = useToast();
@@ -56,44 +50,33 @@ export default function TemplatesAuditPage() {
     }>
   >([]);
   const [showActionsModal, setShowActionsModal] = React.useState(false);
-  const [actionsModalSelection, setActionsModalSelection] = React.useState<
-    string[]
-  >([]);
+  const [actionsModalSelection, setActionsModalSelection] = React.useState<string[]>([]);
   const actionsApplyRef = React.useRef<HTMLButtonElement | null>(null);
   const actionsToggleRef = React.useRef<HTMLButtonElement | null>(null);
   const [showSaveFilterModal, setShowSaveFilterModal] = React.useState(false);
   const [saveFilterName, setSaveFilterName] = React.useState("");
-  const [exportFormat, setExportFormat] = React.useState<"json" | "csv">(
-    "json"
-  );
-  const [showDeleteSavedFilterModal, setShowDeleteSavedFilterModal] =
-    React.useState<{
-      name: string;
-    } | null>(null);
-  const [selectedSavedFilterJson, setSelectedSavedFilterJson] =
-    React.useState<string>("");
+  const [exportFormat, setExportFormat] = React.useState<"json" | "csv">("json");
+  const [showDeleteSavedFilterModal, setShowDeleteSavedFilterModal] = React.useState<{
+    name: string;
+  } | null>(null);
+  const [selectedSavedFilterJson, setSelectedSavedFilterJson] = React.useState<string>("");
   type VisibleColumns = {
     time: boolean;
     action: boolean;
     staging: boolean;
     details: boolean;
   };
-  const [visibleColumns, setVisibleColumns] = React.useState<VisibleColumns>(
-    () => {
-      try {
-        const raw = localStorage.getItem("audit.visibleColumns");
-        if (raw) return JSON.parse(raw) as VisibleColumns;
-      } catch {}
-      return { time: true, action: true, staging: true, details: true };
-    }
-  );
+  const [visibleColumns, setVisibleColumns] = React.useState<VisibleColumns>(() => {
+    try {
+      const raw = localStorage.getItem("audit.visibleColumns");
+      if (raw) return JSON.parse(raw) as VisibleColumns;
+    } catch {}
+    return { time: true, action: true, staging: true, details: true };
+  });
 
   React.useEffect(() => {
     try {
-      localStorage.setItem(
-        "audit.visibleColumns",
-        JSON.stringify(visibleColumns)
-      );
+      localStorage.setItem("audit.visibleColumns", JSON.stringify(visibleColumns));
     } catch {}
   }, [visibleColumns]);
 
@@ -126,11 +109,7 @@ export default function TemplatesAuditPage() {
   // update selected action counts when availableActions or selected multi change
   React.useEffect(() => {
     const sel = new Set(
-      filterActionsMulti.length
-        ? filterActionsMulti
-        : filterAction
-          ? [filterAction]
-          : []
+      filterActionsMulti.length ? filterActionsMulti : filterAction ? [filterAction] : []
     );
     const count = availableActions.reduce(
       (acc, a) => (sel.has(a.action) ? acc + (a.count || 0) : acc),
@@ -200,8 +179,7 @@ export default function TemplatesAuditPage() {
       const params = new URLSearchParams();
       params.set("page", String(page));
       params.set("pageSize", String(pageSize));
-      if (filterActionsMulti.length)
-        params.set("action", filterActionsMulti.join(","));
+      if (filterActionsMulti.length) params.set("action", filterActionsMulti.join(","));
       else if (filterAction) params.set("action", filterAction);
       if (filterStaging) params.set("stagingId", filterStaging);
       if (dateFrom) params.set("dateFrom", dateFrom);
@@ -245,15 +223,7 @@ export default function TemplatesAuditPage() {
         searchToastRef.current = null;
       }
     }
-  }, [
-    page,
-    pageSize,
-    filterAction,
-    filterStaging,
-    dateFrom,
-    dateTo,
-    filterActionsMulti,
-  ]);
+  }, [page, pageSize, filterAction, filterStaging, dateFrom, dateTo, filterActionsMulti]);
 
   // initial load
   React.useEffect(() => {
@@ -267,8 +237,7 @@ export default function TemplatesAuditPage() {
       load();
       try {
         const params = new URLSearchParams();
-        if (filterActionsMulti.length)
-          params.set("action", filterActionsMulti.join(","));
+        if (filterActionsMulti.length) params.set("action", filterActionsMulti.join(","));
         else if (filterAction) params.set("action", filterAction as string);
         if (filterStaging) params.set("stagingId", filterStaging as string);
         if (dateFrom) params.set("dateFrom", dateFrom as string);
@@ -280,30 +249,17 @@ export default function TemplatesAuditPage() {
       } catch {}
     }, 600);
     return () => clearTimeout(t);
-  }, [
-    page,
-    pageSize,
-    filterAction,
-    filterStaging,
-    dateFrom,
-    dateTo,
-    filterActionsMulti,
-    load,
-  ]);
+  }, [page, pageSize, filterAction, filterStaging, dateFrom, dateTo, filterActionsMulti, load]);
 
   if (events === null) return <PageSkeleton />;
 
   return (
     <>
       <div>
-        <h1
-          className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}
-        >
+        <h1 className={`text-2xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
           Templates Audit
         </h1>
-        <p
-          className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-        >
+        <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
           Recent template import and audit events.
         </p>
       </div>
@@ -342,20 +298,15 @@ export default function TemplatesAuditPage() {
               {showActionsModal && (
                 <div className="absolute z-40 mt-2 right-0 w-80 p-3 rounded border bg-white shadow-lg dark:bg-gray-800">
                   <div className="text-sm mb-2">
-                    Choose one or more actions to filter by. Counts are shown to
-                    help guide selection.
+                    Choose one or more actions to filter by. Counts are shown to help guide
+                    selection.
                   </div>
                   {availableActions.length === 0 ? (
-                    <div className="text-sm text-gray-500">
-                      No actions available yet.
-                    </div>
+                    <div className="text-sm text-gray-500">No actions available yet.</div>
                   ) : (
                     <div className="grid grid-cols-1 gap-2 max-h-48 overflow-auto">
                       {availableActions.map((a) => (
-                        <label
-                          key={a.action}
-                          className="flex items-center gap-2"
-                        >
+                        <label key={a.action} className="flex items-center gap-2">
                           <input
                             type="checkbox"
                             checked={actionsModalSelection.includes(a.action)}
@@ -367,20 +318,14 @@ export default function TemplatesAuditPage() {
                             }}
                           />
                           <span className="text-sm">
-                            {a.action}{" "}
-                            <span className="text-xs text-gray-500">
-                              ({a.count})
-                            </span>
+                            {a.action} <span className="text-xs text-gray-500">({a.count})</span>
                           </span>
                         </label>
                       ))}
                     </div>
                   )}
                   <div className="flex justify-end gap-2 mt-3">
-                    <button
-                      className="btn btn-outline"
-                      onClick={() => setShowActionsModal(false)}
-                    >
+                    <button className="btn btn-outline" onClick={() => setShowActionsModal(false)}>
                       Cancel
                     </button>
                     <button
@@ -470,10 +415,7 @@ export default function TemplatesAuditPage() {
             {Object.keys(visibleColumns).map((k) => {
               const key = k as keyof VisibleColumns;
               return (
-                <label
-                  key={key as string}
-                  className="text-xs flex items-center gap-1"
-                >
+                <label key={key as string} className="text-xs flex items-center gap-1">
                   <input
                     type="checkbox"
                     checked={visibleColumns[key]}
@@ -511,9 +453,7 @@ export default function TemplatesAuditPage() {
                 setPage(1);
                 setLastApplied({
                   action: filterAction,
-                  actions: filterActionsMulti.length
-                    ? filterActionsMulti
-                    : undefined,
+                  actions: filterActionsMulti.length ? filterActionsMulti : undefined,
                   staging: filterStaging,
                   dateFrom,
                   dateTo,
@@ -526,10 +466,8 @@ export default function TemplatesAuditPage() {
                 // persist to URL
                 try {
                   const params = new URLSearchParams();
-                  if (filterAction)
-                    params.set("action", filterAction as string);
-                  if (filterStaging)
-                    params.set("stagingId", filterStaging as string);
+                  if (filterAction) params.set("action", filterAction as string);
+                  if (filterStaging) params.set("stagingId", filterStaging as string);
                   if (dateFrom) params.set("dateFrom", dateFrom as string);
                   if (dateTo) params.set("dateTo", dateTo as string);
                   params.set("page", "1");
@@ -545,9 +483,7 @@ export default function TemplatesAuditPage() {
               <select
                 className="rounded border px-2 py-1 text-sm"
                 value={exportFormat}
-                onChange={(e) =>
-                  setExportFormat(e.target.value as "json" | "csv")
-                }
+                onChange={(e) => setExportFormat(e.target.value as "json" | "csv")}
               >
                 <option value="json">JSON</option>
                 <option value="csv">CSV</option>
@@ -577,19 +513,12 @@ export default function TemplatesAuditPage() {
                     if (exportFormat === "csv") {
                       // build CSV from visible columns
                       const cols: Array<{ key: string; header: string }> = [];
-                      if (visibleColumns.time)
-                        cols.push({ key: "ts", header: "Time" });
-                      if (visibleColumns.action)
-                        cols.push({ key: "action", header: "Action" });
+                      if (visibleColumns.time) cols.push({ key: "ts", header: "Time" });
+                      if (visibleColumns.action) cols.push({ key: "action", header: "Action" });
                       if (visibleColumns.staging)
                         cols.push({ key: "stagingId", header: "Staging ID" });
-                      if (visibleColumns.details)
-                        cols.push({ key: "details", header: "Details" });
-                      const rows = [
-                        cols
-                          .map((c) => `"${c.header.replace(/"/g, '""')}"`)
-                          .join(","),
-                      ];
+                      if (visibleColumns.details) cols.push({ key: "details", header: "Details" });
+                      const rows = [cols.map((c) => `"${c.header.replace(/"/g, '""')}"`).join(",")];
                       for (const ev of eventsToExport as AuditEvent[]) {
                         const cells = cols.map((c) => {
                           if (c.key === "details")
@@ -612,23 +541,17 @@ export default function TemplatesAuditPage() {
                       URL.revokeObjectURL(url);
                     } else {
                       // JSON export: only include visible columns per event
-                      const reduced = (eventsToExport as AuditEvent[]).map(
-                        (ev) => {
-                          const out: Record<string, unknown> = {};
-                          if (visibleColumns.time) out.ts = ev.ts;
-                          if (visibleColumns.action) out.action = ev.action;
-                          if (visibleColumns.staging)
-                            out.stagingId = ev.stagingId || ev.staging;
-                          if (visibleColumns.details) out.details = ev;
-                          return out;
-                        }
-                      );
-                      const blob = new Blob(
-                        [JSON.stringify(reduced, null, 2)],
-                        {
-                          type: "application/json",
-                        }
-                      );
+                      const reduced = (eventsToExport as AuditEvent[]).map((ev) => {
+                        const out: Record<string, unknown> = {};
+                        if (visibleColumns.time) out.ts = ev.ts;
+                        if (visibleColumns.action) out.action = ev.action;
+                        if (visibleColumns.staging) out.stagingId = ev.stagingId || ev.staging;
+                        if (visibleColumns.details) out.details = ev;
+                        return out;
+                      });
+                      const blob = new Blob([JSON.stringify(reduced, null, 2)], {
+                        type: "application/json",
+                      });
                       const url = URL.createObjectURL(blob);
                       const a = document.createElement("a");
                       a.href = url;
@@ -711,13 +634,10 @@ export default function TemplatesAuditPage() {
           >
             <div className="space-y-3">
               <div className="text-sm">
-                Choose one or more actions to filter by. Counts are shown to
-                help guide selection.
+                Choose one or more actions to filter by. Counts are shown to help guide selection.
               </div>
               {availableActions.length === 0 ? (
-                <div className="text-sm text-gray-500">
-                  No actions available yet.
-                </div>
+                <div className="text-sm text-gray-500">No actions available yet.</div>
               ) : (
                 <div className="grid grid-cols-2 gap-2 max-h-60 overflow-auto">
                   {availableActions.map((a) => (
@@ -733,20 +653,14 @@ export default function TemplatesAuditPage() {
                         }}
                       />
                       <span className="text-sm">
-                        {a.action}{" "}
-                        <span className="text-xs text-gray-500">
-                          ({a.count})
-                        </span>
+                        {a.action} <span className="text-xs text-gray-500">({a.count})</span>
                       </span>
                     </label>
                   ))}
                 </div>
               )}
               <div className="flex justify-end gap-2">
-                <button
-                  className="btn btn-outline"
-                  onClick={() => setShowActionsModal(false)}
-                >
+                <button className="btn btn-outline" onClick={() => setShowActionsModal(false)}>
                   Cancel
                 </button>
                 <button
@@ -771,19 +685,14 @@ export default function TemplatesAuditPage() {
             maxWidth="max-w-md"
           >
             <div className="space-y-3">
-              <div className="text-sm">
-                Enter a name to save the current filter set.
-              </div>
+              <div className="text-sm">Enter a name to save the current filter set.</div>
               <input
                 value={saveFilterName}
                 onChange={(e) => setSaveFilterName(e.target.value)}
                 className="w-full rounded border px-2 py-1"
               />
               <div className="flex justify-end gap-2">
-                <button
-                  className="btn btn-outline"
-                  onClick={() => setShowSaveFilterModal(false)}
-                >
+                <button className="btn btn-outline" onClick={() => setShowSaveFilterModal(false)}>
                   Cancel
                 </button>
                 <button
@@ -793,19 +702,14 @@ export default function TemplatesAuditPage() {
                     const toSave = {
                       name: saveFilterName,
                       action: filterAction,
-                      actions: filterActionsMulti.length
-                        ? filterActionsMulti
-                        : undefined,
+                      actions: filterActionsMulti.length ? filterActionsMulti : undefined,
                       staging: filterStaging,
                       dateFrom,
                       dateTo,
                     };
                     const next = [toSave, ...savedFilters].slice(0, 20);
                     setSavedFilters(next);
-                    localStorage.setItem(
-                      "audit.savedFilters",
-                      JSON.stringify(next)
-                    );
+                    localStorage.setItem("audit.savedFilters", JSON.stringify(next));
                     setShowSaveFilterModal(false);
                   }}
                 >
@@ -842,10 +746,7 @@ export default function TemplatesAuditPage() {
                       if (!name) return setShowDeleteSavedFilterModal(null);
                       const next = savedFilters.filter((s) => s.name !== name);
                       setSavedFilters(next);
-                      localStorage.setItem(
-                        "audit.savedFilters",
-                        JSON.stringify(next)
-                      );
+                      localStorage.setItem("audit.savedFilters", JSON.stringify(next));
                       // clear selection if it was the deleted one
                       if (selectedSavedFilterJson) {
                         try {
@@ -863,9 +764,7 @@ export default function TemplatesAuditPage() {
             </div>
           </Modal>
           {events.length === 0 ? (
-            <p
-              className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
-            >
+            <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
               {filterAction || filterStaging ? (
                 <>No events match those filters.</>
               ) : (
@@ -876,41 +775,25 @@ export default function TemplatesAuditPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr>
-                  {visibleColumns.time && (
-                    <th className="text-left px-4 py-2">Time</th>
-                  )}
-                  {visibleColumns.action && (
-                    <th className="text-left px-4 py-2">Action</th>
-                  )}
-                  {visibleColumns.staging && (
-                    <th className="text-left px-4 py-2">Staging ID</th>
-                  )}
-                  {visibleColumns.details && (
-                    <th className="text-left px-4 py-2">Details</th>
-                  )}
+                  {visibleColumns.time && <th className="text-left px-4 py-2">Time</th>}
+                  {visibleColumns.action && <th className="text-left px-4 py-2">Action</th>}
+                  {visibleColumns.staging && <th className="text-left px-4 py-2">Staging ID</th>}
+                  {visibleColumns.details && <th className="text-left px-4 py-2">Details</th>}
                 </tr>
               </thead>
               <tbody>
                 {events.map((ev: AuditEvent, idx: number) => (
                   <tr key={idx} className="border-t">
                     {visibleColumns.time && (
-                      <td className="px-4 py-2">
-                        {new Date(ev.ts).toLocaleString()}
-                      </td>
+                      <td className="px-4 py-2">{new Date(ev.ts).toLocaleString()}</td>
                     )}
-                    {visibleColumns.action && (
-                      <td className="px-4 py-2">{String(ev.action)}</td>
-                    )}
+                    {visibleColumns.action && <td className="px-4 py-2">{String(ev.action)}</td>}
                     {visibleColumns.staging && (
-                      <td className="px-4 py-2">
-                        {String(ev.stagingId || ev.staging)}
-                      </td>
+                      <td className="px-4 py-2">{String(ev.stagingId || ev.staging)}</td>
                     )}
                     {visibleColumns.details && (
                       <td className="px-4 py-2">
-                        <pre className="text-xs">
-                          {JSON.stringify(ev, null, 2)}
-                        </pre>
+                        <pre className="text-xs">{JSON.stringify(ev, null, 2)}</pre>
                       </td>
                     )}
                   </tr>

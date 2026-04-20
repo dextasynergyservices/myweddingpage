@@ -2,8 +2,7 @@ import Twilio from "twilio";
 
 export class WhatsAppService {
   private static getClient() {
-    const twilioAccountSid =
-      process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
+    const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID || process.env.TWILIO_SID;
     const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
 
     if (!twilioAccountSid || !twilioAuthToken) {

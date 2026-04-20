@@ -51,9 +51,7 @@ export async function verifyRecaptcha(
 
   // Check if secret key is configured
   const secretKey =
-    version === "v3"
-      ? process.env.RECAPTCHA_SECRET_KEY_V3
-      : process.env.RECAPTCHA_SECRET_KEY_V2;
+    version === "v3" ? process.env.RECAPTCHA_SECRET_KEY_V3 : process.env.RECAPTCHA_SECRET_KEY_V2;
 
   if (!secretKey) {
     console.error(`reCAPTCHA ${version} secret key not configured`);
@@ -79,10 +77,7 @@ export async function verifyRecaptcha(
     });
 
     if (!response.ok) {
-      console.error(
-        "reCAPTCHA verification request failed:",
-        response.statusText
-      );
+      console.error("reCAPTCHA verification request failed:", response.statusText);
       return {
         success: false,
         message: "Failed to verify reCAPTCHA",
@@ -108,9 +103,7 @@ export async function verifyRecaptcha(
 
       // Validate action if provided
       if (expectedAction && data.action !== expectedAction) {
-        console.warn(
-          `reCAPTCHA action mismatch. Expected: ${expectedAction}, Got: ${data.action}`
-        );
+        console.warn(`reCAPTCHA action mismatch. Expected: ${expectedAction}, Got: ${data.action}`);
         return {
           success: false,
           score,
@@ -121,9 +114,7 @@ export async function verifyRecaptcha(
 
       // Check if score meets minimum threshold
       if (score < minScore) {
-        console.warn(
-          `reCAPTCHA score too low: ${score} (minimum: ${minScore})`
-        );
+        console.warn(`reCAPTCHA score too low: ${score} (minimum: ${minScore})`);
         return {
           success: false,
           score,
@@ -166,9 +157,7 @@ export async function verifyRecaptcha(
  *   return res.status(400).json({ error: "Failed reCAPTCHA verification" });
  * }
  */
-export async function verifyRecaptchaV2(
-  token: string
-): Promise<RecaptchaValidationResult> {
+export async function verifyRecaptchaV2(token: string): Promise<RecaptchaValidationResult> {
   return verifyRecaptcha(token, "v2");
 }
 

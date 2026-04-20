@@ -25,9 +25,7 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
   // New 3-tab system for UI navigation
   const [activeTab, setActiveBuilderTab] = useState<PageBuilderTab>("choose");
   const [, setTemplates] = useState<Template[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
-    null
-  );
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [userTemplate, setUserTemplate] = useState<UserTemplate | null>(null);
   const [weddingPage, setWeddingPage] = useState<WeddingPage | null>(null);
   const [userPlan, setUserPlan] = useState<UserPlan | null>(null);
@@ -102,9 +100,7 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
           const weddingPageData = await weddingPageResponse.json();
           // API shape: { weddingPage: {...}, gallery: [], gifts: [], guests: [] }
           setWeddingPage(
-            (weddingPageData && weddingPageData.weddingPage) ||
-              weddingPageData ||
-              null
+            (weddingPageData && weddingPageData.weddingPage) || weddingPageData || null
           );
           // Extract user data
           setGallery(weddingPageData?.gallery || []);
@@ -153,10 +149,7 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
     setIsSelect(false); // Sync: edit mode = not selecting
   };
 
-  const handleContentUpdate = async (
-    sectionId: string,
-    content: Record<string, unknown>
-  ) => {
+  const handleContentUpdate = async (sectionId: string, content: Record<string, unknown>) => {
     if (!userTemplate || !selectedTemplate) return;
 
     // Check if wedding page is soft deleted - disable editing
@@ -194,9 +187,7 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Response error:", errorText);
-        throw new Error(
-          `Failed to save content: ${response.status} ${errorText}`
-        );
+        throw new Error(`Failed to save content: ${response.status} ${errorText}`);
       }
 
       const data = await response.json();
@@ -235,9 +226,7 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
         >
           Wedding Page Builder
         </h1>
-        <p
-          className={`text-sm md:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}
-        >
+        <p className={`text-sm md:text-base ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
           {activeTab === "choose"
             ? "Choose a template for your wedding page"
             : activeTab === "customize"
@@ -310,11 +299,7 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
         <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-start">
             <div className="flex-shrink-0">
-              <svg
-                className="h-5 w-5 text-red-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fillRule="evenodd"
                   d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -323,13 +308,11 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">
-                Wedding Page Editing Disabled
-              </h3>
+              <h3 className="text-sm font-medium text-red-800">Wedding Page Editing Disabled</h3>
               <div className="mt-2 text-sm text-red-700">
                 <p>
-                  Your wedding page has been soft deleted due to subscription
-                  expiration. You can still view it but cannot make edits.
+                  Your wedding page has been soft deleted due to subscription expiration. You can
+                  still view it but cannot make edits.
                   <Link
                     href="/packages"
                     className="font-medium underline text-red-800 hover:text-red-900"
@@ -350,9 +333,7 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
           <TemplateSelection
             // Cast the callback argument to match our internal handler type
             onUserTemplateSelected={(userTemplate) =>
-              handleTemplateSelect(
-                userTemplate as unknown as UserTemplate | null
-              )
+              handleTemplateSelect(userTemplate as unknown as UserTemplate | null)
             }
             userPlan={userPlan ?? null}
             // Provide a safe userTemplate only when it includes a templates
@@ -362,17 +343,12 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
           selectedTemplate ? (
             <CustomizationTab
               templateId={userTemplate?.id ?? ""}
-              initialCustomization={
-                userTemplate?.colorScheme as UserCustomization | undefined
-              }
+              initialCustomization={userTemplate?.colorScheme as UserCustomization | undefined}
               selectedTemplate={selectedTemplate}
               userTemplate={
                 userTemplate
                   ? {
-                      content: userTemplate.content as Record<
-                        string,
-                        Record<string, unknown>
-                      >,
+                      content: userTemplate.content as Record<string, Record<string, unknown>>,
                     }
                   : undefined
               }
@@ -383,27 +359,22 @@ const WeddingPageBuilder = ({ setActiveTab }: WeddingPageBuilderProps) => {
               guests={guests}
               onSave={async (customization) => {
                 try {
-                  const response = await fetch(
-                    "/api/user/templates/customize",
-                    {
-                      method: "PUT",
-                      credentials: "include",
-                      headers: {
-                        "Content-Type": "application/json",
-                        "x-csrf-token": csrfToken || "",
-                      },
-                      body: JSON.stringify({
-                        templateId: selectedTemplate?.id, // Use selectedTemplate.id, not userTemplate.id
-                        customization,
-                      }),
-                    }
-                  );
+                  const response = await fetch("/api/user/templates/customize", {
+                    method: "PUT",
+                    credentials: "include",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "x-csrf-token": csrfToken || "",
+                    },
+                    body: JSON.stringify({
+                      templateId: selectedTemplate?.id, // Use selectedTemplate.id, not userTemplate.id
+                      customization,
+                    }),
+                  });
 
                   if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(
-                      errorData.error || "Failed to save customization"
-                    );
+                    throw new Error(errorData.error || "Failed to save customization");
                   }
 
                   const data = await response.json();

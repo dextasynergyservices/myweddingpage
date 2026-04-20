@@ -23,10 +23,7 @@ export async function GET(req: Request) {
     const userId = searchParams.get("userId"); // pass this from frontend
 
     if (!templateId) {
-      return NextResponse.json(
-        { error: "Template ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Template ID is required" }, { status: 400 });
     }
 
     // Fetch template with sections
@@ -38,10 +35,7 @@ export async function GET(req: Request) {
     });
 
     if (!template) {
-      return NextResponse.json(
-        { error: "Template not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Template not found" }, { status: 404 });
     }
 
     // Try to fetch user's wedding page for this template
@@ -73,9 +67,6 @@ export async function GET(req: Request) {
     });
   } catch (error) {
     console.error("Failed to fetch template preview:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

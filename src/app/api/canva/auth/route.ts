@@ -13,8 +13,7 @@ export async function GET(request: NextRequest) {
         : "https://www.myweddingpage.online/api/canva/oauth/redirect";
 
     // Generate OAuth URL with PKCE
-    const { authUrl, codeVerifier, state } =
-      CanvaAPI.generateAuthURL(redirectUri);
+    const { authUrl, codeVerifier, state } = CanvaAPI.generateAuthURL(redirectUri);
 
     // In a production app, you'd store codeVerifier and state in a secure session
     // For testing, we'll log them and return them (NOT secure for production)

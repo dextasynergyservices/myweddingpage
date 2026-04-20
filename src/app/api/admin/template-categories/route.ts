@@ -37,10 +37,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ category: created });
   } catch (err: unknown) {
     console.error("Failed to create template category:", err);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -53,16 +50,12 @@ export async function DELETE(request: Request) {
     }
     const body = await request.json();
     const id = String(body?.id || "").trim();
-    if (!id)
-      return NextResponse.json({ error: "id required" }, { status: 400 });
+    if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
     await prisma.templateCategory.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
     console.error("Failed to delete template category:", err);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
 
@@ -77,10 +70,8 @@ export async function PUT(request: Request) {
     const id = String(body?.id || "").trim();
     const name = body?.name ? String(body.name).trim() : null;
     const description = body?.description ? String(body.description) : null;
-    if (!id)
-      return NextResponse.json({ error: "id required" }, { status: 400 });
-    if (!name)
-      return NextResponse.json({ error: "name required" }, { status: 400 });
+    if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
+    if (!name) return NextResponse.json({ error: "name required" }, { status: 400 });
     const updated = await prisma.templateCategory.update({
       where: { id },
       data: { name, description },
@@ -88,9 +79,6 @@ export async function PUT(request: Request) {
     return NextResponse.json({ category: updated });
   } catch (err: unknown) {
     console.error("Failed to update template category:", err);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

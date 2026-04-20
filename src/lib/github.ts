@@ -6,12 +6,7 @@ export interface GitHubOptions {
   token: string; // personal/service token with repo scopes
 }
 
-async function ghRequest(
-  opts: GitHubOptions,
-  path: string,
-  method = "GET",
-  body?: unknown
-) {
+async function ghRequest(opts: GitHubOptions, path: string, method = "GET", body?: unknown) {
   const url = `${GITHUB_API}${path}`;
   const headers: Record<string, string> = {
     Authorization: `token ${opts.token}`,
@@ -36,9 +31,7 @@ async function ghRequest(
   }
 
   if (!res.ok) {
-    const err = new Error(
-      `GitHub API error ${res.status} ${res.statusText}`
-    ) as Error & {
+    const err = new Error(`GitHub API error ${res.status} ${res.statusText}`) as Error & {
       status?: number;
       body?: unknown;
     };
@@ -50,10 +43,7 @@ async function ghRequest(
 }
 
 export async function getRef(opts: GitHubOptions, ref: string) {
-  return ghRequest(
-    opts,
-    `/repos/${opts.owner}/${opts.repo}/git/ref/${encodeURIComponent(ref)}`
-  );
+  return ghRequest(opts, `/repos/${opts.owner}/${opts.repo}/git/ref/${encodeURIComponent(ref)}`);
 }
 
 export async function createRef(opts: GitHubOptions, ref: string, sha: string) {
@@ -64,15 +54,10 @@ export async function createRef(opts: GitHubOptions, ref: string, sha: string) {
 }
 
 export async function createBlob(opts: GitHubOptions, content: string) {
-  return ghRequest(
-    opts,
-    `/repos/${opts.owner}/${opts.repo}/git/blobs`,
-    "POST",
-    {
-      content,
-      encoding: "utf-8",
-    }
-  );
+  return ghRequest(opts, `/repos/${opts.owner}/${opts.repo}/git/blobs`, "POST", {
+    content,
+    encoding: "utf-8",
+  });
 }
 
 export async function createBlobWithEncoding(
@@ -80,15 +65,10 @@ export async function createBlobWithEncoding(
   content: string,
   encoding: "utf-8" | "base64" = "utf-8"
 ) {
-  return ghRequest(
-    opts,
-    `/repos/${opts.owner}/${opts.repo}/git/blobs`,
-    "POST",
-    {
-      content,
-      encoding,
-    }
-  );
+  return ghRequest(opts, `/repos/${opts.owner}/${opts.repo}/git/blobs`, "POST", {
+    content,
+    encoding,
+  });
 }
 
 export interface GitTreeEntry {
@@ -99,20 +79,11 @@ export interface GitTreeEntry {
   content?: string;
 }
 
-export async function createTree(
-  opts: GitHubOptions,
-  tree: GitTreeEntry[],
-  base_tree?: string
-) {
-  return ghRequest(
-    opts,
-    `/repos/${opts.owner}/${opts.repo}/git/trees`,
-    "POST",
-    {
-      tree,
-      base_tree,
-    }
-  );
+export async function createTree(opts: GitHubOptions, tree: GitTreeEntry[], base_tree?: string) {
+  return ghRequest(opts, `/repos/${opts.owner}/${opts.repo}/git/trees`, "POST", {
+    tree,
+    base_tree,
+  });
 }
 
 export async function getCommit(opts: GitHubOptions, sha: string) {
@@ -122,11 +93,7 @@ export async function getCommit(opts: GitHubOptions, sha: string) {
   );
 }
 
-export async function getContent(
-  opts: GitHubOptions,
-  filePath: string,
-  ref?: string
-) {
+export async function getContent(opts: GitHubOptions, filePath: string, ref?: string) {
   const q = ref ? `?ref=${encodeURIComponent(ref)}` : "";
   const res = (await ghRequest(
     opts,
@@ -146,24 +113,14 @@ export async function createCommit(
   tree: string,
   parents: string[]
 ) {
-  return ghRequest(
-    opts,
-    `/repos/${opts.owner}/${opts.repo}/git/commits`,
-    "POST",
-    {
-      message,
-      tree,
-      parents,
-    }
-  );
+  return ghRequest(opts, `/repos/${opts.owner}/${opts.repo}/git/commits`, "POST", {
+    message,
+    tree,
+    parents,
+  });
 }
 
-export async function updateRef(
-  opts: GitHubOptions,
-  ref: string,
-  sha: string,
-  force = false
-) {
+export async function updateRef(opts: GitHubOptions, ref: string, sha: string, force = false) {
   return ghRequest(
     opts,
     `/repos/${opts.owner}/${opts.repo}/git/refs/${encodeURIComponent(ref)}`,

@@ -42,16 +42,12 @@ export default function NotificationManager({
   const [currentName, setCurrentName] = useState("");
   const [currentContact, setCurrentContact] = useState("");
   const [message, setMessage] = useState("");
-  const [notificationType, setNotificationType] = useState<
-    "email" | "whatsapp"
-  >("email");
+  const [notificationType, setNotificationType] = useState<"email" | "whatsapp">("email");
   const [sending, setSending] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [showPreview, setShowPreview] = useState(false);
-  const [previewRecipient, setPreviewRecipient] = useState<Recipient | null>(
-    null
-  );
+  const [previewRecipient, setPreviewRecipient] = useState<Recipient | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Default message for emails (rich text HTML)
@@ -94,9 +90,7 @@ We can't wait to celebrate with you! ❤️`;
     editorProps: {
       attributes: {
         class: `prose prose-sm max-w-none focus:outline-none min-h-[200px] px-4 py-3 ${
-          isDarkMode
-            ? "bg-gray-700 text-white prose-invert"
-            : "bg-white text-black"
+          isDarkMode ? "bg-gray-700 text-white prose-invert" : "bg-white text-black"
         }`,
       },
     },
@@ -104,12 +98,7 @@ We can't wait to celebrate with you! ❤️`;
 
   // Update editor content when message changes externally (like template button)
   useEffect(() => {
-    if (
-      editor &&
-      notificationType === "email" &&
-      message &&
-      editor.getHTML() !== message
-    ) {
+    if (editor && notificationType === "email" && message && editor.getHTML() !== message) {
       editor.commands.setContent(message);
     }
   }, [message, editor, notificationType]);
@@ -119,10 +108,7 @@ We can't wait to celebrate with you! ❤️`;
     const trimmedName = currentName.trim() || "Guest";
 
     if (notificationType === "email") {
-      if (
-        !trimmedContact ||
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedContact)
-      ) {
+      if (!trimmedContact || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedContact)) {
         setError("Please enter a valid email address");
         return;
       }
@@ -134,9 +120,7 @@ We can't wait to celebrate with you! ❤️`;
     }
 
     if (recipients.some((r) => r.contact === trimmedContact)) {
-      setError(
-        `${notificationType === "email" ? "Email" : "Phone number"} already added`
-      );
+      setError(`${notificationType === "email" ? "Email" : "Phone number"} already added`);
       return;
     }
 
@@ -158,8 +142,7 @@ We can't wait to celebrate with you! ❤️`;
     if (!textarea) return;
 
     const start = textarea.selectionStart;
-    const newText =
-      message.substring(0, start) + "{name}" + message.substring(start);
+    const newText = message.substring(0, start) + "{name}" + message.substring(start);
     setMessage(newText);
 
     setTimeout(() => {
@@ -231,8 +214,7 @@ We can't wait to celebrate with you! ❤️`;
           } else {
             // For email: if the content looks like plain text (no tags), convert newlines to <br>
             if (!/<[a-z][\s\S]*>/i.test(personalizedMessage)) {
-              personalizedMessage =
-                convertLineBreaksToHtml(personalizedMessage);
+              personalizedMessage = convertLineBreaksToHtml(personalizedMessage);
             }
           }
 
@@ -242,10 +224,8 @@ We can't wait to celebrate with you! ❤️`;
             body: JSON.stringify({
               streamId, // Include streamId for tracking
               guestName: recipient.name,
-              guestEmail:
-                notificationType === "email" ? recipient.contact : null,
-              guestPhone:
-                notificationType === "whatsapp" ? recipient.contact : null,
+              guestEmail: notificationType === "email" ? recipient.contact : null,
+              guestPhone: notificationType === "whatsapp" ? recipient.contact : null,
               message: personalizedMessage,
               notificationType,
             }),
@@ -266,9 +246,7 @@ We can't wait to celebrate with you! ❤️`;
           `Sent ${successCount} personalized notification${successCount > 1 ? "s" : ""} successfully!`
         );
         if (failCount > 0) {
-          setError(
-            `${failCount} notification${failCount > 1 ? "s" : ""} failed to send.`
-          );
+          setError(`${failCount} notification${failCount > 1 ? "s" : ""} failed to send.`);
         }
         setRecipients([]);
         setMessage("");
@@ -314,9 +292,7 @@ We can't wait to celebrate with you! ❤️`;
                 }}
                 className="text-purple-500 focus:ring-purple-500"
               />
-              <span className={isDarkMode ? "text-white" : "text-black"}>
-                Email (Rich Text)
-              </span>
+              <span className={isDarkMode ? "text-white" : "text-black"}>Email (Rich Text)</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -349,9 +325,7 @@ We can't wait to celebrate with you! ❤️`;
               value={currentName}
               onChange={(e) => setCurrentName(e.target.value)}
               onKeyPress={(e) =>
-                e.key === "Enter" &&
-                currentContact &&
-                (e.preventDefault(), addRecipient())
+                e.key === "Enter" && currentContact && (e.preventDefault(), addRecipient())
               }
               placeholder="Guest Name (e.g., John Doe)"
               className={`px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 ${isDarkMode ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "bg-white border-gray-300 text-black"}`}
@@ -361,14 +335,8 @@ We can't wait to celebrate with you! ❤️`;
                 type={notificationType === "email" ? "email" : "tel"}
                 value={currentContact}
                 onChange={(e) => setCurrentContact(e.target.value)}
-                onKeyPress={(e) =>
-                  e.key === "Enter" && (e.preventDefault(), addRecipient())
-                }
-                placeholder={
-                  notificationType === "email"
-                    ? "email@example.com"
-                    : "+1234567890"
-                }
+                onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addRecipient())}
+                placeholder={notificationType === "email" ? "email@example.com" : "+1234567890"}
                 className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 ${isDarkMode ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "bg-white border-gray-300 text-black"}`}
               />
               <button
@@ -380,12 +348,9 @@ We can't wait to celebrate with you! ❤️`;
               </button>
             </div>
           </div>
-          <p
-            className={`text-xs mb-2 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
-          >
-            Add name and {notificationType === "email" ? "email" : "phone"},
-            then click Add or press Enter. Use {"{name}"} in your message for
-            personalization!
+          <p className={`text-xs mb-2 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+            Add name and {notificationType === "email" ? "email" : "phone"}, then click Add or press
+            Enter. Use {"{name}"} in your message for personalization!
           </p>
 
           {recipients.length > 0 && (
@@ -403,9 +368,7 @@ We can't wait to celebrate with you! ❤️`;
                       >
                         {recipient.name}
                       </p>
-                      <p
-                        className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
-                      >
+                      <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
                         {recipient.contact}
                       </p>
                     </div>
@@ -432,9 +395,7 @@ We can't wait to celebrate with you! ❤️`;
                   </div>
                 </div>
               ))}
-              <p
-                className={`text-xs mt-2 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
-              >
+              <p className={`text-xs mt-2 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
                 Total: {recipients.length} recipient
                 {recipients.length > 1 ? "s" : ""}
               </p>
@@ -445,20 +406,14 @@ We can't wait to celebrate with you! ❤️`;
         {/* Message Editor - Different for Email vs WhatsApp */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label
-              className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-black"}`}
-            >
-              {notificationType === "email"
-                ? "Message (Rich Text Editor)"
-                : "Message (Plain Text)"}
+            <label className={`text-sm font-medium ${isDarkMode ? "text-white" : "text-black"}`}>
+              {notificationType === "email" ? "Message (Rich Text Editor)" : "Message (Plain Text)"}
             </label>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={
-                  notificationType === "email"
-                    ? insertNameTokenEmail
-                    : insertNameTokenWhatsApp
+                  notificationType === "email" ? insertNameTokenEmail : insertNameTokenWhatsApp
                 }
                 className={`px-3 py-1 text-xs rounded transition-colors ${isDarkMode ? "bg-purple-600 text-white hover:bg-purple-700" : "bg-purple-100 text-purple-700 hover:bg-purple-200"}`}
               >
@@ -468,9 +423,7 @@ We can't wait to celebrate with you! ❤️`;
                 type="button"
                 onClick={() =>
                   setMessage(
-                    notificationType === "email"
-                      ? defaultEmailMessage
-                      : defaultWhatsAppMessage
+                    notificationType === "email" ? defaultEmailMessage : defaultWhatsAppMessage
                   )
                 }
                 className="px-3 py-1 text-xs text-purple-500 hover:text-purple-600"
@@ -486,9 +439,7 @@ We can't wait to celebrate with you! ❤️`;
               {/* Tiptap Toolbar */}
               <div
                 className={`flex flex-wrap gap-1 p-2 mb-0 border rounded-t-lg ${
-                  isDarkMode
-                    ? "bg-gray-700 border-gray-600"
-                    : "bg-gray-50 border-gray-300"
+                  isDarkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-300"
                 }`}
               >
                 <button
@@ -521,9 +472,7 @@ We can't wait to celebrate with you! ❤️`;
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    editor?.chain().focus().toggleUnderline().run()
-                  }
+                  onClick={() => editor?.chain().focus().toggleUnderline().run()}
                   className={`p-2 rounded transition-colors ${
                     editor?.isActive("underline")
                       ? "bg-purple-500 text-white"
@@ -537,9 +486,7 @@ We can't wait to celebrate with you! ❤️`;
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    editor?.chain().focus().toggleHeading({ level: 2 }).run()
-                  }
+                  onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
                   className={`p-2 rounded transition-colors ${
                     editor?.isActive("heading", { level: 2 })
                       ? "bg-purple-500 text-white"
@@ -553,9 +500,7 @@ We can't wait to celebrate with you! ❤️`;
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    editor?.chain().focus().toggleBulletList().run()
-                  }
+                  onClick={() => editor?.chain().focus().toggleBulletList().run()}
                   className={`p-2 rounded transition-colors ${
                     editor?.isActive("bulletList")
                       ? "bg-purple-500 text-white"
@@ -569,9 +514,7 @@ We can't wait to celebrate with you! ❤️`;
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    editor?.chain().focus().toggleOrderedList().run()
-                  }
+                  onClick={() => editor?.chain().focus().toggleOrderedList().run()}
                   className={`p-2 rounded transition-colors ${
                     editor?.isActive("orderedList")
                       ? "bg-purple-500 text-white"
@@ -621,9 +564,7 @@ We can't wait to celebrate with you! ❤️`;
             />
           )}
 
-          <p
-            className={`text-xs mt-2 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
-          >
+          <p className={`text-xs mt-2 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
             💡{" "}
             {notificationType === "email"
               ? "Full rich text formatting available. Use {name} for personalization."
@@ -675,9 +616,7 @@ We can't wait to celebrate with you! ❤️`;
               className={`max-w-2xl w-full rounded-lg shadow-2xl p-6 ${isDarkMode ? "bg-gray-800" : "bg-white"}`}
             >
               <div className="flex items-center justify-between mb-4">
-                <h4
-                  className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-black"}`}
-                >
+                <h4 className={`text-lg font-semibold ${isDarkMode ? "text-white" : "text-black"}`}>
                   Preview for {previewRecipient.name}
                 </h4>
                 <button
@@ -690,9 +629,7 @@ We can't wait to celebrate with you! ❤️`;
               <div
                 className={`p-4 rounded-lg border ${isDarkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}
               >
-                <p
-                  className={`text-sm mb-3 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
-                >
+                <p className={`text-sm mb-3 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
                   <strong>To:</strong> {previewRecipient.contact}
                 </p>
                 {notificationType === "email" ? (
@@ -709,18 +646,13 @@ We can't wait to celebrate with you! ❤️`;
                   <pre
                     className={`whitespace-pre-wrap font-sans ${isDarkMode ? "text-white" : "text-black"}`}
                   >
-                    {personalizeMessage(
-                      message || defaultWhatsAppMessage,
-                      previewRecipient.name
-                    )}
+                    {personalizeMessage(message || defaultWhatsAppMessage, previewRecipient.name)}
                   </pre>
                 )}
               </div>
-              <p
-                className={`text-xs mt-3 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}
-              >
-                This is how the message will look when sent to{" "}
-                {previewRecipient.name} via {notificationType}
+              <p className={`text-xs mt-3 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>
+                This is how the message will look when sent to {previewRecipient.name} via{" "}
+                {notificationType}
               </p>
             </motion.div>
           </motion.div>

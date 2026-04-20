@@ -11,11 +11,7 @@ export async function GET() {
     // Check admin authentication
     const adminCheck = await requireAdmin();
     if (adminCheck instanceof NextResponse) {
-      console.log(
-        "Admin check failed:",
-        adminCheck.status,
-        await adminCheck.json()
-      );
+      console.log("Admin check failed:", adminCheck.status, await adminCheck.json());
       return adminCheck;
     }
 

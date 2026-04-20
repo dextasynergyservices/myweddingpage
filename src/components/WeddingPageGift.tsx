@@ -43,9 +43,7 @@ export default function WeddingPageGift() {
   return (
     <div
       className={`rounded-3xl p-12 shadow-lg border mb-16 ${
-        isDarkMode
-          ? "bg-slate-800 border-slate-700"
-          : "bg-white border-slate-100"
+        isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"
       }`}
     >
       <div className="text-center mb-12">
@@ -62,8 +60,8 @@ export default function WeddingPageGift() {
             isDarkMode ? "text-slate-400" : "text-slate-600"
           }`}
         >
-          Your presence is the only present we need, but if you&#39;d like to
-          give a gift, here are some ideas.
+          Your presence is the only present we need, but if you&#39;d like to give a gift, here are
+          some ideas.
         </p>
       </div>
 

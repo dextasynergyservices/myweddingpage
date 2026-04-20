@@ -15,8 +15,7 @@ export const ELEGANCE_PRESETS: PresetTheme[] = [
   {
     id: "elegance-romantic-rose",
     name: "Romantic Rose",
-    description:
-      "Soft rose pink with sage green accents and warm gold highlights",
+    description: "Soft rose pink with sage green accents and warm gold highlights",
     templateType: "elegance",
     popular: true,
     colors: {
@@ -723,9 +722,7 @@ export function getPopularPresets(): PresetTheme[] {
 /**
  * Get preset count by template type
  */
-export function getPresetCount(
-  templateType?: "elegance" | "bloom" | "luxe" | "vows"
-): number {
+export function getPresetCount(templateType?: "elegance" | "bloom" | "luxe" | "vows"): number {
   if (!templateType) {
     return ALL_PRESETS.length;
   }
